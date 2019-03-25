@@ -66,7 +66,8 @@ public class DefaultSettings {
     
     @ServerStarting
     public static void registerCommand(FMLServerStartingEvent event) {
-    	event.registerServerCommand(new CommandDefaultSettings());
+    	if (!isServer)
+    		event.registerServerCommand(new CommandDefaultSettings());
     }
 
     @PostInit

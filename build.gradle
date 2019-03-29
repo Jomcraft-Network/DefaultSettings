@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+version = "1.6.4-1.1"
+
+fileVersion = "1.1"
+signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8" //Not used in 1.6.4
+group= "de.pt400c.defaultsettings"
+archivesBaseName = "ServerPassword"
+
+minecraft {
+    version = 	"1.6.4-9.11.1.964"
+    assetDir = 	"eclipse/assets"
+    
+    replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
+	replace 	"@FINGERPRINT@", "${project.signSHA1}"
+    replace   	"@VERSION@", "${project.fileVersion}"
+}
+
+processResources
+{
+
+    inputs.property "version", project.fileVersion
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version':project.fileVersion, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

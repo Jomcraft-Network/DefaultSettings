@@ -46,7 +46,7 @@ public class CommandDefaultSettings extends CommandBase {
 			return;
 		}
 
-		Boolean issue = false;
+		MutableBoolean issue = new MutableBoolean(false);
 
 		tpe.execute(new ThreadRunnable(sender, issue) {
 
@@ -59,7 +59,7 @@ public class CommandDefaultSettings extends CommandBase {
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
 					sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the key configuration!");
-					issue = true;
+					issue.setBoolean(true);
 				}
 			}
 		});
@@ -74,7 +74,7 @@ public class CommandDefaultSettings extends CommandBase {
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
 					sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the default game options!");
-					issue = true;
+					issue.setBoolean(true);
 				}
 			}
 		});
@@ -89,13 +89,13 @@ public class CommandDefaultSettings extends CommandBase {
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
 					sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the server list!");
-					issue = true;
+					issue.setBoolean(true);
 				}
+				
+				if (issue.getBoolean())
+					sender.sendChatToPlayer(ColorEnum.YELLOW + "Please inspect the log files for further information!");
 			}
 		});
-
-		if (issue)
-			sender.sendChatToPlayer(ColorEnum.YELLOW + "Please inspect the log files for further information!");
 
 	}
 
@@ -109,14 +109,31 @@ public class CommandDefaultSettings extends CommandBase {
     
     abstract private class ThreadRunnable implements Runnable {
     	   
-        ICommandSender supply;
-        Boolean issue = false;
+        final ICommandSender supply;
+        final MutableBoolean issue;
 
-        ThreadRunnable(ICommandSender supply, Boolean issue) {
+        ThreadRunnable(ICommandSender supply, MutableBoolean issue) {
             this.supply = supply;
             this.issue = issue;
         }
-       
+    }
+    
+    private class MutableBoolean {
+    	
+    	private boolean bool;
+    	
+    	public MutableBoolean(boolean bool) {
+			this.bool = bool;
+		}
+    	
+    	public boolean getBoolean() {
+    		return this.bool;
+    	}
+    	
+    	public void setBoolean(boolean bool) {
+    		this.bool = bool;
+    	}
+    	
     }
 
 }

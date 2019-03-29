@@ -79,6 +79,8 @@ public class DefaultSettings {
 			FileUtil.restoreKeys();
 		} catch (IOException e) {
 			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game (Post):", e);
+		}catch (NullPointerException e) {
+			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game (Post):", e);
 		}
 	}
 	

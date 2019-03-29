@@ -23,7 +23,7 @@ public class FileUtil {
 		return storeFolder;
 	}
 
-	public static void restoreContents() throws IOException {
+	public static void restoreContents() throws NullPointerException, IOException {
 		
 		final File options = new File(mcDataDir, "options.txt");
 		boolean firstBoot = !options.exists();
@@ -62,6 +62,8 @@ public class FileUtil {
 					writer.close();
 				} catch (IOException e) {
 					throw e;
+				} catch (NullPointerException e) {
+					throw e;
 				}
 			}
 		}
@@ -87,6 +89,8 @@ public class FileUtil {
 				try {
 					reader.close();
 				} catch (IOException e) {
+					throw e;
+				} catch (NullPointerException e) {
 					throw e;
 				}
 			}
@@ -120,6 +124,8 @@ public class FileUtil {
 					reader.close();
 					writer.close();
 				} catch (IOException e) {
+					throw e;
+				} catch (NullPointerException e) {
 					throw e;
 				}
 			}
@@ -161,12 +167,14 @@ public class FileUtil {
 			}
 		} catch (IOException e) {
 			throw e;
+		} catch (NullPointerException e) {
+			throw e;
 		} finally {
 			writer.close();
 		}
 	}
 
-	public static void saveOptions() throws IOException {
+	public static void saveOptions() throws NullPointerException, IOException {
 		MC.gameSettings.saveOptions();
 		PrintWriter writer = null;
 		BufferedReader reader = null;
@@ -182,6 +190,9 @@ public class FileUtil {
 			}
 		} catch (IOException e) {
 			throw e;
+		} catch (NullPointerException e) {
+			throw e;
+			
 		} finally {
 			try {
 				reader.close();
@@ -203,6 +214,8 @@ public class FileUtil {
 				writer.print(line + "\n");
 			}
 		} catch (IOException e) {
+			throw e;
+		} catch (NullPointerException e) {
 			throw e;
 		} finally {
 			try {

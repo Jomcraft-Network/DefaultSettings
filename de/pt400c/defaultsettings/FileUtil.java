@@ -42,7 +42,7 @@ public class FileUtil {
 			
 	}
 	
-	public static void restoreOptions() throws IOException {
+	public static void restoreOptions() throws NullPointerException, IOException {
 		final File optionsFile = new File(getMainFolder(), "options.txt");
 		if (optionsFile.exists()) {
 			BufferedReader reader = null;
@@ -69,7 +69,7 @@ public class FileUtil {
 		}
 	}
 	
-	public static void restoreKeys() throws IOException, NumberFormatException {
+	public static void restoreKeys() throws NullPointerException, IOException, NumberFormatException {
 		DefaultSettings.keyRebinds.clear();
 		final File keysFile = new File(getMainFolder(), "keys.txt");
 		if (keysFile.exists()) {
@@ -84,6 +84,8 @@ public class FileUtil {
 					DefaultSettings.keyRebinds.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
 				}
 			} catch (IOException e) {
+				throw e;
+			} catch (NullPointerException e) {
 				throw e;
 			} finally {
 				try {
@@ -105,7 +107,7 @@ public class FileUtil {
 		}
 	}
 	
-	public static void restoreOptionsOF() throws IOException {
+	public static void restoreOptionsOF() throws NullPointerException, IOException {
 		final File optionsOFFile = new File(getMainFolder(), "optionsof.txt");
 		if (optionsOFFile.exists()) {
 			BufferedReader reader = null;
@@ -118,6 +120,8 @@ public class FileUtil {
 					writer.print(line + "\n");
 				}
 			} catch (IOException e) {
+				throw e;
+			} catch (NullPointerException e) {
 				throw e;
 			} finally {
 				try {

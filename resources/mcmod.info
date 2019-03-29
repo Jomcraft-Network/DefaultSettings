@@ -3,7 +3,7 @@
   "modid": "defaultsettings",
   "name": "DefaultSettings",
   "description": "Keep your game's local settings in case of an update to your modpack",
-  "version": "1.0",
+  "version": "1.1",
   "credits": "Developed by Jomcraft Network",
   "logoFile": "logo.png",
   "mcversion": "1.4.7",

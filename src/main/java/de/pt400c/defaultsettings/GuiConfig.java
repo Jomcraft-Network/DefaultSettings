@@ -115,8 +115,8 @@ public class GuiConfig extends GuiScreen
     	
         this.drawDefaultBackground();
         this.drawGradientRect(10, 10, this.width - 10, this.height - 10, -1072689136, -804253680);
-        this.drawCenteredString(this.fontRendererObj, "- DefaultSettings -", this.width / 2, 20, 16777215);
-        this.drawCenteredString(this.fontRendererObj, "Control GUI", this.width / 2, 30, 16777215);
+        this.drawCenteredString(this.fontRenderer, "- DefaultSettings -", this.width / 2, 20, 16777215);
+        this.drawCenteredString(this.fontRenderer, "Control GUI", this.width / 2, 30, 16777215);
         
         buttonS.displayString = (cooldowns[1].getProgress() ? TextFormatting.GOLD : cooldowns[1].renderCooldown < 0 ? TextFormatting.RED : cooldowns[1].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save servers";
         buttonK.displayString = (cooldowns[2].getProgress() ? TextFormatting.GOLD : cooldowns[2].renderCooldown < 0 ? TextFormatting.RED : cooldowns[2].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save keys";
@@ -125,16 +125,16 @@ public class GuiConfig extends GuiScreen
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         if (this.hoverS.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
+            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
         if (this.hoverK.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
+            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
         if (this.hoverO.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
+            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
     }
     
     public void drawToolTip(List stringList, int x, int y)
     {
-    	GuiUtils.drawHoveringText(stringList, x, y, width, height, 300, fontRendererObj);
+    	GuiUtils.drawHoveringText(stringList, x, y, width, height, 300, fontRenderer);
     }
     
     public void saveServers() throws ClosedByInterruptException {

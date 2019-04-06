@@ -5,15 +5,14 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.logging.log4j.Level;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 public class CommandDefaultSettings extends CommandBase {
 
@@ -41,12 +40,12 @@ public class CommandDefaultSettings extends CommandBase {
     }
 
     @Override
-    public void processCommand(final ICommandSender sender, String[] args) throws WrongUsageException {
+    public void execute(MinecraftServer server, final ICommandSender sender, String[] args) throws WrongUsageException {
     	if (args.length == 0 || args.length > 1 || !arg.contains(args[0].toLowerCase()))
 			throw new WrongUsageException(getCommandUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
-			sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
+			sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has been processed!"));
 			return;
 		}
 
@@ -58,11 +57,11 @@ public class CommandDefaultSettings extends CommandBase {
 			public void run() {
 				try {
 					FileUtil.saveKeys();
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the key configuration"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the key configuration"));
 					FileUtil.restoreKeys();
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the key configuration!"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the key configuration!"));
 					issue.setBoolean(true);
 				}
 			}
@@ -74,10 +73,10 @@ public class CommandDefaultSettings extends CommandBase {
 			public void run() {
 				try {
 					FileUtil.saveOptions();
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the default game options"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the default game options"));
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the default game options!"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the default game options!"));
 					issue.setBoolean(true);
 				}
 			}
@@ -89,22 +88,22 @@ public class CommandDefaultSettings extends CommandBase {
 			public void run() {
 				try {
 					FileUtil.saveServers();
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the server list"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the server list"));
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the server list!"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the server list!"));
 					issue.setBoolean(true);
 				}
 				
 				if (issue.getBoolean())
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
+					sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"));
 			}
 		});
 
 	}
     
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
     	if(args.length < 2) {
             return getListOfStringsMatchingLastWord(args, arg.toArray(new String[0]));
         }

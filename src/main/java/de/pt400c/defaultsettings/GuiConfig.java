@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.client.config.HoverChecker;
 
@@ -118,9 +118,9 @@ public class GuiConfig extends GuiScreen
         this.drawCenteredString(this.fontRendererObj, "- DefaultSettings -", this.width / 2, 20, 16777215);
         this.drawCenteredString(this.fontRendererObj, "Control GUI", this.width / 2, 30, 16777215);
         
-        buttonS.displayString = (cooldowns[1].getProgress() ? EnumChatFormatting.GOLD : cooldowns[1].renderCooldown < 0 ? EnumChatFormatting.RED : cooldowns[1].renderCooldown > 0 ? EnumChatFormatting.GREEN : "") + "Save servers";
-        buttonK.displayString = (cooldowns[2].getProgress() ? EnumChatFormatting.GOLD : cooldowns[2].renderCooldown < 0 ? EnumChatFormatting.RED : cooldowns[2].renderCooldown > 0 ? EnumChatFormatting.GREEN : "") + "Save keys";
-        buttonO.displayString = (cooldowns[0].getProgress() ? EnumChatFormatting.GOLD : cooldowns[0].renderCooldown < 0 ? EnumChatFormatting.RED : cooldowns[0].renderCooldown > 0 ? EnumChatFormatting.GREEN : "") + "Save options";
+        buttonS.displayString = (cooldowns[1].getProgress() ? TextFormatting.GOLD : cooldowns[1].renderCooldown < 0 ? TextFormatting.RED : cooldowns[1].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save servers";
+        buttonK.displayString = (cooldowns[2].getProgress() ? TextFormatting.GOLD : cooldowns[2].renderCooldown < 0 ? TextFormatting.RED : cooldowns[2].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save keys";
+        buttonO.displayString = (cooldowns[0].getProgress() ? TextFormatting.GOLD : cooldowns[0].renderCooldown < 0 ? TextFormatting.RED : cooldowns[0].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save options";
         
         super.drawScreen(mouseX, mouseY, partialTicks);
 

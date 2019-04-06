@@ -20,17 +20,17 @@ public class CommandDefaultSettings extends CommandBase {
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "defaultsettings";
     }
     
     @Override
-    public List<String> getCommandAliases() {
+    public List<String> getAliases() {
     	return new ArrayList<String>() {{	add("ds");	}};
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/defaultsettings [save]";
     }
 
@@ -42,10 +42,10 @@ public class CommandDefaultSettings extends CommandBase {
     @Override
     public void execute(MinecraftServer server, final ICommandSender sender, String[] args) throws WrongUsageException {
     	if (args.length == 0 || args.length > 1 || !arg.contains(args[0].toLowerCase()))
-			throw new WrongUsageException(getCommandUsage(sender));
+			throw new WrongUsageException(getUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
-			sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has been processed!"));
+			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has been processed!"));
 			return;
 		}
 
@@ -57,11 +57,11 @@ public class CommandDefaultSettings extends CommandBase {
 			public void run() {
 				try {
 					FileUtil.saveKeys();
-					sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the key configuration"));
+					sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the key configuration"));
 					FileUtil.restoreKeys();
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-					sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the key configuration!"));
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the key configuration!"));
 					issue.setBoolean(true);
 				}
 			}
@@ -73,10 +73,10 @@ public class CommandDefaultSettings extends CommandBase {
 			public void run() {
 				try {
 					FileUtil.saveOptions();
-					sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the default game options"));
+					sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the default game options"));
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-					sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the default game options!"));
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the default game options!"));
 					issue.setBoolean(true);
 				}
 			}
@@ -88,22 +88,22 @@ public class CommandDefaultSettings extends CommandBase {
 			public void run() {
 				try {
 					FileUtil.saveServers();
-					sender.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the server list"));
+					sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the server list"));
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-					sender.addChatMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the server list!"));
+					sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the server list!"));
 					issue.setBoolean(true);
 				}
 				
 				if (issue.getBoolean())
-					sender.addChatMessage(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"));
+					sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"));
 			}
 		});
 
 	}
     
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
     	if(args.length < 2) {
             return getListOfStringsMatchingLastWord(args, arg.toArray(new String[0]));
         }

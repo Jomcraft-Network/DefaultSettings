@@ -12,7 +12,8 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
-import cpw.mods.fml.client.config.HoverChecker;
+import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.config.HoverChecker;
 
 public class GuiConfig extends GuiScreen
 {
@@ -124,16 +125,16 @@ public class GuiConfig extends GuiScreen
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         if (this.hoverS.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
+            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
         if (this.hoverK.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
+            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
         if (this.hoverO.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
+            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
     }
     
     public void drawToolTip(List stringList, int x, int y)
     {
-        this.func_146283_a(stringList, x, y);
+    	GuiUtils.drawHoveringText(stringList, x, y, width, height, 300, fontRendererObj);
     }
     
     public void saveServers() throws ClosedByInterruptException {

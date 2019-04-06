@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Level;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -38,15 +39,10 @@ public class CommandDefaultSettings extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 0;
     }
-    
-    @Override
-    public int compareTo(Object o) {
-    	return 0;
-    }
 
     @Override
-    public void processCommand(final ICommandSender sender, String[] args) {
-    	if (args.length > 1 || !arg.contains(args[0].toLowerCase()))
+    public void processCommand(final ICommandSender sender, String[] args) throws WrongUsageException {
+    	if (args.length == 0 || args.length > 1 || !arg.contains(args[0].toLowerCase()))
 			throw new WrongUsageException(getCommandUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
@@ -106,10 +102,10 @@ public class CommandDefaultSettings extends CommandBase {
 		});
 
 	}
-
+    
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
-        if(args.length < 2) {
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+    	if(args.length < 2) {
             return getListOfStringsMatchingLastWord(args, arg.toArray(new String[0]));
         }
 		return new ArrayList<String>();

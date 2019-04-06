@@ -5,42 +5,89 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+		maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
 apply plugin: 'forge'
-version = "1.6.4-1.1"
+apply plugin: 'signing'
 
-fileVersion = "1.1"
-signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8" //Not used in 1.6.4
+version = "1.7.10-1.1"
+
+def fileVersion = "1.1"
+def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
-archivesBaseName = "ServerPassword"
+archivesBaseName = "DefaultSettings"
 
 minecraft {
-    version = 	"1.6.4-9.11.1.964"
-    assetDir = 	"eclipse/assets"
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
     
     replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
-	replace 	"@FINGERPRINT@", "${project.signSHA1}"
-    replace   	"@VERSION@", "${project.fileVersion}"
+	replace 	"@FINGERPRINT@", signSHA1
+    replace   	"@VERSION@", fileVersion
+}
+
+jar {
+    manifest {
+        attributes("FMLAT": "defaultsettings_at.cfg")
+    }
 }
 
 processResources
 {
 
-    inputs.property "version", project.fileVersion
+    inputs.property "version", fileVersion
     inputs.property "mcversion", project.minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
-        expand 'version':project.fileVersion, 'mcversion':project.minecraft.version
+        expand 'version':fileVersion, 'mcversion':project.minecraft.version
     }
 
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+task signJar {
+    doLast {
+        configurations.archives.allArtifacts.files.each {
+            ant.signjar(
+                jar: it,
+				storetype:"jks",
+				alias: project.property("signing.alias"),
+                storepass: project.property("signing.keyStorePassword"),
+                keystore: project.property("signing.keyStorePath"),
+                keypass: project.property("signing.keyStorePassword"),
+                preservelastmodified:"true"
+            )
+            signing.sign(it)
+			project.logger.lifecycle("JAR Signed: " + it.name)
+        }
+    }
+}
+
+build.dependsOn signJar
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	from sourceSets.main.allSource
+	classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+	from sourceSets.main.output
+	classifier = 'deobf'
+}
+
+artifacts {
+	archives sourcesJar
+	archives deobfJar
 }

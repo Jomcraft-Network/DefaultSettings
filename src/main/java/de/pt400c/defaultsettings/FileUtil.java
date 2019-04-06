@@ -98,8 +98,8 @@ public class FileUtil {
 			}
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
-				if (DefaultSettings.keyRebinds.containsKey(keyBinding.keyDescription)) {
-					keyBinding.keyCode = DefaultSettings.keyRebinds.get(keyBinding.keyDescription);
+				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
+					keyBinding.keyCodeDefault = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
 				}
 			}
 			
@@ -167,7 +167,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
-				writer.print(keyBinding.keyDescription + ":" + keyBinding.keyCode + "\n");
+				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
 			}
 		} catch (IOException e) {
 			throw e;

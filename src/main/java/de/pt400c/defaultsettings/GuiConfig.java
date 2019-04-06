@@ -1,22 +1,18 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.nio.channels.ClosedByInterruptException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
+import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
+import cpw.mods.fml.client.config.HoverChecker;
 
 public class GuiConfig extends GuiScreen
 {
@@ -65,7 +61,7 @@ public class GuiConfig extends GuiScreen
 					try {
 						saveKeys();
 					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.FINEST, "An exception occurred while saving the key configuration: Interruption exception");
+						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
 					}
 				}
 			});
@@ -78,7 +74,7 @@ public class GuiConfig extends GuiScreen
 					try {
 						saveOptions();
 					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.FINEST, "An exception occurred while saving the default game options: Interruption exception");
+						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
 					}
 				}
 			});
@@ -91,7 +87,7 @@ public class GuiConfig extends GuiScreen
 					try {
 						saveServers();
 					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.FINEST, "An exception occurred while saving the server list: Interruption exception");
+						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
 					}
 				}
 			});
@@ -118,8 +114,8 @@ public class GuiConfig extends GuiScreen
     	
         this.drawDefaultBackground();
         this.drawGradientRect(10, 10, this.width - 10, this.height - 10, -1072689136, -804253680);
-        this.drawCenteredString(this.fontRenderer, "- DefaultSettings -", this.width / 2, 20, 16777215);
-        this.drawCenteredString(this.fontRenderer, "Control GUI", this.width / 2, 30, 16777215);
+        this.drawCenteredString(this.fontRendererObj, "- DefaultSettings -", this.width / 2, 20, 16777215);
+        this.drawCenteredString(this.fontRendererObj, "Control GUI", this.width / 2, 30, 16777215);
         
         buttonS.displayString = (cooldowns[1].getProgress() ? EnumChatFormatting.GOLD : cooldowns[1].renderCooldown < 0 ? EnumChatFormatting.RED : cooldowns[1].renderCooldown > 0 ? EnumChatFormatting.GREEN : "") + "Save servers";
         buttonK.displayString = (cooldowns[2].getProgress() ? EnumChatFormatting.GOLD : cooldowns[2].renderCooldown < 0 ? EnumChatFormatting.RED : cooldowns[2].renderCooldown > 0 ? EnumChatFormatting.GREEN : "") + "Save keys";
@@ -128,11 +124,16 @@ public class GuiConfig extends GuiScreen
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         if (this.hoverS.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY, MC.fontRenderer);
+            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
         if (this.hoverK.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY, MC.fontRenderer);
+            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
         if (this.hoverO.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY, MC.fontRenderer);
+            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
+    }
+    
+    public void drawToolTip(List stringList, int x, int y)
+    {
+        this.func_146283_a(stringList, x, y);
     }
     
     public void saveServers() throws ClosedByInterruptException {
@@ -142,7 +143,7 @@ public class GuiConfig extends GuiScreen
 		} catch (ClosedByInterruptException e){
 			throw e;
 		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
+			DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
 			this.cooldowns[1].renderCooldown = -30;
 		}
     	this.cooldowns[1].setProgress(false);
@@ -155,7 +156,7 @@ public class GuiConfig extends GuiScreen
 		} catch (ClosedByInterruptException e){
 			throw e;
 		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
+			DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
 			this.cooldowns[0].renderCooldown = -30;
 		}
     	this.cooldowns[0].setProgress(false);
@@ -169,87 +170,10 @@ public class GuiConfig extends GuiScreen
 		} catch (ClosedByInterruptException e){
 			throw e;
 		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
+			DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
 			this.cooldowns[2].renderCooldown = -30;
 		}
     	this.cooldowns[2].setProgress(false);
-    }
-
-
-    public void drawToolTip(List stringList, int x, int y, FontRenderer font)
-    {
-    	if (!stringList.isEmpty())
-        {
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            int k = 0;
-            Iterator iterator = stringList.iterator();
-
-            while (iterator.hasNext())
-            {
-                String s = (String)iterator.next();
-                int l = font.getStringWidth(s);
-
-                if (l > k)
-                {
-                    k = l;
-                }
-            }
-
-            int j2 = x + 12;
-            int k2 = y - 12;
-            int i1 = 8;
-
-            if (stringList.size() > 1)
-            {
-                i1 += 2 + (stringList.size() - 1) * 10;
-            }
-
-            if (j2 + k > this.width)
-            {
-                j2 -= 28 + k;
-            }
-
-            if (k2 + i1 + 6 > this.height)
-            {
-                k2 = this.height - i1 - 6;
-            }
-
-            this.zLevel = 300.0F;
-            int j1 = -267386864;
-            this.drawGradientRect(j2 - 3, k2 - 4, j2 + k + 3, k2 - 3, j1, j1);
-            this.drawGradientRect(j2 - 3, k2 + i1 + 3, j2 + k + 3, k2 + i1 + 4, j1, j1);
-            this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 + i1 + 3, j1, j1);
-            this.drawGradientRect(j2 - 4, k2 - 3, j2 - 3, k2 + i1 + 3, j1, j1);
-            this.drawGradientRect(j2 + k + 3, k2 - 3, j2 + k + 4, k2 + i1 + 3, j1, j1);
-            int k1 = 1347420415;
-            int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
-            this.drawGradientRect(j2 - 3, k2 - 3 + 1, j2 - 3 + 1, k2 + i1 + 3 - 1, k1, l1);
-            this.drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
-            this.drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
-            this.drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
-
-            for (int i2 = 0; i2 < stringList.size(); ++i2)
-            {
-                String s1 = (String)stringList.get(i2);
-                font.drawStringWithShadow(s1, j2, k2, -1);
-
-                if (i2 == 0)
-                {
-                    k2 += 2;
-                }
-
-                k2 += 10;
-            }
-
-            this.zLevel = 0.0F;
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        }
-    	
-    	
     }
     
 	private class ButtonState {

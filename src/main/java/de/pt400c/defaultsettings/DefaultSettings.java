@@ -12,6 +12,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
+import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -41,6 +42,15 @@ public class DefaultSettings {
 		if (!isServer)
 			TickRegistry.registerTickHandler(new TickHandlerClient(), Side.CLIENT);
 	}
+	
+	@EventHandler
+    public static void onFingerprintViolation(FMLFingerprintViolationEvent event) {
+		if(devEnv)
+			return;
+		
+		DefaultSettings.log.log(Level.SEVERE, "The mod's files have been manipulated! The game will be terminated.");
+		System.exit(0);
+    }
 
 	@EventHandler
 	public static void construction(FMLConstructionEvent event) {

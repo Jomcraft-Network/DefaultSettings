@@ -12,38 +12,60 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'signing'
+
 version = "1.6.4-1.1"
 
-fileVersion = "1.1"
-signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8" //Not used in 1.6.4
+def fileVersion = "1.1"
+def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
-archivesBaseName = "ServerPassword"
+archivesBaseName = "DefaultSettings"
 
 minecraft {
     version = 	"1.6.4-9.11.1.964"
     assetDir = 	"eclipse/assets"
     
     replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
-	replace 	"@FINGERPRINT@", "${project.signSHA1}"
-    replace   	"@VERSION@", "${project.fileVersion}"
+	replace 	"@FINGERPRINT@", project.signSHA1
+    replace   	"@VERSION@", fileVersion
 }
 
 processResources
 {
 
-    inputs.property "version", project.fileVersion
+    inputs.property "version", fileVersion
     inputs.property "mcversion", project.minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
 
-        expand 'version':project.fileVersion, 'mcversion':project.minecraft.version
+        expand 'version':fileVersion, 'mcversion':project.minecraft.version
     }
 
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
 }
+
+task signJar {
+    doLast {
+        configurations.archives.allArtifacts.files.each {
+            ant.signjar(
+                jar: it,
+				storetype:"jks",
+				alias: project.property("signing.alias"),
+                storepass: project.property("signing.keyStorePassword"),
+                keystore: project.property("signing.keyStorePath"),
+                keypass: project.property("signing.keyStorePassword"),
+                preservelastmodified:"true"
+            )
+            signing.sign(it)
+			project.logger.lifecycle("JAR Signed: " + it.name)
+        }
+    }
+}
+
+build.dependsOn signJar
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.allSource

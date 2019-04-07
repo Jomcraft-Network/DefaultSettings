@@ -24,20 +24,21 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.0", dependencies = "before:*")
+@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.1", dependencies = "before:*")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
-	public static final String NAME = "DefaultSettings";
-	public static final String VERSION = "1.0";
     public static final Logger log = LogManager.getLogManager().getLogger(DefaultSettings.MODID);
     public static final boolean isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
     public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
     public static boolean setUp = false;
-    public static boolean devEnv = Arrays.asList(MinecraftServer.class.getDeclaredFields()).get(7).getName().equals("hostname");
+    
+    @Instance
+    public static DefaultSettings instance;
     
     public DefaultSettings() {
+    	instance = this;
     	if(isServer || setUp)
     		return;
         try {
@@ -47,9 +48,6 @@ public class DefaultSettings {
 		}
         setUp = true;
 	}
-    
-    @Instance
-    public static DefaultSettings instance;
     
     @Init
     public static void init(FMLInitializationEvent event) {
@@ -82,6 +80,10 @@ public class DefaultSettings {
 		} catch (NullPointerException e) {
 			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game (Post):", e);
 		}
+	}
+    
+    public static DefaultSettings getInstance() {
+		return instance;
 	}
 	
 }

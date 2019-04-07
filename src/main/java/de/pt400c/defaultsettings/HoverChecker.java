@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings;
 
-import static de.pt400c.defaultsettings.DefaultSettings.devEnv;
-import java.lang.reflect.Field;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 
 public class HoverChecker {
@@ -32,27 +31,8 @@ public class HoverChecker {
 
 	public boolean checkHover(int mouseX, int mouseY) {
 		if (this.button != null) {
-			int b_width = 0;
-			int b_height = 0;
-			try {
-				Field width = null;
-				Field height = null;
-				if(devEnv) {
-					width = this.button.getClass().getDeclaredField("width");
-					height = this.button.getClass().getDeclaredField("height");
-				}else {
-					width = this.button.getClass().getDeclaredField("field_73747_a");
-					height = this.button.getClass().getDeclaredField("field_73745_b");
-				}
-				
-				width.setAccessible(true);
-				height.setAccessible(true);
-				b_width = width.getInt(this.button);
-				b_height = height.getInt(this.button);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
+			int b_width = ObfuscationReflectionHelper.getPrivateValue(GuiButton.class, this.button, "width");
+			int b_height = ObfuscationReflectionHelper.getPrivateValue(GuiButton.class, this.button, "height");
 			this.top = button.yPosition;
 			this.bottom = button.yPosition + b_height;
 			this.left = button.xPosition;

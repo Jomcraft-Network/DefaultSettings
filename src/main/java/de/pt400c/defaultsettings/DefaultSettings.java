@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -18,7 +17,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -30,12 +28,14 @@ public class DefaultSettings {
 	public static final String VERSION = "@VERSION@";
 	public static final Logger log = LogManager.getLogManager().getLogger(DefaultSettings.MODID);
 	public static final boolean isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
-	public static boolean devEnv = Arrays.asList(MinecraftServer.class.getDeclaredFields()).get(7).getName().equals("hostname");
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
-	public static boolean setUp = false;
 
 	@Instance
 	public static DefaultSettings instance;
+	
+	public DefaultSettings() {
+		instance = this;
+	}
 
 	@EventHandler
 	public static void init(FMLInitializationEvent event) {
@@ -45,7 +45,7 @@ public class DefaultSettings {
 	
 	@EventHandler
     public static void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-		if(devEnv)
+		if(event.isDirectory)
 			return;
 		
 		DefaultSettings.log.log(Level.SEVERE, "The mod's files have been manipulated! The game will be terminated.");
@@ -54,14 +54,13 @@ public class DefaultSettings {
 
 	@EventHandler
 	public static void construction(FMLConstructionEvent event) {
-		if (isServer || setUp)
+		if (isServer)
 			return;
 		try {
 			FileUtil.restoreContents();
 		} catch (Exception e) {
 			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game:", e);
 		}
-		setUp = true;
 	}
 
 	@EventHandler
@@ -84,6 +83,10 @@ public class DefaultSettings {
 		} catch (NullPointerException e) {
 			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game (Post):", e);
 		}
+	}
+	
+	public static DefaultSettings getInstance() {
+		return instance;
 	}
 
 }

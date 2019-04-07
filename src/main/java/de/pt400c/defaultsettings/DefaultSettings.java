@@ -15,7 +15,6 @@ import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -27,28 +26,29 @@ public class DefaultSettings {
 	public static final String VERSION = "@VERSION@";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static final boolean isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
-	public static boolean devEnv = Launch.blackboard.get("fml.deobfuscatedEnvironment").equals(true);
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
-	public static boolean setUp = false;
 
 	@Instance
 	public static DefaultSettings instance;
+	
+	public DefaultSettings() {
+		instance = this;
+	}
 
 	@EventHandler
 	public static void construction(FMLConstructionEvent event) {
-		if (isServer || setUp)
+		if (isServer)
 			return;
 		try {
 			FileUtil.restoreContents();
 		} catch (Exception e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
 		}
-		setUp = true;
 	}
 	
 	@EventHandler
     public static void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-		if(devEnv)
+		if(event.isDirectory)
 			return;
 		
 		DefaultSettings.log.log(Level.ERROR, "The mod's files have been manipulated! The game will be terminated.");
@@ -77,6 +77,10 @@ public class DefaultSettings {
 		} catch (NullPointerException e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 		}
+	}
+	
+	public static DefaultSettings getInstance() {
+		return instance;
 	}
 
 }

@@ -10,12 +10,14 @@ import java.io.PrintWriter;
 import org.apache.commons.io.FileUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.client.util.InputMappings;
+import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FileUtil {
 	
-	public static final Minecraft MC = Minecraft.getMinecraft();
-	public static final File mcDataDir = MC.mcDataDir;
+	public static final Minecraft MC = Minecraft.getInstance();
+	public static final File mcDataDir = MC.gameDir;
 	
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
@@ -31,9 +33,13 @@ public class FileUtil {
 			restoreOptions();
 			restoreConfigs();
 		}
+		
+		//Optifine isn't implemented yet
+		
+		/*
 		final File optionsOF = new File(mcDataDir, "optionsof.txt");
 		if (!optionsOF.exists()) 
-			restoreOptionsOF();
+			restoreOptionsOF();*/
 		
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
@@ -80,7 +86,7 @@ public class FileUtil {
 					if (line.isEmpty()) {
 						continue;
 					}
-					DefaultSettings.keyRebinds.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
+					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputMappings.getInputByName(line.split(":")[1]), KeyModifier.valueFromString(line.split(":")[2])));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -99,7 +105,10 @@ public class FileUtil {
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
-					keyBinding.keyCodeDefault = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
+					KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
+					ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
+					keyBinding.keyCodeDefault = container.input;
+					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), keyBinding.keyCodeDefault);
 				}
 			}
 			
@@ -107,6 +116,9 @@ public class FileUtil {
 		}
 	}
 	
+	//Optifine isn't implemented yet
+	
+	/*
 	public static void restoreOptionsOF() throws IOException {
 		final File optionsOFFile = new File(getMainFolder(), "optionsof.txt");
 		if (optionsOFFile.exists()) {
@@ -135,14 +147,17 @@ public class FileUtil {
 			}
 		}
 	}
+	*/
 	
 	public static void restoreConfigs() throws IOException {
 		try {
 			FileFilter fileFilter = new FileFilter() {
 				@Override
 				public boolean accept(File file) {
-
-					if (!file.getName().equals("defaultsettings") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat"))
+					
+					//Optifine isn't implemented yet
+					
+					if (!file.getName().equals("defaultsettings") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") &&/* !file.getName().equals("optionsof.txt") && */!file.getName().equals("servers.dat"))
 						return true;
 
 					return false;
@@ -167,7 +182,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
-				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
+				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
 			}
 		} catch (IOException e) {
 			throw e;
@@ -206,11 +221,13 @@ public class FileUtil {
 				throw e;
 			}
 		}
+		
+		//Optifine isn't implemented yet	
 
-		if (!FMLClientHandler.instance().hasOptifine()) {
+		//if (!FMLClientHandler.instance().hasOptifine()) {
 			return;
-		}
-
+	//	}
+/*
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "optionsof.txt")));
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsof.txt")));
@@ -231,7 +248,7 @@ public class FileUtil {
 			} catch (NullPointerException e) {
 				throw e;
 			}
-		}	
+		}	*/
 	}
 
 	public static void saveServers() throws IOException {

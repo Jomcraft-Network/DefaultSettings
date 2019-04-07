@@ -8,7 +8,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
@@ -36,11 +35,66 @@ public class GuiConfig extends GuiScreen
     @Override
     public void initGui()
     {
-        Keyboard.enableRepeatEvents(true);
-        this.buttonList.add(this.buttonO = new GuiButton(0, this.width / 2 - 49, this.height / 2 - 20, 98, 20, "Save options"));
-        this.buttonList.add(this.buttonS = new GuiButton(1, this.width / 2 - 149, this.height / 2 - 20, 98, 20, "Save servers"));
-        this.buttonList.add(this.buttonK = new GuiButton(2, this.width / 2 + 51, this.height / 2 - 20, 98, 20, "Save keys"));
-        this.buttonList.add(new GuiButton(3, this.width / 2 - 49, this.height / 2 + 24, 98, 20, "Quit"));
+    	this.mc.keyboardListener.enableRepeatEvents(true);
+        this.addButton(this.buttonO = new GuiButton(0, this.width / 2 - 49, this.height / 2 - 20, 98, 20, "Save options") {
+        	
+        	@Override
+        	public void onClick(double mouseX, double mouseY) {
+        		GuiConfig.this.cooldowns[0].setProgress(true);
+    			tpe.execute(new Runnable() {
+    				@Override
+    				public void run() {
+    					try {
+    						saveOptions();
+    					} catch (ClosedByInterruptException e) {
+    						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
+    					}
+    				}
+    			});
+        	}
+        	
+        });
+        this.addButton(this.buttonS = new GuiButton(1, this.width / 2 - 149, this.height / 2 - 20, 98, 20, "Save servers") {
+        	@Override
+        	public void onClick(double mouseX, double mouseY) {
+        		GuiConfig.this.cooldowns[1].setProgress(true);
+    			tpe.execute(new Runnable() {
+    				@Override
+    				public void run() {
+    					try {
+    						saveServers();
+    					} catch (ClosedByInterruptException e) {
+    						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
+    					}
+    				}
+    			});
+        	}
+        	
+        });
+        this.addButton(this.buttonK = new GuiButton(2, this.width / 2 + 51, this.height / 2 - 20, 98, 20, "Save keys") {
+        	
+			@Override
+			public void onClick(double mouseX, double mouseY) {
+				GuiConfig.this.cooldowns[2].setProgress(true);
+				tpe.execute(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							saveKeys();
+						} catch (ClosedByInterruptException e) {
+							DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
+						}
+					}
+				});
+			}
+        	
+        });
+        this.addButton(new GuiButton(3, this.width / 2 - 49, this.height / 2 + 24, 98, 20, "Quit") {
+        	@Override
+        	public void onClick(double mouseX, double mouseY) {
+        		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
+        	}
+        });
         this.hoverS = new HoverChecker(this.buttonS, 0);
         this.hoverK = new HoverChecker(this.buttonK, 0);
         this.hoverO = new HoverChecker(this.buttonO, 0);
@@ -48,59 +102,14 @@ public class GuiConfig extends GuiScreen
 
     @Override
     public void onGuiClosed() {
-    	Keyboard.enableRepeatEvents(false);
+    	this.mc.keyboardListener.enableRepeatEvents(false);
     	tpe.shutdownNow();
     }
 
-	@Override
-	protected void actionPerformed(GuiButton button) {
-		if (button.id == 2) {
-			this.cooldowns[2].setProgress(true);
-			tpe.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						saveKeys();
-					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
-					}
-				}
-			});
-
-		} else if (button.id == 0) {
-			this.cooldowns[0].setProgress(true);
-			tpe.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						saveOptions();
-					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
-					}
-				}
-			});
-
-		} else if (button.id == 1) {
-			this.cooldowns[1].setProgress(true);
-			tpe.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						saveServers();
-					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
-					}
-				}
-			});
-		} else if (button.id == 3) {
-			MC.displayGuiScreen(this.parentScreen);
-		}
-	}
-
     @Override
-    public void updateScreen()
+    public void tick()
     {
-    	super.updateScreen();
+    	super.tick();
         for(int id = 0; id < cooldowns.length; id++) {
         	if(cooldowns[id].renderCooldown > 0)
         		cooldowns[id].renderCooldown--;
@@ -110,7 +119,7 @@ public class GuiConfig extends GuiScreen
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, float partialTicks)
     {
     	
         this.drawDefaultBackground();
@@ -122,14 +131,14 @@ public class GuiConfig extends GuiScreen
         buttonK.displayString = (cooldowns[2].getProgress() ? TextFormatting.GOLD : cooldowns[2].renderCooldown < 0 ? TextFormatting.RED : cooldowns[2].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save keys";
         buttonO.displayString = (cooldowns[0].getProgress() ? TextFormatting.GOLD : cooldowns[0].renderCooldown < 0 ? TextFormatting.RED : cooldowns[0].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save options";
         
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
 
         if (this.hoverS.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
+            this.drawToolTip(GuiConfig.this.fontRenderer.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
         if (this.hoverK.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
+            this.drawToolTip(GuiConfig.this.fontRenderer.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
         if (this.hoverO.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRenderer.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
+            this.drawToolTip(GuiConfig.this.fontRenderer.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
     }
     
     public void drawToolTip(List stringList, int x, int y)

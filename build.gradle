@@ -1,56 +1,91 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = 'http://files.minecraftforge.net/maven'
         }
+		jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.12.2-1.1"
+version = "1.13.2-1.1"
 
 def fileVersion = "1.1"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 archivesBaseName = "DefaultSettings"
 
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
 minecraft {
-    version = "1.12.2-14.23.5.2824"
-	mappings = "snapshot_20171003"
-    runDir = "eclipse"
-    
-    replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
-	replace 	"@FINGERPRINT@", signSHA1
-    replace   	"@VERSION@", fileVersion
+    mappings channel: 'snapshot', version: '20180921-1.13'
+    accessTransformer = file("$rootDir/src/main/resources/META-INF/defaultsettings_at.cfg")
+
+	runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.13.2-25.0.108'
+}
+
+def minecraft_version = "test"
+
+def forge_version_toml = "2111f"
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+
+        expand 'version': project.version, 'mcversion': minecraft_version, 'forge_version': forge_version_toml
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
 }
 
 jar {
     manifest {
-        attributes("FMLAT": "defaultsettings_at.cfg")
-    }
-}
-
-processResources
-{
-
-    inputs.property "version", fileVersion
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'version':fileVersion, 'mcversion':project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        attributes([
+            "Specification-Title": "DefaultSettings",
+            "Specification-Vendor": "Jomcraft Network",
+            "Specification-Version": "1.1",
+            "Implementation-Title": "DefaultSettings",
+            "Implementation-Version": "1.1",
+            "Implementation-Vendor" : "Jomcraft Network",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
 }
 

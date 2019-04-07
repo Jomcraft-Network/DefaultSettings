@@ -9,8 +9,7 @@
   "mcversion": "${mcversion}",
   "url": "https://minecraft.curseforge.com/projects/defaultsettings",
   "updateUrl": "",
-  "authors": [ "PT400C", "Jomcraft Network" ],
-  "parent":"",
+  "authorList": [ "PT400C", "Jomcraft Network" ],
   "screenshots": []
 }
 ]

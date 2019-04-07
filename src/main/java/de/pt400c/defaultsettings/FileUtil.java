@@ -10,7 +10,9 @@ import java.io.PrintWriter;
 import org.apache.commons.io.FileUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FileUtil {
 	
@@ -80,7 +82,7 @@ public class FileUtil {
 					if (line.isEmpty()) {
 						continue;
 					}
-					DefaultSettings.keyRebinds.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
+					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(Integer.parseInt(line.split(":")[1]), KeyModifier.valueFromString(line.split(":")[2])));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -99,7 +101,10 @@ public class FileUtil {
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
-					keyBinding.keyCodeDefault = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
+					KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
+					ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
+					keyBinding.keyCodeDefault = container.input;
+					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), keyBinding.keyCodeDefault);
 				}
 			}
 			
@@ -167,7 +172,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
-				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
+				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + ":" + keyBinding.getKeyModifier().name() + "\n");
 			}
 		} catch (IOException e) {
 			throw e;

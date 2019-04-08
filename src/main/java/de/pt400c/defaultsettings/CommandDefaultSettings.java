@@ -46,7 +46,7 @@ public class CommandDefaultSettings extends CommandBase {
 
     @Override
     public void processCommand(final ICommandSender sender, String[] args) {
-    	if (args.length > 1 || !arg.contains(args[0].toLowerCase()))
+    	if (args.length == 0 || args.length > 1 || !arg.contains(args[0].toLowerCase()))
 			throw new WrongUsageException(getCommandUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {

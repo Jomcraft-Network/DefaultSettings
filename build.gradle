@@ -59,15 +59,15 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.13.2-25.0.108'
 }
 
-def minecraft_version = "test"
+def minecraft_version = "1.13.2"
 
-def forge_version_toml = "2111f"
+def forge_version = "25.0.100"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
-        expand 'version': project.version, 'mcversion': minecraft_version, 'forge_version': forge_version_toml
+        expand 'version': project.version, 'mcversion': minecraft_version, 'forge_version': forge_version
     }
 
     from(sourceSets.main.resources.srcDirs) {

@@ -11,6 +11,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.2.0'
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'signing'
 
@@ -87,4 +91,47 @@ task deobfJar(type: Jar) {
 artifacts {
 	archives sourcesJar
 	archives deobfJar
+}
+
+task zipVerification {
+    doLast {
+        ant.zip(destfile: "$buildDir/libs/verification.zip") {
+            fileset(dir: "$buildDir/libs/") {
+                include(name: '*.asc')
+            }
+            fileset(dir: "") {
+                include(name: 'pubkey.gpg')
+            }
+        }
+        project.logger.lifecycle("Created verification ZIP")
+    }
+}
+
+build.dependsOn zipVerification
+
+curseforge {
+
+  apiKey = project.property("cursegradle.api_token")
+  project {
+    id = '318012'
+    releaseType = 'beta'
+    mainArtifact(jar) {
+    	displayName = "$archivesBaseName-$version"
+    }
+    
+    addArtifact (sourcesJar) {
+    	displayName = "$archivesBaseName-$version-sources"
+    }
+    
+    addArtifact (deobfJar) {
+    	displayName = "$archivesBaseName-$version-deobf"
+    }
+    
+    addArtifact ("$buildDir/libs/verification.zip") {
+    	releaseType = 'release'
+    	displayName = 'GPGVerification'
+    }
+    
+  }
+  
 }

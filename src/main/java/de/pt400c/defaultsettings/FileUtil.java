@@ -7,17 +7,22 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import org.apache.commons.io.FileUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.world.World;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 
 public class FileUtil {
 	
 	public static final Minecraft MC = Minecraft.getInstance();
 	public static final File mcDataDir = MC.gameDir;
+	
+	public static final boolean devEnv = World.class.getSimpleName().equals("World");
 	
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
@@ -107,8 +112,12 @@ public class FileUtil {
 				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
 					KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
 					ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
-					keyBinding.keyCodeDefault = container.input;
-					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), keyBinding.keyCodeDefault);
+					try {
+						setPrivateValue(KeyBinding.class, keyBinding, container.input, devEnv ? "keyCodeDefault" : "field_151472_e");
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), container.input);
 				}
 			}
 			
@@ -261,4 +270,36 @@ public class FileUtil {
 			}
 		}
 	}
+	
+	public static <T, E> void setPrivateValue(Class<? super T> classToAccess, T instance, E value, String fieldName) throws IllegalAccessException
+    {
+        try
+        {
+            findField(classToAccess, fieldName).set(instance, value);
+        }
+        catch (UnableToFindFieldException e)
+        {
+            DefaultSettings.log.error("Unable to locate any field {} on type {}", classToAccess.getName(), e);
+            throw e;
+        }
+        catch (IllegalAccessException e)
+        {
+        	DefaultSettings.log.error("Unable to set any field {} on type {}", classToAccess.getName(), e);
+            throw new IllegalAccessException();
+        }
+    }
+	
+	private static Field findField(Class<?> clazz, String name) throws IllegalAccessException
+    {
+        try
+        {
+            Field f = clazz.getDeclaredField(name);
+            f.setAccessible(true);
+            return f;
+        }
+        catch (Exception e)
+        {
+            throw new IllegalAccessException();
+        }
+    }
 }

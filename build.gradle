@@ -19,10 +19,10 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.13.2-1.1"
+version = "1.13.2-1.2"
 
 
-def fileVersion = "1.1"
+def fileVersion = "1.2"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 archivesBaseName = "DefaultSettings"
@@ -31,31 +31,20 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 minecraft {
     mappings channel: 'snapshot', version: '20180921-1.13'
-    accessTransformer = file("$rootDir/src/main/resources/META-INF/defaultsettings_at.cfg")
 
 	runs {
         client {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
+            source sourceSets.main
         }
 
         server {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
+            source sourceSets.main
         }
     }
 }
@@ -72,7 +61,7 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
-        expand 'version': project.version, 'mcversion': minecraft_version, 'forge_version': forge_version
+        expand 'version': fileVersion, 'mcversion': minecraft_version, 'forge_version': forge_version
     }
 
     from(sourceSets.main.resources.srcDirs) {
@@ -85,9 +74,9 @@ jar {
         attributes([
             "Specification-Title": "DefaultSettings",
             "Specification-Vendor": "Jomcraft Network",
-            "Specification-Version": "1.1",
+            "Specification-Version": fileVersion,
             "Implementation-Title": "DefaultSettings",
-            "Implementation-Version": "1.1",
+            "Implementation-Version": fileVersion,
             "Implementation-Vendor" : "Jomcraft Network",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])

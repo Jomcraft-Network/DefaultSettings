@@ -108,7 +108,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.addSegment(new SplitterSegment(this, 72, 32, this.height - 32 - 10));
     	
-    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, button -> {return true;}));
+    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, button -> {
+    		
+    		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
+    		return true;}));
     	
     	this.mc.keyboardListener.enableRepeatEvents(true);
     }
@@ -142,12 +145,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     public void render(int mouseX, int mouseY, float partialTicks)
     {
     	
-        this.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
         
-        this.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+        GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
         
-        this.drawRect(72, 0, width, 25, 0xffe0e0e0);
-        
+        GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
         this.fontRenderer.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
         
         int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);

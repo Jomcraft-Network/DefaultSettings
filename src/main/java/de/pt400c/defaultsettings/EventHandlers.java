@@ -16,4 +16,8 @@ public class EventHandlers {
 		
 	}
 	
+	public static int getLimitFramerate() {
+		return MC.currentScreen instanceof GuiConfig ? 60 : 30;
+	}
+	
 }

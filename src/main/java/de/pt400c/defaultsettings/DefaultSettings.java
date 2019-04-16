@@ -25,7 +25,7 @@ public class DefaultSettings {
 	public static final String NAME = "DefaultSettings";
 	public static final String VERSION = "@VERSION@";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
-	public static final boolean isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
+	private static boolean isServer = false;
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
 
 	@Instance
@@ -37,6 +37,7 @@ public class DefaultSettings {
 
 	@EventHandler
 	public static void construction(FMLConstructionEvent event) {
+		isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
 		if (isServer)
 			return;
 		try {

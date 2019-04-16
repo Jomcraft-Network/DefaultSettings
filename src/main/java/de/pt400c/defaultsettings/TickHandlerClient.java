@@ -9,19 +9,25 @@ import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.renderer.EntityRenderer;
+
 
 public class TickHandlerClient implements ITickHandler {
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void tickStart(EnumSet type, Object... tickData) {
 		if (type.equals(EnumSet.of(TickType.CLIENT))) 
 			if(isPressed(Keyboard.KEY_F7) && isPressed(Keyboard.KEY_G) && (MC.currentScreen instanceof GuiModList || MC.currentScreen == null))
 				MC.displayGuiScreen(new GuiConfig(Minecraft.getMinecraft().currentScreen));
 	}
-
+	
+	@SuppressWarnings({"rawtypes"})
 	@Override
 	public void tickEnd(EnumSet type, Object... tickData) {}
 
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Override
 	public EnumSet ticks() {
 		return EnumSet.of(TickType.CLIENT);
@@ -35,4 +41,19 @@ public class TickHandlerClient implements ITickHandler {
 	public static boolean isPressed(int key) {
 		return Keyboard.isKeyDown(key);
 	}
+	
+	public static int getLimitFramerate() {
+		int main = getLimitFramerateMain();
+		if(!(main > 0))
+			return 0;
+		if(main == 25)
+			return 60;
+		
+		return EntityRenderer.performanceToFps(main);
+	}
+	
+	private static int getLimitFramerateMain()
+    {
+        return MC.currentScreen != null && MC.currentScreen instanceof GuiMainMenu ? 2 : MC.currentScreen instanceof GuiConfig ? 25 : MC.gameSettings.limitFramerate;
+    }
 }

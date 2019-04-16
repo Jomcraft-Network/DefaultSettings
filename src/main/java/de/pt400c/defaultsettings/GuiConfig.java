@@ -1,29 +1,32 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
+
+import java.awt.Color;
 import java.nio.channels.ClosedByInterruptException;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.gui.GuiButton;
+import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
+import de.pt400c.defaultsettings.gui.ButtonSegment;
+import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
+import de.pt400c.defaultsettings.gui.MenuArea;
+import de.pt400c.defaultsettings.gui.MenuScreen;
+import de.pt400c.defaultsettings.gui.QuitButtonSegment;
+import de.pt400c.defaultsettings.gui.SplitterSegment;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.client.config.GuiUtils;
-import net.minecraftforge.fml.client.config.HoverChecker;
 
-public class GuiConfig extends GuiScreen
-{
+public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
-    public HoverChecker hoverS;
-    public HoverChecker hoverK;
-    public HoverChecker hoverO;
-    public GuiButton buttonS;
-    public GuiButton buttonK;
-    public GuiButton buttonO;
+    private MenuScreen menu;
+    public ButtonSegment buttonS;
+    public ButtonSegment buttonK;
+    public ButtonSegment buttonO;
+    public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
 
@@ -37,13 +40,106 @@ public class GuiConfig extends GuiScreen
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
-        this.buttonList.add(this.buttonO = new GuiButton(0, this.width / 2 - 49, this.height / 2 - 20, 98, 20, "Save options"));
-        this.buttonList.add(this.buttonS = new GuiButton(1, this.width / 2 - 149, this.height / 2 - 20, 98, 20, "Save servers"));
-        this.buttonList.add(this.buttonK = new GuiButton(2, this.width / 2 + 51, this.height / 2 - 20, 98, 20, "Save keys"));
-        this.buttonList.add(new GuiButton(3, this.width / 2 - 49, this.height / 2 + 24, 98, 20, "Quit"));
-        this.hoverS = new HoverChecker(this.buttonS, 0);
-        this.hoverK = new HoverChecker(this.buttonK, 0);
-        this.hoverO = new HoverChecker(this.buttonO, 0);
+        this.clearSegments();
+    	this.menu = new MenuScreen(this, 74, 25);
+
+    	this.addSegment(this.menu.
+        		addVariant(new MenuArea(this, 74, 25).
+        				addChild(this.buttonO = new ButtonSegment(this, this.menu.getWidth() / 2 - 40, this.menu.getHeight() / 2 - 30, "Save options", new Function<ButtonSegment, Boolean>() {
+							@Override
+							public Boolean apply(ButtonSegment button) {
+								GuiConfig.this.cooldowns[0].setProgress(true);
+								tpe.execute(new Runnable() {
+									@Override
+									public void run() {
+										try {
+											saveOptions();
+										} catch (ClosedByInterruptException e) {
+											DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
+										}
+									}
+								});
+							return true;
+            
+     	}
+						}, 80, 25, 3, "Save all default game options")).
+        				
+        				addChild(this.buttonS = new ButtonSegment(this, this.menu.getWidth() / 2 + 57, this.menu.getHeight() / 2 - 30, "Save servers", new Function<ButtonSegment, Boolean>() {
+							@Override
+							public Boolean apply(ButtonSegment button) {
+								GuiConfig.this.cooldowns[1].setProgress(true);
+								tpe.execute(new Runnable() {
+									@Override
+									public void run() {
+										try {
+											saveServers();
+										} catch (ClosedByInterruptException e) {
+											DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
+										}
+									}
+								});
+								return true;
+               
+        	}
+						}, 80, 25, 3, "Save your servers")). 
+        				addChild(this.buttonK = new ButtonSegment(this, this.menu.getWidth() / 2 - 137, this.menu.getHeight() / 2 - 30, "Save keys", new Function<ButtonSegment, Boolean>() {
+							@Override
+							public Boolean apply(ButtonSegment button) {
+								GuiConfig.this.cooldowns[2].setProgress(true);
+								tpe.execute(new Runnable() {
+									@Override
+									public void run() {
+										try {
+											saveKeys();
+										} catch (ClosedByInterruptException e) {
+											DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
+										}
+									}
+								});
+								return true;
+               
+        	}
+						}, 80, 25, 3, "Save keybindings"))
+        				).addVariant(new MenuArea(this, 74, 25).
+        						
+        					addChild(new ButtonSegment(this, 24, 10, "Dummy", new Function<ButtonSegment, Boolean>() {
+								@Override
+								public Boolean apply(ButtonSegment button) {return true;}
+							}
+        			
+        			, 80, 25, 3))).addVariant(new MenuArea(this, 74, 25).
+        			
+        					addChild(new ButtonSegment(this, 83, 56, "Useless", new Function<ButtonSegment, Boolean>() {
+								@Override
+								public Boolean apply(ButtonSegment button) {return true;
+   			
+   			}
+							}, 80, 25, 3))));
+    	
+    	this.addSegment(new ButtonMenuSegment(0, this, 10, 34, "Save", new Function<ButtonSegment, Boolean>() {
+			@Override
+			public Boolean apply(ButtonSegment button) {return true;}
+		}).setActive(true, false));
+
+    	this.addSegment(new ButtonMenuSegment(1, this, 10, 56, "Files", new Function<ButtonSegment, Boolean>() {
+			@Override
+			public Boolean apply(ButtonSegment button) {return true;}
+		}));
+    	
+    	this.addSegment(new ButtonMenuSegment(2, this, 10, 78, "About", new Function<ButtonSegment, Boolean>() {
+			@Override
+			public Boolean apply(ButtonSegment button) {return true;}
+		}));
+    	
+    	this.addSegment(new SplitterSegment(this, 72, 32, this.height - 32 - 10));
+    	
+    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, new Function<ButtonSegment, Boolean>() {
+			@Override
+			public Boolean apply(ButtonSegment button) {
+				
+				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
+				return true;}
+		}));
     }
 
     @Override
@@ -51,51 +147,13 @@ public class GuiConfig extends GuiScreen
     	Keyboard.enableRepeatEvents(false);
     	tpe.shutdownNow();
     }
-
-	@Override
-	protected void actionPerformed(GuiButton button) {
-		if (button.id == 2) {
-			this.cooldowns[2].setProgress(true);
-			tpe.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						saveKeys();
-					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
-					}
-				}
-			});
-
-		} else if (button.id == 0) {
-			this.cooldowns[0].setProgress(true);
-			tpe.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						saveOptions();
-					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
-					}
-				}
-			});
-
-		} else if (button.id == 1) {
-			this.cooldowns[1].setProgress(true);
-			tpe.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						saveServers();
-					} catch (ClosedByInterruptException e) {
-						DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
-					}
-				}
-			});
-		} else if (button.id == 3) {
-			MC.displayGuiScreen(this.parentScreen);
-		}
-	}
+    
+    public void changeSelected(ButtonMenuSegment segment) {
+    	if(this.selectedSegment != null && this.selectedSegment != segment)
+    		this.selectedSegment.setActive(false, true);
+    	this.selectedSegment = segment;
+    	this.menu.setIndex(segment.id);
+    }
 
     @Override
     public void updateScreen()
@@ -111,30 +169,30 @@ public class GuiConfig extends GuiScreen
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-    	
-        this.drawDefaultBackground();
-        this.drawGradientRect(10, 10, this.width - 10, this.height - 10, -1072689136, -804253680);
-        this.drawCenteredString(this.fontRendererObj, "- DefaultSettings -", this.width / 2, 20, 16777215);
-        this.drawCenteredString(this.fontRendererObj, "Control GUI", this.width / 2, 30, 16777215);
+    {	
+    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
         
-        buttonS.displayString = (cooldowns[1].getProgress() ? TextFormatting.GOLD : cooldowns[1].renderCooldown < 0 ? TextFormatting.RED : cooldowns[1].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save servers";
-        buttonK.displayString = (cooldowns[2].getProgress() ? TextFormatting.GOLD : cooldowns[2].renderCooldown < 0 ? TextFormatting.RED : cooldowns[2].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save keys";
-        buttonO.displayString = (cooldowns[0].getProgress() ? TextFormatting.GOLD : cooldowns[0].renderCooldown < 0 ? TextFormatting.RED : cooldowns[0].renderCooldown > 0 ? TextFormatting.GREEN : "") + "Save options";
+    	GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
         
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        GuiConfig.drawRect(72, 0, this.width, 25, 0xffe0e0e0);
+        
+        this.fontRendererObj.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRendererObj.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+        
+        int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRendererObj.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+        
+        this.fontRendererObj.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+        
+        this.fontRendererObj.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-        if (this.hoverS.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save your servers", 300), mouseX, mouseY);
-        if (this.hoverK.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save keybindings", 300), mouseX, mouseY);
-        if (this.hoverO.checkHover(mouseX, mouseY))
-            this.drawToolTip(MC.fontRendererObj.listFormattedStringToWidth("Save all default game options", 300), mouseX, mouseY);
+        buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+        buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+        buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
     
-    public void drawToolTip(List stringList, int x, int y)
+    public static int clamp(int num, int min, int max)
     {
-    	GuiUtils.drawHoveringText(stringList, x, y, width, height, 300, fontRendererObj);
+        return num < min ? min : (num > max ? max : num);
     }
     
     public void saveServers() throws ClosedByInterruptException {

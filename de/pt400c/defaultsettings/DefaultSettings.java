@@ -24,13 +24,13 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.1", dependencies = "before:*")
+@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.2", dependencies = "before:*")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
     public static final Logger log = LogManager.getLogManager().getLogger(DefaultSettings.MODID);
-    public static final boolean isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
+    public static boolean isServer = false;
     public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
     public static boolean setUp = false;
     
@@ -39,6 +39,7 @@ public class DefaultSettings {
     
     public DefaultSettings() {
     	instance = this;
+    	isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
     	if(isServer || setUp)
     		return;
         try {

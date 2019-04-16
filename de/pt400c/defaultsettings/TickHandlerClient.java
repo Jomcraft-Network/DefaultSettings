@@ -9,6 +9,8 @@ import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.renderer.EntityRenderer;
 
 public class TickHandlerClient implements ITickHandler {
 	
@@ -35,4 +37,19 @@ public class TickHandlerClient implements ITickHandler {
 	public static boolean isPressed(int key) {
 		return Keyboard.isKeyDown(key);
 	}
+	
+	public static int getLimitFramerate() {
+		int main = getLimitFramerateMain();
+		if(!(main > 0))
+			return 0;
+		if(main == 25)
+			return 60;
+		
+		return EntityRenderer.performanceToFps(main);
+	}
+	
+	private static int getLimitFramerateMain()
+    {
+        return MC.currentScreen != null && MC.currentScreen instanceof GuiMainMenu ? 2 : MC.currentScreen instanceof GuiConfig ? 25 : MC.gameSettings.limitFramerate;
+    }
 }

@@ -90,3 +90,19 @@ artifacts {
 	archives sourcesJar
 	archives deobfJar
 }
+
+task zipVerification {
+    doLast {
+        ant.zip(destfile: "$buildDir/libs/verification.zip") {
+            fileset(dir: "$buildDir/libs/") {
+                include(name: '*.asc')
+            }
+            fileset(dir: "") {
+                include(name: 'pubkey.gpg')
+            }
+        }
+        project.logger.lifecycle("Created verification ZIP")
+    }
+}
+
+build.dependsOn zipVerification

@@ -18,9 +18,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'signing'
 
-version = "1.8.9-1.1"
+version = "1.8.9-1.2"
 
-def fileVersion = "1.1"
+def fileVersion = "1.2"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 archivesBaseName = "DefaultSettings"
@@ -38,6 +38,8 @@ minecraft {
 jar {
     manifest {
         attributes("FMLAT": "defaultsettings_at.cfg")
+        attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
+        attributes 'FMLCorePluginContainsFMLMod': 'false'
     }
 }
 

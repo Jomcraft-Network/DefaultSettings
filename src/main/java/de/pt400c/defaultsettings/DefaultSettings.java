@@ -18,6 +18,7 @@ public class DefaultSettings {
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
+	private static final UpdateContainer updateContainer = new UpdateContainer();
 	
 	public static DefaultSettings instance;
 	
@@ -60,6 +61,10 @@ public class DefaultSettings {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 		}
 
+	}
+	
+	public static UpdateContainer getUpdater() {
+		return updateContainer;
 	}
 	
 	public static DefaultSettings getInstance() {

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
+import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.MenuScreen;
@@ -40,6 +41,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     {
     	
     	this.clearSegments();
+    	
+    	this.addSegment(new ButtonUpdateChecker(this, 72 / 2 - 20 / 2, this.height - 30));
+    	
     	this.menu = new MenuScreen(this, 74, 25);
 
     	this.addSegment(this.menu.

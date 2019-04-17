@@ -46,8 +46,6 @@ public class UpdateContainer {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
-				//System.out.println();
-				
 				ModContainer mc = FMLCommonHandler.instance().findContainerFor(DefaultSettings.getInstance());
 				ForgeVersion.Status status = ForgeVersion.Status.PENDING;
 				ComparableVersion target = null;

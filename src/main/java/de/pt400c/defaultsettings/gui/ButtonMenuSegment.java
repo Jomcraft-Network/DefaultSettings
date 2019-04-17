@@ -3,7 +3,6 @@ package de.pt400c.defaultsettings.gui;
 import java.util.function.Function;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import de.pt400c.defaultsettings.GuiConfig;
 
 public class ButtonMenuSegment extends ButtonSegment {

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
+import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.MenuScreen;
@@ -41,6 +42,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     {
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
+        
+    	this.addSegment(new ButtonUpdateChecker(this, 72 / 2 - 20 / 2, this.height - 30));
+    	
     	this.menu = new MenuScreen(this, 74, 25);
 
     	this.addSegment(this.menu.
@@ -113,6 +117,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     		
     		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
     		return true;}));
+    	
     }
 
     @Override
@@ -144,11 +149,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
     	
-    	this.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
         
-        this.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+    	GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
         
-        this.drawRect(72, 0, width, 25, 0xffe0e0e0);
+    	GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
         
         this.fontRenderer.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
         

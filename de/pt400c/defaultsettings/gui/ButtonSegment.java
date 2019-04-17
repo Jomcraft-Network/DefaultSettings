@@ -9,9 +9,9 @@ import net.minecraft.client.gui.GuiScreen;
 public class ButtonSegment extends Segment {
 	
 	protected final Function<ButtonSegment, Boolean> function;
-	private static final int RED_MASK = 255 << 16;
-	private static final int GREEN_MASK = 255 << 8;
-	private static final int BLUE_MASK = 255;
+	protected static final int RED_MASK = 255 << 16;
+	protected static final int GREEN_MASK = 255 << 8;
+	protected static final int BLUE_MASK = 255;
 	private static final float BRIGHT_SCALE = 0.85f;
 	public String title;
 	public String hoverMessage = null;
@@ -70,7 +70,7 @@ public class ButtonSegment extends Segment {
 		}
 	}
 	
-	private static Color darkenColor(int color) {
+	protected static Color darkenColor(int color) {
 		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE),
 		(int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
 	}

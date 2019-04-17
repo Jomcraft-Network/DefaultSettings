@@ -28,6 +28,9 @@ public class DefaultSettingsGUI extends GuiScreen {
         synchronized (this.segments) {
             for(Segment segment : this.segments)
             	segment.render(mouseX, mouseY, partialTicks);
+
+            for(Segment segment : this.segments)
+            	segment.hoverCheck(mouseX, mouseY);
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
 	}

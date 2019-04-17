@@ -24,7 +24,7 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.2", dependencies = "before:*")
+@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.2.1", dependencies = "before:*")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class DefaultSettings {
 
@@ -33,6 +33,7 @@ public class DefaultSettings {
     public static boolean isServer = false;
     public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
     public static boolean setUp = false;
+    private static final UpdateContainer updateContainer = new UpdateContainer();
     
     @Instance
     public static DefaultSettings instance;
@@ -81,6 +82,10 @@ public class DefaultSettings {
 		} catch (NullPointerException e) {
 			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game (Post):", e);
 		}
+	}
+    
+    public static UpdateContainer getUpdater() {
+		return updateContainer;
 	}
     
     public static DefaultSettings getInstance() {

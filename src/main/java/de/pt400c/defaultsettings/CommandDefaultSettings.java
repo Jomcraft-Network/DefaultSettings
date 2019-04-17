@@ -17,7 +17,9 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class CommandDefaultSettings extends CommandBase {
 
-	public static final ArrayList<String> arg = new ArrayList<String>() {{	add("save");	}};
+	public static final ArrayList<String> arg = new ArrayList<String>() {
+		private static final long serialVersionUID = 9131616853614902481L;
+	{	add("save");	}};
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
     @Override
@@ -27,7 +29,9 @@ public class CommandDefaultSettings extends CommandBase {
     
     @Override
     public List<String> getCommandAliases() {
-    	return new ArrayList<String>() {{	add("ds");	}};
+    	return new ArrayList<String>() {
+			private static final long serialVersionUID = -6975657557521097820L;
+		{	add("ds");	}};
     }
 
     @Override

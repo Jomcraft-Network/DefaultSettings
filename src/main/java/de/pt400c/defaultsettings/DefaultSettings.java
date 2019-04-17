@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@", clientSideOnly = true)
+@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@", clientSideOnly = true, updateJSON = "https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/976f2796b2f145c75cba258fe40259b5ca5555ac/ds-updates.json")
 public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
@@ -25,6 +25,7 @@ public class DefaultSettings {
 	public static final String VERSION = "@VERSION@";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
+	private static final UpdateContainer updateContainer = new UpdateContainer();
 
 	@Instance
 	public static DefaultSettings instance;
@@ -67,6 +68,10 @@ public class DefaultSettings {
 		} catch (NullPointerException e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 		}
+	}
+	
+	public static UpdateContainer getUpdater() {
+		return updateContainer;
 	}
 	
 	public static DefaultSettings getInstance() {

@@ -29,6 +29,7 @@ public class DefaultSettings {
 	public static final Logger log = LogManager.getLogManager().getLogger(DefaultSettings.MODID);
 	public static boolean isServer = false;
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
+	private static final UpdateContainer updateContainer = new UpdateContainer();
 
 	@Instance
 	public static DefaultSettings instance;
@@ -85,6 +86,10 @@ public class DefaultSettings {
 		} catch (NullPointerException e) {
 			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game (Post):", e);
 		}
+	}
+	
+	public static UpdateContainer getUpdater() {
+		return updateContainer;
 	}
 	
 	public static DefaultSettings getInstance() {

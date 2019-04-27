@@ -1,3 +1,5 @@
+//DefaultSettings Via-Version Edition 1.0
+
 buildscript {
     repositories {
         jcenter()
@@ -18,9 +20,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'signing'
 
-version = "1.12.2-1.2.1"
+version = "1.8.x-1.12.x-1.2.3"
 
-def fileVersion = "1.2.1"
+def fileVersion = "1.2.3"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 archivesBaseName = "DefaultSettings"
@@ -36,6 +38,8 @@ minecraft {
 }
 
 jar {
+	exclude('net/**')   
+
     manifest {
         attributes("FMLAT": "defaultsettings_at.cfg")
 		attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
@@ -81,11 +85,17 @@ task signJar {
 build.dependsOn signJar
 
 task sourcesJar(type: Jar, dependsOn: classes) {
+
+	exclude('net/**') 
+
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
+	
+	exclude('net/**') 
+
 	from sourceSets.main.output
 	classifier = 'deobf'
 }

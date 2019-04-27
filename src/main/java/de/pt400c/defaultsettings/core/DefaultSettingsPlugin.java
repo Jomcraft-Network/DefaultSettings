@@ -5,7 +5,6 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.DependsOn;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 
-@IFMLLoadingPlugin.MCVersion("1.12.2")
 @DependsOn("forge")
 @SortingIndex(1001)
 @IFMLLoadingPlugin.TransformerExclusions({ "de.pt400c.defaultsettings.core" })

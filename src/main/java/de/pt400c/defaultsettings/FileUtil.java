@@ -7,17 +7,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FileUtil {
 	
 	public static final Minecraft MC = Minecraft.getMinecraft();
 	public static final File mcDataDir = MC.mcDataDir;
+	public static final boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"); 
 	
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
@@ -41,6 +44,17 @@ public class FileUtil {
 		if (!serversFile.exists()) 
 			restoreServers();
 		
+	}
+	
+	public static boolean optionsFilesExist() {
+		final File optionsFile = new File(getMainFolder(), "options.txt");
+		final File optionsofFile = new File(getMainFolder(), "optionsof.txt");
+		return optionsFile.exists() || optionsofFile.exists();
+	}
+	
+	public static boolean keysFileExist() {
+		final File keysFile = new File(getMainFolder(), "keys.txt");
+		return keysFile.exists();
 	}
 	
 	public static void restoreOptions() throws NullPointerException, IOException {
@@ -71,7 +85,11 @@ public class FileUtil {
 	}
 	
 	public static void restoreKeys() throws NullPointerException, IOException, NumberFormatException {
-		DefaultSettings.keyRebinds.clear();
+		if(DefaultSettings.mcVersion.startsWith("1.8"))
+			DefaultSettings.keyRebinds_18.clear();
+		else
+			DefaultSettings.keyRebinds_19.clear();
+		
 		final File keysFile = new File(getMainFolder(), "keys.txt");
 		if (keysFile.exists()) {
 			BufferedReader reader = null;
@@ -82,7 +100,10 @@ public class FileUtil {
 					if (line.isEmpty()) {
 						continue;
 					}
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(Integer.parseInt(line.split(":")[1]), KeyModifier.valueFromString(line.split(":")[2])));
+					if(DefaultSettings.mcVersion.startsWith("1.8"))
+						DefaultSettings.keyRebinds_18.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
+					else
+						DefaultSettings.keyRebinds_19.put(line.split(":")[0], new KeyContainer(Integer.parseInt(line.split(":")[1]), KeyModifier.valueFromString(line.split(":")[2])));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -100,11 +121,18 @@ public class FileUtil {
 			}
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
-				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
-					KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
-					ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
-					keyBinding.keyCodeDefault = container.input;
-					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), keyBinding.keyCodeDefault);
+				if(DefaultSettings.mcVersion.startsWith("1.8")) {
+					if (DefaultSettings.keyRebinds_18.containsKey(keyBinding.getKeyDescription())) {
+						keyBinding.keyCodeDefault = DefaultSettings.keyRebinds_18.get(keyBinding.getKeyDescription());
+					}
+				}else {
+					
+					if (DefaultSettings.keyRebinds_19.containsKey(keyBinding.getKeyDescription())) {
+						KeyContainer container = DefaultSettings.keyRebinds_19.get(keyBinding.getKeyDescription());
+						setField("keyModifierDefault", KeyBinding.class, keyBinding, container.modifier);
+						keyBinding.keyCodeDefault = container.input;
+						keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), keyBinding.keyCodeDefault);
+					}
 				}
 			}
 			
@@ -172,7 +200,10 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
-				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + ":" + keyBinding.getKeyModifier().name() + "\n");
+				if(DefaultSettings.mcVersion.startsWith("1.8"))
+					writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
+				else
+					writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + ":" + keyBinding.getKeyModifier().name() + "\n");
 			}
 		} catch (IOException e) {
 			throw e;
@@ -249,4 +280,27 @@ public class FileUtil {
 			}
 		}
 	}
+	
+	public static boolean serversFileExists() {
+		final File serversFile = new File(getMainFolder(), "servers.dat");
+		return serversFile.exists();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private static void setField(String name, Class clazz, Object obj, Object value) {
+		try {
+			Field field = clazz.getDeclaredField(name);
+			field.setAccessible(true);
+			field.set(obj, value);
+		} catch (IllegalAccessException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		} catch (IllegalArgumentException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		} catch (NoSuchFieldException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		} catch (SecurityException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		}
+	}
+
 }

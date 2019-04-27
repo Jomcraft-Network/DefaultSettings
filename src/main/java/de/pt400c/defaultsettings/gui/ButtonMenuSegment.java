@@ -80,7 +80,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 	@Override
 	public boolean isSelected(double mouseX, double mouseY) {
-		return mouseX >= (this.getPosX() + this.offsetX) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
+		return ((GuiConfig) this.gui).popupField == null && mouseX >= (this.getPosX() + this.offsetX) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
 	}
 	
 	protected int getRenderColor(byte state) {

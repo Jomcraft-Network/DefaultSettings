@@ -16,15 +16,18 @@ import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 
-@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@", clientSideOnly = true, updateJSON = "https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/976f2796b2f145c75cba258fe40259b5ca5555ac/ds-updates.json")
+@Mod(modid = DefaultSettings.MODID, acceptedMinecraftVersions = "[1.8,1.12.2]", name = DefaultSettings.NAME, version = DefaultSettings.VERSION, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@", clientSideOnly = true, updateJSON = "https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/976f2796b2f145c75cba258fe40259b5ca5555ac/ds-updates.json")
 public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
 	public static final String NAME = "DefaultSettings";
 	public static final String VERSION = "@VERSION@";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
-	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
+	public static Map<String, Integer> keyRebinds_18 = new HashMap<String, Integer>();
+	public static String mcVersion = FMLInjectionData.data()[4].toString();
+	public static Map<String, KeyContainer> keyRebinds_19 = new HashMap<String, KeyContainer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 
 	@Instance
@@ -52,11 +55,21 @@ public class DefaultSettings {
 		FMLCommonHandler.instance().exitJava(0, true);
     }
 
+	@SuppressWarnings("deprecation")
+	//This is necessary for the MC 1.8.0 edition
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
-		ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings());
+		
+		if(DefaultSettings.mcVersion.startsWith("1.8")) {
+			ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_18());
+		}else {
+			ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_19());
+		}
+		
 		MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
-		MinecraftForge.EVENT_BUS.register(new EventHandlers());
+		EventHandlers handlers = new EventHandlers();
+		FMLCommonHandler.instance().bus().register(handlers);
+		MinecraftForge.EVENT_BUS.register(handlers);
 	}
 	
 	@EventHandler

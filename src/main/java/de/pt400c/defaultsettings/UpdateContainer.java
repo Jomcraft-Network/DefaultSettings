@@ -17,7 +17,6 @@ import java.util.concurrent.Executors;
 import org.apache.logging.log4j.Level;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.versioning.ComparableVersion;
@@ -63,8 +62,8 @@ public class UpdateContainer {
 					Map<String, String> promos = (Map<String, String>) json.get("promos");
 					//String display_url = (String) json.get("homepage");
 
-					String rec = promos.get(MinecraftForge.MC_VERSION + "-recommended");
-					String lat = promos.get(MinecraftForge.MC_VERSION + "-latest");
+					String rec = promos.get(DefaultSettings.mcVersion + "-recommended");
+					String lat = promos.get(DefaultSettings.mcVersion + "-latest");
 					ComparableVersion current = new ComparableVersion(mc.getVersion());
 
 					if (rec != null) {

@@ -57,11 +57,17 @@ public class CommandDefaultSettings_18 extends CommandBase {
 	}
     
     public void func_71515_b(final ICommandSender sender, String[] args) throws WrongUsageException {
-    	if (args.length == 0 || args.length > 1 || !arg.contains(args[0].toLowerCase()))
+    	if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase()))
 			throw new WrongUsageException(getUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
 			sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
+			return;
+		}
+		
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+			sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
+			sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
 			return;
 		}
 

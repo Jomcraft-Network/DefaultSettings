@@ -10,6 +10,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -41,11 +42,17 @@ public class CommandDefaultSettings_19 extends CommandBase {
     }
 
     public void execute(MinecraftServer server, final ICommandSender sender, String[] args) throws WrongUsageException {
-    	if (args.length == 0 || args.length > 1 || !arg.contains(args[0].toLowerCase()))
+    	if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase()))
 			throw new WrongUsageException(getUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
 			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has been processed!"));
+			return;
+		}
+		
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+			sender.sendMessage(new TextComponentString(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
+			sender.sendMessage(new TextComponentString(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
 			return;
 		}
 

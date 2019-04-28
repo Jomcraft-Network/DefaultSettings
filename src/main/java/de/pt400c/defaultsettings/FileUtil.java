@@ -9,13 +9,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.world.World;
 import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFieldException;
 
 public class FileUtil {
 	
@@ -50,6 +49,21 @@ public class FileUtil {
 		if (!serversFile.exists()) 
 			restoreServers();
 		
+	}
+	
+	public static boolean optionsFilesExist() {
+		final File optionsFile = new File(getMainFolder(), "options.txt");
+		return optionsFile.exists();
+	}
+	
+	public static boolean keysFileExist() {
+		final File keysFile = new File(getMainFolder(), "keys.txt");
+		return keysFile.exists();
+	}
+	
+	public static boolean serversFileExists() {
+		final File serversFile = new File(getMainFolder(), "servers.dat");
+		return serversFile.exists();
 	}
 	
 	public static void restoreOptions() throws NullPointerException, IOException {
@@ -111,12 +125,8 @@ public class FileUtil {
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
 					KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
-					ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
-					try {
-						setPrivateValue(KeyBinding.class, keyBinding, container.input, devEnv ? "keyCodeDefault" : "field_151472_e");
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					}
+					setField("keyModifierDefault", KeyBinding.class, keyBinding, container.modifier);
+					setField(devEnv ? "keyCodeDefault" : "field_151472_e", KeyBinding.class, keyBinding, container.input);
 					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), container.input);
 				}
 			}
@@ -271,35 +281,20 @@ public class FileUtil {
 		}
 	}
 	
-	public static <T, E> void setPrivateValue(Class<? super T> classToAccess, T instance, E value, String fieldName) throws IllegalAccessException
-    {
-        try
-        {
-            findField(classToAccess, fieldName).set(instance, value);
-        }
-        catch (UnableToFindFieldException e)
-        {
-            DefaultSettings.log.error("Unable to locate any field {} on type {}", classToAccess.getName(), e);
-            throw e;
-        }
-        catch (IllegalAccessException e)
-        {
-        	DefaultSettings.log.error("Unable to set any field {} on type {}", classToAccess.getName(), e);
-            throw new IllegalAccessException();
-        }
-    }
-	
-	private static Field findField(Class<?> clazz, String name) throws IllegalAccessException
-    {
-        try
-        {
-            Field f = clazz.getDeclaredField(name);
-            f.setAccessible(true);
-            return f;
-        }
-        catch (Exception e)
-        {
-            throw new IllegalAccessException();
-        }
-    }
+	@SuppressWarnings("rawtypes")
+	private static void setField(String name, Class clazz, Object obj, Object value) {
+		try {
+			Field field = clazz.getDeclaredField(name);
+			field.setAccessible(true);
+			field.set(obj, value);
+		} catch (IllegalAccessException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		} catch (IllegalArgumentException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		} catch (NoSuchFieldException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		} catch (SecurityException e) {
+			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		}
+	}
 }

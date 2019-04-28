@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.Collections;
 import java.util.function.Function;
+
+import org.lwjgl.opengl.GL11;
+
+import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.OpenGlHelper;
 
 public class ButtonSegment extends Segment {
 	
@@ -20,23 +25,61 @@ public class ButtonSegment extends Segment {
 	protected final int border;
 	public int color = 0xffa4a4a4;
 
-	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage) {
-		super(gui, posX, posY, width, height);
+	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, boolean popupSegment) {
+		super(gui, posX, posY, width, height, popupSegment);
 		this.title = title;
 		this.function = function;
 		this.border = border;
 		this.hoverMessage = hoverMessage;
 	}
 	
+	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage) {
+		this(gui, posX, posY, title, function, width, height, border, hoverMessage, false);
+	}
+	
 	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border) {
 		this(gui, posX, posY, title, function, width, height, border, null);
+	}
+	
+	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, boolean popupSegment) {
+		this(gui, posX, posY, title, function, width, height, border, null, popupSegment);
 	}
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, 0xffdcdcdc, this.border);
-		MC.fontRenderer.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a);
+		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
+		
+		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha((this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color), alpha).getRGB(), calcAlpha(0xffdcdcdc, alpha).getRGB(), this.border);
+		
+		GL11.glPushMatrix();
+     	GL11.glEnable(GL11.GL_BLEND);
+     	OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+		MC.fontRenderer.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, alpha).getRGB());
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopMatrix();
+
 	}
+	
+	public static Color calcAlpha(int color, float alpha) {
+		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
+	}
+	
+	public static int getRed(int value) {
+        return (value >> 16) & 0xFF;
+    }
+	
+	public static int getGreen(int value) {
+        return (value >> 8) & 0xFF;
+    }
+	
+	public static int getBlue(int value) {
+        return value & 0xFF;
+    }
+	
+	public static int getAlpha(int value) {
+        return (value >> 24) & 0xff;
+    }
+
 	
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {

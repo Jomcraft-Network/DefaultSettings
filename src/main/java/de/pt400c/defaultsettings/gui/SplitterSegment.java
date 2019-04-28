@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiScreen;
 public class SplitterSegment extends Segment {
 
 	public SplitterSegment(GuiScreen gui, float posX, float posY, int height) {
-		super(gui, posX, posY, 2, height);
+		super(gui, posX, posY, 2, height, false);
 	}
 
 	@Override

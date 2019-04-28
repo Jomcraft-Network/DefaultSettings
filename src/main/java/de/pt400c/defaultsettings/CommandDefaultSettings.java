@@ -4,6 +4,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -20,18 +21,26 @@ public class CommandDefaultSettings {
 
 	protected static void register(FMLServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSource> literalargumentbuilder = Commands.literal("defaultsettings");
-
-		literalargumentbuilder.then(Commands.literal("save").executes((p_198483_1_) -> {
-			return saveProcess(p_198483_1_.getSource());
-		}));
+		
+		literalargumentbuilder.then(Commands.literal("save").executes((command) -> {
+	         return saveProcess(command.getSource(), null);
+	      }).then(Commands.argument("argument", StringArgumentType.string()).executes((command) -> {
+	         return saveProcess(command.getSource(), StringArgumentType.getString(command, "argument"));
+	      })));
 
 		event.getCommandDispatcher().register(literalargumentbuilder);
 	}
 	
-	private static int saveProcess(CommandSource source) throws CommandSyntaxException {
+	private static int saveProcess(CommandSource source, String argument) throws CommandSyntaxException {
 
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
+		
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || !argument.equals("-o"))) {
+			source.sendFeedback(new TextComponentString(TextFormatting.RED + "The intended files already exist! If you want to"), true);
+			source.sendFeedback(new TextComponentString(TextFormatting.RED + "overwrite them, add the '-o' argument"), true);
+			return 0;
+		}
 
 		MutableBoolean issue = new MutableBoolean(false);
 

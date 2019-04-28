@@ -19,10 +19,10 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.13.2-1.2.1"
+version = "1.13.2-1.2.3"
 
 
-def fileVersion = "1.2.1"
+def fileVersion = "1.2.3"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 archivesBaseName = "DefaultSettings"

@@ -10,7 +10,7 @@ logoFile="logo.png"
 	authors="PT400C - Jomcraft Network"
 	credits="Developed by Jomcraft Network"
 	displayURL="https://minecraft.curseforge.com/projects/defaultsettings"
-	updateJSONURL="https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/976f2796b2f145c75cba258fe40259b5ca5555ac/ds-updates.json"
+	updateJSONURL="https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/"
 
 [[dependencies.defaultsettings]]
     modId="forge"

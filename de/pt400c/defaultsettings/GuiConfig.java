@@ -19,8 +19,11 @@ import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Function;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.MenuScreen;
+import de.pt400c.defaultsettings.gui.PopupSegment;
+import de.pt400c.defaultsettings.gui.PopupWindow;
 import de.pt400c.defaultsettings.gui.QuitButtonSegment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
+import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -29,6 +32,7 @@ import net.minecraft.client.renderer.RenderHelper;
 public class GuiConfig extends DefaultSettingsGUI {
 	private final GuiScreen parentScreen;
 	private MenuScreen menu;
+	public PopupSegment popup;
     public ButtonSegment buttonS;
     public ButtonSegment buttonK;
     public ButtonSegment buttonO;
@@ -40,6 +44,14 @@ public class GuiConfig extends DefaultSettingsGUI {
     {
         this.mc = MC;
         this.parentScreen = parentScreen;
+    }
+    
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) {
+    	if(keyCode == 1 && this.popupField != null)
+    		this.popupField.setOpening(false);
+    	else
+    		super.keyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -57,16 +69,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 						this.menu.getHeight() / 2 - 30, "Save options", new Function<ButtonSegment, Boolean>() {
 							@Override
 							public Boolean apply(ButtonSegment button) {
-								GuiConfig.this.cooldowns[0].setProgress(true);
 								tpe.execute(new Runnable() {
 									@Override
 									public void run() {
-										try {
-											saveOptions();
-										} catch (ClosedByInterruptException e) {
-											DefaultSettings.log.log(Level.FINEST,
-													"An exception occurred while saving the default game options: Interruption exception");
-										}
+										saveOptions();
 									}
 								});
 								return true;
@@ -77,16 +83,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 						this.menu.getHeight() / 2 - 30, "Save servers", new Function<ButtonSegment, Boolean>() {
 							@Override
 							public Boolean apply(ButtonSegment button) {
-								GuiConfig.this.cooldowns[1].setProgress(true);
 								tpe.execute(new Runnable() {
 									@Override
 									public void run() {
-										try {
-											saveServers();
-										} catch (ClosedByInterruptException e) {
-											DefaultSettings.log.log(Level.FINEST,
-													"An exception occurred while saving the server list: Interruption exception");
-										}
+										saveServers();
 									}
 								});
 								return true;
@@ -97,16 +97,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 						this.menu.getHeight() / 2 - 30, "Save keys", new Function<ButtonSegment, Boolean>() {
 							@Override
 							public Boolean apply(ButtonSegment button) {
-								GuiConfig.this.cooldowns[2].setProgress(true);
 								tpe.execute(new Runnable() {
 									@Override
 									public void run() {
-										try {
-											saveKeys();
-										} catch (ClosedByInterruptException e) {
-											DefaultSettings.log.log(Level.FINEST,
-													"An exception occurred while saving the key configuration: Interruption exception");
-										}
+										saveKeys();
 									}
 								});
 								return true;
@@ -156,13 +150,25 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 		this.addSegment(new SplitterSegment(this, 72, 32, this.height - 32 - 10));
 
-		this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, new Function<ButtonSegment, Boolean>() {
+		this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment button) {
 				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
 				return true;
 			}
-		}));
+		}, false));
+		
+		this.addSegment(this.popup = new PopupSegment(this, 0, 0, this.width, this.height).setWindow(new PopupWindow(this, this.width / 2 - 210 / 2, this.height / 2 - 100 / 2, 210, 100, "").addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
+			@Override
+			public Boolean apply(ButtonSegment button) {
+				
+				GuiConfig.this.popupField.setOpening(false);
+				
+				return true;}
+		}, true))));
+    	
+    	this.popupField = null;
+
     }
 
     @Override
@@ -190,44 +196,193 @@ public class GuiConfig extends DefaultSettingsGUI {
         }
     }
     
-    public void saveServers() throws ClosedByInterruptException {
-    	try {
-			FileUtil.saveServers();
-			this.cooldowns[1].renderCooldown = 30;
-		} catch (ClosedByInterruptException e){
-			throw e;
-		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
-			this.cooldowns[1].renderCooldown = -30;
+    public void saveServers() {
+		if (FileUtil.serversFileExists()) {
+			this.popup.setOpening(true);
+			this.popup.getWindow().title = "Save Servers";
+			this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
+			this.popupField = this.popup;
+			this.popupField.getWindow().clearChildren();
+			this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "The server list already exists\n\nWould you like to overwrite it?", 0, true));
+			this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+
+					GuiConfig.this.popupField.setOpening(false);
+
+					return true;
+				}
+			}, true));
+
+			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 30, 75, "Overwrite", new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+					GuiConfig.this.cooldowns[1].setProgress(true);
+
+					GuiConfig.this.popupField.setOpening(false);
+							tpe.execute(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										FileUtil.saveServers();
+										GuiConfig.this.cooldowns[1].renderCooldown = 30;
+									} catch (ClosedByInterruptException e) {
+										DefaultSettings.log.log(Level.WARNING, "An exception occurred while saving the server list: Interruption exception");
+									} catch (Exception e) {
+										DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
+										GuiConfig.this.cooldowns[1].renderCooldown = -30;
+									}
+									GuiConfig.this.cooldowns[1].setProgress(false);
+								}
+							});
+
+					return true;
+				}
+			}, 60, 20, 2, null, true));
+
+			this.popup.isVisible = true;
+		} else {
+
+			GuiConfig.this.cooldowns[1].setProgress(true);
+
+			try {
+				FileUtil.saveServers();
+				this.cooldowns[1].renderCooldown = 30;
+			} catch (ClosedByInterruptException e) {
+				DefaultSettings.log.log(Level.WARNING, "An exception occurred while saving the server list: Interruption exception");
+			} catch (Exception e) {
+				DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
+				this.cooldowns[1].renderCooldown = -30;
+			}
+			this.cooldowns[1].setProgress(false);
+
 		}
-    	this.cooldowns[1].setProgress(false);
     }
     
-    public void saveOptions() throws ClosedByInterruptException {
-    	try {
-			FileUtil.saveOptions();
-			this.cooldowns[0].renderCooldown = 30;
-		} catch (ClosedByInterruptException e){
-			throw e;
-		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
-			this.cooldowns[0].renderCooldown = -30;
+    public void saveOptions() {
+		if (FileUtil.optionsFilesExist()) {
+			this.popup.setOpening(true);
+			this.popup.getWindow().title = "Save Options";
+			this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
+			this.popupField = this.popup;
+			this.popupField.getWindow().clearChildren();
+			this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "The default options already exist\n\nWould you like to overwrite them?", 0, true));
+			this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+
+					GuiConfig.this.popupField.setOpening(false);
+
+					return true;
+				}
+			}, true));
+
+			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 30, 75, "Overwrite", new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+					GuiConfig.this.cooldowns[0].setProgress(true);
+
+					GuiConfig.this.popupField.setOpening(false);
+
+							tpe.execute(new Runnable() {
+								@Override
+								public void run() {
+
+									try {
+										FileUtil.saveOptions();
+										GuiConfig.this.cooldowns[0].renderCooldown = 30;
+									} catch (ClosedByInterruptException e) {
+										DefaultSettings.log.log(Level.WARNING, "An exception occurred while saving the default game options: Interruption exception");
+									} catch (Exception e) {
+										DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
+										GuiConfig.this.cooldowns[0].renderCooldown = -30;
+									}
+									GuiConfig.this.cooldowns[0].setProgress(false);
+								}
+							});
+					return true;
+				}
+			}, 60, 20, 2, null, true));
+
+			this.popup.isVisible = true;
+		} else {
+			GuiConfig.this.cooldowns[0].setProgress(true);
+
+			try {
+				FileUtil.saveOptions();
+				this.cooldowns[0].renderCooldown = 30;
+			} catch (ClosedByInterruptException e) {
+				DefaultSettings.log.log(Level.WARNING, "An exception occurred while saving the default game options: Interruption exception");
+			} catch (Exception e) {
+				DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
+				this.cooldowns[0].renderCooldown = -30;
+			}
+			this.cooldowns[0].setProgress(false);
 		}
-    	this.cooldowns[0].setProgress(false);
     }
     
-    public void saveKeys() throws ClosedByInterruptException {
-    	try {
-			FileUtil.saveKeys();
-			this.cooldowns[2].renderCooldown = 30;
-			FileUtil.restoreKeys();
-		} catch (ClosedByInterruptException e){
-			throw e;
-		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
-			this.cooldowns[2].renderCooldown = -30;
+    public void saveKeys() {
+		if (FileUtil.keysFileExist()) {
+			this.popup.setOpening(true);
+			this.popup.getWindow().title = "Save Keybindings";
+			this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
+			this.popupField = this.popup;
+			this.popupField.getWindow().clearChildren();
+			this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "The default keybindings already exist\n\nWould you like to overwrite them?", 0, true));
+			this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+
+					GuiConfig.this.popupField.setOpening(false);
+
+					return true;
+				}
+			}, true));
+
+			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 30, 75, "Overwrite", new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+					GuiConfig.this.cooldowns[2].setProgress(true);
+
+					GuiConfig.this.popupField.setOpening(false);
+							tpe.execute(new Runnable() {
+								@Override
+								public void run() {
+									try {
+										FileUtil.saveKeys();
+										GuiConfig.this.cooldowns[2].renderCooldown = 30;
+										FileUtil.restoreKeys();
+									} catch (ClosedByInterruptException e) {
+										DefaultSettings.log.log(Level.WARNING, "An exception occurred while saving the key configuration: Interruption exception");
+									} catch (Exception e) {
+										DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
+										GuiConfig.this.cooldowns[2].renderCooldown = -30;
+									}
+									GuiConfig.this.cooldowns[2].setProgress(false);
+								}
+							});
+					return true;
+				}
+			}, 60, 20, 2, null, true));
+
+			this.popup.isVisible = true;
+
+		} else {
+
+			GuiConfig.this.cooldowns[2].setProgress(true);
+
+			try {
+				FileUtil.saveKeys();
+				this.cooldowns[2].renderCooldown = 30;
+				FileUtil.restoreKeys();
+			} catch (ClosedByInterruptException e) {
+				DefaultSettings.log.log(Level.WARNING, "An exception occurred while saving the key configuration: Interruption exception");
+			} catch (Exception e) {
+				DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
+				this.cooldowns[2].renderCooldown = -30;
+			}
+			this.cooldowns[2].setProgress(false);
 		}
-    	this.cooldowns[2].setProgress(false);
     }
 
     @Override
@@ -253,13 +408,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     	super.drawScreen(mouseX, mouseY, partialTicks);
     }
     
-    private static int clamp(int num, int min, int max) {
-        if (num < min) {
-           return min;
-        } else {
-           return num > max ? max : num;
-        }
-     }
+    public static int clamp(int num, int min, int max)
+    {
+        return num < min ? min : (num > max ? max : num);
+    }
     
     private class ButtonState {
     	

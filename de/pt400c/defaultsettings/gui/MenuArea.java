@@ -3,6 +3,7 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
 public class MenuArea extends Segment {
@@ -10,7 +11,7 @@ public class MenuArea extends Segment {
 	private List<Segment> children = new ArrayList<Segment>();
 
 	public MenuArea(GuiScreen gui, float posX, float posY) {
-		super(gui, posX, posY, gui.width - posX, gui.height - posY);
+		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 	}
 	
 	@Override
@@ -20,8 +21,9 @@ public class MenuArea extends Segment {
             for(Segment child : this.children)
             	child.render(mouseX, mouseY, partialTicks);
             
-            for(Segment child : this.children)
-            	child.hoverCheck(mouseX, mouseY);
+            if(((GuiConfig) this.gui).popupField == null)
+            	for(Segment child : this.children)
+            		child.hoverCheck(mouseX, mouseY);
         }
 
 	}
@@ -36,19 +38,6 @@ public class MenuArea extends Segment {
 			}
 		}
 		return super.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-	
-	@Override
-	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
-		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
-					break;
-				}
-
-			}
-		}
-		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
 	
 	@Override

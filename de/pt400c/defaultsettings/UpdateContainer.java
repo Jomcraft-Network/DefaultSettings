@@ -61,7 +61,7 @@ public class UpdateContainer {
 				ComparableVersion target = null;
 				try {
 
-					InputStream con = openUrlStream(new URL("https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/976f2796b2f145c75cba258fe40259b5ca5555ac/ds-updates.json"));
+					InputStream con = openUrlStream(new URL("https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/"));
 					String data = new String(ByteStreams.toByteArray(con), "UTF-8");
 
 					con.close();
@@ -74,6 +74,8 @@ public class UpdateContainer {
 
 					String rec = promos.get(MC_Version + "-recommended");
 					String lat = promos.get(MC_Version + "-latest");
+					
+					System.out.println(rec +"   " + lat);
 
 					ComparableVersion current = new ComparableVersion(mc.getVersion());
 

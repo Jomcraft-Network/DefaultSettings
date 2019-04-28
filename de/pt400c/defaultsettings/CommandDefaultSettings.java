@@ -38,11 +38,19 @@ public class CommandDefaultSettings extends CommandBase {
 
 	@Override
 	public void processCommand(final ICommandSender sender, String[] args) {
-		if (args.length > 1 || !arg.contains(args[0].toLowerCase()))
-			throw new WrongUsageException(getCommandUsage(sender));
+		if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase())) {
+			sender.sendChatToPlayer(ColorEnum.RED + getCommandUsage(sender));
+			return;	
+		}
 
 		if (tpe.getQueue().size() > 0) {
 			sender.sendChatToPlayer(ColorEnum.RED + "Please wait until the last request has been processed!");
+			return;
+		}
+		
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+			sender.sendChatToPlayer(ColorEnum.RED + "The intended files already exist! If you want to");
+			sender.sendChatToPlayer(ColorEnum.RED + "overwrite them, add the '-o' argument");
 			return;
 		}
 

@@ -12,7 +12,7 @@ public class MenuScreen extends Segment {
 	private int index = 0;
 
 	public MenuScreen(GuiScreen gui, float posX, float posY) {
-		super(gui, posX, posY, gui.width - posX, gui.height - posY);
+		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 	}
 	
 	@Override
@@ -30,15 +30,6 @@ public class MenuScreen extends Segment {
 			this.variants.get(this.index).mouseClicked(mouseX, mouseY, mouseButton);
 		}
 		return super.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-	
-	@Override
-	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
-		synchronized (this.variants) {
-			this.variants.get(this.index).mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
-
-		}
-		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
 	
 	@Override

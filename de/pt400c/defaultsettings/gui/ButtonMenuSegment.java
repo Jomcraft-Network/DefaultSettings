@@ -46,13 +46,6 @@ public class ButtonMenuSegment extends ButtonSegment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
-		if (!this.isSelected(mouseX, mouseY))
-			this.grabbed = false;
-		return super.mouseDragged(mouseX, mouseY, button);
-	}
-
-	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
@@ -78,7 +71,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 	@Override
 	public boolean isSelected(double mouseX, double mouseY) {
-		return mouseX >= (this.getPosX() + this.offsetX) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
+		return ((GuiConfig) this.gui).popupField == null && mouseX >= (this.getPosX() + this.offsetX) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
 	}
 	
 	protected int getRenderColor(byte state) {

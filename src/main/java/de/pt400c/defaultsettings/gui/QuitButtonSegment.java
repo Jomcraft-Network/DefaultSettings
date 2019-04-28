@@ -47,6 +47,4 @@ public class QuitButtonSegment extends ButtonSegment {
 	public static int getAlpha(int value) {
         return (value >> 24) & 0xff;
     }
-
-
 }

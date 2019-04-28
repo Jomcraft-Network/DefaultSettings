@@ -10,6 +10,8 @@ public class DefaultSettingsGUI extends GuiScreen {
 	
 	public boolean dragging = false;
 	
+	public PopupSegment popupField = null;
+	
 	public void addSegment(Segment segment) {
 		synchronized (this.segments) {
 			this.segments.add(segment);
@@ -23,14 +25,20 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 
 	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
 
         synchronized (this.segments) {
-            for(Segment segment : this.segments)
-            	segment.render(mouseX, mouseY, partialTicks);
-            
-            for(Segment segment : this.segments)
-            	segment.hoverCheck(mouseX, mouseY);
+        	for(Segment segment : this.segments)
+	        	segment.render(mouseX, mouseY, partialTicks);
+			
+			if(this.popupField == null) {
+				
+			for(Segment segment : this.segments)
+				segment.hoverCheck(mouseX, mouseY);
+			
+			}else {
+				this.popupField.hoverCheck(mouseX, mouseY);
+			}
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -39,11 +47,15 @@ public class DefaultSettingsGUI extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		synchronized (this.segments) {
-			for (Segment segment : segments) {
-				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
-					break;
+			if (this.popupField == null) {
+				for (Segment segment : segments) {
+					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+						break;
+					}
 				}
+			} else {
 
+				this.popupField.mouseClicked(mouseX, mouseY, mouseButton);
 			}
 		}
 		super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -53,11 +65,15 @@ public class DefaultSettingsGUI extends GuiScreen {
 	public void mouseClickMove(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_, long p_mouseDragged_8_) {
 		this.dragging = true;
 		synchronized (this.segments) {
-			for (Segment segment : this.segments) {
-				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
-					break;
-				}
+			if (this.popupField == null) {
+				for (Segment segment : this.segments) {
+					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+						break;
+					}
 
+				}
+			} else {
+				this.popupField.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 			}
 		}
 		super.mouseClickMove(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_, p_mouseDragged_8_);
@@ -67,11 +83,15 @@ public class DefaultSettingsGUI extends GuiScreen {
 	public void mouseMovedOrUp(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		this.dragging = false;
 		synchronized (this.segments) {
-			for (Segment segment : this.segments) {
-				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
-					break;
-				}
+			if (this.popupField == null) {
+				for (Segment segment : this.segments) {
+					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+						break;
+					}
 
+				}
+			} else {
+				this.popupField.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
 			}
 		}
 		super.mouseMovedOrUp(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);

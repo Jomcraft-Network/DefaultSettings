@@ -3,6 +3,7 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
 public class MenuArea extends Segment {
@@ -10,7 +11,7 @@ public class MenuArea extends Segment {
 	private List<Segment> children = new ArrayList<Segment>();
 
 	public MenuArea(GuiScreen gui, float posX, float posY) {
-		super(gui, posX, posY, gui.width - posX, gui.height - posY);
+		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 	}
 	
 	@Override
@@ -20,8 +21,9 @@ public class MenuArea extends Segment {
             for(Segment child : this.children)
             	child.render(mouseX, mouseY, partialTicks);
             
-            for(Segment child : this.children)
-            	child.hoverCheck(mouseX, mouseY);
+            if(((GuiConfig) this.gui).popupField == null)
+            	for(Segment child : this.children)
+            		child.hoverCheck(mouseX, mouseY);
         }
 
 	}

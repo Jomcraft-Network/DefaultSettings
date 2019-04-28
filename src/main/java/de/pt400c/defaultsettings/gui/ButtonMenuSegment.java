@@ -25,7 +25,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < (2 * Math.PI))
 			offsetTick += 0.4;
 	
-		else if(offsetTick > 0){
+		else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated)){
 			offsetTick -= 0.5;
 		}
 		offsetX = func;

@@ -224,17 +224,22 @@ public class GuiConfig extends DefaultSettingsGUI {
 				GuiConfig.this.cooldowns[1].setProgress(true);
 
 				GuiConfig.this.popupField.setOpening(false);
-
-				try {
-					FileUtil.saveServers();
-					this.cooldowns[1].renderCooldown = 30;
-				} catch (ClosedByInterruptException e) {
-					DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-					this.cooldowns[1].renderCooldown = -30;
-				}
-				this.cooldowns[1].setProgress(false);
+				
+				tpe.execute(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							FileUtil.saveServers();
+							GuiConfig.this.cooldowns[1].renderCooldown = 30;
+						} catch (ClosedByInterruptException e) {
+							DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the server list: Interruption exception");
+						} catch (Exception e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
+							GuiConfig.this.cooldowns[1].renderCooldown = -30;
+						}
+						GuiConfig.this.cooldowns[1].setProgress(false);
+					}
+				});
 
 				return true;
 			}, 60, 20, 2, null, true));
@@ -277,18 +282,21 @@ public class GuiConfig extends DefaultSettingsGUI {
 				GuiConfig.this.cooldowns[0].setProgress(true);
 
 				GuiConfig.this.popupField.setOpening(false);
-
-				try {
-					FileUtil.saveOptions();
-					this.cooldowns[0].renderCooldown = 30;
-				} catch (ClosedByInterruptException e) {
-					DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-					this.cooldowns[0].renderCooldown = -30;
-				}
-				this.cooldowns[0].setProgress(false);
-
+				tpe.execute(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							FileUtil.saveOptions();
+							GuiConfig.this.cooldowns[0].renderCooldown = 30;
+						} catch (ClosedByInterruptException e) {
+							DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the default game options: Interruption exception");
+						} catch (Exception e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
+							GuiConfig.this.cooldowns[0].renderCooldown = -30;
+						}
+						GuiConfig.this.cooldowns[0].setProgress(false);
+					}
+				});
 				return true;
 			}, 60, 20, 2, null, true));
 
@@ -329,18 +337,22 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 				GuiConfig.this.popupField.setOpening(false);
 
-				try {
-					FileUtil.saveKeys();
-					this.cooldowns[2].renderCooldown = 30;
-					FileUtil.restoreKeys();
-				} catch (ClosedByInterruptException e) {
-					DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-					this.cooldowns[2].renderCooldown = -30;
-				}
-				this.cooldowns[2].setProgress(false);
-
+				tpe.execute(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							FileUtil.saveKeys();
+							GuiConfig.this.cooldowns[2].renderCooldown = 30;
+							FileUtil.restoreKeys();
+						} catch (ClosedByInterruptException e) {
+							DefaultSettings.log.log(Level.DEBUG, "An exception occurred while saving the key configuration: Interruption exception");
+						} catch (Exception e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+							GuiConfig.this.cooldowns[2].renderCooldown = -30;
+						}
+						GuiConfig.this.cooldowns[2].setProgress(false);
+					}
+				});
 				return true;
 			}, 60, 20, 2, null, true));
 

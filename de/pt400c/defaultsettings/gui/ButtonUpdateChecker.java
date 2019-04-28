@@ -72,13 +72,6 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
-		if (!this.isSelected(mouseX, mouseY))
-			this.grabbed = false;
-		return super.mouseDragged(mouseX, mouseY, button);
-	}
-
-	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY)) {

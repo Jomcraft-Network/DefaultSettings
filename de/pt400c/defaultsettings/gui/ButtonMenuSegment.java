@@ -23,7 +23,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < (2 * Math.PI))
 			offsetTick += 0.4;
 	
-		else if(offsetTick > 0){
+		else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated)){
 			offsetTick -= 0.5;
 		}
 		offsetX = func;
@@ -43,13 +43,6 @@ public class ButtonMenuSegment extends ButtonSegment {
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
-		if (!this.isSelected(mouseX, mouseY))
-			this.grabbed = false;
-		return super.mouseDragged(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -78,7 +71,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 	@Override
 	public boolean isSelected(double mouseX, double mouseY) {
-		return mouseX >= (this.getPosX() + this.offsetX) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
+		return ((GuiConfig) this.gui).popupField == null && mouseX >= (this.getPosX() + this.offsetX) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
 	}
 	
 	protected int getRenderColor(byte state) {

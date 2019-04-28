@@ -5,13 +5,19 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.common.io.ByteStreams;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
@@ -53,9 +59,9 @@ public class UpdateContainer {
 					InputStream con = openUrlStream(new URL("https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/976f2796b2f145c75cba258fe40259b5ca5555ac/ds-updates.json"));
 					String data = new String(ByteStreams.toByteArray(con), "UTF-8");
 					con.close();
-					Map<String, Object> json = new Gson().fromJson(data, Map.class);
+					Map<String, Object> s = stringToMap(data);
 
-					Map<String, String> promos = (Map<String, String>) json.get("promos");
+					Map<String, String> promos = (Map<String, String>) s.get("promos");
 					//String display_url = (String) json.get("homepage");
 					String MC_Version = Loader.instance().getMCVersionString().split(" ")[1];
 					String rec = promos.get(MC_Version + "-recommended");
@@ -123,6 +129,44 @@ public class UpdateContainer {
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.ERROR);
 				
 				}
+			}
+			
+			private Map<String, Object> stringToMap(String data) {
+
+				Map<String, Object> keys = new HashMap<String, Object>();
+
+				JSONObject jsonObject = new JSONObject(data);
+				Iterator keySet = jsonObject.keys();
+
+				while (keySet.hasNext()) {
+					String key = (String) keySet.next();
+					Object value = jsonObject.get(key);
+					if (value instanceof JSONObject) {
+						keys.put(key, stringToMap(value.toString()));
+					} else if (value instanceof JSONArray) {
+						JSONArray jsonArray = jsonObject.getJSONArray(key);
+						keys.put(key, stringToArray(jsonArray));
+					} else {
+						keys.put(key, value);
+					}
+				}
+				return keys;
+			}
+			
+			public List<Object> stringToArray(JSONArray keyArray) {
+				List<Object> array = new ArrayList<Object>();
+				for (int i = 0; i < keyArray.length(); i++) {
+					if (keyArray.opt(i) instanceof JSONObject) {
+						Map<String, Object> objectMap = stringToMap(keyArray.opt(i).toString());
+						array.add(objectMap);
+					} else if (keyArray.opt(i) instanceof JSONArray) {
+						List<Object> arrayList = stringToArray((JSONArray) keyArray.opt(i));
+						array.add(arrayList);
+					} else {
+						array.add(keyArray.opt(i));
+					}
+				}
+				return array;
 			}
 		});
 		

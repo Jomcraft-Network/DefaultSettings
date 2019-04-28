@@ -68,6 +68,22 @@ public class FileUtil {
 		}
 	}
 	
+	public static boolean optionsFilesExist() {
+		final File optionsFile = new File(getMainFolder(), "options.txt");
+		final File optionsofFile = new File(getMainFolder(), "optionsof.txt");
+		return optionsFile.exists() || optionsofFile.exists();
+	}
+	
+	public static boolean keysFileExist() {
+		final File keysFile = new File(getMainFolder(), "keys.txt");
+		return keysFile.exists();
+	}
+	
+	public static boolean serversFileExists() {
+		final File serversFile = new File(getMainFolder(), "servers.dat");
+		return serversFile.exists();
+	}
+	
 	public static void restoreKeys() throws NullPointerException, IOException, NumberFormatException {
 		DefaultSettings.keyRebinds.clear();
 		final File keysFile = new File(getMainFolder(), "keys.txt");

@@ -1,34 +1,41 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.awt.Color;
-import java.util.function.Function;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 
-public class QuitButtonSegment extends ButtonSegment {
+public class TextSegment extends Segment {
 
-	public QuitButtonSegment(GuiScreen gui, float posX, float posY, int width, int height, Function<ButtonSegment, Boolean> function, boolean popup) {
-		super(gui, posX, posY, "X", function, width, height, 0, popup);
-	}
+	public final int color;
+	public final String text;
 	
+	public TextSegment(GuiScreen gui, float posX, float posY, int width, int height, String text, int color, boolean popup) {
+		super(gui, posX, posY, width, height, popup);
+		
+		this.color = color;
+		this.text = text;
+	}
+
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
 		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
-		
-		Segment.drawRect2(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, alpha);
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
      	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		this.drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xffffffff, alpha).getRGB(), false);
+     	int offsetY = 0;
+     	for(String line : this.text.split("\n")) {
+     		this.drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, calcAlpha(this.color, alpha).getRGB(), false);
+     		offsetY += 9;
+     	}
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 		
 	}
 	
-	public static Color calcAlpha(int color, float alpha) {
+	private static Color calcAlpha(int color, float alpha) {
 		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
 	}
 	
@@ -47,6 +54,4 @@ public class QuitButtonSegment extends ButtonSegment {
 	public static int getAlpha(int value) {
         return (value >> 24) & 0xff;
     }
-
-
 }

@@ -12,7 +12,7 @@ public class MenuScreen extends Segment {
 	private int index = 0;
 
 	public MenuScreen(GuiScreen gui, float posX, float posY) {
-		super(gui, posX, posY, gui.width - posX, gui.height - posY);
+		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 	}
 	
 	@Override

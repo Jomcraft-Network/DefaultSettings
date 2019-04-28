@@ -42,12 +42,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-    	if(this.popupField == null)
-    		super.keyTyped(typedChar, keyCode);
-    	else {
+    	if(keyCode == 1 && this.popupField != null)
     		this.popupField.setOpening(false);
-    	}
-    	
+    	else
+    		super.keyTyped(typedChar, keyCode);
     }
 
     @Override

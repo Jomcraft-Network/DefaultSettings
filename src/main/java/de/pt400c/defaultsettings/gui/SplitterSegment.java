@@ -1,10 +1,10 @@
 package de.pt400c.defaultsettings.gui;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public class SplitterSegment extends Segment {
 
-	public SplitterSegment(GuiScreen gui, float posX, float posY, int height) {
+	public SplitterSegment(Screen gui, float posX, float posY, int height) {
 		super(gui, posX, posY, 2, height, false);
 	}
 

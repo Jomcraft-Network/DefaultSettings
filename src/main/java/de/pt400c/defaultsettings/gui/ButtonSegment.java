@@ -6,11 +6,13 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.Collections;
 import java.util.function.Function;
 
+import org.lwjgl.opengl.EXTBlendFuncSeparate;
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GLX;
+
 import de.pt400c.defaultsettings.GuiConfig;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.gui.screen.Screen;
 
 public class ButtonSegment extends Segment {
 	
@@ -25,7 +27,7 @@ public class ButtonSegment extends Segment {
 	protected final int border;
 	public int color = 0xffa4a4a4;
 
-	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, boolean popupSegment) {
+	public ButtonSegment(Screen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, boolean popupSegment) {
 		super(gui, posX, posY, width, height, popupSegment);
 		this.title = title;
 		this.function = function;
@@ -33,15 +35,15 @@ public class ButtonSegment extends Segment {
 		this.hoverMessage = hoverMessage;
 	}
 	
-	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage) {
+	public ButtonSegment(Screen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage) {
 		this(gui, posX, posY, title, function, width, height, border, hoverMessage, false);
 	}
 	
-	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border) {
+	public ButtonSegment(Screen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border) {
 		this(gui, posX, posY, title, function, width, height, border, null);
 	}
 	
-	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, boolean popupSegment) {
+	public ButtonSegment(Screen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, boolean popupSegment) {
 		this(gui, posX, posY, title, function, width, height, border, null, popupSegment);
 	}
 
@@ -53,7 +55,7 @@ public class ButtonSegment extends Segment {
 		
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
-     	OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+     	GLX.glBlendFuncSeparate(770, 771, 1, 0);
 		MC.fontRenderer.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, alpha).getRGB());
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();

@@ -1,20 +1,23 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.screen.Screen;
+
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.GuiConfig;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvents;
 
 public abstract class Segment {
 	
-	protected final GuiScreen gui;
+	protected final Screen gui;
 	
 	protected double posX;
 	protected double posY;
@@ -30,7 +33,7 @@ public abstract class Segment {
     private static final float tangetialFactor = (float) Math.tan(circleTheta);
 	private static final float radialFactor = (float) Math.cos(circleTheta);
 	
-	public Segment(GuiScreen gui, float posX, float posY, float width, float height, boolean popupSegment) {
+	public Segment(Screen gui, float posX, float posY, float width, float height, boolean popupSegment) {
 		this.gui = gui;
 		this.posX = posX;
 		this.posY = posY;
@@ -86,7 +89,7 @@ public abstract class Segment {
 	}
 	
 	public void clickSound() {
-        MC.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        MC.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 	
 	public static void drawRect(double x1, double y1, double x2, double y2, int color)

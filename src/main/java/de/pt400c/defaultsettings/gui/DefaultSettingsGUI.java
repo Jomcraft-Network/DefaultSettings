@@ -2,10 +2,15 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.text.ITextComponent;
 
-public class DefaultSettingsGUI extends GuiScreen {
+public class DefaultSettingsGUI extends Screen {
 	
+	protected DefaultSettingsGUI(ITextComponent p_i51108_1_) {
+		super(p_i51108_1_);
+	}
+
 	private List<Segment> segments = new ArrayList<>();
 	
 	public PopupSegment popupField = null;

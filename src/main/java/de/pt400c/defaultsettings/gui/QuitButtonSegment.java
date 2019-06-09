@@ -1,18 +1,18 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GLX;
+
 import de.pt400c.defaultsettings.GuiConfig;
+import net.minecraft.client.gui.screen.Screen;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
 
 public class QuitButtonSegment extends ButtonSegment {
 
-	public QuitButtonSegment(GuiScreen gui, float posX, float posY, int width, int height, Function<ButtonSegment, Boolean> function, boolean popup) {
+	public QuitButtonSegment(Screen gui, float posX, float posY, int width, int height, Function<ButtonSegment, Boolean> function, boolean popup) {
 		super(gui, posX, posY, "X", function, width, height, 0, popup);
 	}
 	
@@ -23,7 +23,7 @@ public class QuitButtonSegment extends ButtonSegment {
 		Segment.drawRect2(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, alpha);
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+		GLX.glBlendFuncSeparate(770, 771, 1, 0);
 		MC.fontRenderer.drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xffffffff, alpha).getRGB());
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();

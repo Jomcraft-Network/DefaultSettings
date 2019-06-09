@@ -1,9 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
 import javax.annotation.Nonnull;
-
 import de.pt400c.defaultsettings.GuiConfig;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public class PopupSegment extends Segment {
 
@@ -15,7 +14,7 @@ public class PopupSegment extends Segment {
 	public float windowTimer = 0;
 	public boolean open;
 
-	public PopupSegment(GuiScreen gui, float posX, float posY, float width, float height) {
+	public PopupSegment(Screen gui, float posX, float posY, float width, float height) {
 		super(gui, posX, posY, width, height, true);
 	}
 	

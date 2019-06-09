@@ -1,7 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-import net.minecraft.client.gui.GuiScreen;
+
+import net.minecraft.client.gui.screen.Screen;;
 
 public class ButtonMovableSegment extends ButtonSegment {
 	
@@ -9,7 +10,7 @@ public class ButtonMovableSegment extends ButtonSegment {
 	private double distanceX = 0;
 	private double distanceY = 0;
 
-	public ButtonMovableSegment(GuiScreen gui, float posX, float posY, Function<ButtonSegment, Boolean> function, boolean popupSegment) {
+	public ButtonMovableSegment(Screen gui, float posX, float posY, Function<ButtonSegment, Boolean> function, boolean popupSegment) {
 		super(gui, posX, posY, "dummy", function, 50, 20, 2, popupSegment);
 	}
 

@@ -13,9 +13,10 @@ public class EventHandlers {
 
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
-		if ((MC.currentScreen instanceof GuiModList || MC.currentScreen == null) && InputMappings.isKeyDown(GLFW_KEY_F7) && InputMappings.isKeyDown(GLFW_KEY_G))
+		
+		if ((MC.field_71462_r instanceof GuiModList || MC.field_71462_r == null) && InputMappings.func_216506_a(Minecraft.getInstance().mainWindow.getHandle(), GLFW_KEY_F7) && InputMappings.func_216506_a(Minecraft.getInstance().mainWindow.getHandle(), GLFW_KEY_G))
 			
-			MC.displayGuiScreen(new GuiConfig(Minecraft.getInstance().currentScreen));
+			MC.displayGuiScreen(new GuiConfig(Minecraft.getInstance().field_71462_r));
 	}
 
 	@SubscribeEvent

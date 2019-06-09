@@ -19,12 +19,14 @@ import de.pt400c.defaultsettings.gui.PopupWindow;
 import de.pt400c.defaultsettings.gui.QuitButtonSegment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class GuiConfig extends DefaultSettingsGUI {
 
-    public final GuiScreen parentScreen;
+    public final Screen parentScreen;
     private MenuScreen menu;
     public PopupSegment popup;
     public ButtonSegment buttonS;
@@ -34,11 +36,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
 
-    public GuiConfig(GuiScreen parentScreen)
-    {
-        this.mc = MC;
+    public GuiConfig(Screen parentScreen) {
+    	super(new TranslationTextComponent("options.title"));
+    	this.minecraft = MC;
         this.parentScreen = parentScreen;
-    }
+	}
     
     @Override
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
@@ -50,7 +52,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
     	
     	this.clearSegments();
@@ -112,7 +114,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, button -> {
     		
-    		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
+    		GuiConfig.this.minecraft.displayGuiScreen(GuiConfig.this.parentScreen);
     		return true;}, false));
     	
     	this.addSegment(this.popup = new PopupSegment(this, 0, 0, this.width, this.height).setWindow(new PopupWindow(this, this.width / 2 - 210 / 2, this.height / 2 - 100 / 2, 210, 100, "").addChild(new QuitButtonSegment(this, 190, 5, 14, 14, button -> {
@@ -124,7 +126,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	this.popupField = null;
 
     	
-    	this.mc.keyboardListener.enableRepeatEvents(true);
+    	this.minecraft.keyboardListener.enableRepeatEvents(true);
     }
     
     public void changeSelected(ButtonMenuSegment segment) {
@@ -135,8 +137,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void onGuiClosed() {
-    	this.mc.keyboardListener.enableRepeatEvents(false);
+    public void onClose() {
+    	this.minecraft.keyboardListener.enableRepeatEvents(false);
     	tpe.shutdownNow();
     }
 
@@ -151,24 +153,26 @@ public class GuiConfig extends DefaultSettingsGUI {
         		cooldowns[id].renderCooldown++;	
         }
     }
+    
+    
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
     	
-    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    	AbstractGui.fill(0, 0, this.width, this.height, Color.WHITE.getRGB());
         
-        GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+    	AbstractGui.fill(0, 0, 72, 25, 0xff9f9f9f);
         
-        GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
-        this.fontRenderer.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+    	AbstractGui.fill(72, 0, width, 25, 0xffe0e0e0);
+        this.font.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.font.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
         
-        int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+        int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.font.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
         
-        this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+        this.font.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
         
-        this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
-
+        this.font.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+        
         buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;

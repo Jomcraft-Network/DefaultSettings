@@ -3,7 +3,7 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public class MenuScreen extends Segment {
 	
@@ -11,7 +11,7 @@ public class MenuScreen extends Segment {
 	
 	private int index = 0;
 
-	public MenuScreen(GuiScreen gui, float posX, float posY) {
+	public MenuScreen(Screen gui, float posX, float posY) {
 		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 	}
 	

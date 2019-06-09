@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.UpdateContainer;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public class ButtonUpdateChecker extends ButtonSegment {
 
 	public float timer = 0;
 
-	public ButtonUpdateChecker(GuiScreen gui, float posX, float posY) {
+	public ButtonUpdateChecker(Screen gui, float posX, float posY) {
 		super(gui, posX, posY, null, null, 20, 20, 2);
 		if(DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.ERROR || DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.UNKNOWN)
 			DefaultSettings.getUpdater().update();

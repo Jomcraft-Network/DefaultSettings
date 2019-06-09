@@ -2,15 +2,14 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import de.pt400c.defaultsettings.GuiConfig;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 public class MenuArea extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();
 
-	public MenuArea(GuiScreen gui, float posX, float posY) {
+	public MenuArea(Screen gui, float posX, float posY) {
 		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 	}
 	

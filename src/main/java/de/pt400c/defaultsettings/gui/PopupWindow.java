@@ -5,9 +5,11 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.platform.GLX;
+
 import de.pt400c.defaultsettings.GuiConfig;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.gui.screen.Screen;
 
 public class PopupWindow extends Segment {
 	
@@ -24,7 +26,7 @@ public class PopupWindow extends Segment {
 	private double distanceX = 0;
 	private double distanceY = 0;
 
-	public PopupWindow(GuiScreen gui, float posX, float posY, float width, float height, String title) {
+	public PopupWindow(Screen gui, float posX, float posY, float width, float height, String title) {
 		super(gui, posX, posY, width, height, true);
 		this.title = title;
 	}
@@ -39,7 +41,7 @@ public class PopupWindow extends Segment {
 		
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
-     	OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+     	GLX.glBlendFuncSeparate(770, 771, 1, 0);
 		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), calcAlpha(0xff1b1b1b, this.alphaRate).getRGB());
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();

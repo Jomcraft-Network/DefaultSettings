@@ -2,8 +2,8 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import net.minecraft.client.gui.GuiScreen;
 import de.pt400c.defaultsettings.GuiConfig;
+import net.minecraft.client.gui.screen.Screen;
 
 public class ButtonMenuSegment extends ButtonSegment {
 	
@@ -12,7 +12,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 	private double offsetX = 0;
 	private float offsetTick = 0;
 
-	public ButtonMenuSegment(int id, GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function) {
+	public ButtonMenuSegment(int id, Screen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function) {
 		super(gui, posX, posY, title, function, 50, 20, 2);
 		this.id = id;
 	}

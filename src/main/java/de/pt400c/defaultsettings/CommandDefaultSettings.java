@@ -10,14 +10,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 public class CommandDefaultSettings {
 	
 	private static ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new TextComponentString(TextFormatting.RED + "Please wait until the last request has been processed!"));
+	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new StringTextComponent(TextFormatting.RED + "Please wait until the last request has been processed!"));
 
 	protected static void register(FMLServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSource> literalargumentbuilder = Commands.literal("defaultsettings");
@@ -37,8 +37,8 @@ public class CommandDefaultSettings {
 			throw FAILED_EXCEPTION.create();
 		
 		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || !argument.equals("-o"))) {
-			source.sendFeedback(new TextComponentString(TextFormatting.RED + "The intended files already exist! If you want to"), true);
-			source.sendFeedback(new TextComponentString(TextFormatting.RED + "overwrite them, add the '-o' argument"), true);
+			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "The intended files already exist! If you want to"), true);
+			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "overwrite them, add the '-o' argument"), true);
 			return 0;
 		}
 
@@ -50,11 +50,11 @@ public class CommandDefaultSettings {
 			public void run() {
 				try {
 					FileUtil.saveKeys();
-					source.sendFeedback(new TextComponentString(TextFormatting.GREEN + "Successfully saved the key configuration"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Successfully saved the key configuration"), true);
 					FileUtil.restoreKeys();
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-					source.sendFeedback(new TextComponentString(TextFormatting.RED + "Couldn't save the key configuration!"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.RED + "Couldn't save the key configuration!"), true);
 					issue.setBoolean(true);
 				}
 			}
@@ -66,10 +66,10 @@ public class CommandDefaultSettings {
 			public void run() {
 				try {
 					FileUtil.saveOptions();
-					source.sendFeedback(new TextComponentString(TextFormatting.GREEN + "Successfully saved the default game options"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Successfully saved the default game options"), true);
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-					source.sendFeedback(new TextComponentString(TextFormatting.RED + "Couldn't save the default game options!"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.RED + "Couldn't save the default game options!"), true);
 					issue.setBoolean(true);
 				}
 			}
@@ -81,15 +81,15 @@ public class CommandDefaultSettings {
 			public void run() {
 				try {
 					FileUtil.saveServers();
-					source.sendFeedback(new TextComponentString(TextFormatting.GREEN + "Successfully saved the server list"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Successfully saved the server list"), true);
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-					source.sendFeedback(new TextComponentString(TextFormatting.RED + "Couldn't save the server list!"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.RED + "Couldn't save the server list!"), true);
 					issue.setBoolean(true);
 				}
 
 				if (issue.getBoolean())
-					source.sendFeedback(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"), true);
+					source.sendFeedback(new StringTextComponent(TextFormatting.YELLOW + "Please inspect the log files for further information!"), true);
 			}
 		});
 

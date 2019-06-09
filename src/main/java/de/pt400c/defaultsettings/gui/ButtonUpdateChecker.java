@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import de.pt400c.defaultsettings.DefaultSettings;
@@ -25,10 +24,6 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
 	
-	}
-	
-	private static Color darkenColor(int color, float darken) {
-		return new Color((int) (((color & RED_MASK) >> 16) * darken), (int) (((color & GREEN_MASK) >> 8) * darken), (int) ((color & BLUE_MASK) * darken), 255);
 	}
 
 	@Override

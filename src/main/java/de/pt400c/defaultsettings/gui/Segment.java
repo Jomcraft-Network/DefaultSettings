@@ -1,6 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
+
+import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -17,11 +19,13 @@ import net.minecraft.util.ResourceLocation;
 public abstract class Segment {
 	
 	protected final GuiScreen gui;
-	
 	protected double posX;
 	protected double posY;
 	protected float width;
 	protected float height;
+	protected static final int RED_MASK = 255 << 16;
+	protected static final int GREEN_MASK = 255 << 8;
+	protected static final int BLUE_MASK = 255;
 	protected final boolean isPopupSegment;
 	private static int[] buffer = new int[0x10000];
     private static int bufferIndex = 0;
@@ -94,7 +98,7 @@ public abstract class Segment {
 			MC.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 	
-	public static void drawRect(double x1, double y1, double x2, double y2, int color)
+	public static void drawRectSteppi(double x1, double y1, double x2, double y2, Integer color, boolean blending, Float alpha, boolean multiply)
     {
 		double j1;
 
@@ -112,134 +116,37 @@ public abstract class Segment {
             y2 = j1;
         }
 
-        float f3 = (float)(color >> 24 & 255) / 255.0F;
-        float f = (float)(color >> 16 & 255) / 255.0F;
-        float f1 = (float)(color >> 8 & 255) / 255.0F;
-        float f2 = (float)(color & 255) / 255.0F;
+        if(blending) {
+        	GL11.glEnable(GL11.GL_BLEND);
+        	GL11.glDisable(GL11.GL_TEXTURE_2D);
+        	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
         
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(f, f1, f2, f3);
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-
-		draw(false);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-    }
-	
-	public static void drawRect(double x1, double y1, double x2, double y2)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
+        if(color != null) {
+        	float f3 = (float)(color >> 24 & 255) / 255.0F;
+            float f = (float)(color >> 16 & 255) / 255.0F;
+            float f1 = (float)(color >> 8 & 255) / 255.0F;
+            float f2 = (float)(color & 255) / 255.0F;
+            if(alpha == null)
+            	GlStateManager.color(f, f1, f2, f3);
+            else if(multiply)
+            	GlStateManager.color(f, f1, f2, f3 * alpha);
+            else
+            	GlStateManager.color(f, f1, f2, f3 - alpha);
         }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-
-		draw(false);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-    }
-
-	public static void drawRect2(double x1, double y1, double x2, double y2, int color, float alpha)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-
-        float f3 = (float)(color >> 24 & 255) / 255.0F;
-        float f = (float)(color >> 16 & 255) / 255.0F;
-        float f1 = (float)(color >> 8 & 255) / 255.0F;
-        float f2 = (float)(color & 255) / 255.0F;
         
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(f, f1, f2, f3 - alpha);
         addVertex((float) x1, (float) y2, 0);
         addVertex((float) x2, (float) y2, 0);
         addVertex((float) x2, (float) y1, 0);
         addVertex((float) x1, (float) y1, 0);
 
 		draw(false);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
+		if(blending) {
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+        	GL11.glDisable(GL11.GL_BLEND);
+		}
     }
-	
-	public static void drawRect(double x1, double y1, double x2, double y2, int color, float alpha)
-    {
-		double j1;
 
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-
-        float f3 = (float)(color >> 24 & 255) / 255.0F;
-        float f = (float)(color >> 16 & 255) / 255.0F;
-        float f1 = (float)(color >> 8 & 255) / 255.0F;
-        float f2 = (float)(color & 255) / 255.0F;
-        
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(f, f1, f2, f3 * alpha);
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-
-		draw(false);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-    }
-	
 	public static void drawRectRoundedUpper(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
@@ -253,19 +160,47 @@ public abstract class Segment {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f - alpha);
         
-        drawCircle(x1 + 10, y1 + 10, 10, 180F, 75, 0);
+        drawCircle(x1 + 10, y1 + 10, 10, 180F, 75);
 
-        drawCircle(x2 - 10, y1 + 10, 10, 270F, 75, 0);
+        drawCircle(x2 - 10, y1 + 10, 10, 270F, 75);
 
-        drawRect(x1 + 10, y1, x2 - 10, y1 + 10);
+        drawRectSteppi(x1 + 10, y1, x2 - 10, y1 + 10, null, false, null, false);
         
-        drawRect(x1, y1 + 10, x2, y2);
+        drawRectSteppi(x1, y1 + 10, x2, y2, null, false, null, false);
         
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
        
     }
+	
+	protected static Color darkenColor(int color, float darken) {
+		return new Color((int) (((color & RED_MASK) >> 16) * darken), (int) (((color & GREEN_MASK) >> 8) * darken), (int) ((color & BLUE_MASK) * darken), 255);
+	}
+	
+	protected float distanceBetweenPoints(float posX, float posY, float mouseX, float mouseY) {
+		return (float) Math.sqrt(((float) posX - mouseX) *  ((float) posX - mouseX) + ((float) posY - mouseY) *  ((float) posY - mouseY));
+	}
+	
+	public static int getRed(int value) {
+        return (value >> 16) & 0xFF;
+    }
+	
+	public static int getGreen(int value) {
+        return (value >> 8) & 0xFF;
+    }
+	
+	public static int getBlue(int value) {
+        return value & 0xFF;
+    }
+	
+	public static int getAlpha(int value) {
+        return (value >> 24) & 0xff;
+    }
+	
+	protected static Color calcAlpha(int color, float alpha) {
+		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
+	}
 	
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
     {
@@ -280,85 +215,80 @@ public abstract class Segment {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f - alpha);
         
-        drawCircle(x1 + 10, y2 - 10, 10, 90F, 75, 0);
+        drawCircle(x1 + 10, y2 - 10, 10, 90F, 75);
         
-     
-        
-        drawCircle(x2 - 10, y2 - 10, 10, 0F, 75, 0);
+        drawCircle(x2 - 10, y2 - 10, 10, 0F, 75);
         
 
-        drawRect(x1, y1, x2, y2 - 10);
+        drawRectSteppi(x1, y1, x2, y2 - 10, null, false, null, false);
         
         
-        drawRect(x1 + 10, y2 - 10, x2 - 10, y2);
+        drawRectSteppi(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
        
     }
 	
-	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage, int size)  { 
-		
+	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage) {
+
 		float x = r;
 
-		float y = 0; 
-		
+		float y = 0;
+
 		float posX1 = 0;
 		float posY1 = 0;
-		
-		for(int l = 0; l < Math.round(100F / 360F * rotation); l++) {
 
-		float tx = -y; 
-		float ty = x; 
+		for (int l = 0; l < Math.round(100F / 360F * rotation); l++) {
 
-		x += tx * tangetialFactor; 
-		y += ty * tangetialFactor;
-		
-		x *= radialFactor; 
-			y *= radialFactor; 
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
 		}
-		
+
 		float posX2 = cx;
 		float posY2 = cy;
 
-		for(int i = 0; i < (100 + 1 - percentage); i++) 
-		{
+		for (int i = 0; i < (100 + 1 - percentage); i++) {
 			posX1 = posX2;
 			posY1 = posY2;
-			
+
 			posX2 = x + cx;
 			posY2 = y + cy;
 
-				addVertex((float) posX1, (float) posY1, 0);
-				addVertex((float) cx, (float) cy, 0);
-				addVertex((float) posX2, (float) posY2, 0);
+			addVertex((float) posX1, (float) posY1, 0);
+			addVertex((float) cx, (float) cy, 0);
+			addVertex((float) posX2, (float) posY2, 0);
 
-				draw(true);
+			draw(true);
 
-			float tx = -y; 
-			float ty = x; 
+			float tx = -y;
+			float ty = x;
 
-			x += tx * tangetialFactor; 
-			y += ty * tangetialFactor; 
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
 
-			
-			x *= radialFactor; 
-			y *= radialFactor; 
+			x *= radialFactor;
+			y *= radialFactor;
 
-		} 
+		}
 
 	}
-		
-		public static void addVertex(float x, float y, float z)
-	    {
-	        buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
-	        buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
-	        buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
-	        bufferIndex += 8;
-	    }
-		
-		public static void draw(boolean triangle) {
-			if(!triangle) {
+
+	public static void addVertex(float x, float y, float z) {
+		buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
+		buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
+		buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
+		bufferIndex += 8;
+	}
+
+	public static void draw(boolean triangle) {
+		if (!triangle) {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 32);
 			byteBuffer.position(0);
@@ -366,28 +296,26 @@ public abstract class Segment {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-			}else {
-				intBuffer.clear();
-				intBuffer.put(buffer, 0, 24);
-				byteBuffer.position(0);
-				GL11.glVertexPointer(3, 32, floatBuffer);
-				GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
-				GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-			}
-			
-			reset();
+		} else {
+			intBuffer.clear();
+			intBuffer.put(buffer, 0, 24);
+			byteBuffer.position(0);
+			GL11.glVertexPointer(3, 32, floatBuffer);
+			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
+			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		}
-		
-		private static void reset()
-	    {
-	        byteBuffer.clear();
-	        bufferIndex = 0;
-	    }
-		
-	
+
+		reset();
+	}
+
+	private static void reset() {
+		byteBuffer.clear();
+		bufferIndex = 0;
+	}
+
 	public static void drawButton(double left, double top, double right, double bottom, int color, int color2, int border) {
-		drawRect(left, top, right, bottom, color);
-		drawRect(left + border, top + border, right - border, bottom - border, color2);
+		drawRectSteppi(left, top, right, bottom, color, true, null, false);
+		drawRectSteppi(left + border, top + border, right - border, bottom - border, color2, true, null, false);
 	}
 }

@@ -21,6 +21,17 @@ public class FileUtil {
 	public static final Minecraft MC = Minecraft.getMinecraft();
 	public static final File mcDataDir = MC.mcDataDir;
 	public static final boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"); 
+	public static final FileFilter fileFilter = new FileFilter() {
+
+		@Override
+		public boolean accept(File file) {
+
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat"))
+				return true;
+
+			return false;
+		}
+	};
 	
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
@@ -34,6 +45,9 @@ public class FileUtil {
 		boolean firstBoot = !options.exists();
 		if (firstBoot) {
 			restoreOptions();
+			if(!exportMode())
+				moveAllConfigs();
+
 			restoreConfigs();
 		}
 		final File optionsOF = new File(mcDataDir, "optionsof.txt");
@@ -171,22 +185,42 @@ public class FileUtil {
 	
 	public static void restoreConfigs() throws IOException {
 		try {
-			FileFilter fileFilter = new FileFilter() {
-				@Override
-				public boolean accept(File file) {
-
-					if (!file.getName().equals("defaultsettings") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat"))
-						return true;
-
-					return false;
-				}
-			};
 			FileUtils.copyDirectory(getMainFolder(), new File(mcDataDir, "config"), fileFilter);
 		} catch (IOException e) {
 			throw e;
 		}
 	}
 
+	public static void moveAllConfigs() throws IOException {
+		try {
+			
+			File fileDir = new File(mcDataDir, "config");
+			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilter);
+			for (File f : fileDir.listFiles(fileFilter)) {
+				
+				if(f.isDirectory())
+					FileUtils.deleteDirectory(f);
+				else
+					f.delete();
+			}
+		} catch (IOException e) {
+			throw e;
+		}
+	}
+	
+	public static void setExportMode() throws IOException {
+		for(File l : new File(mcDataDir, "config").listFiles(fileFilter)) {
+			if(l.isDirectory())
+				FileUtils.deleteDirectory(l);
+			else
+				l.delete();
+		}
+	}
+	
+	public static boolean exportMode() {
+		return new File(mcDataDir, "config").listFiles(fileFilter).length == 0;
+	}
+	
 	public static void restoreServers() throws IOException {
 		try {
 			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));

@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
@@ -90,7 +92,8 @@ public class FileUtil {
 				if(f.isDirectory())
 					FileUtils.deleteDirectory(f);
 				else
-					f.delete();
+					//f.delete() calls updates, not appropriate
+					Files.delete(f.toPath());
 			}
 		} catch (IOException e) {
 			throw e;
@@ -98,15 +101,25 @@ public class FileUtil {
 	}
 	
 	public static void setExportMode() throws IOException {
-		for(File l : new File(mcDataDir, "config").listFiles(fileFilter)) {
-			if(l.isDirectory())
-				FileUtils.deleteDirectory(l);
-			else
-				l.delete();
+		for(File f : new File(mcDataDir, "config").listFiles(fileFilter)) {
+			if(f.isDirectory())
+				FileUtils.deleteDirectory(f);
+			else 
+				//f.delete() calls updates, not appropriate
+				Files.delete(f.toPath());
 		}
 	}
 	
 	public static boolean exportMode() {
+		FileFilter fileFilter = new FileFilter() {
+			@Override
+			public boolean accept(File file) {
+				if (!file.getName().equals("defaultsettings") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") &&/* !file.getName().equals("optionsof.txt") && */!file.getName().equals("servers.dat"))
+					return true;
+
+				return false;
+			}
+		};
 		return new File(mcDataDir, "config").listFiles(fileFilter).length == 0;
 	}
 	

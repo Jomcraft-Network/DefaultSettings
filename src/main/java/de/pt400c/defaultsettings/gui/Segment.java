@@ -224,68 +224,65 @@ public abstract class Segment {
        
     }
 	
-	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage)  { 
-		
+	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage) {
+
 		float x = r;
 
-		float y = 0; 
-		
+		float y = 0;
+
 		float posX1 = 0;
 		float posY1 = 0;
-		
-		for(int l = 0; l < Math.round(100F / 360F * rotation); l++) {
 
-		float tx = -y; 
-		float ty = x; 
+		for (int l = 0; l < Math.round(100F / 360F * rotation); l++) {
 
-		x += tx * tangetialFactor; 
-		y += ty * tangetialFactor;
-		
-		x *= radialFactor; 
-			y *= radialFactor; 
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
 		}
-		
+
 		float posX2 = cx;
 		float posY2 = cy;
 
-		for(int i = 0; i < (100 + 1 - percentage); i++) 
-		{
+		for (int i = 0; i < (100 + 1 - percentage); i++) {
 			posX1 = posX2;
 			posY1 = posY2;
-			
+
 			posX2 = x + cx;
 			posY2 = y + cy;
 
-				addVertex((float) posX1, (float) posY1, 0);
-				addVertex((float) cx, (float) cy, 0);
-				addVertex((float) posX2, (float) posY2, 0);
+			addVertex((float) posX1, (float) posY1, 0);
+			addVertex((float) cx, (float) cy, 0);
+			addVertex((float) posX2, (float) posY2, 0);
 
-				draw(true);
+			draw(true);
 
-			float tx = -y; 
-			float ty = x; 
+			float tx = -y;
+			float ty = x;
 
-			x += tx * tangetialFactor; 
-			y += ty * tangetialFactor; 
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
 
-			
-			x *= radialFactor; 
-			y *= radialFactor; 
+			x *= radialFactor;
+			y *= radialFactor;
 
-		} 
+		}
 
 	}
-		
-		public static void addVertex(float x, float y, float z)
-	    {
-	        buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
-	        buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
-	        buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
-	        bufferIndex += 8;
-	    }
-		
-		public static void draw(boolean triangle) {
-			if(!triangle) {
+
+	public static void addVertex(float x, float y, float z) {
+		buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
+		buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
+		buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
+		bufferIndex += 8;
+	}
+
+	public static void draw(boolean triangle) {
+		if (!triangle) {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 32);
 			byteBuffer.position(0);
@@ -293,25 +290,23 @@ public abstract class Segment {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-			}else {
-				intBuffer.clear();
-				intBuffer.put(buffer, 0, 24);
-				byteBuffer.position(0);
-				GL11.glVertexPointer(3, GL11.GL_FLOAT, 32, floatBuffer);
-				GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
-				GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-			}
-			
-			reset();
+		} else {
+			intBuffer.clear();
+			intBuffer.put(buffer, 0, 24);
+			byteBuffer.position(0);
+			GL11.glVertexPointer(3, GL11.GL_FLOAT, 32, floatBuffer);
+			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
+			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 		}
-		
-		private static void reset()
-	    {
-	        byteBuffer.clear();
-	        bufferIndex = 0;
-	    }
 
+		reset();
+	}
+
+	private static void reset() {
+		byteBuffer.clear();
+		bufferIndex = 0;
+	}
 
 	public static void drawButton(double left, double top, double right, double bottom, int color, int color2, int border) {
 		drawRect(left, top, right, bottom, color, true, null, false);

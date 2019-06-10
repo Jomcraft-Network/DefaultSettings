@@ -50,12 +50,12 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.13.2-25.0.108'
+    minecraft 'net.minecraftforge:forge:1.13.2-25.0.219'
 }
 
 def minecraft_version = "1.13.2"
 
-def forge_version = "25.0.100"
+def forge_version = "25.0.219"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {

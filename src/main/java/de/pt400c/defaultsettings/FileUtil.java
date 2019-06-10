@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
@@ -201,7 +203,9 @@ public class FileUtil {
 				if(f.isDirectory())
 					FileUtils.deleteDirectory(f);
 				else
-					f.delete();
+					//f.delete() calls updates, not appropriate
+					Files.delete(f.toPath());
+
 			}
 		} catch (IOException e) {
 			throw e;
@@ -209,11 +213,13 @@ public class FileUtil {
 	}
 	
 	public static void setExportMode() throws IOException {
-		for(File l : new File(mcDataDir, "config").listFiles(fileFilter)) {
-			if(l.isDirectory())
-				FileUtils.deleteDirectory(l);
+		for(File f : new File(mcDataDir, "config").listFiles(fileFilter)) {
+			if(f.isDirectory())
+				FileUtils.deleteDirectory(f);
 			else
-				l.delete();
+				//f.delete() calls updates, not appropriate
+				Files.delete(f.toPath());
+
 		}
 	}
 	

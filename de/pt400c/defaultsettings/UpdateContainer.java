@@ -49,7 +49,6 @@ public class UpdateContainer {
 		this.setStatus(Status.CHECKING);
 		this.tpe.submit(new Runnable() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void run() {
 				ModContainer mc = FMLCommonHandler.instance().findContainerFor(DefaultSettings.getInstance());

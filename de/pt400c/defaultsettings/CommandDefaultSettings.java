@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,7 +15,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class CommandDefaultSettings extends CommandBase {
 
-	public static final ArrayList<String> arg = new ArrayList<String>() {{	add("save");	}};
+	public static final ArrayList<String> arg = new ArrayList<String>() {{	add("save");	add("export-mode"); }};
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
     @Override
@@ -24,12 +25,12 @@ public class CommandDefaultSettings extends CommandBase {
     
     @Override
     public List<String> getCommandAliases() {
-    	return new ArrayList<String>() {{	add("ds");	}};
+    	return new ArrayList<String>() {{ add("ds"); }};
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/defaultsettings [save]";
+    	return "/defaultsettings [save / export-mode]";
     }
 
     @Override
@@ -37,7 +38,7 @@ public class CommandDefaultSettings extends CommandBase {
         return 0;
     }
 
-    @Override
+	@Override
     public void processCommand(final ICommandSender sender, String[] args) {
     	if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase())) {
     		sender.sendChatToPlayer(EnumChatFormatting.RED + getCommandUsage(sender));
@@ -48,6 +49,8 @@ public class CommandDefaultSettings extends CommandBase {
 			sender.sendChatToPlayer(EnumChatFormatting.RED + "Please wait until the last request has been processed!");
 			return;
 		}
+		
+		if (args[0].toLowerCase().equals("save")) {
 		
 		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
 			sender.sendChatToPlayer(EnumChatFormatting.RED + "The intended files already exist! If you want to");
@@ -105,6 +108,29 @@ public class CommandDefaultSettings extends CommandBase {
 					sender.sendChatToPlayer(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!");
 			}
 		});
+		
+		}else {
+			final boolean exportMode = FileUtil.exportMode();
+			tpe.execute(new ThreadRunnable(sender, null) {
+
+				@Override
+				public void run() {
+					try {
+						if (exportMode) {
+							FileUtil.restoreConfigs();
+							sender.sendChatToPlayer(EnumChatFormatting.GREEN + "The export-mode has been disabled successfully");
+						} else {
+							FileUtil.moveAllConfigs();
+							sender.sendChatToPlayer(EnumChatFormatting.GREEN + "Successfully activated the export-mode");
+						}
+					} catch (IOException e) {
+						DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+						sender.sendChatToPlayer((EnumChatFormatting.RED + "Couldn't switch the export-mode"));
+					}
+				}
+			});
+
+		}
 
 	}
 

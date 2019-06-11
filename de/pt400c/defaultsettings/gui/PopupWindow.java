@@ -11,14 +11,8 @@ import net.minecraft.client.gui.GuiScreen;
 public class PopupWindow extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();
-	
 	public String title;
-	
 	public float alphaRate;
-	
-	@Deprecated
-	private List<Segment> persistent = new ArrayList<>();
-	
 	private boolean dragging;
 	private double distanceX = 0;
 	private double distanceY = 0;
@@ -50,13 +44,6 @@ public class PopupWindow extends Segment {
 			for(Segment child : this.children)
 				child.hoverCheck(mouseX, mouseY);
 		}
-		
-		/*
-		synchronized (this.persistent) {
-			this.persistent.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
-
-			this.persistent.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
-		}*/
 
 		if (this.dragging) {
 
@@ -69,15 +56,9 @@ public class PopupWindow extends Segment {
 			for(Segment child : this.children)
 				child.setPos(child.posX + (PopupWindow.this.posX - origX), child.posY + (PopupWindow.this.posY - origY));
 
-			//this.persistent.forEach(segment -> segment.setPos(segment.posX + (this.posX - origX), segment.posY + (this.posY - origY)));
 		}
 
 
-	}
-	
-	protected float distanceBetweenPoints(float posX, float posY, float mouseX, float mouseY) {
-		return (float) Math.sqrt(((float) posX - mouseX) *  ((float) posX - mouseX) + ((float) posY - mouseY) *  ((float) posY - mouseY));
-		
 	}
 	
 	@Override
@@ -95,16 +76,6 @@ public class PopupWindow extends Segment {
 				}
 				
 			}
-			/*
-			synchronized (this.persistent) {
-				for (Segment segment : persistent) {
-					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
-						return true;
-					}
-				}
-				
-			}
-			*/
 			if (this.isSelected(mouseX, mouseY)) {
 				this.dragging = true;
 				distanceX = (mouseX - this.posX);
@@ -127,16 +98,6 @@ public class PopupWindow extends Segment {
 
 				}
 			}
-			/*
-			synchronized (this.persistent) {
-				for (Segment segment : this.persistent) {
-					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
-						return true;
-					}
-
-				}
-			}
-			*/
 			this.dragging = false;
 			
 		return false;
@@ -149,14 +110,6 @@ public class PopupWindow extends Segment {
 		return this;
 	}
 	
-	@Deprecated
-	public PopupWindow addPersistent(Segment segment) {
-		synchronized (this.persistent) {
-			this.persistent.add(segment.setPos(this.posX + segment.posX, this.posY + segment.posY));
-		}
-		return this;
-	}
-
 	public void clearChildren() {
 		synchronized (this.children) {
 			this.children.clear();

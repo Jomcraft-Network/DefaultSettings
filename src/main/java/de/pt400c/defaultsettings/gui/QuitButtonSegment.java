@@ -19,8 +19,7 @@ public class QuitButtonSegment extends ButtonSegment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
-
-		Segment.drawRect2(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, alpha);
+		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, true, alpha, false);
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
 		GLX.glBlendFuncSeparate(770, 771, 1, 0);

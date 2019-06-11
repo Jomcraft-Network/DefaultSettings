@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings;
 
+import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -26,9 +27,41 @@ public class CommandDefaultSettings {
 	         return saveProcess(command.getSource(), null);
 	      }).then(Commands.argument("argument", StringArgumentType.string()).executes((command) -> {
 	         return saveProcess(command.getSource(), StringArgumentType.getString(command, "argument"));
-	      })));
+	      }))).then(Commands.literal("export-mode").executes((command) -> {
+		         return exportMode(command.getSource(), null);
+		      }));
+
 
 		event.getCommandDispatcher().register(literalargumentbuilder);
+	}
+	
+	private static int exportMode(CommandSource source, String argument) throws CommandSyntaxException {
+		
+		if (tpe.getQueue().size() > 0)
+			throw FAILED_EXCEPTION.create();
+		
+		boolean exportMode = FileUtil.exportMode();
+		tpe.execute(new ThreadRunnable(source, null) {
+
+			@SuppressWarnings("static-access")
+			@Override
+			public void run() {
+				try {
+					if (exportMode) {
+						FileUtil.restoreConfigs();
+						source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "The export-mode has been disabled successfully"), true);
+					} else {
+						FileUtil.moveAllConfigs();
+						source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Successfully activated the export-mode"), true);
+					}
+				} catch (IOException e) {
+					DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
+					source.sendFeedback(new StringTextComponent(TextFormatting.RED + "Couldn't switch the export-mode"), true);
+				}
+			}
+		});
+		return 0;
+
 	}
 	
 	private static int saveProcess(CommandSource source, String argument) throws CommandSyntaxException {

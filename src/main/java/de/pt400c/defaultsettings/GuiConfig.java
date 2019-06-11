@@ -46,6 +46,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     
     @Override
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+    	
     	if(p_keyPressed_1_ == 256 && this.popupField != null){
     		this.popupField.setOpening(false);
     		return true;
@@ -243,6 +244,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public void onClose() {
     	this.minecraft.keyboardListener.enableRepeatEvents(false);
     	tpe.shutdownNow();
+    	super.onClose();
     }
 
     @Override

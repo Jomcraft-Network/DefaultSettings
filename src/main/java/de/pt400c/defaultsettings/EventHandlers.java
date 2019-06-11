@@ -8,6 +8,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.gui.GuiModList;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
 public class EventHandlers {
 
@@ -24,5 +25,16 @@ public class EventHandlers {
 		CommandDefaultSettings.register(event);
 		
 	}
+	
+	protected static class NewModInfo extends ModInfo {
+        public NewModInfo(ModInfo modInfo) {
+            super(modInfo.getOwningFile(), modInfo.getModConfig());
+        }
+        
+        @Override
+        public boolean hasConfigUI() {
+            return true;
+        }
+    }
 
 }

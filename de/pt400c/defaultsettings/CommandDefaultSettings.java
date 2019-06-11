@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -13,7 +14,7 @@ import net.minecraft.command.WrongUsageException;
 
 public class CommandDefaultSettings extends CommandBase {
 
-	public static final ArrayList<String> arg = new ArrayList<String>() {{	add("save");	}};
+	public static final ArrayList<String> arg = new ArrayList<String>() {{ add("save");	add("export-mode"); }};
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
     @Override
@@ -28,7 +29,8 @@ public class CommandDefaultSettings extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/defaultsettings [save]";
+    	return "/defaultsettings [save / export-mode]";
+
     }
 
     @Override
@@ -40,70 +42,94 @@ public class CommandDefaultSettings extends CommandBase {
 	public void processCommand(final ICommandSender sender, String[] args) {
 		if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase())) {
 			sender.sendChatToPlayer(ColorEnum.RED + getCommandUsage(sender));
-			return;	
+			return;
 		}
 
 		if (tpe.getQueue().size() > 0) {
 			sender.sendChatToPlayer(ColorEnum.RED + "Please wait until the last request has been processed!");
 			return;
 		}
-		
-		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-			sender.sendChatToPlayer(ColorEnum.RED + "The intended files already exist! If you want to");
-			sender.sendChatToPlayer(ColorEnum.RED + "overwrite them, add the '-o' argument");
-			return;
+
+		if (args[0].toLowerCase().equals("save")) {
+
+			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+				sender.sendChatToPlayer(ColorEnum.RED + "The intended files already exist! If you want to");
+				sender.sendChatToPlayer(ColorEnum.RED + "overwrite them, add the '-o' argument");
+				return;
+			}
+
+			MutableBoolean issue = new MutableBoolean(false);
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveKeys();
+						sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully saved the key configuration");
+						FileUtil.restoreKeys();
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
+						sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the key configuration!");
+						issue.setBoolean(true);
+					}
+				}
+			});
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveOptions();
+						sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully saved the default game options");
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
+						sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the default game options!");
+						issue.setBoolean(true);
+					}
+				}
+			});
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveServers();
+						sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully saved the server list");
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
+						sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the server list!");
+						issue.setBoolean(true);
+					}
+
+					if (issue.getBoolean())
+						sender.sendChatToPlayer(
+								ColorEnum.YELLOW + "Please inspect the log files for further information!");
+				}
+			});
+		} else {
+			final boolean exportMode = FileUtil.exportMode();
+			tpe.execute(new ThreadRunnable(sender, null) {
+
+				@Override
+				public void run() {
+					try {
+						if (exportMode) {
+							FileUtil.restoreConfigs();
+							sender.sendChatToPlayer(ColorEnum.GREEN + "The export-mode has been disabled successfully");
+						} else {
+							FileUtil.moveAllConfigs();
+							sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully activated the export-mode");
+						}
+					} catch (IOException e) {
+						DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+						sender.sendChatToPlayer((ColorEnum.RED + "Couldn't switch the export-mode"));
+					}
+				}
+			});
 		}
-
-		MutableBoolean issue = new MutableBoolean(false);
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveKeys();
-					sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully saved the key configuration");
-					FileUtil.restoreKeys();
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
-					sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the key configuration!");
-					issue.setBoolean(true);
-				}
-			}
-		});
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveOptions();
-					sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully saved the default game options");
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
-					sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the default game options!");
-					issue.setBoolean(true);
-				}
-			}
-		});
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-			
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveServers();
-					sender.sendChatToPlayer(ColorEnum.GREEN + "Successfully saved the server list");
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
-					sender.sendChatToPlayer(ColorEnum.RED + "Couldn't save the server list!");
-					issue.setBoolean(true);
-				}
-				
-				if (issue.getBoolean())
-					sender.sendChatToPlayer(ColorEnum.YELLOW + "Please inspect the log files for further information!");
-			}
-		});
 
 	}
 

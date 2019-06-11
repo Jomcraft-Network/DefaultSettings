@@ -74,8 +74,6 @@ public class UpdateContainer {
 
 					String rec = promos.get(MC_Version + "-recommended");
 					String lat = promos.get(MC_Version + "-latest");
-					
-					System.out.println(rec +"   " + lat);
 
 					ComparableVersion current = new ComparableVersion(mc.getVersion());
 

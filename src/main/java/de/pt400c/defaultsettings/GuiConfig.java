@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.channels.ClosedByInterruptException;
@@ -9,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;

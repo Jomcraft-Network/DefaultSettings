@@ -125,6 +125,7 @@ public class ExportSwitchSegment extends Segment {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {

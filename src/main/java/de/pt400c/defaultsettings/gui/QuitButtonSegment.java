@@ -1,6 +1,5 @@
 package de.pt400c.defaultsettings.gui;
 
-import java.awt.Color;
 import java.util.function.Function;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;

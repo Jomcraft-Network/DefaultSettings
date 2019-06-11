@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import de.pt400c.defaultsettings.DefaultSettings;

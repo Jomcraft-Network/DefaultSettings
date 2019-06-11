@@ -1,6 +1,5 @@
 package de.pt400c.defaultsettings.gui;
 
-import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,24 +33,4 @@ public class TextSegment extends Segment {
 		GL11.glPopMatrix();
 		
 	}
-	
-	private static Color calcAlpha(int color, float alpha) {
-		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
-	}
-	
-	public static int getRed(int value) {
-        return (value >> 16) & 0xFF;
-    }
-	
-	public static int getGreen(int value) {
-        return (value >> 8) & 0xFF;
-    }
-	
-	public static int getBlue(int value) {
-        return value & 0xFF;
-    }
-	
-	public static int getAlpha(int value) {
-        return (value >> 24) & 0xff;
-    }
 }

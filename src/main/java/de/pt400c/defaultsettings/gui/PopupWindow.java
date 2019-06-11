@@ -72,31 +72,6 @@ public class PopupWindow extends Segment {
 
 	}
 	
-	private static Color calcAlpha(int color, float alpha) {
-		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
-	}
-	
-	public static int getRed(int value) {
-        return (value >> 16) & 0xFF;
-    }
-	
-	public static int getGreen(int value) {
-        return (value >> 8) & 0xFF;
-    }
-	
-	public static int getBlue(int value) {
-        return value & 0xFF;
-    }
-	
-	public static int getAlpha(int value) {
-        return (value >> 24) & 0xff;
-    }
-	
-	protected float distanceBetweenPoints(float posX, float posY, float mouseX, float mouseY) {
-		return (float) Math.sqrt(((float) posX - mouseX) *  ((float) posX - mouseX) + ((float) posY - mouseY) *  ((float) posY - mouseY));
-		
-	}
-	
 	@Override
 	public boolean isSelected(double mouseX, double mouseY) {
 		return (mouseX >= this.getPosX() && mouseY >= this.getPosY() + 10 && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + 24) || (mouseX >= this.getPosX() + 10 && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() - 10 && mouseY < this.getPosY() + 10) || (distanceBetweenPoints((float) this.getPosX() + 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10) || (distanceBetweenPoints((float) this.getPosX() + this.getWidth() - 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10);

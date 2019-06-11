@@ -17,8 +17,7 @@ public class QuitButtonSegment extends ButtonSegment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
 		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
-		
-		Segment.drawRect2(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, alpha);
+		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, true, alpha, false);
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
      	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
@@ -27,24 +26,4 @@ public class QuitButtonSegment extends ButtonSegment {
 		GL11.glPopMatrix();
 		
 	}
-	
-	public static Color calcAlpha(int color, float alpha) {
-		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
-	}
-	
-	public static int getRed(int value) {
-        return (value >> 16) & 0xFF;
-    }
-	
-	public static int getGreen(int value) {
-        return (value >> 8) & 0xFF;
-    }
-	
-	public static int getBlue(int value) {
-        return value & 0xFF;
-    }
-	
-	public static int getAlpha(int value) {
-        return (value >> 24) & 0xff;
-    }
 }

@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +21,7 @@ public class CommandDefaultSettings extends CommandBase {
 		
 		private static final long serialVersionUID = 9131616853614902481L;
 
-	{	add("save");	}};
+	{	add("save");	add("export-mode"); }};
 	
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
@@ -38,7 +39,7 @@ public class CommandDefaultSettings extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/defaultsettings [save]";
+    	return "/defaultsettings [save / export-mode]";
     }
 
     @Override
@@ -53,70 +54,96 @@ public class CommandDefaultSettings extends CommandBase {
 
     @Override
     public void processCommand(final ICommandSender sender, String[] args) {
-    	if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase()))
+		if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase()))
 			throw new WrongUsageException(getCommandUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
 			sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
 			return;
 		}
-		
-		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-			sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
-			sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
-			return;
+
+		if (args[0].toLowerCase().equals("save")) {
+
+			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+				sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
+				sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
+				return;
+			}
+
+			MutableBoolean issue = new MutableBoolean(false);
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveKeys();
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the key configuration"));
+						FileUtil.restoreKeys();
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the key configuration!"));
+						issue.setBoolean(true);
+					}
+				}
+			});
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveOptions();
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the default game options"));
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the default game options!"));
+						issue.setBoolean(true);
+					}
+				}
+			});
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveServers();
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the server list"));
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the server list!"));
+						issue.setBoolean(true);
+					}
+
+					if (issue.getBoolean())
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
+				}
+			});
+		} else {
+
+			boolean exportMode = FileUtil.exportMode();
+			tpe.execute(new ThreadRunnable(sender, null) {
+
+				@SuppressWarnings("static-access")
+				@Override
+				public void run() {
+					try {
+						if (exportMode) {
+							FileUtil.restoreConfigs();
+							sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "The export-mode has been disabled successfully"));
+						} else {
+							FileUtil.moveAllConfigs();
+							sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully activated the export-mode"));
+						}
+					} catch (IOException e) {
+						DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
+						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't switch the export-mode"));
+					}
+				}
+			});
+
 		}
-
-		MutableBoolean issue = new MutableBoolean(false);
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveKeys();
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the key configuration"));
-					FileUtil.restoreKeys();
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the key configuration!"));
-					issue.setBoolean(true);
-				}
-			}
-		});
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveOptions();
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the default game options"));
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the default game options!"));
-					issue.setBoolean(true);
-				}
-			}
-		});
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-			
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveServers();
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the server list"));
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the server list!"));
-					issue.setBoolean(true);
-				}
-				
-				if (issue.getBoolean())
-					sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
-			}
-		});
 
 	}
 

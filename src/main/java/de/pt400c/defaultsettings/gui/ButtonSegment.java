@@ -15,9 +15,6 @@ import net.minecraft.client.renderer.OpenGlHelper;
 public class ButtonSegment extends Segment {
 	
 	protected final Function<ButtonSegment, Boolean> function;
-	protected static final int RED_MASK = 255 << 16;
-	protected static final int GREEN_MASK = 255 << 8;
-	protected static final int BLUE_MASK = 255;
 	private static final float BRIGHT_SCALE = 0.85f;
 	public String title;
 	public String hoverMessage = null;
@@ -58,26 +55,6 @@ public class ButtonSegment extends Segment {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 	}
-	
-	public static Color calcAlpha(int color, float alpha) {
-		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
-	}
-	
-	public static int getRed(int value) {
-        return (value >> 16) & 0xFF;
-    }
-	
-	public static int getGreen(int value) {
-        return (value >> 8) & 0xFF;
-    }
-	
-	public static int getBlue(int value) {
-        return value & 0xFF;
-    }
-	
-	public static int getAlpha(int value) {
-        return (value >> 24) & 0xff;
-    }
 	
 	@SuppressWarnings("unchecked")
 	@Override

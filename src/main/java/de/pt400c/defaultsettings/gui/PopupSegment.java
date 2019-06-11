@@ -18,37 +18,35 @@ public class PopupSegment extends Segment {
 	
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		if(this.isVisible) {
+		if (this.isVisible) {
 
-			
-			if(open) {
-			if(this.backgroundTimer <= (Math.PI / 3))
-				this.backgroundTimer += 0.05;
-			
-			if(this.windowTimer <= (Math.PI / 3))
-				this.windowTimer += 0.05;
-			
-		}else {
-			if(this.backgroundTimer > 0)
-				this.backgroundTimer -= 0.05;
-			else {
-				this.isVisible = false;
-				((GuiConfig) this.gui).popupField = null;
+			if (open) {
+				if (this.backgroundTimer <= (Math.PI / 3))
+					this.backgroundTimer += 0.05;
+
+				if (this.windowTimer <= (Math.PI / 3))
+					this.windowTimer += 0.05;
+
+			} else {
+				if (this.backgroundTimer > 0)
+					this.backgroundTimer -= 0.05;
+				else {
+					this.isVisible = false;
+					((GuiConfig) this.gui).popupField = null;
+				}
+
+				if (this.windowTimer > 0)
+					this.windowTimer -= 0.05;
+
 			}
-			
-			if(this.windowTimer > 0)
-				this.windowTimer -= 0.05;
-			
-
-		}
 			float alpha = 0;
-			
-			if(open)
+
+			if (open)
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			else
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 
-			Segment.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, alpha, true);
+			Segment.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			this.window.render(mouseX, mouseY, partialTicks);
 			this.window.hoverCheck(mouseX, mouseY);
 		}

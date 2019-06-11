@@ -14,9 +14,6 @@ import net.minecraft.client.gui.GuiScreen;
 public class ButtonSegment extends Segment {
 	
 	protected final Function<ButtonSegment, Boolean> function;
-	protected static final int RED_MASK = 255 << 16;
-	protected static final int GREEN_MASK = 255 << 8;
-	protected static final int BLUE_MASK = 255;
 	private static final float BRIGHT_SCALE = 0.85f;
 	public String title;
 	public String hoverMessage = null;

@@ -2,6 +2,7 @@ package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
+import java.io.IOException;
 import java.nio.channels.ClosedByInterruptException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -13,6 +14,7 @@ import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
+import de.pt400c.defaultsettings.gui.ExportSwitchSegment;
 import de.pt400c.defaultsettings.gui.Function;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.MenuScreen;
@@ -25,7 +27,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
-    private MenuScreen menu;
+    public MenuScreen menu;
     public PopupSegment popup;
     public ButtonSegment buttonS;
     public ButtonSegment buttonK;
@@ -134,6 +136,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.addSegment(new SplitterSegment(this, 72, 32, this.height - 32 - 10));
     	
+    	this.addSegment(new ExportSwitchSegment(this, 160, 7));
+    	
     	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment button) {
@@ -153,6 +157,114 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.popupField = null;
     }
+	
+public void copyConfigs() {
+		
+		tpe.execute(new Runnable() {
+			@SuppressWarnings("static-access")
+			@Override
+			public void run() {
+				GuiConfig.this.menu.exportActive.setByte((byte) 0);
+				try {
+					FileUtil.restoreConfigs();
+				} catch (IOException e) {
+					if(e instanceof ClosedByInterruptException)
+						return;
+					DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+				}
+				GuiConfig.this.menu.exportActive.setByte((byte) 1);
+			}
+		});
+	}
+	
+	public void deleteConfigs() {
+		
+		if(!FileUtil.exportMode()) {
+			this.popup.setOpening(true);
+			this.popup.getWindow().title = "Delete Config Folder";
+			this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
+			this.popupField = this.popup;
+			this.popupField.getWindow().clearChildren();
+			this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "Do you want to delete every file\nfrom the config folder?\n\n(The defaultsettings folder will be kept)", 0, true));
+			this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+
+					GuiConfig.this.popupField.setOpening(false);
+
+					return true;
+				}
+			}, true));
+
+			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 80, 75, "Proceed", new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+
+					GuiConfig.this.popupField.setOpening(false);
+					tpe.execute(new Runnable() {
+						@SuppressWarnings("static-access")
+						@Override
+						public void run() {
+							GuiConfig.this.menu.exportActive.setByte((byte) 0);
+							try {
+								FileUtil.setExportMode();
+							} catch (IOException e) {
+								if(e instanceof ClosedByInterruptException)
+									return;
+								DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+							}
+							GuiConfig.this.menu.exportActive.setByte((byte) 2);
+						}
+					});
+
+					return true;
+				}
+			}, 60, 20, 2, null, true));
+			
+			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 + 20, 75, "Move", new Function<ButtonSegment, Boolean>() {
+				@Override
+				public Boolean apply(ButtonSegment button) {
+
+					GuiConfig.this.popupField.setOpening(false);
+					tpe.execute(new Runnable() {
+						@SuppressWarnings("static-access")
+						@Override
+						public void run() {
+							GuiConfig.this.menu.exportActive.setByte((byte) 0);
+							try {
+								FileUtil.moveAllConfigs();
+							} catch (IOException e) {
+								if(e instanceof ClosedByInterruptException)
+									return;
+								DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+							}
+							GuiConfig.this.menu.exportActive.setByte((byte) (FileUtil.exportMode() ? 2 : 1));
+						}
+					});
+
+					return true;
+				}
+			}, 60, 20, 2, "Move all contents from the config folder to DS's config management", true));
+			
+			this.popup.isVisible = true;
+			
+		}else {
+			tpe.execute(new Runnable() {
+				@SuppressWarnings("static-access")
+				@Override
+				public void run() {
+					try {
+						FileUtil.setExportMode();
+					} catch (IOException e) {
+						if(e instanceof ClosedByInterruptException)
+							return;
+						DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+					}
+					GuiConfig.this.menu.exportActive.setByte((byte) 2);
+				}
+			});
+		}
+	}
 
     @Override
     public void onGuiClosed() {
@@ -203,6 +315,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
     
     public static int clamp(int num, int min, int max)
+    {
+        return num < min ? min : (num > max ? max : num);
+    }
+    
+    public static float clamp(float num, float min, float max)
     {
         return num < min ? min : (num > max ? max : num);
     }

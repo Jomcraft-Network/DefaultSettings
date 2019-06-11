@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,7 +16,7 @@ public class CommandDefaultSettings extends CommandBase {
 
 	public static final ArrayList<String> arg = new ArrayList<String>() {
 		private static final long serialVersionUID = 9131616853614902481L;
-	{	add("save");	}};
+	{	add("save");	add("export-mode"); }};
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
     @Override
@@ -32,7 +33,7 @@ public class CommandDefaultSettings extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/defaultsettings [save]";
+    	return "/defaultsettings [save / export-mode]";
     }
 
     @Override
@@ -56,6 +57,8 @@ public class CommandDefaultSettings extends CommandBase {
 			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
 			return;
 		}
+		
+		if (args[0].toLowerCase().equals("save")) {
 		
 		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
 			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
@@ -113,6 +116,29 @@ public class CommandDefaultSettings extends CommandBase {
 					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
 			}
 		});
+		}else {
+			final boolean exportMode = FileUtil.exportMode();
+			tpe.execute(new ThreadRunnable(sender, null) {
+
+				@SuppressWarnings("static-access")
+				@Override
+				public void run() {
+					try {
+						if (exportMode) {
+							FileUtil.restoreConfigs();
+							sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "The export-mode has been disabled successfully"));
+						} else {
+							FileUtil.moveAllConfigs();
+							sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully activated the export-mode"));
+						}
+					} catch (IOException e) {
+						DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't switch the export-mode"));
+					}
+				}
+			});
+
+		}
 
 	}
 

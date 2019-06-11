@@ -111,15 +111,6 @@ public class FileUtil {
 	}
 	
 	public static boolean exportMode() {
-		FileFilter fileFilter = new FileFilter() {
-			@Override
-			public boolean accept(File file) {
-				if (!file.getName().equals("defaultsettings") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") &&/* !file.getName().equals("optionsof.txt") && */!file.getName().equals("servers.dat"))
-					return true;
-
-				return false;
-			}
-		};
 		return new File(mcDataDir, "config").listFiles(fileFilter).length == 0;
 	}
 	

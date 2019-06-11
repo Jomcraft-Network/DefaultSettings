@@ -46,77 +46,77 @@ public class CommandDefaultSettings extends CommandBase {
     	return 0;
     }
 
-    @Override
-    public void processCommand(final ICommandSender sender, String[] args) {
-    	if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase())) {
-    		sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + getCommandUsage(sender)));
-			return;	
-    	}
+	@Override
+	public void processCommand(final ICommandSender sender, String[] args) {
+		if (args.length == 0 || args.length > 2 || !arg.contains(args[0].toLowerCase())) {
+			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + getCommandUsage(sender)));
+			return;
+		}
 
 		if (tpe.getQueue().size() > 0) {
 			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
 			return;
 		}
-		
+
 		if (args[0].toLowerCase().equals("save")) {
-		
-		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
-			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
-			return;
-		}
 
-		MutableBoolean issue = new MutableBoolean(false);
-
-		tpe.execute(new ThreadRunnable(sender, issue) {
-
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveKeys();
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully saved the key configuration"));
-					FileUtil.restoreKeys();
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't save the key configuration!"));
-					issue.setBoolean(true);
-				}
+			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+				sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
+				sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
+				return;
 			}
-		});
 
-		tpe.execute(new ThreadRunnable(sender, issue) {
+			MutableBoolean issue = new MutableBoolean(false);
 
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveOptions();
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully saved the default game options"));
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't save the default game options!"));
-					issue.setBoolean(true);
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveKeys();
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully saved the key configuration"));
+						FileUtil.restoreKeys();
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the key configuration:", e);
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't save the key configuration!"));
+						issue.setBoolean(true);
+					}
 				}
-			}
-		});
+			});
 
-		tpe.execute(new ThreadRunnable(sender, issue) {
-			
-			@Override
-			public void run() {
-				try {
-					FileUtil.saveServers();
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully saved the server list"));
-				} catch (Exception e) {
-					DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't save the server list!"));
-					issue.setBoolean(true);
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveOptions();
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully saved the default game options"));
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the default game options:", e);
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't save the default game options!"));
+						issue.setBoolean(true);
+					}
 				}
-				
-				if (issue.getBoolean())
-					sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
-			}
-		});
-		}else {
+			});
+
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						FileUtil.saveServers();
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully saved the server list"));
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.SEVERE, "An exception occurred while saving the server list:", e);
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Couldn't save the server list!"));
+						issue.setBoolean(true);
+					}
+
+					if (issue.getBoolean())
+						sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
+				}
+			});
+		} else {
 			final boolean exportMode = FileUtil.exportMode();
 			tpe.execute(new ThreadRunnable(sender, null) {
 

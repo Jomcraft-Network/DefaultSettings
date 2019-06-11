@@ -18,12 +18,13 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@")
+@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, guiFactory = DefaultSettings.modGuiFactory, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@")
 public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
 	public static final String NAME = "DefaultSettings";
 	public static final String VERSION = "@VERSION@";
+	public static final String modGuiFactory = "de.pt400c.defaultsettings.GuiConfigFactory";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	private static boolean isServer = false;
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();

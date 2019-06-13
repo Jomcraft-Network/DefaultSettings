@@ -45,6 +45,7 @@ public class DefaultSettings {
 		} catch (Exception e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
 		}
+
 	}
 	
 	@EventHandler

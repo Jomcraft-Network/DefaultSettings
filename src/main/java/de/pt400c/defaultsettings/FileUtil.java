@@ -9,10 +9,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.ResourcePackRepository;
+import net.minecraft.client.resources.ResourcePackRepository.Entry;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -60,6 +64,28 @@ public class FileUtil {
 		if (!serversFile.exists()) 
 			restoreServers();
 		
+		if (firstBoot) {
+			
+			GameSettings gameSettings = MC.gameSettings;
+			gameSettings.loadOptions();
+			
+			ResourcePackRepository resourceRepository = MC.getResourcePackRepository();
+			resourceRepository.updateRepositoryEntriesAll();
+			List<Entry> repositoryEntries = new ArrayList<Entry>();
+			
+			for (String resourcePack : gameSettings.resourcePacks) {
+				for (Entry entry : resourceRepository.getRepositoryEntriesAll()) {
+					if (entry.getResourcePackName().equals(resourcePack)) {
+						repositoryEntries.add(entry);
+					}
+				}
+			}
+
+			resourceRepository.setRepositories(repositoryEntries);
+
+			MC.getLanguageManager().currentLanguage = gameSettings.language;
+
+		}
 	}
 	
 	public static boolean optionsFilesExist() {

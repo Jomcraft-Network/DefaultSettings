@@ -1,7 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
+import static de.pt400c.defaultsettings.FileUtil.devEnv;
 import java.awt.Color;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -18,12 +18,10 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.launchwrapper.Launch;
 
 public abstract class Segment {
 	
 	protected final GuiScreen gui;
-	private static final boolean devEnv = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	private static final String posXFr = devEnv ? "posX" : "field_78295_j";
 	private static final String posYFr = devEnv ? "posY" : "field_78296_k";
 	private static final String redFr = devEnv ? "red" : "field_78291_n";

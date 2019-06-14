@@ -10,7 +10,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -35,6 +34,14 @@ public class DefaultSettings {
 	public static DefaultSettings instance;
 	
 	public DefaultSettings() {
+		isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
+		if (isServer)
+			return;
+		try {
+			FileUtil.restoreContents();
+		} catch (Exception e) {
+			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game:", e);
+		}
 		instance = this;
 	}
 
@@ -53,18 +60,6 @@ public class DefaultSettings {
 		DefaultSettings.log.log(Level.SEVERE, "The mod's files have been manipulated! The game will be terminated.");
 		System.exit(0);
     }
-
-	@EventHandler
-	public static void construction(FMLConstructionEvent event) {
-		isServer = FMLCommonHandler.instance().getSide() == Side.SERVER;
-		if (isServer)
-			return;
-		try {
-			FileUtil.restoreContents();
-		} catch (Exception e) {
-			DefaultSettings.log.log(Level.SEVERE, "An exception occurred while starting up the game:", e);
-		}
-	}
 
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {

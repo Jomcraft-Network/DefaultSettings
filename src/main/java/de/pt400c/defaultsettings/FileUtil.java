@@ -7,17 +7,24 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
-
+import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.LanguageManager;
+import net.minecraft.client.resources.ResourcePackRepository;
+import net.minecraft.client.resources.ResourcePackRepositoryEntry;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.launchwrapper.Launch;
 
 public class FileUtil {
 	
 	public static final Minecraft MC = Minecraft.getMinecraft();
 	public static final File mcDataDir = MC.mcDataDir;
+	public static final boolean devEnv = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static final FileFilter fileFilter = new FileFilter() {
 
 		@Override
@@ -54,6 +61,25 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
+		if (firstBoot) {
+			GameSettings gameSettings = MC.gameSettings;
+			gameSettings.loadOptions();
+			ResourcePackRepository resourceRepository = MC.getResourcePackRepository();
+			resourceRepository.updateRepositoryEntriesAll();
+			ResourcePackRepositoryEntry resEntry = null;
+			String resourcePack = gameSettings.skin;
+			for (Object entryObj : resourceRepository.getRepositoryEntriesAll()) {
+				ResourcePackRepositoryEntry entry = (ResourcePackRepositoryEntry) entryObj;
+				if (entry.getResourcePackName().equals(resourcePack)) {
+					resEntry = entry;
+					break;
+				}
+			}
+
+			resourceRepository.setRepositoryEntries(resEntry);
+			setField(devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
+
+		}
 		
 	}
 	
@@ -212,7 +238,7 @@ public class FileUtil {
 		try {
 			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
 		} catch (IOException e) {
-			throw e;
+			DefaultSettings.log.log(Level.SEVERE, "Couldn't restore the server config: ", e);
 		}
 	}
 	
@@ -298,4 +324,22 @@ public class FileUtil {
 			}
 		}
 	}
+	
+	@SuppressWarnings("rawtypes")
+	private static void setField(String name, Class clazz, Object obj, Object value) {
+		try {
+			Field field = clazz.getDeclaredField(name);
+			field.setAccessible(true);
+			field.set(obj, value);
+		} catch (IllegalAccessException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		} catch (IllegalArgumentException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		} catch (NoSuchFieldException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		} catch (SecurityException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		}
+	}
+
 }

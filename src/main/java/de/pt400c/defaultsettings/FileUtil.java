@@ -257,7 +257,7 @@ public class FileUtil {
 		try {
 			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
 		} catch (IOException e) {
-			throw e;
+			DefaultSettings.log.log(Level.ERROR, "Couldn't restore the server config: ", e);
 		}
 	}
 	

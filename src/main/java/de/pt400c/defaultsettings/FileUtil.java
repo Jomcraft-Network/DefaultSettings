@@ -9,10 +9,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
+
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.LanguageManager;
+import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.world.World;
@@ -46,6 +52,7 @@ public class FileUtil {
 		
 		final File options = new File(mcDataDir, "options.txt");
 		boolean firstBoot = !options.exists();
+
 		if (firstBoot) {
 			restoreOptions();
 			if(!exportMode())
@@ -64,7 +71,24 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
-		
+
+		if (firstBoot) {
+			
+			GameSettings gameSettings = MC.gameSettings;
+			gameSettings.loadOptions();
+			MC.getResourcePackList().reloadPacksFromFinders();
+			List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
+			for (String resourcePack : gameSettings.resourcePacks) {
+				for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b()) {
+					if (entry.getName().equals(resourcePack)) {
+						repositoryEntries.add(entry);
+					}
+				}
+			}
+			MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
+			setField(devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
+
+		}
 	}
 	
 	public static boolean optionsFilesExist() {
@@ -228,7 +252,7 @@ public class FileUtil {
 		try {
 			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
 		} catch (IOException e) {
-			throw e;
+			DefaultSettings.log.log(Level.ERROR, "Couldn't restore the server config: ", e);
 		}
 	}
 	

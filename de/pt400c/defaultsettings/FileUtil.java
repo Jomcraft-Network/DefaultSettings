@@ -8,11 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.logging.Level;
 
 import org.apache.commons.io.FileUtils;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.texturepacks.GuiTexturePacks;
+import net.minecraft.client.texturepacks.ITexturePack;
+import net.minecraft.client.texturepacks.TexturePackList;
 
 public class FileUtil {
 	
@@ -54,6 +59,24 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
+
+		if (firstBoot) {
+			GameSettings gameSettings = MC.gameSettings;
+			gameSettings.loadOptions();
+			TexturePackList resourceRepository = MC.texturePackList;
+			resourceRepository.updateAvaliableTexturePacks();
+			ITexturePack resEntry = null;
+			String resourcePack = gameSettings.skin;
+			for (Object entryObj : resourceRepository.availableTexturePacks()) {
+				ITexturePack entry = (ITexturePack) entryObj;
+				if (entry.getTexturePackFileName().equals(resourcePack)) {
+					resEntry = entry;
+					break;
+				}
+			}
+
+			resourceRepository.setTexturePack(resEntry);
+		}
 		
 	}
 	
@@ -212,7 +235,7 @@ public class FileUtil {
 		try {
 			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
 		} catch (IOException e) {
-			throw e;
+			DefaultSettings.log.log(Level.SEVERE, "Couldn't restore the server config: ", e);
 		}
 	}
 	

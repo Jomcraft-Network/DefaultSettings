@@ -8,10 +8,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Level;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.ResourcePackRepository;
+import net.minecraft.client.resources.ResourcePackRepository.Entry;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
 public class FileUtil {
@@ -54,6 +59,31 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
+		
+		if (firstBoot) {
+			
+			GameSettings gameSettings = MC.gameSettings;
+			gameSettings.loadOptions();
+			
+			ResourcePackRepository resourceRepository = MC.getResourcePackRepository();
+			resourceRepository.updateRepositoryEntriesAll();
+			List<Entry> repositoryEntries = new ArrayList<Entry>();
+
+			for(Object resourcePackObj : gameSettings.resourcePacks) {
+				String resourcePack = (String) resourcePackObj;
+				for (Object entryObj : resourceRepository.getRepositoryEntriesAll()) {
+					Entry entry = (Entry) entryObj;
+					if (entry.getResourcePackName().equals(resourcePack)) {
+						repositoryEntries.add(entry);
+					}
+				}
+			}
+
+			resourceRepository.func_148527_a(repositoryEntries);
+			MC.getLanguageManager().currentLanguage = gameSettings.language;
+
+		}
+
 		
 	}
 	
@@ -212,7 +242,7 @@ public class FileUtil {
 		try {
 			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
 		} catch (IOException e) {
-			throw e;
+			DefaultSettings.log.log(Level.ERROR, "Couldn't restore the server config: ", e);
 		}
 	}
 	

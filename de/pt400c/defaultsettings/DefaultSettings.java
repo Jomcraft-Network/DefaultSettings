@@ -24,7 +24,7 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.2.4", dependencies = "before:*")
+@Mod(modid = "defaultsettings", name = "DefaultSettings", version = "1.2.5", dependencies = "before:*")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class DefaultSettings {
 

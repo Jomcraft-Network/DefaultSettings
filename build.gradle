@@ -11,11 +11,8 @@ buildscript {
     }
 }
 
-plugins {
-	id "maven-publish"
-}
-
 apply plugin: 'forge'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 version = "1.6.4-1.2.6"

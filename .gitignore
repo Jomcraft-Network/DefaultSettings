@@ -7,3 +7,5 @@
 !/.gitignore
 !/gradle/
 !/LICENSE
+!/pubkey.gpg
+!/Jenkinsfile

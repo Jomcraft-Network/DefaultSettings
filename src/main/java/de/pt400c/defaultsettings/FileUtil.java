@@ -18,11 +18,13 @@ import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.launchwrapper.Launch;
 
 public class FileUtil {
 	
 	public static final Minecraft MC = Minecraft.getMinecraft();
 	public static final File mcDataDir = MC.mcDataDir;
+	public static final boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static final FileFilter fileFilter = new FileFilter() {
 
 		@Override

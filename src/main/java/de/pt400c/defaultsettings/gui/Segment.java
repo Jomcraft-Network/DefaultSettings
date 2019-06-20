@@ -17,6 +17,7 @@ import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
 
 import de.pt400c.defaultsettings.DefaultSettings;
+import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
@@ -46,7 +47,6 @@ public abstract class Segment {
     private static final float circleTheta = (float) (2 * 3.1415926 / 100F); 
     private static final float tangetialFactor = (float) Math.tan(circleTheta);
 	private static final float radialFactor = (float) Math.cos(circleTheta);
-	private static final boolean devEnv = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	
 	public Segment(GuiScreen gui, float posX, float posY, float width, float height, boolean popupSegment) {
 		this.gui = gui;
@@ -345,7 +345,7 @@ public abstract class Segment {
 	
 	public void resetStyles() {
 		try {
-			Method resetStyles = FontRenderer.class.getDeclaredMethod(devEnv ? "resetStyles" : "func_78265_b", new Class<?>[0]);
+			Method resetStyles = FontRenderer.class.getDeclaredMethod(FileUtil.isDev ? "resetStyles" : "func_78265_b", new Class<?>[0]);
 			resetStyles.setAccessible(true);
 			resetStyles.invoke(MC.fontRenderer, new Object[0]);
 		} catch (IllegalAccessException e) {
@@ -579,7 +579,7 @@ public abstract class Segment {
 
 	private float renderUnicodeChar(char p_78278_2_, boolean p_78278_3_) {
 		try {
-			Method renderUnicodeChar = FontRenderer.class.getDeclaredMethod(devEnv ? "renderUnicodeChar" : "func_78277_a", char.class, boolean.class);
+			Method renderUnicodeChar = FontRenderer.class.getDeclaredMethod(FileUtil.isDev ? "renderUnicodeChar" : "func_78277_a", char.class, boolean.class);
 			renderUnicodeChar.setAccessible(true);
 			return (Float) renderUnicodeChar.invoke(MC.fontRenderer, p_78278_2_, p_78278_3_);
 		} catch (NoSuchMethodException e) {
@@ -599,7 +599,7 @@ public abstract class Segment {
 	private float renderDefaultChar(int p_78278_1_, boolean p_78278_3_) {
 		
 		try {
-			Method renderDefaultChar = FontRenderer.class.getDeclaredMethod(devEnv ? "renderDefaultChar" : "func_78266_a", int.class, boolean.class);
+			Method renderDefaultChar = FontRenderer.class.getDeclaredMethod(FileUtil.isDev ? "renderDefaultChar" : "func_78266_a", int.class, boolean.class);
 			renderDefaultChar.setAccessible(true);
 			return (Float) renderDefaultChar.invoke(MC.fontRenderer, p_78278_1_, p_78278_3_);
 		} catch (NoSuchMethodException e) {

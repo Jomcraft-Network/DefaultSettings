@@ -54,7 +54,7 @@ public class DefaultSettings {
 	
 	@EventHandler
     public static void onFingerprintViolation(FMLFingerprintViolationEvent event) {
-		if(event.isDirectory)
+		if(event.isDirectory || FileUtil.devEnv)
 			return;
 
 		DefaultSettings.log.log(Level.SEVERE, "The mod's files have been manipulated! The game will be terminated.");

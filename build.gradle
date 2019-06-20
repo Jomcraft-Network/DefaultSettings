@@ -108,7 +108,8 @@ artifacts {
 	archives deobfJar
 }
 
-task zipVerification {
+task zipVerification(type: Zip) {
+ classifier = 'verification'
     doLast {
         ant.zip(destfile: "$buildDir/libs/verification.zip") {
             fileset(dir: "$buildDir/libs/") {
@@ -173,15 +174,20 @@ curseforge {
             artifact jar
             artifact deobfJar
             artifact sourcesJar
-            artifact "$buildDir/libs/verification.zip"
+           
+            artifact("$buildDir/libs/verification.zip"){
+           		classifier "verification"
+        		extension "zip"
+            }
+            
         }
     }
-    repositories {
-    maven {
-    credentials {
-                username project.property("maven.username")
-                password project.property("maven.password")
-            }
+  repositories {
+  		maven {
+  			credentials {
+        		username project.property("maven.username")
+        		password project.property("maven.password")
+    		}
     	url "https://maven.jomcraft.net/repository/release"
     }
     

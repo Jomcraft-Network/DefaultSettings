@@ -20,7 +20,7 @@ pipeline
 				gitlabCommitStatus('Build')
 				{
 				    sh 'chmod +x gradlew'
-                    sh './gradlew build'
+                    sh './gradlew build publish'
 
 				}
 			}
@@ -32,9 +32,7 @@ pipeline
 			{
 				gitlabCommitStatus('Deploy')
 				{
-				    archiveArtifacts artifacts: 'build/libs/DefaultSettings-*.jar', fingerprint: true
                     cleanWs()
-
 				}
 			}
 		}

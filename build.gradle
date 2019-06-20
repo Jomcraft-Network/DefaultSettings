@@ -172,7 +172,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
         	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.13.2'
+            artifactId = 'DefaultSettings-1.14.2'
             version = "$fileVersion"
             artifact jar
             artifact deobfJar

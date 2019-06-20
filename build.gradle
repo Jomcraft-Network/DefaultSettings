@@ -108,8 +108,7 @@ artifacts {
 	archives deobfJar
 }
 
-task zipVerification(type: Zip) {
- classifier = 'verification'
+task zipVerification {
     doLast {
         ant.zip(destfile: "$buildDir/libs/verification.zip") {
             fileset(dir: "$buildDir/libs/") {

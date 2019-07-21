@@ -1,8 +1,13 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-import net.minecraft.client.gui.GuiScreen;
 
+import de.pt400c.defaultsettings.GuiConfig;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ButtonMovableSegment extends ButtonSegment {
 	
 	private boolean dragging;
@@ -26,6 +31,8 @@ public class ButtonMovableSegment extends ButtonSegment {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.dragging = true;
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
 			distanceX = (mouseX - this.posX);
 			distanceY = (mouseY - this.posY);
 			

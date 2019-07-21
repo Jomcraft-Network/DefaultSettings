@@ -5,11 +5,14 @@ import java.util.List;
 
 import de.pt400c.defaultsettings.FileUtil;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class MenuScreen extends Segment {
 	
 	private List<MenuArea> variants = new ArrayList<>();
-	private int index = 0;
+	public int index = 0;
 	public volatile MutableByte exportActive = new MutableByte((byte) 0); //0 : Not clear, 1 : false : 2 : true
 
 	public MenuScreen(GuiScreen gui, float posX, float posY) {
@@ -34,6 +37,21 @@ public class MenuScreen extends Segment {
         	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
         }
 
+	}
+
+	@Override
+	public boolean handleMouseInput() {
+		synchronized (this.variants) {
+			this.variants.get(this.index).handleMouseInput();
+		}
+		return super.handleMouseInput();
+	}
+	
+	@Override
+	protected boolean keyTyped(char typedChar, int keyCode) {
+		synchronized (this.variants) {
+			return this.variants.get(this.index).keyTyped(typedChar, keyCode);
+		}
 	}
 	
 	@Override
@@ -61,6 +79,10 @@ public class MenuScreen extends Segment {
 
 		}
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
+	}
+	
+	public List<MenuArea> getVariants(){
+		return this.variants;
 	}
 	
 	public MenuScreen addVariant(MenuArea segment) {

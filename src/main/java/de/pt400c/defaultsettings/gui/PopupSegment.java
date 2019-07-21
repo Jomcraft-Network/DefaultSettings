@@ -4,7 +4,10 @@ import javax.annotation.Nonnull;
 
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class PopupSegment extends Segment {
 
 	@Nonnull
@@ -51,7 +54,7 @@ public class PopupSegment extends Segment {
 			else
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 
-			Segment.drawRectSteppi(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
+			Segment.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			this.window.render(mouseX, mouseY, partialTicks);
 			this.window.hoverCheck(mouseX, mouseY);
 		}

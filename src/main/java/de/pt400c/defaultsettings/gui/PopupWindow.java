@@ -7,7 +7,10 @@ import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class PopupWindow extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();

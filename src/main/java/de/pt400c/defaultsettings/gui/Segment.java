@@ -1,11 +1,11 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -15,7 +15,10 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public abstract class Segment {
 	
 	protected final GuiScreen gui;
@@ -47,6 +50,8 @@ public abstract class Segment {
 	
 	public abstract void render(float mouseX, float mouseY, float partialTicks);
 	
+	public void customRender(float mouseX, float mouseY, float customPosX, float customPosY, float partialTicks) {};
+	
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
 	}
@@ -55,6 +60,16 @@ public abstract class Segment {
 
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
+    }
+    
+    public boolean handleMouseInput() {
+    	float mouseX = Mouse.getEventX() * this.width / MC.displayWidth;
+        float mouseY = this.height - Mouse.getEventY() * this.height / MC.displayHeight - 1;
+        return this.isSelected(mouseX, mouseY);
+    }
+    
+    protected boolean keyTyped(char typedChar, int keyCode) {
+    	return false;
     }
     
     public boolean mouseDragged(double mouseX, double mouseY, int button) {
@@ -85,6 +100,8 @@ public abstract class Segment {
         return this.isPopupSegment;
 	}
 	
+	public void guiContentUpdate(String... arg) {};
+	
 	public Segment setPos(double x, double y) {
 		this.posX = x;
 		this.posY = y;
@@ -98,7 +115,7 @@ public abstract class Segment {
 			MC.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 	
-	public static void drawRectSteppi(double x1, double y1, double x2, double y2, Integer color, boolean blending, Float alpha, boolean multiply)
+	public static void drawRect(double x1, double y1, double x2, double y2, Integer color, boolean blending, Float alpha, boolean multiply)
     {
 		double j1;
 
@@ -164,9 +181,9 @@ public abstract class Segment {
 
         drawCircle(x2 - 10, y1 + 10, 10, 270F, 75);
 
-        drawRectSteppi(x1 + 10, y1, x2 - 10, y1 + 10, null, false, null, false);
+        drawRect(x1 + 10, y1, x2 - 10, y1 + 10, null, false, null, false);
         
-        drawRectSteppi(x1, y1 + 10, x2, y2, null, false, null, false);
+        drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
         
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -201,7 +218,7 @@ public abstract class Segment {
 	protected static Color calcAlpha(int color, float alpha) {
 		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
 	}
-	
+
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
@@ -220,10 +237,10 @@ public abstract class Segment {
         drawCircle(x2 - 10, y2 - 10, 10, 0F, 75);
         
 
-        drawRectSteppi(x1, y1, x2, y2 - 10, null, false, null, false);
+        drawRect(x1, y1, x2, y2 - 10, null, false, null, false);
         
         
-        drawRectSteppi(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
+        drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
@@ -308,6 +325,41 @@ public abstract class Segment {
 
 		reset();
 	}
+	
+	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		if(!(factor == 1))
+			GL11.glLineWidth(3.0F * (factor - 1));
+		else
+			GL11.glLineWidth(1F);
+
+		GL11.glBegin(GL11.GL_LINE_STRIP);
+		GL11.glColor4f(red, green, blue, alpha);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+		
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		
+		
+		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		if(!(factor == 1))
+			GL11.glPointSize(3.0F * (factor - 1));
+		else
+			GL11.glPointSize(1F);
+		GL11.glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+
+		
+	}
 
 	private static void reset() {
 		byteBuffer.clear();
@@ -315,7 +367,7 @@ public abstract class Segment {
 	}
 
 	public static void drawButton(double left, double top, double right, double bottom, int color, int color2, int border) {
-		drawRectSteppi(left, top, right, bottom, color, true, null, false);
-		drawRectSteppi(left + border, top + border, right - border, bottom - border, color2, true, null, false);
+		drawRect(left, top, right, bottom, color, true, null, false);
+		drawRect(left + border, top + border, right - border, bottom - border, color2, true, null, false);
 	}
 }

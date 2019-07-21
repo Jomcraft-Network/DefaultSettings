@@ -20,7 +20,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.14.3-1.2.5"
+version = "1.14.4-1.2.5"
 
 def fileVersion = "1.2.5"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
@@ -55,12 +55,12 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.3-27.0.60'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.0.11'
 }
 
-def minecraft_version = "1.14.3"
+def minecraft_version = "1.14.4"
 
-def forge_version = "27.0.60"
+def forge_version = "28.0.11"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -172,7 +172,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
         	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.14.3'
+            artifactId = 'DefaultSettings-1.14.4'
             version = "$fileVersion"
             artifact jar
             artifact deobfJar

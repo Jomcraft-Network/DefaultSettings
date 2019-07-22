@@ -3,12 +3,11 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class DefaultSettingsGUI extends GuiScreen/* implements IGuiEventListener */{
+public class DefaultSettingsGUI extends GuiScreen {
 	
 	private List<Segment> segments = new ArrayList<>();
 	

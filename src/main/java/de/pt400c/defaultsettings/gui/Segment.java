@@ -1,10 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHelper;
 import net.minecraft.client.audio.SimpleSound;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;

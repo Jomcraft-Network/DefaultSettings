@@ -28,31 +28,27 @@ import org.apache.logging.log4j.Level;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
+import cpw.mods.modlauncher.api.INameMappingService;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.world.World;
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 public class FileUtil {
 	
 	public static final Minecraft MC = Minecraft.getInstance();
 	public static final File mcDataDir = MC.gameDir;
-	public static final boolean devEnv = World.class.getSimpleName().equals("World");
+	public static final boolean devEnv = !isntDev();
 	
-	
-	
-	
-	
-	//ERROR HERE !!!!!!!!!!
-	
-	
-	
-	
-	
+	public static boolean isntDev()
+    {
+        return FMLLoader.getNameFunction("srg").map(f->f.apply(INameMappingService.Domain.FIELD, "field_151472_e")).orElse("field_151472_e").equals("field_151472_e");
+    }
 	
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	public static MainJSON mainJson;

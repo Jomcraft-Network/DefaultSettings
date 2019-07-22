@@ -1,7 +1,10 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class SplitterSegment extends Segment {
 
 	public SplitterSegment(GuiScreen gui, float posX, float posY, int height) {

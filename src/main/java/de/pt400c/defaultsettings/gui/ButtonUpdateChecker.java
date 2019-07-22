@@ -4,9 +4,13 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.ArrayList;
 import java.util.Collections;
 import de.pt400c.defaultsettings.DefaultSettings;
+import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.UpdateContainer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ButtonUpdateChecker extends ButtonSegment {
 
 	public float timer = 0;
@@ -58,6 +62,8 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
 
 			return true;
 		} else {

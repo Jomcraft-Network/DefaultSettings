@@ -6,7 +6,10 @@ import de.pt400c.defaultsettings.GuiConfig;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class QuitButtonSegment extends ButtonSegment {
 
 	public QuitButtonSegment(GuiScreen gui, float posX, float posY, int width, int height, Function<ButtonSegment, Boolean> function, boolean popup) {

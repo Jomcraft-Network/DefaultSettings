@@ -7,7 +7,10 @@ import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class PopupWindow extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();

@@ -1,11 +1,15 @@
 package de.pt400c.defaultsettings;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.toml.TomlParser;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -18,6 +22,7 @@ public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
+	public static final String VERSION = getModVersion();
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
 	private static final UpdateContainer updateContainer = new UpdateContainer();
@@ -27,7 +32,7 @@ public class DefaultSettings {
 	public DefaultSettings() {
 		instance = this;
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
-		
+
 		//Not yet implemented by Forge
 		
 		//FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFingerprintViolation);
@@ -45,6 +50,17 @@ public class DefaultSettings {
 		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, ()-> (mc, screen) -> new GuiConfig(screen));
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static String getModVersion() {
+		//Stupid FG 3 workaround
+		TomlParser parser = new TomlParser();
+		InputStream stream = DefaultSettings.class.getClassLoader().getResourceAsStream("META-INF/mods.toml");
+		CommentedConfig file = parser.parse(stream);
+
+		return ((ArrayList<CommentedConfig>) file.get("mods")).get(0).get("version");
+	}
+	 
 	
 	/*
     public void onFingerprintViolation(FMLFingerprintViolationEvent event) {

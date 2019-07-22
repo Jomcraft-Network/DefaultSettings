@@ -3,8 +3,12 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class DefaultSettingsGUI extends GuiScreen {
+@OnlyIn(Dist.CLIENT)
+public class DefaultSettingsGUI extends GuiScreen/* implements IGuiEventListener */{
 	
 	private List<Segment> segments = new ArrayList<>();
 	
@@ -20,6 +24,39 @@ public class DefaultSettingsGUI extends GuiScreen {
 		synchronized (this.segments) {
 			this.segments.clear();
 		}
+	}
+	@Override
+	public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_) {
+		synchronized (this.segments) {
+			if (this.popupField == null) {
+				for (Segment segment : segments) {
+					if (segment.charTyped(p_charTyped_1_, p_charTyped_2_)) {
+						return true;
+					}
+				}
+			} else {
+
+				return this.popupField.charTyped(p_charTyped_1_, p_charTyped_2_);
+			}
+		}
+		return super.charTyped(p_charTyped_1_, p_charTyped_2_);
+	}
+	
+	@Override
+	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+		synchronized (this.segments) {
+			if (this.popupField == null) {
+				for (Segment segment : segments) {
+					if (segment.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_)) {
+						return true;
+					}
+				}
+			} else {
+
+				return this.popupField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+			}
+		}
+		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
 	}
 
 	@Override
@@ -74,6 +111,23 @@ public class DefaultSettingsGUI extends GuiScreen {
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_, p_mouseDragged_6_,
 				p_mouseDragged_8_);
+	}
+	
+	@Override
+	public boolean mouseScrolled(double p_mouseScrolled_1_) {
+		synchronized (this.segments) {
+			if (this.popupField == null) {
+				for (Segment segment : this.segments) {
+					if (segment.mouseScrolled(p_mouseScrolled_1_)) {
+						return true;
+					}
+
+				}
+			} else {
+				return this.popupField.mouseScrolled(p_mouseScrolled_1_);
+			}
+		}
+		return super.mouseScrolled(p_mouseScrolled_1_);
 	}
 	
 	@Override

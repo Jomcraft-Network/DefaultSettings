@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import de.pt400c.defaultsettings.FileUtil;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class MenuScreen extends Segment {
 	
 	private List<MenuArea> variants = new ArrayList<>();
-	private int index = 0;
+	public int index = 0;
 	public volatile MutableByte exportActive = new MutableByte((byte) 0); //0 : Not clear, 1 : false : 2 : true
 
 	public MenuScreen(GuiScreen gui, float posX, float posY) {
@@ -24,6 +27,28 @@ public class MenuScreen extends Segment {
 			}
 		}).start();
 
+	}
+	
+	@Override
+	public boolean mouseScrolled(double p_mouseScrolled_1_) {
+		synchronized (this.variants) {
+			this.variants.get(this.index).mouseScrolled(p_mouseScrolled_1_);
+		}
+		return super.mouseScrolled(p_mouseScrolled_1_);
+	}
+	
+	@Override
+	public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_) {
+		synchronized (this.variants) {
+			return this.variants.get(this.index).charTyped(p_charTyped_1_, p_charTyped_2_);
+		}
+	}
+	
+	@Override
+	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+		synchronized (this.variants) {
+			return this.variants.get(this.index).keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+		}
 	}
 	
 	@Override
@@ -67,6 +92,10 @@ public class MenuScreen extends Segment {
 			this.variants.add(segment);
 		}
 		return this;
+	}
+	
+	public List<MenuArea> getVariants(){
+		return this.variants;
 	}
 
 	public void setIndex(int id) {

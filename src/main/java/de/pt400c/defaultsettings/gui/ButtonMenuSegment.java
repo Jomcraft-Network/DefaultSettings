@@ -40,7 +40,9 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
+			
 			return true;
 		} else {
 			return false;

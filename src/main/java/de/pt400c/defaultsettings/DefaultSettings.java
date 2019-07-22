@@ -1,13 +1,17 @@
 package de.pt400c.defaultsettings;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.EventHandlers.NewModInfo;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -27,6 +31,7 @@ public class DefaultSettings {
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
+	public static final String VERSION = getModVersion();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	
 	public static DefaultSettings instance;
@@ -42,10 +47,10 @@ public class DefaultSettings {
             ModInfo prevModInfo = editList.stream().filter(modInfos -> modInfos.getModId().equals(DefaultSettings.MODID)).findFirst().get();
 			NewModInfo modInfo = new NewModInfo(prevModInfo);
 			editList.set(editList.indexOf(prevModInfo), modInfo);
-			ModContainer wailaContainer = ModList.get().getModContainerById(DefaultSettings.MODID).get();
+			ModContainer modContainer = ModList.get().getModContainerById(DefaultSettings.MODID).get();
 			Field modInfoField = ModContainer.class.getDeclaredField("modInfo");
 			modInfoField.setAccessible(true);
-			modInfoField.set(wailaContainer, (IModInfo) modInfo);
+			modInfoField.set(modContainer, (IModInfo) modInfo);
 	
 		}catch(NullPointerException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 		
@@ -71,6 +76,16 @@ public class DefaultSettings {
 		
 		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, ()-> (mc, screen) -> new GuiConfig(screen));
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static String getModVersion() {
+		//Stupid FG 3 workaround
+		TomlParser parser = new TomlParser();
+		InputStream stream = DefaultSettings.class.getClassLoader().getResourceAsStream("META-INF/mods.toml");
+		CommentedConfig file = parser.parse(stream);
+
+		return ((ArrayList<CommentedConfig>) file.get("mods")).get(0).get("version");
 	}
 	
 	/*

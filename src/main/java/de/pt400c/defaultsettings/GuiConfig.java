@@ -19,13 +19,17 @@ import de.pt400c.defaultsettings.gui.MenuScreen;
 import de.pt400c.defaultsettings.gui.PopupSegment;
 import de.pt400c.defaultsettings.gui.PopupWindow;
 import de.pt400c.defaultsettings.gui.QuitButtonSegment;
+import de.pt400c.defaultsettings.gui.ScrollableSegment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiConfig extends DefaultSettingsGUI {
 
     public final Screen parentScreen;
@@ -99,9 +103,8 @@ public class GuiConfig extends DefaultSettingsGUI {
             	}, 80, 25, 3, "Save keybindings"))
         				).addVariant(new MenuArea(this, 74, 25).
         						
-        					addChild(new ButtonSegment(this, 24, 10, "Dummy", button -> {return true;}
-        			
-        			, 80, 25, 3))).addVariant(new MenuArea(this, 74, 25).
+        				addChild(new ScrollableSegment(this, 50, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
+
         			
         					addChild(new ButtonSegment(this, 83, 56, "Useless", button -> {return true;
         			
@@ -109,7 +112,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.addSegment(new ButtonMenuSegment(0, this, 10, 34, "Save", button -> {return true;}).setActive(true, false));
 
-    	this.addSegment(new ButtonMenuSegment(1, this, 10, 56, "Files", button -> {return true;}));
+    	this.addSegment(new ButtonMenuSegment(1, this, 10, 56, "Configs", button -> {return true;}));
     	
     	this.addSegment(new ButtonMenuSegment(2, this, 10, 78, "About", button -> {return true;}));
     	
@@ -149,6 +152,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 					DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 				}
 				GuiConfig.this.menu.exportActive.setByte((byte) 1);
+				for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+					variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+				}
 			}
 		});
 	}
@@ -185,6 +191,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 							DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 						}
 						GuiConfig.this.menu.exportActive.setByte((byte) 2);
+						for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+							variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						}
 					}
 				});
 
@@ -207,6 +216,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 							DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 						}
 						GuiConfig.this.menu.exportActive.setByte((byte) (FileUtil.exportMode() ? 2 : 1));
+						for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+							variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						}
 					}
 				});
 
@@ -228,6 +240,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 						DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 					}
 					GuiConfig.this.menu.exportActive.setByte((byte) 2);
+					for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+						variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+					}
 				}
 			});
 		}

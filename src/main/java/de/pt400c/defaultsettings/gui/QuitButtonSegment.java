@@ -7,9 +7,12 @@ import com.mojang.blaze3d.platform.GLX;
 
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
 
+@OnlyIn(Dist.CLIENT)
 public class QuitButtonSegment extends ButtonSegment {
 
 	public QuitButtonSegment(Screen gui, float posX, float posY, int width, int height, Function<ButtonSegment, Boolean> function, boolean popup) {

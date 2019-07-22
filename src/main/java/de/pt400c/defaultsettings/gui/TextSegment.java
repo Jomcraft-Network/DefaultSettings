@@ -2,9 +2,13 @@ package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class TextSegment extends Segment {
 
 	public final int color;

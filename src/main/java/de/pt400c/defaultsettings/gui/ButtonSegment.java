@@ -8,9 +8,12 @@ import java.util.Collections;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class ButtonSegment extends Segment {
 	
 	protected final Function<ButtonSegment, Boolean> function;
@@ -98,6 +101,8 @@ public class ButtonSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
 
 			return true;
 		} else {

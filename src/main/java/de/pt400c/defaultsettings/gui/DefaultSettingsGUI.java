@@ -2,8 +2,12 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class DefaultSettingsGUI extends GuiScreen {
 	
 	private List<Segment> segments = new ArrayList<Segment>();
@@ -22,6 +26,43 @@ public class DefaultSettingsGUI extends GuiScreen {
 		synchronized (this.segments) {
 			this.segments.clear();
 		}
+	}
+	
+	@Override
+	protected void keyTyped(char typedChar, int keyCode) {
+		boolean positive = false;
+		synchronized (this.segments) {
+			if (this.popupField == null) {
+				for (Segment segment : segments) {
+					if (segment.keyTyped(typedChar, keyCode)) {
+						positive = true;
+						break;
+					}
+				}
+			} else {
+
+				positive = this.popupField.keyTyped(typedChar, keyCode);
+			}
+		}
+		if(!positive)
+			super.keyTyped(typedChar, keyCode);
+	}
+
+	@Override
+	public void handleMouseInput() {
+		synchronized (this.segments) {
+			if (this.popupField == null) {
+				for (Segment segment : this.segments) {
+					if (segment.handleMouseInput()) {
+						break;
+					}
+
+				}
+			} else {
+				this.popupField.handleMouseInput();
+			}
+		}
+		super.handleMouseInput();
 	}
 
 	@Override

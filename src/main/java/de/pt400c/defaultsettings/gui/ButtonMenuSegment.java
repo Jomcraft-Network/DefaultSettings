@@ -1,8 +1,11 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 
+@SideOnly(Side.CLIENT)
 public class ButtonMenuSegment extends ButtonSegment {
 	
 	public final int id;
@@ -38,6 +41,8 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
 
 			return true;
 		} else {

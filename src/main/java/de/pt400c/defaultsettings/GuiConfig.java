@@ -21,6 +21,8 @@ import de.pt400c.defaultsettings.gui.MenuScreen;
 import de.pt400c.defaultsettings.gui.PopupSegment;
 import de.pt400c.defaultsettings.gui.PopupWindow;
 import de.pt400c.defaultsettings.gui.QuitButtonSegment;
+import de.pt400c.defaultsettings.gui.ScrollableSegment;
+import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
@@ -105,12 +107,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 						}, 80, 25, 3, "Save keybindings"))
         				).addVariant(new MenuArea(this, 74, 25).
         						
-        					addChild(new ButtonSegment(this, 24, 10, "Dummy", new Function<ButtonSegment, Boolean>() {
-								@Override
-								public Boolean apply(ButtonSegment button) {return true;}
-							}
-        			
-        			, 80, 25, 3))).addVariant(new MenuArea(this, 74, 25).
+        					addChild(new ScrollableSegment(this, 50, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
         			
         					addChild(new ButtonSegment(this, 83, 56, "Useless", new Function<ButtonSegment, Boolean>() {
 								@Override
@@ -124,7 +121,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 			public Boolean apply(ButtonSegment button) {return true;}
 		}).setActive(true, false));
 
-    	this.addSegment(new ButtonMenuSegment(1, this, 10, 56, "Files", new Function<ButtonSegment, Boolean>() {
+    	this.addSegment(new ButtonMenuSegment(1, this, 10, 56, "Configs", new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment button) {return true;}
 		}));
@@ -173,6 +170,12 @@ public void copyConfigs() {
 					DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
 				}
 				GuiConfig.this.menu.exportActive.setByte((byte) 1);
+				for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+					for(Segment segment : variant.getChildren()) {
+						if(segment instanceof ScrollableSegment)
+							segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query);
+					}
+				}
 			}
 		});
 	}
@@ -214,6 +217,12 @@ public void copyConfigs() {
 								DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
 							}
 							GuiConfig.this.menu.exportActive.setByte((byte) 2);
+							for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+								for(Segment segment : variant.getChildren()) {
+									if(segment instanceof ScrollableSegment)
+										segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query);
+								}
+							}
 						}
 					});
 
@@ -239,6 +248,12 @@ public void copyConfigs() {
 								DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
 							}
 							GuiConfig.this.menu.exportActive.setByte((byte) (FileUtil.exportMode() ? 2 : 1));
+							for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+								for(Segment segment : variant.getChildren()) {
+									if(segment instanceof ScrollableSegment)
+										segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query);
+								}
+							}
 						}
 					});
 
@@ -261,6 +276,12 @@ public void copyConfigs() {
 						DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
 					}
 					GuiConfig.this.menu.exportActive.setByte((byte) 2);
+					for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+						for(Segment segment : variant.getChildren()) {
+							if(segment instanceof ScrollableSegment)
+								segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query);
+						}
+					}
 				}
 			});
 		}

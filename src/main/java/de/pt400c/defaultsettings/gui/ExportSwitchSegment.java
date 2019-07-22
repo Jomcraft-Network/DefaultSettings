@@ -10,7 +10,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ExportSwitchSegment extends Segment {
 	
 	private final String hoverMessage = "Switch Export Mode for the modpack";
@@ -164,6 +167,8 @@ public class ExportSwitchSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
 
 			return true;
 		} else {

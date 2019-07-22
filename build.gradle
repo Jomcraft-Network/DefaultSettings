@@ -35,7 +35,7 @@ archivesBaseName = "DefaultSettings"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190608-1.14.2'
+    mappings channel: 'snapshot', version: '20190621-1.14.2'
 
 	runs {
         client {
@@ -55,12 +55,12 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.2-26.0.25'
+    minecraft 'net.minecraftforge:forge:1.14.2-26.0.63'
 }
 
 def minecraft_version = "1.14.2"
 
-def forge_version = "26.0.25"
+def forge_version = "26.0.63"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {

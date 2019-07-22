@@ -4,9 +4,13 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class ExportSwitchSegment extends Segment {
 	
 	private final String hoverMessage = "Switch Export Mode for the modpack";
@@ -161,6 +165,8 @@ public class ExportSwitchSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
 
 			return true;
 		} else {

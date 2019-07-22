@@ -3,13 +3,16 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class MenuScreen extends Segment {
 	
 	private List<MenuArea> variants = new ArrayList<MenuArea>();
-	private int index = 0;
+	public int index = 0;
 	public volatile MutableByte exportActive = new MutableByte((byte) 0); //0 : Not clear, 1 : false : 2 : true
 
 	public MenuScreen(GuiScreen gui, float posX, float posY) {
@@ -28,12 +31,31 @@ public class MenuScreen extends Segment {
 	}
 	
 	@Override
+	public boolean handleMouseInput() {
+		synchronized (this.variants) {
+			this.variants.get(this.index).handleMouseInput();
+		}
+		return super.handleMouseInput();
+	}
+	
+	@Override
+	protected boolean keyTyped(char typedChar, int keyCode) {
+		synchronized (this.variants) {
+			return this.variants.get(this.index).keyTyped(typedChar, keyCode);
+		}
+	}
+	
+	@Override
     public void render(float mouseX, float mouseY, float partialTicks) {
 
         synchronized (this.variants) {
         	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
         }
 
+	}
+	
+	public List<MenuArea> getVariants(){
+		return this.variants;
 	}
 	
 	@Override

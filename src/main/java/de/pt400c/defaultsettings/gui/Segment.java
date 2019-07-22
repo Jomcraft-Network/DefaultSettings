@@ -8,14 +8,15 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
 import org.apache.logging.log4j.Level;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -24,9 +25,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 
+@SideOnly(Side.CLIENT)
 public abstract class Segment {
 	
 	protected final GuiScreen gui;
@@ -59,9 +60,23 @@ public abstract class Segment {
 	
 	public abstract void render(float mouseX, float mouseY, float partialTicks);
 	
+	public void customRender(float mouseX, float mouseY, float customPosX, float customPosY, float partialTicks) {};
+	
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
 	}
+	
+	public boolean handleMouseInput() {
+    	float mouseX = Mouse.getEventX() * this.width / MC.displayWidth;
+        float mouseY = this.height - Mouse.getEventY() * this.height / MC.displayHeight - 1;
+        return this.isSelected(mouseX, mouseY);
+    }
+    
+    protected boolean keyTyped(char typedChar, int keyCode) {
+    	return false;
+    }
+    
+    public void guiContentUpdate(String... arg) {};
 	
 	public void hoverCheck(float mouseX, float mouseY) {}
 
@@ -106,6 +121,41 @@ public abstract class Segment {
 	public void clickSound() {
 		MC.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
     }
+	
+	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		if(!(factor == 1))
+			GL11.glLineWidth(3.0F * (factor - 1));
+		else
+			GL11.glLineWidth(1F);
+
+		GL11.glBegin(GL11.GL_LINE_STRIP);
+		GL11.glColor4f(red, green, blue, alpha);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+		
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		
+		
+		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		if(!(factor == 1))
+			GL11.glPointSize(3.0F * (factor - 1));
+		else
+			GL11.glPointSize(1F);
+		GL11.glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+
+		
+	}
 	
 	public static void drawRect(double x1, double y1, double x2, double y2, Integer color, boolean blending, Float alpha, boolean multiply)
     {

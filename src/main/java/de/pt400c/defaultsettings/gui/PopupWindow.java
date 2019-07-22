@@ -4,10 +4,14 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 
+@SideOnly(Side.CLIENT)
 public class PopupWindow extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();

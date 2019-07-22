@@ -3,12 +3,17 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
+@SideOnly(Side.CLIENT)
 public class MenuArea extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();
+	
+	public Segment selected = null;
 
 	public MenuArea(GuiScreen gui, float posX, float posY) {
 		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
@@ -31,11 +36,12 @@ public class MenuArea extends Segment {
 		synchronized (this.children) {
 			for (Segment segment : children) {
 				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
-					break;
+					return true;
 				}
 			}
 		}
-		return super.mouseClicked(mouseX, mouseY, mouseButton);
+		this.selected = null;
+		return false;
 	}
 	
 	@Override
@@ -49,6 +55,24 @@ public class MenuArea extends Segment {
 			}
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
+	}
+	
+	@Override
+	protected boolean keyTyped(char typedChar, int keyCode) {
+		return this.selected != null ? this.selected.keyTyped(typedChar, keyCode) : false;
+	}
+	
+	@Override
+	public boolean handleMouseInput() {
+		synchronized (this.children) {
+			for (Segment segment : this.children) {
+				if (segment.handleMouseInput()) {
+					break;
+				}
+
+			}
+		}
+		return super.handleMouseInput();
 	}
 	
 	@Override
@@ -69,6 +93,10 @@ public class MenuArea extends Segment {
 			this.children.add(segment.setPos(this.posX + segment.posX, this.posY + segment.posY));
 		}
 		return this;
+	}
+	
+	public List<Segment> getChildren() {
+		return this.children;
 	}
 
 }

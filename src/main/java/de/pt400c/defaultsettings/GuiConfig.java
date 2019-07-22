@@ -28,6 +28,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.versions.mcp.MCPVersion;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiConfig extends DefaultSettingsGUI {
@@ -105,10 +106,8 @@ public class GuiConfig extends DefaultSettingsGUI {
         						
         				addChild(new ScrollableSegment(this, 50, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
 
-        			
-        					addChild(new ButtonSegment(this, 83, 56, "Useless", button -> {return true;
-        			
-        			}, 80, 25, 3))));
+        				addChild(new TextSegment(this, 25, 20, 20, 20, "DefaultSettings: " + MCPVersion.getMCVersion() + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+
     	
     	this.addSegment(new ButtonMenuSegment(0, this, 10, 34, "Save", button -> {return true;}).setActive(true, false));
 

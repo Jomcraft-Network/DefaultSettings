@@ -10,6 +10,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.lwjgl.input.Keyboard;
+
+import cpw.mods.fml.common.Loader;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
@@ -108,13 +110,8 @@ public class GuiConfig extends DefaultSettingsGUI {
         				).addVariant(new MenuArea(this, 74, 25).
         						
         					addChild(new ScrollableSegment(this, 50, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
-        			
-        					addChild(new ButtonSegment(this, 83, 56, "Useless", new Function<ButtonSegment, Boolean>() {
-								@Override
-								public Boolean apply(ButtonSegment button) {return true;
-   			
-   			}
-							}, 80, 25, 3))));
+        					addChild(new TextSegment(this, 25, 20, 20, 20, "DefaultSettings: " + Loader.instance().getMCVersionString().split(" ")[1] + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+
     	
     	this.addSegment(new ButtonMenuSegment(0, this, 10, 34, "Save", new Function<ButtonSegment, Boolean>() {
 			@Override

@@ -251,7 +251,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 					DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 				}
 				GuiConfig.this.menu.exportActive.setByte((byte) 1);
-				GuiConfig.this.menu.getVariants().get(GuiConfig.this.menu.index).getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+				for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+					variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+				}
 			}
 		});
 	}
@@ -288,7 +290,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 								return;
 							DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 						}
-						GuiConfig.this.menu.getVariants().get(GuiConfig.this.menu.index).getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+							variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						}
 						GuiConfig.this.menu.exportActive.setByte((byte) 2);
 					}
 				});
@@ -312,7 +316,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 							DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 						}
 						GuiConfig.this.menu.exportActive.setByte((byte) (FileUtil.exportMode() ? 2 : 1));
-						GuiConfig.this.menu.getVariants().get(GuiConfig.this.menu.index).getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+							variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						}
 					}
 				});
 
@@ -334,7 +340,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 						DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 					}
 					GuiConfig.this.menu.exportActive.setByte((byte) 2);
-					GuiConfig.this.menu.getVariants().get(GuiConfig.this.menu.index).getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+					for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+						variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+					}
 				}
 			});
 		}

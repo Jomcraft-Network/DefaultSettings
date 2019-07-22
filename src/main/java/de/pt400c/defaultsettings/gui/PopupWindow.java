@@ -7,9 +7,12 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GLX;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class PopupWindow extends Segment {
-	
+
 	private List<Segment> children = new ArrayList<>();
 	public String title;
 	public float alphaRate;

@@ -3,7 +3,10 @@ package de.pt400c.defaultsettings.gui;
 import javax.annotation.Nonnull;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class PopupSegment extends Segment {
 
 	@Nonnull

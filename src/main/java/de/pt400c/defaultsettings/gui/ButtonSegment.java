@@ -9,9 +9,12 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GLX;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ButtonSegment extends Segment {
-	
+
 	protected final Function<ButtonSegment, Boolean> function;
 	private static final float BRIGHT_SCALE = 0.85f;
 	public String title;
@@ -97,7 +100,9 @@ public class ButtonSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-
+			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			menu.getVariants().get(menu.index).selected = null;
+			
 			return true;
 		} else {
 			return false;

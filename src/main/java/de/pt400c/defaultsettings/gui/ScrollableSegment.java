@@ -32,6 +32,7 @@ public class ScrollableSegment extends Segment {
 	private double distanceY = 0;
 	private int maxSize = 0;
 	private final byte id;
+	private float velocity = 0;
 
 	public ScrollableSegment(Screen gui, float posX, float posY, int width, int height, byte id) {
 		super(gui, posX, posY, width, height, false);
@@ -99,28 +100,8 @@ public class ScrollableSegment extends Segment {
 	
 	@Override
 	public boolean mouseScrolled(double p_mouseScrolled_1_) {
-		double scroll = p_mouseScrolled_1_;
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
-		if (scroll != 0 && !this.grabbed) {
-
-			if (this.add + (int) (scroll * 2) > 0) {
-				this.add = -0;
-				return true;
-			}
-
-			if (scroll < 0) {
-				int yOff = this.maxSize + this.add + (int) (scroll * 2);
-				int movable = (int) (this.getPosY() + yOff);
-				int fix = (int) (this.getPosY() + height - 1);
-
-				if (movable < fix) {
-					return true;
-				}
-			}
-
-			this.add += (int) (scroll * 2);
-
-		}
+		this.velocity += p_mouseScrolled_1_;
 		return true;
 	}
 	
@@ -131,6 +112,37 @@ public class ScrollableSegment extends Segment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
+		this.add += (int) (this.velocity);
+		
+		if (this.add > 0) {
+			this.add = 0;
+			this.velocity = 0;
+		}
+
+		if (this.add < 0) {
+			int yOff = maxSize + this.add;
+			int movable = (int) (this.getPosY() + yOff);
+			int fix = (int) (this.getPosY() + height - 1);
+
+			if (movable < fix) {
+
+				int tempAdd = (int) (this.getPosY() + height - 1 - 20 * (this.list.size() - 1) - this.getPosY() - 18);
+				this.velocity = 0;
+				this.add = tempAdd;
+
+			}
+		}
+		
+		if(this.velocity > 0) {
+			this.velocity -= 1;
+			if(this.velocity - 1 == 0)
+				this.velocity -= 1;
+		}
+		else if(this.velocity < 0) {
+			this.velocity += 1;
+			if(this.velocity + 1 == 0)
+				this.velocity += 1;
+		}
 
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
 		int color = 0xff818181;

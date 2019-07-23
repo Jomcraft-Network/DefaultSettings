@@ -63,7 +63,7 @@ public class DefaultSettings {
 						MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
 						MinecraftForge.EVENT_BUS.register(new EventHandlers());
 						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, ()-> (mc, screen) -> new GuiConfig(screen));
-						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()-> Pair.of(()->"ANY", (remote, isServer)-> true));
+						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(()-> "ANY", (remote, isServer) -> true));
 					}
 				};
 			}

@@ -1,3 +1,5 @@
+[![Build Status](https://jenkins.jomcraft.net/job/DefaultSettings/job/1.8.x-1.12.x/badge/icon)](https://jenkins.jomcraft.net/job/DefaultSettings/job/1.8.x-1.12.x/)
+
 ### DefaultSettings
 
 ---

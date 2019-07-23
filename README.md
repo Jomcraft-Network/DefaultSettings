@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.jomcraft.net/job/DefaultSettings/job/1.14.4/badge/icon)](https://jenkins.jomcraft.net/job/DefaultSettings/job/1.14.4/)
+[![Build Status](https://jenkins.jomcraft.net/job/DefaultSettings/job/master-1.14.4/badge/icon)](https://jenkins.jomcraft.net/job/DefaultSettings/job/master-1.14.4/)
 
 ### DefaultSettings
 

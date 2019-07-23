@@ -5,12 +5,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
+
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -31,24 +36,59 @@ public class DefaultSettings {
 	
 	public DefaultSettings() {
 		instance = this;
+		
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+		DistExecutor.runWhenOn(Dist.CLIENT, new Supplier<Runnable>() {
 
-		//Not yet implemented by Forge
-		
-		//FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFingerprintViolation);
-		
-		if (setUp)
-			return;
-		try {
-			FileUtil.restoreContents();
-		} catch (Exception e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
-		}
-		setUp = true;
-		MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
-		MinecraftForge.EVENT_BUS.register(new EventHandlers());
-		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, ()-> (mc, screen) -> new GuiConfig(screen));
-		
+			@Override
+			public Runnable get() {
+				
+				//Not yet implemented by Forge
+				
+				//FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFingerprintViolation);
+				
+				if (setUp)
+					return null;
+				return new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							FileUtil.restoreContents();
+						} catch (Exception e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
+						}
+						setUp = true;
+						MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
+						MinecraftForge.EVENT_BUS.register(new EventHandlers());
+						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, ()-> (mc, screen) -> new GuiConfig(screen));
+						
+					}
+				};
+			}
+		});
+
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, new Supplier<Runnable>() {
+
+			@Override
+			public Runnable get() {
+				return new Runnable() {
+					
+					@Override
+					public void run() {
+						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! Please uninstall it on the server!");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+					}
+				};
+			}
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -72,13 +112,49 @@ public class DefaultSettings {
     }*/
 
 	public void postInit(FMLLoadCompleteEvent event) {
-		try {
-			FileUtil.restoreKeys();
-		} catch (IOException e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-		} catch (NullPointerException e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-		}
+		
+		DistExecutor.runWhenOn(Dist.CLIENT, new Supplier<Runnable>() {
+
+			@Override
+			public Runnable get() {
+				return new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							FileUtil.restoreKeys();
+						} catch (IOException e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+						} catch (NullPointerException e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+						}
+						
+					}
+				};
+			}
+		});
+		
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, new Supplier<Runnable>() {
+
+			@Override
+			public Runnable get() {
+				return new Runnable() {
+					
+					@Override
+					public void run() {
+						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! Please uninstall it on the server!");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, " ");
+						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+					}
+				};
+			}
+		});
 
 	}
 	

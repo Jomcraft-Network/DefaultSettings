@@ -102,7 +102,8 @@ public class ScrollableSegment extends Segment {
 	public boolean handleMouseInput() {
 		float scroll = Mouse.getEventDWheel();
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
-		this.velocity += scroll / 120F;
+		if(!this.invisible)
+			this.velocity += scroll / 120F;
 		return true;
 	}
 	

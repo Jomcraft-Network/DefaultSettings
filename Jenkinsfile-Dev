@@ -41,6 +41,5 @@ pipeline
 	options
 	{
 		gitLabConnection('Jenkins')
-		gitlabCommitStatus(name: 'Jomcraft CI')
 	}
 }

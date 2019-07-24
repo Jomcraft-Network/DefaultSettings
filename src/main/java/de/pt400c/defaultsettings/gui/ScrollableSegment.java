@@ -101,7 +101,8 @@ public class ScrollableSegment extends Segment {
 	@Override
 	public boolean mouseScrolled(double p_mouseScrolled_1_) {
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
-		this.velocity += p_mouseScrolled_1_;
+		if(!this.invisible)
+			this.velocity += p_mouseScrolled_1_;
 		return true;
 	}
 	

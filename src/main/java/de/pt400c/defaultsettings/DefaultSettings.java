@@ -101,15 +101,7 @@ public class DefaultSettings {
 					
 					@Override
 					public void run() {
-						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! Please uninstall it on the server!");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 					}
 				};
 			}
@@ -136,13 +128,40 @@ public class DefaultSettings {
     }*/
 
 	public void postInit(FMLLoadCompleteEvent event) {
-		try {
-			FileUtil.restoreKeys();
-		} catch (IOException e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-		} catch (NullPointerException e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-		}
+		DistExecutor.runWhenOn(Dist.CLIENT, new Supplier<Runnable>() {
+
+			@Override
+			public Runnable get() {
+				return new Runnable() {
+					
+					@Override
+					public void run() {
+						try {
+							FileUtil.restoreKeys();
+						} catch (IOException e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+						} catch (NullPointerException e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+						}
+						
+					}
+				};
+			}
+		});
+		
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, new Supplier<Runnable>() {
+
+			@Override
+			public Runnable get() {
+				return new Runnable() {
+					
+					@Override
+					public void run() {
+						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
+					}
+				};
+			}
+		});
 
 	}
 	

@@ -101,15 +101,7 @@ public class DefaultSettings {
 					
 					@Override
 					public void run() {
-						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! Please uninstall it on the server!");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 					}
 				};
 			}
@@ -166,15 +158,7 @@ public class DefaultSettings {
 					
 					@Override
 					public void run() {
-						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! Please uninstall it on the server!");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, " ");
-						DefaultSettings.log.log(Level.WARN, "+++-----------------------------------------------------------------------+++");
+						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 					}
 				};
 			}

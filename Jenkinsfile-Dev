@@ -4,13 +4,19 @@ pipeline
 	triggers{
 	    cron('H 0 * * *')
 	}
+	options
+	{
+		gitLabConnection('Jenkins')
+		gitlabCommitStatus(name: 'Jenkins')
+        gitlabBuilds(builds: ['Prebuild', 'Build', 'Deploy'])
+	}
 	stages 
 	{
-		stage('Checkout')
+		stage('Prebuild')
 		{
 			steps
 			{
-				updateGitlabCommitStatus(name: 'jenkins-build', state: 'Checkout')
+				gitlabCommitStatus("Prebuild")
 				{
 				    checkout scm
 				}
@@ -20,7 +26,7 @@ pipeline
 		{
 			steps 
 			{
-				updateGitlabCommitStatus(name: 'jenkins-build', state: 'Build')
+				gitlabCommitStatus("Build")
 				{
 				    sh 'chmod +x gradlew'
                     sh './gradlew build'
@@ -33,7 +39,7 @@ pipeline
 		{
 			steps
 			{
-				updateGitlabCommitStatus(name: 'jenkins-build', state: 'Deploy')
+				gitlabCommitStatus("Deploy")
 				{
 				    archiveArtifacts artifacts: 'build/libs/DefaultSettings-*.jar', fingerprint: true
                     cleanWs()
@@ -41,18 +47,14 @@ pipeline
 			}
 		}
 	}
-	options
-	{
-		gitLabConnection('Jenkins')
-	}
 	post {
 	success {
 	  echo 'posting success to GitLab'
-          updateGitlabCommitStatus(name: 'jenkins-build', state: 'success')
+          updateGitlabCommitStatus(name: 'Jenkins', state: 'success')
   	}
 	failure {
 	  echo 'postinng failure to GitLab'
-          updateGitlabCommitStatus(name: 'jenkins-build', state: 'failed')
+          updateGitlabCommitStatus(name: 'Jenkins', state: 'failed')
   	}
   }
 

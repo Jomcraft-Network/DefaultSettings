@@ -45,4 +45,15 @@ pipeline
 	{
 		gitLabConnection('Jenkins')
 	}
+	post {
+	success {
+	  echo 'posting success to GitLab'
+          updateGitlabCommitStatus(name: 'jenkins-build', state: 'success')
+  	}
+	failure {
+	  echo 'postinng failure to GitLab'
+          updateGitlabCommitStatus(name: 'jenkins-build', state: 'failed')
+  	}
+  }
+
 }

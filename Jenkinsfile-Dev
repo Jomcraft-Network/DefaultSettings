@@ -7,7 +7,6 @@ pipeline
 	options
 	{
 		gitLabConnection('Jenkins')
-		gitlabCommitStatus(name: 'Jenkins')
         gitlabBuilds(builds: ['Prebuild', 'Build', 'Deploy'])
 	}
 	stages 
@@ -47,15 +46,4 @@ pipeline
 			}
 		}
 	}
-	post {
-	success {
-	  echo 'posting success to GitLab'
-          updateGitlabCommitStatus(name: 'Jenkins', state: 'success')
-  	}
-	failure {
-	  echo 'postinng failure to GitLab'
-          updateGitlabCommitStatus(name: 'Jenkins', state: 'failed')
-  	}
-  }
-
 }

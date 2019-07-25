@@ -10,7 +10,7 @@ pipeline
 		{
 			steps
 			{
-				gitlabCommitStatus("Checkout")
+				updateGitlabCommitStatus(name: 'jenkins-build', state: 'Checkout')
 				{
 				    checkout scm
 				}
@@ -20,7 +20,7 @@ pipeline
 		{
 			steps 
 			{
-				gitlabCommitStatus('Build')
+				updateGitlabCommitStatus(name: 'jenkins-build', state: 'Build')
 				{
 				    sh 'chmod +x gradlew'
                     sh './gradlew build'
@@ -33,7 +33,7 @@ pipeline
 		{
 			steps
 			{
-				gitlabCommitStatus('Deploy')
+				updateGitlabCommitStatus(name: 'jenkins-build', state: 'Deploy')
 				{
 				    archiveArtifacts artifacts: 'build/libs/DefaultSettings-*.jar', fingerprint: true
                     cleanWs()

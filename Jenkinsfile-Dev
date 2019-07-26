@@ -4,13 +4,18 @@ pipeline
 	triggers{
 	    cron('H 0 * * *')
 	}
+	options
+	{
+            gitLabConnection('Jenkins')
+            gitlabBuilds(builds: ['Prebuild', 'Build', 'Deploy'])
+	}
 	stages 
 	{
-		stage('Checkout')
+		stage('Prebuild')
 		{
 			steps
 			{
-				gitlabCommitStatus("Checkout")
+				gitlabCommitStatus("Prebuild")
 				{
 				    checkout scm
 				}
@@ -20,7 +25,7 @@ pipeline
 		{
 			steps 
 			{
-				gitlabCommitStatus('Build')
+				gitlabCommitStatus("Build")
 				{
 				    sh 'chmod +x gradlew'
                     sh './gradlew build'
@@ -33,16 +38,12 @@ pipeline
 		{
 			steps
 			{
-				gitlabCommitStatus('Deploy')
+				gitlabCommitStatus("Deploy")
 				{
 				    archiveArtifacts artifacts: 'build/libs/DefaultSettings-*.jar', fingerprint: true
                     cleanWs()
 				}
 			}
 		}
-	}
-	options
-	{
-		gitLabConnection('Jenkins')
 	}
 }

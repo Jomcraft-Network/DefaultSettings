@@ -121,7 +121,7 @@ public class CommandDefaultSettings_19 extends CommandBase {
 							FileUtil.restoreConfigs();
 							sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "The export-mode has been disabled successfully"));
 						} else {
-							FileUtil.moveAllConfigs();
+							FileUtil.moveAllConfigs(true);
 							sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully activated the export-mode"));
 						}
 					} catch (IOException e) {

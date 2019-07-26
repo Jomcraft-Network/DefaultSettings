@@ -125,4 +125,8 @@ public class PopupWindow extends Segment {
 		}
 	}
 
+	public List<Segment> getChildren() {
+		return this.children;
+	}
+
 }

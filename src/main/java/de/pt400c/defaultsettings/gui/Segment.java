@@ -100,6 +100,8 @@ public abstract class Segment {
         return this.isPopupSegment;
 	}
 	
+	public void init() {};
+	
 	public void guiContentUpdate(String... arg) {};
 	
 	public Segment setPos(double x, double y) {
@@ -326,6 +328,72 @@ public abstract class Segment {
 		reset();
 	}
 	
+	protected static void drawDot(float red, float green, float blue, float alpha, float scaleFactor, float size, Vec2f vector) {
+		GL11.glColor4f(red, green, blue, alpha);
+
+		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+
+		GL11.glPointSize(size * (scaleFactor / 2F));
+
+		GL11.glBegin(GL11.GL_POINTS);
+
+		GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		
+
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+		
+	}
+	
+	protected static void drawDots(float red, float green, float blue, float alpha, float scaleFactor, Vec2f... vectors) {
+		GL11.glColor4f(red, green, blue, alpha);
+
+		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+
+		GL11.glPointSize(6.5F * (scaleFactor / 2F));
+
+		GL11.glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+		
+	}
+	
+	protected static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+
+		GL11.glLineWidth(3.0F * (factor / 2F));
+
+		GL11.glBegin(GL11.GL_LINE_STRIP);
+		GL11.glColor4f(red, green, blue, alpha);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+		
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		
+		
+		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+	
+		GL11.glPointSize(3.0F * (factor / 2F));
+
+		GL11.glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		}
+
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+
+	}
+	
 	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
 		if(!(factor == 1))
@@ -358,7 +426,6 @@ public abstract class Segment {
 		GL11.glEnd();
 		GL11.glDisable(GL11.GL_POINT_SMOOTH);
 
-		
 	}
 
 	private static void reset() {

@@ -202,7 +202,9 @@ public class ButtonBulkActionSegment extends Segment {
 							if (!file.getName().equals("defaultsettings")
 									&& !file.getName().equals("defaultsettings.json")
 									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-									&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
+									&& !file.getName().equals("ds_dont_export.json")
+							/* && !file.getName().equals("optionsof.txt") */
+									&& !file.getName().equals("servers.dat")
 									&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 								return true;
 
@@ -255,7 +257,11 @@ public class ButtonBulkActionSegment extends Segment {
 
 							}
 
+						} else if (child instanceof SettingsButtonSegment) {
+							SettingsButtonSegment set = (SettingsButtonSegment) child;
+							set.mark = false;
 						}
+
 					}
 
 				}
@@ -323,7 +329,11 @@ public class ButtonBulkActionSegment extends Segment {
 
 							}
 
+						}else if (child instanceof SettingsButtonSegment) {
+							SettingsButtonSegment set = (SettingsButtonSegment) child;
+							set.mark = false;
 						}
+
 					}
 
 				}

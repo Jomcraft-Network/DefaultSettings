@@ -93,6 +93,7 @@ public class MenuArea extends Segment {
 	public MenuArea addChild(Segment segment) {
 		synchronized (this.children) {
 			this.children.add(segment.setPos(this.posX + segment.posX, this.posY + segment.posY));
+			segment.init();
 		}
 		return this;
 	}

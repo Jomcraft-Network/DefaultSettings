@@ -1,7 +1,12 @@
 package de.pt400c.defaultsettings;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 public class MainJSON {
 	
@@ -11,6 +16,7 @@ public class MainJSON {
 	private String prevVersion;
 	private boolean exportMode = false;
 	public List<String> activeConfigs = new ArrayList<String>();
+	public HashMap<String, String> overrides = new HashMap<String, String>();
 	
 	@SuppressWarnings("unused")
 	private String initially_created;
@@ -53,6 +59,14 @@ public class MainJSON {
 	
 	public String getPrevVersion() {
 		return this.prevVersion;
+	}
+	
+	public void save(File persistentLocation) {
+		try (FileWriter writer = new FileWriter(persistentLocation)) {
+            FileUtil.gson.toJson(this, writer);
+        } catch (IOException e) {
+        	DefaultSettings.log.log(Level.SEVERE, "Exception at processing configs: ", e);
+        }
 	}
 
 }

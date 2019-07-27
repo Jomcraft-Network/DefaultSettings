@@ -62,8 +62,15 @@ public class GuiConfig extends DefaultSettingsGUI {
         
         this.addSegment(new ButtonUpdateChecker(this, 72 / 2 - 20 / 2, this.height - 30));
         
+        this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, new Function<ButtonSegment, Boolean>() {
+			@Override
+			public Boolean apply(ButtonSegment button) {
+				
+				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
+				return true;}
+		}, false));
+        
     	this.menu = new MenuScreen(this, 74, 25);
-    	
     	
     	this.addSegment(this.menu.
         		addVariant(new MenuArea(this, 74, 25).
@@ -132,14 +139,6 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.addSegment(new ExportSwitchSegment(this, 160, 7));
     	
-    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, new Function<ButtonSegment, Boolean>() {
-			@Override
-			public Boolean apply(ButtonSegment button) {
-				
-				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
-				return true;}
-		}, false));
-    	
     	this.addSegment(this.popup = new PopupSegment(this, 0, 0, this.width, this.height).setWindow(new PopupWindow(this, this.width / 2 - 210 / 2, this.height / 2 - 100 / 2, 210, 100, "").addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment button) {
@@ -152,7 +151,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	this.popupField = null;
     }
 	
-public void copyConfigs() {
+	public void copyConfigs() {
 		
 		tpe.execute(new Runnable() {
 			@SuppressWarnings("static-access")
@@ -238,7 +237,7 @@ public void copyConfigs() {
 						public void run() {
 							GuiConfig.this.menu.exportActive.setByte((byte) 0);
 							try {
-								FileUtil.moveAllConfigs();
+								FileUtil.moveAllConfigs(true);
 							} catch (IOException e) {
 								if(e instanceof ClosedByInterruptException)
 									return;

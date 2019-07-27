@@ -61,6 +61,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.addSegment(new ButtonUpdateChecker(this, 72 / 2 - 20 / 2, this.height - 30));
     	
+    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, button -> {
+    		
+    		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
+    		return true;}, false));
+    	
     	this.menu = new MenuScreen(this, 74, 25);
 
     	this.addSegment(this.menu.
@@ -111,11 +116,6 @@ public class GuiConfig extends DefaultSettingsGUI {
     	this.addSegment(new SplitterSegment(this, 72, 32, this.height - 32 - 10));
     	
     	this.addSegment(new ExportSwitchSegment(this, 160, 7));
-    	
-    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, button -> {
-    		
-    		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
-    		return true;}, false));
     	
     	this.addSegment(this.popup = new PopupSegment(this, 0, 0, this.width, this.height).setWindow(new PopupWindow(this, this.width / 2 - 210 / 2, this.height / 2 - 100 / 2, 210, 100, "").addChild(new QuitButtonSegment(this, 190, 5, 14, 14, button -> {
     		
@@ -214,7 +214,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 					public void run() {
 						GuiConfig.this.menu.exportActive.setByte((byte) 0);
 						try {
-							FileUtil.moveAllConfigs();
+							FileUtil.moveAllConfigs(true);
 						} catch (IOException e) {
 							if(e instanceof ClosedByInterruptException)
 								return;

@@ -50,7 +50,8 @@ public class CommandDefaultSettings {
 						FileUtil.restoreConfigs();
 						source.sendFeedback(new TextComponentString(TextFormatting.GREEN + "The export-mode has been disabled successfully"), true);
 					} else {
-						FileUtil.moveAllConfigs();
+						FileUtil.moveAllConfigs(true);
+
 						source.sendFeedback(new TextComponentString(TextFormatting.GREEN + "Successfully activated the export-mode"), true);
 					}
 				} catch (IOException e) {

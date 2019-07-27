@@ -23,12 +23,14 @@ public class ButtonCheckboxSegment extends Segment {
 	private float offX;
 	private float offY;
 	private final ScrollableSegment parent;
+	private final int id;
 
-	public ButtonCheckboxSegment(GuiScreen gui, float posX, float posY, int width, int height, String name, boolean popupSegment, ScrollableSegment parent, boolean active) {
+	public ButtonCheckboxSegment(GuiScreen gui, float posX, float posY, int width, int height, String name, boolean popupSegment, ScrollableSegment parent, int id, boolean active) {
 		super(gui, posX, posY, width, height, popupSegment);
 		this.name = name;
 		this.active = active;
 		this.parent = parent;
+		this.id = id;
 		timer = active ? (float) (Math.PI / 3) : 0;
 	}
 
@@ -183,6 +185,12 @@ public class ButtonCheckboxSegment extends Segment {
 
 			this.active = Boolean.logicalXor(this.active, true);
 			FileUtil.switchActive(this.name);
+			
+			if(!this.active) {
+				RowItem item = this.parent.list.get(this.id);
+				SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
+				set.mark = false;
+			}
 
 			File fileDir = new File(FileUtil.mcDataDir, "config");
 			FileFilter ff = null;
@@ -194,8 +202,8 @@ public class ButtonCheckboxSegment extends Segment {
 					public boolean accept(File file) {
 
 						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json")
-								&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-								&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
+								&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("ds_dont_export.json")
+								/*&& !file.getName().equals("optionsof.txt")*/ && !file.getName().equals("servers.dat")
 								&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 							return true;
 
@@ -210,9 +218,14 @@ public class ButtonCheckboxSegment extends Segment {
 			int activeCount = 0;
 			for (int i = 0; i < rows.size(); i++) {
 
-				boolean active = FileUtil.getActives().contains(files[i].getName());
-				if (active)
-					activeCount++;
+				try {
+					boolean active = FileUtil.getActives().contains(files[i].getName());
+					if (active)
+						activeCount++;
+				}catch(ArrayIndexOutOfBoundsException e) {
+					activeCount = 0;
+					break;
+				}
 
 			}
 

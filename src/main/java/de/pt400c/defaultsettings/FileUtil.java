@@ -18,8 +18,10 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import javax.xml.bind.DatatypeConverter;
@@ -46,11 +48,14 @@ public class FileUtil {
 	public static final boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	public static MainJSON mainJson;
+	public static PersistentJSON persistentJson;
+	public static final String persistentLocation = "config/ds_dont_export.json";
+	public static final String mainLocation = "config/defaultsettings.json";
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getActives().contains(file.getName())))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getActives().contains(file.getName())))
 				return true;
 
 			return false;
@@ -62,7 +67,7 @@ public class FileUtil {
 		@Override
 		public boolean accept(File file) {
 
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat"))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat"))
 				return true;
 
 			return false;
@@ -70,42 +75,10 @@ public class FileUtil {
 	};
 	
 	public static List<String> getActives()  {
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		if(main.exists()) {
-			try (Reader reader = new FileReader(main)) {
-				mainJson = gson.fromJson(reader, MainJSON.class);
-				
-			 } catch (Exception e) {
-		        e.printStackTrace();
-		        return new ArrayList<>();
-		     }
-			return mainJson.activeConfigs;
-			
-			
-		}else {
-			try {
-				Date date = new Date();
-				SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-				mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(getIdentifier()).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
-				File fileDir = new File(mcDataDir, "config");
-				for (File file : fileDir.listFiles(fileFilter)) 
-					mainJson.activeConfigs.add(file.getName());
-				
-				try (FileWriter writer = new FileWriter(main)) {
-					gson.toJson(mainJson, writer);
-				} catch (IOException e) {
-					DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-				}
-				return mainJson.activeConfigs;
-			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-				return new ArrayList<>();
-			}
-		}
-		
+		return getMainJSON().activeConfigs;
 	}
 	
-public static void switchState(Byte state, String query) {
+	public static void switchState(Byte state, String query) {
 		
 		FileFilter ff = null;
 		if(!query.isEmpty()) {
@@ -114,7 +87,7 @@ public static void switchState(Byte state, String query) {
 				@Override
 				public boolean accept(File file) {
 
-					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(query.toLowerCase()))
+					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(query.toLowerCase()))
 						return true;
 
 					return false;
@@ -124,167 +97,187 @@ public static void switchState(Byte state, String query) {
 			ff = FileUtil.fileFilter;
 		}
 		
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		if(main.exists()) {
-			try (Reader reader = new FileReader(main)) {
-				mainJson = gson.fromJson(reader, MainJSON.class);
-				
-			 } catch (Exception e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-		        return;
-		        	
-		     }
+		final File main = new File(mcDataDir, mainLocation);
 			
-			if(state == 1 || state == 2) {
-				List<String> list = new ArrayList<String>(mainJson.activeConfigs);
-				mainJson.activeConfigs.stream().filter(file -> file.toLowerCase().startsWith(query.toLowerCase()) && new File(mcDataDir + "/config", file).exists()).forEach(file -> list.remove(file));
-				mainJson.activeConfigs = list;
-				
-			}else if (state == 0){
-				File fileDir = new File(mcDataDir, "config");
-				for(File file : fileDir.listFiles(ff)) 
-					mainJson.activeConfigs.add(file.getName());
-				
-			}
-			
-			try (FileWriter writer = new FileWriter(main)) {
-	            gson.toJson(mainJson, writer);
-	        } catch (IOException e) {
-	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-	        }
-			
-		}else {
-			try {
-				Date date = new Date();
-				SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-				mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(getIdentifier()).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
-				File fileDir = new File(mcDataDir, "config");
-				if (state == 0) 
-					for (File file : fileDir.listFiles(ff)) 
-						mainJson.activeConfigs.add(file.getName());
-					
-				try (FileWriter writer = new FileWriter(main)) {
-					gson.toJson(mainJson, writer);
-				} catch (IOException e) {
-					DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-				}
-			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-			}
-		}
-		
-	}
+		if (state == 1 || state == 2) {
+			List<String> list = new ArrayList<String>(getMainJSON().activeConfigs);
+			mainJson.activeConfigs.stream().filter(file -> file.toLowerCase().startsWith(query.toLowerCase()) && new File(mcDataDir + "/config", file).exists()).forEach(file -> removeFromLists(list, file));
+			mainJson.activeConfigs = list;
 
-	public static void blankJson() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-		mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(getIdentifier())
-				.setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
-		File fileDir = new File(mcDataDir, "config");
-		for (File file : fileDir.listFiles(fileFilter)) {
-			mainJson.activeConfigs.add(file.getName());
-		}
-		try (FileWriter writer = new FileWriter(main)) {
-			gson.toJson(mainJson, writer);
-		} catch (IOException e) {
-			DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-		}
-	}
+		} else if (state == 0) {
+			File fileDir = new File(mcDataDir, "config");
+			for (File file : fileDir.listFiles(ff))
+				getMainJSON().activeConfigs.add(file.getName());
 
-	public static void switchActive(String name) {
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		if (main.exists()) {
-			try (Reader reader = new FileReader(main)) {
-				mainJson = gson.fromJson(reader, MainJSON.class);
-
-			} catch (Exception e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-				return;
-
-			}
-			if (mainJson.activeConfigs.contains(name))
-				mainJson.activeConfigs.remove(name);
-			else
-				mainJson.activeConfigs.add(name);
-
-			try (FileWriter writer = new FileWriter(main)) {
-				gson.toJson(mainJson, writer);
-			} catch (IOException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-			}
-
-		} else {
-			try {
-				blankJson();
-			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-			}
 		}
 
+		mainJson.save(main);
 	}
 	
-	protected static void getMainJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
+	private static void removeFromLists(List<String> list, String file) {
+		list.remove(file);
+		mainJson.overrides.remove(file);
+	}
+
+	public static void setActive(String name, boolean active) {
+		final File main = new File(mcDataDir, mainLocation);
+		mainJson = getMainJSON();
+		if (!active) {
+			mainJson.activeConfigs.remove(name);
+			mainJson.overrides.remove(name);
+		} else if (!mainJson.activeConfigs.contains(name))
+			mainJson.activeConfigs.add(name);
+
+		mainJson.save(main);
+	}
+	
+	public static void switchActive(String name) {
+		final File main = new File(mcDataDir, mainLocation);
+		if (getMainJSON().activeConfigs.contains(name)) {
+			mainJson.activeConfigs.remove(name);
+			mainJson.overrides.remove(name);
+		} else
+			mainJson.activeConfigs.add(name);
+
+		mainJson.save(main);
+	}
+	
+	public static PersistentJSON getPersistent() {
+		if(persistentJson != null)
+			return persistentJson;
+		
+		final File main = new File(mcDataDir, persistentLocation);
+		
+		if(main.exists()) {
+			
+			try (Reader reader = new FileReader(main)) {
+				persistentJson = gson.fromJson(reader, PersistentJSON.class);
+				
+			 } catch (Exception e) {
+				DefaultSettings.log.log(Level.ERROR, "Exception at processing persistent configs: ", e);
+				persistentJson = new PersistentJSON();
+				persistentJson.save(new File(mcDataDir, persistentLocation));
+		     }
+			
+		}else {
+			persistentJson = new PersistentJSON();
+			persistentJson.save(new File(mcDataDir, persistentLocation));
+		}
+		
+		return persistentJson;
+	}
+	
+	public static void setOverride(String name, boolean actual) {
+		final File main = new File(mcDataDir, mainLocation);
+		String random = UUID.randomUUID().toString();
+		mainJson = getMainJSON();
+		if (!actual) {
+			mainJson.overrides.remove(name);
+		} else if (!mainJson.overrides.containsKey(name))
+			mainJson.overrides.put(name, random);
+
+		mainJson.save(main);
+	}
+
+	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
+		final File main = new File(mcDataDir, mainLocation);
+		final String version = getMainJSON().getVersion();
+		
+		if(!DefaultSettings.VERSION.equals(version)) 
+			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
+		
+		final String identifier = mainJson.getIdentifier();
+		
+		if(!getIdentifier().equals(identifier))
+			mainJson.setIdentifier(identifier);
+		
+		mainJson.save(main);
+	}
+	
+	/**
+	 * Generate or get DefaultSettings' main config JSON object
+	 * @category Main storage
+	 */
+	public static MainJSON getMainJSON() {
+
+		if(mainJson != null)
+			return mainJson;
+		
+		final File main = new File(mcDataDir, mainLocation);
+		
 		if(main.exists()) {
 			try (Reader reader = new FileReader(main)) {
 				mainJson = gson.fromJson(reader, MainJSON.class);
 				
 			 } catch (Exception e) {
-				 DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
+				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
 		        if(e instanceof JsonSyntaxException) {
 		        	main.renameTo(new File(mcDataDir, "config/defaultsettings_malformed.json"));
 		        	getMainJSON();
 		        }
-		        return;
 		        	
 		     }
-			final String version = mainJson.getVersion();
-			
-			if(!DefaultSettings.VERSION.equals(version)) 
-				mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
-			
-			final String identifier = mainJson.getIdentifier();
-			
-			if(!getIdentifier().equals(identifier))
-				mainJson.setIdentifier(identifier);
-			
-			try (FileWriter writer = new FileWriter(main)) {
-	            gson.toJson(mainJson, writer);
-	        } catch (IOException e) {
-	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-	        }
 			
 		}else {
-			blankJson();
+			Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+			String identifier = "<UNKNOWN>";
+			try {
+				identifier = getIdentifier();
+			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
+				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
+			}
+			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
+			File fileDir = new File(mcDataDir, "config");
+			for (File file : fileDir.listFiles(fileFilter)) 
+				mainJson.activeConfigs.add(file.getName());
+			
+			mainJson.save(main);
 		}
+		return mainJson;
 	}
 	
+	/**
+	 * Returning DefaultSettings's main data storage
+	 * @category Main storage
+	 */
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
 		storeFolder.mkdir();
 		return storeFolder;
 	}
+	
+	public static HashMap<String, String> getOverrides()  {
+		return getMainJSON().overrides;
+	}
 
 	public static void restoreContents() throws NullPointerException, IOException, NoSuchAlgorithmException {
-		getMainJSON();
+		
+		initialSetupJSON();
 		
 		final File options = new File(mcDataDir, "options.txt");
 		boolean firstBoot = !options.exists();
 		if (firstBoot) {
 			restoreOptions();
 			if(!exportMode())
-				moveAllConfigs();
+				moveAllConfigs(false);
 
 			restoreConfigs();
 		}else if(mainJson.getExportMode()){
 			restoreConfigs();
-			final File main = new File(mcDataDir, "config/defaultsettings.json");
-			try (FileWriter writer = new FileWriter(main)) {
-	            gson.toJson(mainJson, writer);
-	        } catch (IOException e) {
-	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-	        }
+			final File main = new File(mcDataDir, mainLocation);
+			mainJson.save(main);
+		}else {
+			for(String name : getOverrides().keySet()) {
+				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) {
+					restoreSingleConfig(name);
+				}
+			}
+			
+			final File main = new File(mcDataDir, mainLocation);
+			getMainJSON().setExportMode(false);
+			mainJson.save(main);
+			
 		}
 		final File optionsOF = new File(mcDataDir, "optionsof.txt");
 		if (!optionsOF.exists()) 
@@ -317,14 +310,38 @@ public static void switchState(Byte state, String query) {
 			MC.getLanguageManager().currentLanguage = gameSettings.language;
 
 		}
-
+		
+		if(!options.exists())
+			options.createNewFile();
 		
 	}
 	
-	public static void moveAllConfigs() throws IOException {
+	public static void restoreSingleConfig(String name) throws IOException {
+		try {
+			File file = new File(getMainFolder(), name);
+			if(file.isDirectory()) {
+				FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
+			}
+			else {
+				FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
+			}
+			
+			String random = getOverrides().get(name);
+			
+			getPersistent().check.put(name, random);
+			persistentJson.save(new File(mcDataDir, persistentLocation));
+
+		} catch (IOException e) {
+			throw e;
+		}
+	}
+	
+	public static void moveAllConfigs(boolean deletePersistent) throws IOException {
 		try {
 			
 			File fileDir = new File(mcDataDir, "config");
+			if(deletePersistent)
+				new File(mcDataDir, persistentLocation).delete();
 			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilterModular);
 			for (File f : fileDir.listFiles(fileFilterModular)) {
 				
@@ -333,38 +350,15 @@ public static void switchState(Byte state, String query) {
 				else
 					//f.delete() calls updates, not appropriate
 					Files.delete(f.toPath());
+
 			}
 		} catch (IOException e) {
 			throw e;
 		}
+		final File main = new File(mcDataDir, mainLocation);
 		
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		if(main.exists()) {
-			try (Reader reader = new FileReader(main)) {
-				mainJson = gson.fromJson(reader, MainJSON.class);
-				
-			 } catch (Exception e) {
-				 DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-		        return;
-		        	
-		     }
-			mainJson.setExportMode(true);
-			
-			try (FileWriter writer = new FileWriter(main)) {
-	            gson.toJson(mainJson, writer);
-	        } catch (IOException e) {
-	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-	        }
-			
-		}else {
-			try {
-				blankJson();
-				mainJson.setExportMode(true);
-			}catch(UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-			}
-		}
-
+		getMainJSON().setExportMode(true);
+		mainJson.save(main);
 	}
 	
 	public static void setExportMode() throws IOException {
@@ -374,35 +368,13 @@ public static void switchState(Byte state, String query) {
 			else
 				//f.delete() calls updates, not appropriate
 				Files.delete(f.toPath());
+
 		}
 		
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		if(main.exists()) {
-			try (Reader reader = new FileReader(main)) {
-				mainJson = gson.fromJson(reader, MainJSON.class);
-				
-			 } catch (Exception e) {
-				 DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-		        return;
-		        	
-		     }
-			mainJson.setExportMode(true);
-			
-			try (FileWriter writer = new FileWriter(main)) {
-	            gson.toJson(mainJson, writer);
-	        } catch (IOException e) {
-	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-	        }
-			
-		}else {
-			try {
-				blankJson();
-				mainJson.setExportMode(true);
-			}catch(UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-			}
-		}
-
+		final File main = new File(mcDataDir, mainLocation);
+		
+		getMainJSON().setExportMode(true);
+		mainJson.save(main);
 	}
 	
 	public static boolean exportMode() {
@@ -540,38 +512,16 @@ public static void switchState(Byte state, String query) {
 	
 	public static void restoreConfigs() throws IOException {
 		try {
+			
 			FileUtils.copyDirectory(getMainFolder(), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
 		}
 		
-		final File main = new File(mcDataDir, "config/defaultsettings.json");
-		if(main.exists()) {
-			try (Reader reader = new FileReader(main)) {
-				mainJson = gson.fromJson(reader, MainJSON.class);
-				
-			 } catch (Exception e) {
-				 DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-		        return;
-		        	
-		     }
-			mainJson.setExportMode(false);
-			
-			try (FileWriter writer = new FileWriter(main)) {
-	            gson.toJson(mainJson, writer);
-	        } catch (IOException e) {
-	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-	        }
-			
-		}else {
-			try {
-				blankJson();
-				mainJson.setExportMode(false);
-			}catch(UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
-			}
-		}
+		final File main = new File(mcDataDir, mainLocation);
+		getMainJSON().setExportMode(false);
 
+		mainJson.save(main);
 	}
 
 	public static void restoreServers() throws IOException {

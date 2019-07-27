@@ -133,7 +133,7 @@ public class CommandDefaultSettings extends CommandBase {
 							FileUtil.restoreConfigs();
 							sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "The export-mode has been disabled successfully"));
 						} else {
-							FileUtil.moveAllConfigs();
+							FileUtil.moveAllConfigs(true);
 							sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully activated the export-mode"));
 						}
 					} catch (IOException e) {

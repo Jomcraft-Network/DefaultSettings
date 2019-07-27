@@ -189,7 +189,6 @@ public class SearchbarSegment extends Segment {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-
 		if (this.isSelected(mouseX, mouseY)) {
 			MenuScreen menu = ((GuiConfig) this.gui).menu;
 			menu.getVariants().get(menu.index).selected = this;

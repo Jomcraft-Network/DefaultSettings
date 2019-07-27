@@ -125,5 +125,9 @@ public class PopupWindow extends Segment {
 			this.children.clear();
 		}
 	}
+	
+	public List<Segment> getChildren() {
+		return this.children;
+	}
 
 }

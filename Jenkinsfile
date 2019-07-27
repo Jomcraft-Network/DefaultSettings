@@ -1,6 +1,11 @@
 pipeline 
 {
 	agent any
+	options
+	{
+		gitLabConnection('Jenkins')
+		gitlabBuilds(builds: ['Checkout', 'Build', 'Deploy'])
+	}
 	stages 
 	{
 		stage('Checkout')
@@ -36,9 +41,5 @@ pipeline
 				}
 			}
 		}
-	}
-	options
-	{
-		gitLabConnection('Jenkins')
 	}
 }

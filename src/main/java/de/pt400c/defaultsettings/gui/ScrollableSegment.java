@@ -251,7 +251,7 @@ public class ScrollableSegment extends Segment {
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) (this.getHeight() * scaleFactor));
+		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() - 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) (this.getHeight() * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
 			int yOffTemp = 18 + 20 * i + add;

@@ -1,10 +1,8 @@
 pipeline 
 {
 	agent any
-	if(params.WithTimer){
-	    triggers{
-	        cron('H 0 * * *')
-	    }
+	triggers{
+	    cron('H 0 * * *')
 	}
 	options
 	{

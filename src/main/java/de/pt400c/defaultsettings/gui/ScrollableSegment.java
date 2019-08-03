@@ -186,6 +186,7 @@ public class ScrollableSegment extends Segment {
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
+		
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -202,13 +203,41 @@ public class ScrollableSegment extends Segment {
 		Segment.drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);
 
 		Segment.drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
+		
+		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
 
+		
+		GlStateManager.color(f, f1, f2, f3);	
+		
 		Segment.drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
 
+		
+		
+
+
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	
+		if(!this.invisible) {
+			
+			 GlStateManager.disableTexture2D();
+		        GlStateManager.enableBlend();
+		        GlStateManager.disableAlpha();
+		        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		        GL11.glShadeModel(GL11.GL_SMOOTH);
+
+			Segment.drawGradientFromTop(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737);
+			
+			Segment.drawGradientFromBottom(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737);
+
+	    GL11.glShadeModel(GL11.GL_FLAT);
+	    GlStateManager.disableBlend();
+	    GlStateManager.enableAlpha();
+	    GlStateManager.enableTexture2D();
+	    
+			}
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 
@@ -251,7 +280,7 @@ public class ScrollableSegment extends Segment {
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() - 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) (this.getHeight() * scaleFactor));
+		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
 			int yOffTemp = 18 + 20 * i + add;

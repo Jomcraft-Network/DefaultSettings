@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.channels.ClosedByInterruptException;
@@ -10,6 +11,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
@@ -23,7 +27,10 @@ import de.pt400c.defaultsettings.gui.QuitButtonSegment;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
@@ -35,11 +42,15 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
+    int rot = 0;
+	private FramebufferObject framebufferMc;
+	private boolean legacy;
 
     public GuiConfig(GuiScreen parentScreen)
     {
         this.mc = MC;
-        this.parentScreen = parentScreen;
+        this.parentScreen = parentScreen;  
+        	
     }
     
     @Override
@@ -53,6 +64,13 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void initGui()
     {
+    	final boolean fbo = Minecraft.getMinecraft().gameSettings.fboEnable;
+        if(!fbo)
+        	legacy = true;
+        
+        if(!legacy)
+        	this.framebufferMc = new FramebufferObject(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
         
@@ -131,6 +149,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void onGuiClosed() {
     	Keyboard.enableRepeatEvents(false);
+    	if(framebufferMc != null)
+    		framebufferMc.deleteFramebuffer();
     	tpe.shutdownNow();
     }
     
@@ -153,29 +173,83 @@ public class GuiConfig extends DefaultSettingsGUI {
         }
     }
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-    	
-    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
-        
-    	GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
-        
-    	GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
-        
-        this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
-        
-        int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
-        
-        this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
-        
-        this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
-        buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-        buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-        buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
+		if (legacy) {
+
+			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+
+			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+
+			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
+
+			this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+
+			int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+
+			this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+
+			this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+
+			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			super.drawScreen(mouseX, mouseY, partialTicks);
+
+		} else {
+
+			this.mc.getFramebuffer().unbindFramebuffer();
+
+			GlStateManager.pushMatrix();
+			GlStateManager.clear(16640);
+			this.framebufferMc.bindFramebuffer(true);
+			GL11.glEnable(GL13.GL_MULTISAMPLE);
+			GlStateManager.enableTexture2D();
+
+			ScaledResolution scaledresolution = new ScaledResolution(this.mc);
+			GlStateManager.clear(256);
+			GlStateManager.matrixMode(5889);
+			GlStateManager.loadIdentity();
+			GlStateManager.ortho(0.0D, scaledresolution.getScaledWidth_double(), scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+			GlStateManager.matrixMode(5888);
+			GlStateManager.loadIdentity();
+			GlStateManager.translate(0.0F, 0.0F, -2000.0F);
+
+			GlStateManager.clear(256);
+
+			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+
+			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+
+			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
+
+			this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+
+			int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+
+			this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+
+			this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+
+			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			super.drawScreen(mouseX, mouseY, partialTicks);
+
+			this.framebufferMc.unbindFramebuffer();
+			GlStateManager.popMatrix();
+
+			this.mc.getFramebuffer().bindFramebuffer(true);
+			GlStateManager.pushMatrix();
+
+			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+			GL30.glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+
+			GlStateManager.popMatrix();
+		}
+
+	}
     
 	public void saveServers() throws ClosedByInterruptException {
 		if (FileUtil.serversFileExists()) {

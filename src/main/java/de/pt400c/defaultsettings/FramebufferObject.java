@@ -70,7 +70,7 @@ public class FramebufferObject
     private void createColorAttachment() {
 		colorBuffer = GL30.glGenRenderbuffers();
 		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
-		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 8 /*8 samples*/, GL11.GL_RGBA8, framebufferWidth, framebufferHeight);
+		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 9 /*9 samples*/, GL11.GL_RGBA8, framebufferWidth, framebufferHeight);
 		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, colorBuffer);
 		
 	}

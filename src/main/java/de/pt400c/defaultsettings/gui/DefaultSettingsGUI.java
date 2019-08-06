@@ -12,6 +12,8 @@ public class DefaultSettingsGUI extends GuiScreen {
 	
 	private List<Segment> segments = new ArrayList<>();
 	
+	public MenuScreen menu;
+	
 	public PopupSegment popupField = null;
 	
 	public void addSegment(Segment segment) {
@@ -24,6 +26,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 		synchronized (this.segments) {
 			this.segments.clear();
 		}
+	}
+	
+	public void resetSelected() {
+		MenuScreen menu = this.menu;
+		if(menu != null)
+			menu.getVariants().get(menu.index).selected = null;
 	}
 	
 	@Override

@@ -19,6 +19,7 @@ import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.ExportSwitchSegment;
+import de.pt400c.defaultsettings.gui.LeftMenu;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.MenuScreen;
 import de.pt400c.defaultsettings.gui.PopupSegment;
@@ -34,7 +35,8 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
-   	public MenuScreen menu;
+   	
+   	public LeftMenu leftMenu;
     public PopupSegment popup;
     public ButtonSegment buttonS;
     public ButtonSegment buttonK;
@@ -43,14 +45,13 @@ public class GuiConfig extends DefaultSettingsGUI {
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
     int rot = 0;
-	private FramebufferObject framebufferMc;
-	private boolean legacy;
+	public FramebufferObject framebufferMc;
+	public boolean legacy;
 
     public GuiConfig(GuiScreen parentScreen)
     {
         this.mc = MC;
         this.parentScreen = parentScreen;  
-        	
     }
     
     @Override
@@ -73,8 +74,6 @@ public class GuiConfig extends DefaultSettingsGUI {
         
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
-        
-    	this.addSegment(new ButtonUpdateChecker(this, 72 / 2 - 20 / 2, this.height - 30));
     	
     	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, button -> {
     		
@@ -83,9 +82,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.menu = new MenuScreen(this, 74, 25);
 
+    	this.leftMenu = new LeftMenu(this, 0, 25, 46, this.height - 25);
+    	
     	this.addSegment(this.menu.
         		addVariant(new MenuArea(this, 74, 25).
-        				addChild(this.buttonO = new ButtonSegment(this, this.menu.getWidth() / 2 - 40, this.menu.getHeight() / 2 - 30, "Save options", button -> {
+        				addChild(this.buttonO = new ButtonSegment(this, this.menu.getWidth() / 2 - 60, this.menu.getHeight() / 2 - 30, "Save options", button -> {
         	    			tpe.execute(new Runnable() {
         	    				@Override
         	    				public void run() {
@@ -96,7 +97,7 @@ public class GuiConfig extends DefaultSettingsGUI {
                 
         	}, 80, 25, 3, "Save all default game options")).
         				
-        				addChild(this.buttonS = new ButtonSegment(this, this.menu.getWidth() / 2 + 57, this.menu.getHeight() / 2 - 30, "Save servers", button -> {
+        				addChild(this.buttonS = new ButtonSegment(this, this.menu.getWidth() / 2 + 52, this.menu.getHeight() / 2 - 30, "Save servers", button -> {
         					
         	    			tpe.execute(new Runnable() {
         	    				@Override
@@ -111,7 +112,7 @@ public class GuiConfig extends DefaultSettingsGUI {
             				return true;
                     
             	}, 80, 25, 3, "Save your servers")). 
-        				addChild(this.buttonK = new ButtonSegment(this, this.menu.getWidth() / 2 - 137, this.menu.getHeight() / 2 - 30, "Save keys", button -> {
+        				addChild(this.buttonK = new ButtonSegment(this, this.menu.getWidth() / 2 - 167, this.menu.getHeight() / 2 - 30, "Save keys", button -> {
         					tpe.execute(new Runnable() {
         						@Override
         						public void run() {
@@ -123,17 +124,11 @@ public class GuiConfig extends DefaultSettingsGUI {
             	}, 80, 25, 3, "Save keybindings"))
         				).addVariant(new MenuArea(this, 74, 25).
 
-        					addChild(new ScrollableSegment(this, 50, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
+        					addChild(new ScrollableSegment(this, 20, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
         			
-        					addChild(new TextSegment(this, 25, 20, 20, 20, "DefaultSettings: " + DefaultSettings.mcVersion + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+        					addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + DefaultSettings.mcVersion + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
     	
-    	this.addSegment(new ButtonMenuSegment(0, this, 10, 34, "Save", button -> {return true;}).setActive(true, false));
-
-    	this.addSegment(new ButtonMenuSegment(1, this, 10, 56, "Configs", button -> {return true;}));
-    	
-    	this.addSegment(new ButtonMenuSegment(2, this, 10, 78, "About", button -> {return true;}));
-    	
-    	this.addSegment(new SplitterSegment(this, 72, 32, this.height - 32 - 10));
+    	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false)).addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png")).addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu))/*.addChild(new IconSegment(this, 10, 11, 16, 16, "textures/gui/test.png", this.leftMenu))*/.addChild(new ButtonUpdateChecker(this, /*72 / 2 - 20 / 2, */this.height - 30 - 25, this.leftMenu)));
     	
     	this.addSegment(new ExportSwitchSegment(this, 160, 7));
 
@@ -250,7 +245,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		}
 
 	}
-    
+	
 	public void saveServers() throws ClosedByInterruptException {
 		if (FileUtil.serversFileExists()) {
 			this.popup.setOpening(true);

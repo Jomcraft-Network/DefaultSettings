@@ -1,8 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.opengl.GL11;
-
-import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -83,8 +81,7 @@ public class ScrollbarSegment extends ButtonSegment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 			this.distanceY += (int) (mouseY - this.posY);
 			
 			return true;

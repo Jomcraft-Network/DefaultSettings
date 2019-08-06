@@ -32,7 +32,6 @@ public class MenuScreen extends Segment {
 	
 	@Override
     public void render(float mouseX, float mouseY, float partialTicks) {
-
         synchronized (this.variants) {
         	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
         }

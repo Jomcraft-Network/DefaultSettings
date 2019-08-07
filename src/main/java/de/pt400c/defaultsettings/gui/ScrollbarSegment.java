@@ -1,9 +1,12 @@
 package de.pt400c.defaultsettings.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.OpenGlHelper;
 
 @SideOnly(Side.CLIENT)
 public class ScrollbarSegment extends ButtonSegment {
@@ -43,6 +46,26 @@ public class ScrollbarSegment extends ButtonSegment {
 		} else {
 			distanceY = 0;
 		}
+		
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+	
+        Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + 7, 6, 180, 50, 0xff3a3a3a, 0x003a3a3a);
+        
+	Segment.drawGradient(this.getPosX() + this.getWidth() - 2, this.getPosY() + 7, this.getPosX() - 2 + 6 + this.getWidth(), this.getPosY() + this.getHeight() - 2, 0xff3a3a3a, 0x003a3a3a);
+
+	Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + this.getHeight() - 2, 6, 0, 50, 0xff3a3a3a, 0x003a3a3a);
+	
+
+   GL11.glShadeModel(GL11.GL_FLAT);
+
+   GL11.glDisable(GL11.GL_BLEND);
+   GL11.glEnable(GL11.GL_ALPHA_TEST);
+GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 

@@ -1,10 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 
 @SideOnly(Side.CLIENT)
@@ -32,8 +30,7 @@ public class ButtonMovableSegment extends ButtonSegment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.dragging = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 
 			distanceX = (mouseX - this.posX);
 			distanceY = (mouseY - this.posY);

@@ -10,6 +10,8 @@ import net.minecraft.client.gui.GuiScreen;
 @SideOnly(Side.CLIENT)
 public class DefaultSettingsGUI extends GuiScreen {
 	
+	public MenuScreen menu;
+	
 	private List<Segment> segments = new ArrayList<Segment>();
 	
 	public boolean dragging = false;
@@ -116,6 +118,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 			}
 		}
 		super.mouseClickMove(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_, p_mouseDragged_8_);
+	}
+	
+	public void resetSelected() {
+		MenuScreen menu = this.menu;
+		if(menu != null)
+			menu.getVariants().get(menu.index).selected = null;
 	}
 	
 	@Override

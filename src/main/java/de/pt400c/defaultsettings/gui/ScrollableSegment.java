@@ -79,7 +79,7 @@ public class ScrollableSegment extends Segment {
 				boolean active = FileUtil.getActives().contains(files[i].getName());
 				if (active)
 					activeCount++;
-				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 132, yOffTemp + 43, 6, 6, files[i].getName(), false, this, i, active), new SettingsButtonSegment(gui, i, (float) (this.getWidth() + this.posX - 12), yOffTemp + 43, files[i].getName(), this, FileUtil.getOverrides().containsKey(files[i].getName()))));
+				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 102, yOffTemp + 43, 6, 6, files[i].getName(), false, this, i, active), new SettingsButtonSegment(gui, i, (float) (this.getWidth() + this.posX - 12), yOffTemp + 43, files[i].getName(), this, FileUtil.getOverrides().containsKey(files[i].getName()))));
 			}
 
 			if (rows.size() != 0 && activeCount == files.length)
@@ -105,7 +105,7 @@ public class ScrollableSegment extends Segment {
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
 		
-		float offX = (float) (this.getWidth() + 88);
+		float offX = (float) (this.getWidth() + 58);
 		float offY = 53;
 		float tempHeight = this.getHeight() + 2;
 		float tempWidth = 35;
@@ -357,8 +357,7 @@ public class ScrollableSegment extends Segment {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 			for (int i = 0; i < this.list.size(); i++) {
 				int yOffTemp = 18 + 20 * i + add;
 

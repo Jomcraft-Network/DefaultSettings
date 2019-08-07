@@ -65,6 +65,7 @@ public class DefaultSettings {
 		
 		ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings());
 		MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
+		MinecraftForge.EVENT_BUS.register(new EventHandlers());
 		FMLCommonHandler.instance().bus().register(new EventHandlers());
 	}
 	

@@ -3,11 +3,9 @@ package de.pt400c.defaultsettings.gui;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.DefaultSettings;
-import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.UpdateContainer;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -15,9 +13,14 @@ import net.minecraft.client.gui.GuiScreen;
 public class ButtonUpdateChecker extends ButtonSegment {
 
 	public float timer = 0;
+	private final LeftMenu menu;
 
-	public ButtonUpdateChecker(GuiScreen gui, float posX, float posY) {
-		super(gui, posX, posY, null, null, 20, 20, 2);
+	public ButtonUpdateChecker(GuiScreen gui, float posY, LeftMenu menu) {
+		
+		super(gui, 0, posY, null, null, 20, 20, 2);
+		
+		this.menu = menu;
+
 		if(DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.ERROR || DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.UNKNOWN)
 			DefaultSettings.getUpdater().update();
 		
@@ -26,6 +29,8 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		timer += 0.05;
+		float right = this.menu.width - this.menu.offs + this.width + 6;
+		this.posX = right / 2 - this.width / 2;
 		float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
 	
@@ -64,8 +69,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 
 			return true;
 		} else {

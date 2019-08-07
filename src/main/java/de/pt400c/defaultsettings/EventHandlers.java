@@ -6,9 +6,13 @@ import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraftforge.client.event.GuiOpenEvent;
 
 public class EventHandlers {
 
+	private static boolean bootedUp;
+	
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		if((MC.currentScreen instanceof GuiModList || MC.currentScreen == null) && Keyboard.isKeyDown(Keyboard.KEY_F7) && Keyboard.isKeyDown(Keyboard.KEY_G))
@@ -18,6 +22,16 @@ public class EventHandlers {
 	
 	public static int getLimitFramerate() {
 		return MC.currentScreen instanceof GuiConfig ? 60 : 30;
+	}
+	
+	@SubscribeEvent
+	public void onGuiOpened(GuiOpenEvent event) {
+		if (!bootedUp) {
+			System.out.println("BOOTUP!");
+			bootedUp = true;
+			if(event.gui instanceof GuiMainMenu && FileUtil.getMainJSON().initPopup)
+				event.gui = new GuiDSMainMenu(new GuiMainMenu());
+		}
 	}
 	
 }

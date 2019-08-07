@@ -9,40 +9,38 @@ import net.minecraft.client.renderer.OpenGlHelper;
 
 @SideOnly(Side.CLIENT)
 public class SplitterSegment extends Segment {
-
-	private float offsetTick = 0;
 	
-	public SplitterSegment(GuiScreen gui, float posX, float posY, int height) {
+	private final LeftMenu menu;
+	private final float origX;
+	
+	public SplitterSegment(GuiScreen gui, float posX, float posY, int height, LeftMenu menu) {
 		super(gui, posX, posY, 1, height, false);
+		this.menu = menu;
+		this.origX = posX;
 	}
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		final double triple = Math.sin(offsetTick);
-		offsetTick += 0.05;
-		final double func = triple * 20;
+		this.posX = origX - this.menu.offs;
 
-		  GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GL11.glDisable(GL11.GL_ALPHA_TEST);
-	        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-	        GL11.glShadeModel(GL11.GL_SMOOTH);
-	        
-	    	Segment.drawGradientCircle((float) (this.getPosX() + func), (float) this.getPosY() + 4, 6, 270, 75, 0xffaaaaaa, 0x00ffffff);
-	    	
-	    	Segment.drawGradientCircle((float) (this.getPosX() + func), (float) this.getPosY() + this.getHeight() - 4, 6, 0, 75, 0xffaaaaaa, 0x00ffffff);
-	        
-	        Segment.drawGradient((this.getPosX() + func), this.getPosY() + 4, (this.getPosX() + 6 + func), this.getPosY() + this.getHeight() - 4, 0xffaaaaaa, 0x00ffffff);
-		
-	
-		
-        GL11.glShadeModel(GL11.GL_FLAT);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-		Segment.drawRect(this.getPosX() + func, this.getPosY(), this.getPosX() + this.getWidth() + func, this.getPosY() + this.getHeight(), 0xffbebebe, true, null, false);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
 
+		Segment.drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + 4, 6, 270, 75, 0xffaaaaaa, 0x00ffffff);
+
+		Segment.drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + this.getHeight() - 4, 6, 0, 75, 0xffaaaaaa, 0x00ffffff);
+
+		Segment.drawGradient(this.getPosX(), this.getPosY() + 4, this.getPosX() + 6, this.getPosY() + this.getHeight() - 4, 0xffaaaaaa, 0x00ffffff);
+
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffbebebe, true, null, false);
 	}
 
 }

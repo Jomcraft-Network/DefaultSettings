@@ -41,6 +41,7 @@ public class ScrollableSegment extends Segment {
 		super(gui, posX, posY, width, height, false);
 		this.scrollBar = new ScrollbarSegment(this.gui, (float) (posX + width), (float) posY, 10, 20, this);
 		this.id = id;
+		this.list = getRowList(null);
 		this.bulkAction = new ButtonBulkActionSegment(this.gui, posX + 82, posY + 5, 6, 6, this);
 		this.searchbar = new SearchbarSegment(gui, posX + 112, posY - 1, 45, 18, false, this);
 	}

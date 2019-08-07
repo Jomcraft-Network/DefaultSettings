@@ -5,11 +5,14 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.text.TextFormatting;
 
 public class GuiDSMainMenu extends DefaultSettingsGUI {
@@ -56,8 +59,17 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
-     	Segment.drawGradientFromTop(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff);
+		GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		Segment.drawGradientFromTop(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff);
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
     	GuiConfig.drawRect(0, 0, width, 25, 0xffe0e0e0);
    
     	super.drawScreen(mouseX, mouseY, partialTicks);

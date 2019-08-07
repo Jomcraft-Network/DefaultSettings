@@ -79,9 +79,8 @@ public class FramebufferObject
 
 		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject);
 
-		if (vp) {
+		if (vp) 
 			GlStateManager.viewport(0, 0, this.framebufferWidth, this.framebufferHeight);
-		}
 
 	}
 

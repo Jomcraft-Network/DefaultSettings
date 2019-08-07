@@ -12,11 +12,8 @@ import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -123,69 +120,45 @@ public abstract class Segment {
 			MC.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 	
-	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
+	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2) {
 		double j1;
 
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
+		if (x1 < x2) {
+			j1 = x1;
+			x1 = x2;
+			x2 = j1;
+		}
 
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-        
-        //x1 = LOWER, x2 = HIGHER
-        
-        setColor(f, f1, f2, f3);
-        
-  //      addVertex((float) 50, (float) 50, 0);
-   //     addVertex((float) 50, (float) 100, 0);
+		if (y1 < y2) {
+			j1 = y1;
+			y1 = y2;
+			y2 = j1;
+		}
 
-        //BLACK
-        
-        //HIGH LEFT
-        
-        addVertex((float) x2, (float) y2, 0);
-        
-        //LOW LEFT
-       addVertex((float) x2, (float) y1, 0);
-        
-       
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-        
-        //WHITE
-     //   addVertex((float) 100, (float) 100, 0);
-        
-      //  addVertex((float) 100, (float) 50, 0);
-     
-        //LOW RIGHT
-        addVertex((float) x1, (float) y1, 0);
-        
-        //HIGH RIGHT
-        
-        addVertex((float) x1, (float) y2, 0);
+		int f3 = (int) (color1 >> 24 & 255);
+		int f = (int) (color1 >> 16 & 255);
+		int f1 = (int) (color1 >> 8 & 255);
+		int f2 = (int) (color1 & 255);
+
+		setColor(f, f1, f2, f3);
+
+		addVertex((float) x2, (float) y2, 0);
+
+		addVertex((float) x2, (float) y1, 0);
+
+		f3 = (int) (color2 >> 24 & 255);
+		f = (int) (color2 >> 16 & 255);
+		f1 = (int) (color2 >> 8 & 255);
+		f2 = (int) (color2 & 255);
+
+		setColor(f, f1, f2, f3);
+
+		addVertex((float) x1, (float) y1, 0);
+
+		addVertex((float) x1, (float) y2, 0);
 
 		draw(false);
-    }
+	}
 	
 	public static void drawGradientFromBottom(double x1, double y1, double x2, double y2, int color1, int color2)
     {
@@ -211,11 +184,7 @@ public abstract class Segment {
         int f1 = (int)(color1 >> 8 & 255);
         int f2 = (int)(color1 & 255);
         
-        //x1 = LOWER, x2 = HIGHER
-        
         setColor(f, f1, f2, f3);
-        
-        
 
         addVertex((float) x2, (float) y1, 0);
         addVertex((float) x1, (float) y1, 0);
@@ -255,14 +224,10 @@ public abstract class Segment {
         int f = (int)(color1 >> 16 & 255);
         int f1 = (int)(color1 >> 8 & 255);
         int f2 = (int)(color1 & 255);
-        
-        //x1 = LOWER, x2 = HIGHER
-        
         setColor(f, f1, f2, f3);
         
         addVertex((float) x1, (float) y2, 0);
         addVertex((float) x2, (float) y2, 0);
-       
         
         f3 = (int)(color2 >> 24 & 255);
         f = (int)(color2 >> 16 & 255);

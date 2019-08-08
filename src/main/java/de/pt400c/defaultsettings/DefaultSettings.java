@@ -13,9 +13,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.maven.artifact.versioning.ComparableVersion;
+
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
-import de.pt400c.defaultsettings.EventHandlers.NewModInfo;
+import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -28,6 +30,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.versions.forge.ForgeVersion;
+import net.minecraftforge.versions.mcp.MCPVersion;
 
 @Mod(value = DefaultSettings.MODID)
 public class DefaultSettings {
@@ -84,8 +88,22 @@ public class DefaultSettings {
 						}
 						setUp = true;
 						MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
-						MinecraftForge.EVENT_BUS.register(new EventHandlers());
-
+						if(MCPVersion.getMCVersion().equals("1.14.2") || MCPVersion.getMCVersion().equals("1.14.3")) {
+							
+							MinecraftForge.EVENT_BUS.register(new EventHandlers115());
+							MinecraftForge.EVENT_BUS.register(new UnregHandlers115());
+						}else {
+							
+							ComparableVersion vers = new ComparableVersion(ForgeVersion.getVersion());
+							if (vers.compareTo(new ComparableVersion("28.0.45")) < 0) {
+								MinecraftForge.EVENT_BUS.register(new EventHandlers115());
+								MinecraftForge.EVENT_BUS.register(new UnregHandlers115());
+							} else {
+								MinecraftForge.EVENT_BUS.register(new EventHandlers114());
+								MinecraftForge.EVENT_BUS.register(new UnregHandlers114());
+							}
+						}
+						
 						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new GuiConfig(screen));
 						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()-> Pair.of(() -> "ANY", (remote, isServer) -> true));
 					}

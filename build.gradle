@@ -20,9 +20,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.14.4-1.3.2"
+version = "1.14.x-1.3.3"
 
-def fileVersion = "1.3.2"
+def fileVersion = "1.3.3"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 
@@ -58,15 +58,13 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.14.4-28.0.45'
 }
 
-def minecraft_version = "1.14.4"
-
-def forge_version = "28.0.45"
+def forge_version = "26.0.63"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'META-INF/mods.toml'
 
-        expand 'version': fileVersion, 'mcversion': minecraft_version, 'forge_version': forge_version
+        expand 'version': fileVersion, 'forge_version': forge_version
     }
 
     from(sourceSets.main.resources.srcDirs) {
@@ -75,6 +73,9 @@ processResources {
 }
 
 jar {
+
+	exclude('net/**') 
+
     manifest {
         attributes([
             "Specification-Title": "DefaultSettings",
@@ -109,11 +110,17 @@ task signJar {
 build.dependsOn signJar
 
 task sourcesJar(type: Jar, dependsOn: classes) {
+
+	exclude('net/**') 
+	
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
+	
+	exclude('net/**')
+	
 	from sourceSets.main.output
 	classifier = 'deobf'
 }
@@ -145,21 +152,26 @@ curseforge {
   apiKey = project.property("cursegradle.api_token")
   project {
     id = '318012'
-    releaseType = 'release'
+    releaseType = 'beta'
+    addGameVersion '1.14.2'
+    addGameVersion '1.14.3'
+    addGameVersion '1.14.4'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }
     
     addArtifact (sourcesJar) {
+    	releaseType = 'beta'
     	displayName = "$archivesBaseName-$version-sources"
     }
     
     addArtifact (deobfJar) {
+    	releaseType = 'beta'
     	displayName = "$archivesBaseName-$version-deobf"
     }
     
     addArtifact ("$buildDir/libs/verification.zip") {
-    	releaseType = 'release'
+    	releaseType = 'beta'
     	displayName = 'GPGVerification'
     }
     
@@ -172,7 +184,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
         	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.14.4'
+            artifactId = 'DefaultSettings-1.14.x'
             version = "$fileVersion"
             artifact jar
             artifact deobfJar

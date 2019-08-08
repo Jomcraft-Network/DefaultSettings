@@ -10,6 +10,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class DefaultSettingsGUI extends Screen {
 
+	public MenuScreen menu;
+
 	protected DefaultSettingsGUI(ITextComponent p_i51108_1_) {
 		super(p_i51108_1_);
 	}
@@ -150,5 +152,11 @@ public class DefaultSettingsGUI extends Screen {
 			}
 		}
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
+	}
+	
+	public void resetSelected() {
+		MenuScreen menu = this.menu;
+		if(menu != null)
+			menu.getVariants().get(menu.index).selected = null;
 	}
 }

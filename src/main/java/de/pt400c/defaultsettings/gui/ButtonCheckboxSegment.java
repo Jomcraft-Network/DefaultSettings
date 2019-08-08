@@ -162,8 +162,7 @@ public class ButtonCheckboxSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 			return true;
 		} else {
 			return false;

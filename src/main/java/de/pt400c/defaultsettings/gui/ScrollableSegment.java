@@ -84,7 +84,7 @@ public class ScrollableSegment extends Segment {
 				boolean active = FileUtil.getActives().contains(files[i].getName());
 				if (active)
 					activeCount++;
-				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 132, yOffTemp + 43, 6, 6, files[i].getName(), false, this, i, active), new SettingsButtonSegment(gui, i, (float) (this.getWidth() + this.posX - 12), yOffTemp + 43, files[i].getName(), this, FileUtil.getOverrides().containsKey(files[i].getName()))));
+				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 102, yOffTemp + 43, 6, 6, files[i].getName(), false, this, i, active), new SettingsButtonSegment(gui, i, (float) (this.getWidth() + this.posX - 12), yOffTemp + 43, files[i].getName(), this, FileUtil.getOverrides().containsKey(files[i].getName()))));
 			}
 
 			if (rows.size() != 0 && activeCount == files.length)
@@ -110,7 +110,7 @@ public class ScrollableSegment extends Segment {
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
 		
-		float offX = (float) (this.getWidth() + 88);
+		float offX = (float) (this.getWidth() + 58);
 		float offY = 53;
 		float tempHeight = this.getHeight() + 2;
 		float tempWidth = 35;
@@ -205,12 +205,35 @@ public class ScrollableSegment extends Segment {
 
 		Segment.drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
 
+		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
+		
+		GlStateManager.color4f(f, f1, f2, f3);	
+
 		Segment.drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
 
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
+		if(!this.invisible) {
+			
+			   GL11.glDisable(GL11.GL_TEXTURE_2D);
+		        GlStateManager.enableBlend();
+		        GlStateManager.disableAlphaTest();
+		        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		        GL11.glShadeModel(GL11.GL_SMOOTH);
+
+			Segment.drawGradientFromTop(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737);
+			
+			Segment.drawGradientFromBottom(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737);
+
+	    GL11.glShadeModel(GL11.GL_FLAT);
+	    GlStateManager.disableBlend();
+	    GlStateManager.enableAlphaTest();
+	    GL11.glEnable(GL11.GL_TEXTURE_2D);
+	    
+			}
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 
@@ -253,7 +276,7 @@ public class ScrollableSegment extends Segment {
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) (this.getHeight() * scaleFactor));
+		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
 			int yOffTemp = 18 + 20 * i + add;
@@ -333,8 +356,7 @@ public class ScrollableSegment extends Segment {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 			for (int i = 0; i < this.list.size(); i++) {
 				int yOffTemp = 18 + 20 * i + add;
 

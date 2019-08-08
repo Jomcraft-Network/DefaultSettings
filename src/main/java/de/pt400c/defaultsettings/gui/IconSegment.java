@@ -1,0 +1,59 @@
+package de.pt400c.defaultsettings.gui;
+
+import de.pt400c.defaultsettings.DefaultSettings;
+import static de.pt400c.defaultsettings.FileUtil.MC;
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.platform.GLX;
+
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
+public class IconSegment extends Segment {
+	
+	private final ResourceLocation rof;
+	private final float origX;
+	
+	public IconSegment(Screen gui, float posX, float posY, int width, int height, String res, LeftMenu menu) {
+		super(gui, posX, posY, width, height, false);
+		this.rof = new ResourceLocation(DefaultSettings.MODID, res);
+		this.origX = posX;
+	}
+
+	@Override
+	public void customRender(float mouseX, float mouseY, float customX, float customY, float partialTicks) {
+	
+		GL11.glPushMatrix();
+		GL11.glEnable(GL11.GL_BLEND);
+     	GLX.glBlendFuncSeparate(770, 771, 1, 0);
+		MC.getTextureManager().bindTexture(rof);
+		this.posX = origX + customX;
+		float actual = 128;
+
+		Segment.drawScaledCustomSizeModalRect((int) posX, (int) posY, 0, 0, (int) actual, (int) actual, 19, 19, actual, actual);
+
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopMatrix();
+		
+	}
+	
+	@Override
+	public void render(float mouseX, float mouseY, float partialTicks) {
+	
+		GL11.glPushMatrix();
+		GL11.glEnable(GL11.GL_BLEND);
+		GLX.glBlendFuncSeparate(770, 771, 1, 0);
+		MC.getTextureManager().bindTexture(rof);
+		
+		float actual = 128;
+		Segment.drawScaledCustomSizeModalRect((int) posX, (int) posY, 0, 0, (int) actual, (int) actual, 16, 16, actual, actual);
+
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopMatrix();
+		
+	}
+
+}

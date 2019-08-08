@@ -5,7 +5,7 @@ pipeline
 	    cron('H 0 * * *')
 	}
 	options
-	{
+	{ 
 		gitLabConnection('Jenkins')
         gitlabBuilds(builds: ['Prebuild', 'Build', 'Deploy'])
 	}

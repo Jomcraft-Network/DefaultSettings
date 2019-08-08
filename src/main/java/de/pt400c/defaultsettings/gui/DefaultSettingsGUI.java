@@ -11,6 +11,8 @@ public class DefaultSettingsGUI extends GuiScreen {
 	
 	private List<Segment> segments = new ArrayList<>();
 	
+	public MenuScreen menu;
+	
 	public PopupSegment popupField = null;
 	
 	public void addSegment(Segment segment) {
@@ -24,6 +26,7 @@ public class DefaultSettingsGUI extends GuiScreen {
 			this.segments.clear();
 		}
 	}
+	
 	@Override
 	public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_) {
 		synchronized (this.segments) {
@@ -74,6 +77,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 		}
 
         super.render(mouseX, mouseY, partialTicks);
+	}
+	
+	public void resetSelected() {
+		MenuScreen menu = this.menu;
+		if(menu != null)
+			menu.getVariants().get(menu.index).selected = null;
 	}
 	
 	@Override

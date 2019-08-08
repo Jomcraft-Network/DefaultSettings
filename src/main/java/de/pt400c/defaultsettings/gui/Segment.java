@@ -4,6 +4,7 @@ import net.minecraft.client.audio.SimpleSound;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL11;
@@ -36,6 +37,8 @@ public abstract class Segment {
     private static final float circleTheta = (float) (2 * 3.1415926 / 100F); 
     private static final float tangetialFactor = (float) Math.tan(circleTheta);
 	private static final float radialFactor = (float) Math.cos(circleTheta);
+	private static boolean hasColor;
+	private static int color;
 	
 	public Segment(GuiScreen gui, float posX, float posY, float width, float height, boolean popupSegment) {
 		this.gui = gui;
@@ -83,7 +86,7 @@ public abstract class Segment {
     }
 	
 	public boolean isSelected(double mouseX, double mouseY) {
-		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
+		return (((DefaultSettingsGUI) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
 	}
 	
 	public double getPosX() {
@@ -116,6 +119,200 @@ public abstract class Segment {
         MC.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 	
+	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2)
+    {
+		double j1;
+
+        if (x1 < x2)
+        {
+            j1 = x1;
+            x1 = x2;
+            x2 = j1;
+        }
+
+        if (y1 < y2)
+        {
+            j1 = y1;
+            y1 = y2;
+            y2 = j1;
+        }
+        
+        int f3 = (int)(color1 >> 24 & 255);
+        int f = (int)(color1 >> 16 & 255);
+        int f1 = (int)(color1 >> 8 & 255);
+        int f2 = (int)(color1 & 255);
+
+        setColor(f, f1, f2, f3);
+
+        addVertex((float) x2, (float) y2, 0);
+        addVertex((float) x2, (float) y1, 0);
+        
+        f3 = (int)(color2 >> 24 & 255);
+        f = (int)(color2 >> 16 & 255);
+        f1 = (int)(color2 >> 8 & 255);
+        f2 = (int)(color2 & 255);
+        
+        setColor(f, f1, f2, f3);
+        
+        addVertex((float) x1, (float) y1, 0);
+        
+        addVertex((float) x1, (float) y2, 0);
+
+		draw(false);
+    }
+	
+	public static void drawGradientFromBottom(double x1, double y1, double x2, double y2, int color1, int color2)
+    {
+		double j1;
+
+        if (x1 < x2)
+        {
+            j1 = x1;
+            x1 = x2;
+            x2 = j1;
+        }
+
+        if (y1 < y2)
+        {
+            j1 = y1;
+            y1 = y2;
+            y2 = j1;
+        }
+        
+        
+        int f3 = (int)(color1 >> 24 & 255);
+        int f = (int)(color1 >> 16 & 255);
+        int f1 = (int)(color1 >> 8 & 255);
+        int f2 = (int)(color1 & 255);
+        
+        setColor(f, f1, f2, f3);
+
+        addVertex((float) x2, (float) y1, 0);
+        addVertex((float) x1, (float) y1, 0);
+        
+        f3 = (int)(color2 >> 24 & 255);
+        f = (int)(color2 >> 16 & 255);
+        f1 = (int)(color2 >> 8 & 255);
+        f2 = (int)(color2 & 255);
+        
+        setColor(f, f1, f2, f3);
+        addVertex((float) x1, (float) y2, 0);
+        addVertex((float) x2, (float) y2, 0);
+
+		draw(false);
+    }
+	
+	public static void drawGradientFromTop(double x1, double y1, double x2, double y2, int color1, int color2)
+    {
+		double j1;
+
+        if (x1 < x2)
+        {
+            j1 = x1;
+            x1 = x2;
+            x2 = j1;
+        }
+
+        if (y1 < y2)
+        {
+            j1 = y1;
+            y1 = y2;
+            y2 = j1;
+        }
+        
+        
+        int f3 = (int)(color1 >> 24 & 255);
+        int f = (int)(color1 >> 16 & 255);
+        int f1 = (int)(color1 >> 8 & 255);
+        int f2 = (int)(color1 & 255);
+        
+        setColor(f, f1, f2, f3);
+        
+        addVertex((float) x1, (float) y2, 0);
+        addVertex((float) x2, (float) y2, 0);
+       
+        
+        f3 = (int)(color2 >> 24 & 255);
+        f = (int)(color2 >> 16 & 255);
+        f1 = (int)(color2 >> 8 & 255);
+        f2 = (int)(color2 & 255);
+        
+        setColor(f, f1, f2, f3);
+      
+        addVertex((float) x2, (float) y1, 0);
+        addVertex((float) x1, (float) y1, 0);
+
+		draw(false);
+    }
+	
+	public static void drawGradientCircle(float cx, float cy, float r, float rotation, int percentage, int color1, int color2) {
+
+		float x = r;
+
+		float y = 0;
+
+		float posX1 = 0;
+		float posY1 = 0;
+
+		for (int l = 0; l < Math.round(100F / 360F * rotation); l++) {
+
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
+		}
+
+		float posX2 = cx;
+		float posY2 = cy;
+
+		for (int i = 0; i < (100 + 1 - percentage); i++) {
+			posX1 = posX2;
+			posY1 = posY2;
+
+			posX2 = x + cx;
+			posY2 = y + cy;
+			
+			
+			int f3 = (int)(color2 >> 24 & 255);
+	        int f = (int)(color2 >> 16 & 255);
+	        int f1 = (int)(color2 >> 8 & 255);
+	        int f2 = (int)(color2 & 255);
+	        
+	        setColor(f, f1, f2, f3);
+
+
+			addVertex((float) posX1, (float) posY1, 0);
+			
+			int f13 = (int)(color1 >> 24 & 255);
+	        int f0 = (int)(color1 >> 16 & 255);
+	        int f11 = (int)(color1 >> 8 & 255);
+	        int f12 = (int)(color1 & 255);
+			
+			
+	        setColor(f0, f11, f12, f13);
+			addVertex((float) cx, (float) cy, 0);
+			setColor(f, f1, f2, f3);
+			addVertex((float) posX2, (float) posY2, 0);
+
+			draw(true);
+
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
+
+		}
+
+	}
+	
 	protected static void drawDot(float red, float green, float blue, float alpha, float scaleFactor, float size, Vec2f vector) {
 		GL11.glColor4f(red, green, blue, alpha);
 
@@ -131,6 +328,60 @@ public abstract class Segment {
 		GL11.glEnd();
 		GL11.glDisable(GL11.GL_POINT_SMOOTH);
 		
+	}
+	
+	public static void setColor(int par1, int par2, int par3, int par4) {
+        if (par1 > 255)
+        {
+            par1 = 255;
+        }
+
+        if (par2 > 255)
+        {
+            par2 = 255;
+        }
+
+        if (par3 > 255)
+        {
+            par3 = 255;
+        }
+
+        if (par4 > 255)
+        {
+            par4 = 255;
+        }
+
+        if (par1 < 0)
+        {
+            par1 = 0;
+        }
+
+        if (par2 < 0)
+        {
+            par2 = 0;
+        }
+
+        if (par3 < 0)
+        {
+            par3 = 0;
+        }
+
+        if (par4 < 0)
+        {
+            par4 = 0;
+        }
+
+        hasColor = true;
+
+        if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN)
+        {
+            color = par4 << 24 | par3 << 16 | par2 << 8 | par1;
+        }
+        else
+        {
+            color = par1 << 24 | par2 << 16 | par3 << 8 | par4;
+        }
+    
 	}
 	
 	protected static void drawDots(float red, float green, float blue, float alpha, float scaleFactor, Vec2f... vectors) {
@@ -399,6 +650,10 @@ public abstract class Segment {
 	}
 
 	public static void addVertex(float x, float y, float z) {
+		if (hasColor)
+        {
+			buffer[bufferIndex + 5] = color;
+        }
 		buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
 		buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
 		buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
@@ -409,20 +664,49 @@ public abstract class Segment {
 		if (!triangle) {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 32);
+			
+			if (hasColor) {
+				byteBuffer.position(20);
+				GL11.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 32, byteBuffer);
+				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+			}
+			
 			byteBuffer.position(0);
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 32, floatBuffer);
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			
+			if (hasColor)
+            {
+                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+            }
+			
 		} else {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 24);
+			
+			
+			if (hasColor) {
+				byteBuffer.position(20);
+				GL11.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 32, byteBuffer);
+				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+			}
+			
+			
 			byteBuffer.position(0);
 			GL11.glVertexPointer(3, GL11.GL_FLOAT, 32, floatBuffer);
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			
+			 if (hasColor)
+             {
+                 GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+             }
 		}
+		
+		hasColor = false;
 
 		reset();
 	}

@@ -239,6 +239,7 @@ public class FileUtil {
 				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
 			}
 			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
+			mainJson.initPopup = true;
 			File fileDir = new File(mcDataDir, "config");
 			for (File file : fileDir.listFiles(fileFilter)) 
 				mainJson.activeConfigs.add(file.getName());
@@ -256,6 +257,11 @@ public class FileUtil {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
 		storeFolder.mkdir();
 		return storeFolder;
+	}
+	
+	public static void setPopup(boolean active) {
+		getMainJSON().initPopup = active;
+		mainJson.save(new File(mainLocation));
 	}
 
 	public static void restoreContents() throws NullPointerException, IOException, NoSuchAlgorithmException {

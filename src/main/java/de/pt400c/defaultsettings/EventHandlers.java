@@ -5,8 +5,10 @@ import java.lang.reflect.Field;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.gui.GuiModList;
@@ -18,6 +20,8 @@ import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 @Mod.EventBusSubscriber(modid = DefaultSettings.MODID, value = Dist.CLIENT)
 public class EventHandlers {
 
+	private static boolean bootedUp;
+	
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		if ((MC.currentScreen instanceof GuiModList || MC.currentScreen == null) && InputMappings.isKeyDown(GLFW_KEY_F7) && InputMappings.isKeyDown(GLFW_KEY_G))
@@ -28,6 +32,17 @@ public class EventHandlers {
 	@SubscribeEvent
 	public void serverStarting(FMLServerStartingEvent event) {
 		CommandDefaultSettings.register(event);
+	}
+	
+	@SubscribeEvent
+	public void onGuiOpened(GuiOpenEvent event) {
+		if (!bootedUp) {
+		
+			if(event.getGui() instanceof GuiMainMenu && FileUtil.getMainJSON().initPopup) {
+				bootedUp = true;
+				event.setGui(new GuiDSMainMenu(new GuiMainMenu()));
+			}
+		}
 	}
 	
 	@SubscribeEvent

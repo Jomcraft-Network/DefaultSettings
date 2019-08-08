@@ -30,6 +30,8 @@ public class ButtonBulkActionSegment extends Segment {
 	public ButtonBulkActionSegment(GuiScreen gui, float posX, float posY, int width, int height, ScrollableSegment parent) {
 		super(gui, posX, posY, width, height, false);
 		this.parent = parent;
+		if(parent.cache_activity == 1 || parent.cache_activity == 2)
+			this.timer = (float) (Math.PI / 3);
 	}
 
 	@Override
@@ -162,8 +164,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 			return true;
 		} else {
 			return false;

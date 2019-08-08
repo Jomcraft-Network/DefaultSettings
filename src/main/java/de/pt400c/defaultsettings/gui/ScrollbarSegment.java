@@ -1,7 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
-import de.pt400c.defaultsettings.GuiConfig;
+import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,6 +44,23 @@ public class ScrollbarSegment extends ButtonSegment {
 		} else {
 			distanceY = 0;
 		}
+		
+		GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlphaTest();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+	
+        Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + 7, 6, 180, 50, 0xff3a3a3a, 0x003a3a3a);
+        
+        Segment.drawGradient(this.getPosX() + this.getWidth() - 2, this.getPosY() + 7, this.getPosX() - 2 + 6 + this.getWidth(), this.getPosY() + this.getHeight() - 2, 0xff3a3a3a, 0x003a3a3a);
+
+		Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + this.getHeight() - 2, 6, 0, 50, 0xff3a3a3a, 0x003a3a3a);
+	
+		GL11.glShadeModel(GL11.GL_FLAT);
+   		GlStateManager.disableBlend();
+   		GlStateManager.enableAlphaTest();
+   		GlStateManager.enableTexture2D();
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 
@@ -59,8 +77,7 @@ public class ScrollbarSegment extends ButtonSegment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 			this.distanceY += (int) (mouseY - this.posY);
 			
 			return true;

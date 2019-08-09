@@ -103,6 +103,8 @@ public class ButtonUpdateChecker extends ButtonSegment {
 			return String.format("Your mod's version is outdated\nPlease update to %s", DefaultSettings.getUpdater().getOnlineVersion());
 		case UP_TO_DATE: 
 			return "Up to date";
+		case AHEAD_OF_TIME: 
+			return "Heck, you're ahead of reality?!";
 		case ERROR: 
 
 		default: 
@@ -120,6 +122,8 @@ public class ButtonUpdateChecker extends ButtonSegment {
 			return 0xfff5ac21;
 		case UP_TO_DATE: 
 			return 0xff68f521;
+		case AHEAD_OF_TIME: 
+			return 0xff0884b6;
 		case ERROR: 
 
 		default: 

@@ -1,11 +1,11 @@
 pipeline 
 {
 	agent any
-	triggers{
-	    cron('H 0 * * *')
+	parameters {
+	    booleanParam(defaultValue: false, description: 'Should a timer be created?', name: 'timerUsed')
 	}
 	options
-	{ 
+	{
 		gitLabConnection('Jenkins')
         gitlabBuilds(builds: ['Prebuild', 'Build', 'Deploy'])
 	}

@@ -10,11 +10,14 @@ import java.util.Collections;
 import java.util.List;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -217,22 +220,21 @@ public class ScrollableSegment extends Segment {
 	
 		if(!this.invisible) {
 			
-			 GlStateManager.disableTexture2D();
-		        GlStateManager.enableBlend();
-		        GlStateManager.disableAlpha();
-		        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		        GL11.glShadeModel(GL11.GL_SMOOTH);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_BLEND);
+			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+
+			GL11.glShadeModel(GL11.GL_SMOOTH);
 
 			Segment.drawGradientFromTop(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737);
 			
 			Segment.drawGradientFromBottom(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737);
 
-	    GL11.glShadeModel(GL11.GL_FLAT);
-	    GlStateManager.disableBlend();
-	    GlStateManager.enableAlpha();
-	    GlStateManager.enableTexture2D();
-	    
-			}
+			GL11.glShadeModel(GL11.GL_FLAT);
+			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+		}
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 
@@ -270,7 +272,11 @@ public class ScrollableSegment extends Segment {
 		else
 			this.invisible = false;
 
-		ScaledResolution scaledResolution = new ScaledResolution(MC);
+		ScaledResolution scaledResolution;
+		if(DefaultSettings.is180)
+			scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+		else
+			scaledResolution = new ScaledResolution(MC);
 		int scaleFactor = scaledResolution.getScaleFactor();
 
 		GL11.glPushMatrix();
@@ -527,7 +533,11 @@ class SettingsButtonSegment extends Segment {
 		f = (float) (color >> 16 & 255) / 255.0F;
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
-		ScaledResolution scaledResolution = new ScaledResolution(MC);
+		ScaledResolution scaledResolution;
+		if(DefaultSettings.is180)
+			scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+		else
+			scaledResolution = new ScaledResolution(MC);
 		int scaleFactor = scaledResolution.getScaleFactor();
 		Segment.drawDots(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX, (float) customPosY + 3.3F), new Vec2f((float) customPosX, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX, (float) customPosY - 5 + 4F));
 
@@ -960,7 +970,11 @@ class PopupCheckboxSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			ScaledResolution scaledResolution = new ScaledResolution(MC);
+			ScaledResolution scaledResolution;
+			if(DefaultSettings.is180)
+				scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+			else
+				scaledResolution = new ScaledResolution(MC);
 			int scaleFactor = scaledResolution.getScaleFactor();
 
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));

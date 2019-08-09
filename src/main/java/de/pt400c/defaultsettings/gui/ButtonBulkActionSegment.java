@@ -1,17 +1,16 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-
 import org.lwjgl.opengl.GL11;
+
+import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,7 +60,7 @@ public class ButtonBulkActionSegment extends Segment {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GlStateManager.color(f, f1, f2, f3);
+		GL11.glColor4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
 
@@ -83,7 +82,7 @@ public class ButtonBulkActionSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GlStateManager.color(f, f1, f2, f3);
+			GL11.glColor4f(f, f1, f2, f3);
 
 			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -105,7 +104,7 @@ public class ButtonBulkActionSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color(f, f1, f2, f3 - alphaRate);
+		GL11.glColor4f(f, f1, f2, f3 - alphaRate);
 
 		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -129,7 +128,12 @@ public class ButtonBulkActionSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			ScaledResolution scaledResolution = new ScaledResolution(MC);
+			ScaledResolution scaledResolution;
+			if(DefaultSettings.is180)
+				scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+			else
+				scaledResolution = new ScaledResolution(MC);
+			
 			int scaleFactor = scaledResolution.getScaleFactor();
 
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX(), (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 5.5F, (float) this.getPosY() + 3.5F));
@@ -144,7 +148,12 @@ public class ButtonBulkActionSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			ScaledResolution scaledResolution = new ScaledResolution(MC);
+			ScaledResolution scaledResolution;
+			if(DefaultSettings.is180)
+				scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+			else
+				scaledResolution = new ScaledResolution(MC);
+			
 			int scaleFactor = scaledResolution.getScaleFactor();
 
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));

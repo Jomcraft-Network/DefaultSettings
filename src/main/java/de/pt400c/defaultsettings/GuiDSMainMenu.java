@@ -1,18 +1,17 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.text.TextFormatting;
 
 public class GuiDSMainMenu extends DefaultSettingsGUI {
@@ -32,9 +31,14 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
         this.clearSegments();
         
         this.addSegment(new TextSegment(this, this.width / 2 - MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2, 9, 0, 0, "- DefaultSettings -", 0x0, false));
+        String text;
+        if(DefaultSettings.is18)
         
-        String text = "This is the first bootup of " + TextFormatting.BOLD + "DefaultSettings" + TextFormatting.RESET + ". In order to assure proper functionality, you should consider the following:"
-        		+ " Automatically this mod ships all mod configs and doesn't replace them when you as the modpack's creator update the configs. Also neither the default keybindings, options nor the default servers are shipped by default. For the most cases that is not optional. Please customise DS by opening the management GUI (F7 + G in the mods list or click on the 'Config' button when selecting DS in that list).\n" + TextFormatting.RED + TextFormatting.BOLD+"Important" + TextFormatting.RESET +": Once you finished configuring the modpack, you have to activate the 'Export Mode' in that GUI!";
+        	text = "This is the first bootup of " + EnumChatFormatting.BOLD + "DefaultSettings" + EnumChatFormatting.RESET + ". In order to assure proper functionality, you should consider the following:"
+        		+ " Automatically this mod ships all mod configs and doesn't replace them when you as the modpack's creator update the configs. Also neither the default keybindings, options nor the default servers are shipped by default. For the most cases that is not optional. Please customise DS by opening the management GUI (F7 + G in the mods list or click on the 'Config' button when selecting DS in that list).\n" + EnumChatFormatting.RED + EnumChatFormatting.BOLD + "Important" + EnumChatFormatting.RESET + ": Once you finished configuring the modpack, you have to activate the 'Export Mode' in that GUI!";
+        else
+        	text = "This is the first bootup of " + TextFormatting.BOLD + "DefaultSettings" + TextFormatting.RESET + ". In order to assure proper functionality, you should consider the following:"
+            		+ " Automatically this mod ships all mod configs and doesn't replace them when you as the modpack's creator update the configs. Also neither the default keybindings, options nor the default servers are shipped by default. For the most cases that is not optional. Please customise DS by opening the management GUI (F7 + G in the mods list or click on the 'Config' button when selecting DS in that list).\n" + TextFormatting.RED + TextFormatting.BOLD + "Important" + TextFormatting.RESET + ": Once you finished configuring the modpack, you have to activate the 'Export Mode' in that GUI!";
         
         ArrayList<String> lines = new ArrayList<String>();
 		

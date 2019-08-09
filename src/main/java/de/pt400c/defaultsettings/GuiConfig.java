@@ -31,7 +31,6 @@ import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
@@ -196,22 +195,26 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			this.mc.getFramebuffer().unbindFramebuffer();
 
-			GlStateManager.pushMatrix();
-			GlStateManager.clear(16640);
+			GL11.glPushMatrix();
+			GL11.glClear(16640);
 			this.framebufferMc.bindFramebuffer(true);
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
-			GlStateManager.enableTexture2D();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			ScaledResolution scaledresolution;
+			if(DefaultSettings.is180)
+				scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+			else
+				scaledresolution = new ScaledResolution(this.mc);
+			
+			GL11.glClear(256);
+			GL11.glMatrixMode(5889);
+			GL11.glLoadIdentity();
+			GL11.glOrtho(0.0D, scaledresolution.getScaledWidth_double(), scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+			GL11.glMatrixMode(5888);
+			GL11.glLoadIdentity();
+			GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
 
-			ScaledResolution scaledresolution = new ScaledResolution(this.mc);
-			GlStateManager.clear(256);
-			GlStateManager.matrixMode(5889);
-			GlStateManager.loadIdentity();
-			GlStateManager.ortho(0.0D, scaledresolution.getScaledWidth_double(), scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-			GlStateManager.matrixMode(5888);
-			GlStateManager.loadIdentity();
-			GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-
-			GlStateManager.clear(256);
+			GL11.glClear(256);
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
@@ -233,15 +236,15 @@ public class GuiConfig extends DefaultSettingsGUI {
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
 			this.framebufferMc.unbindFramebuffer();
-			GlStateManager.popMatrix();
+			GL11.glPopMatrix();
 
 			this.mc.getFramebuffer().bindFramebuffer(true);
-			GlStateManager.pushMatrix();
+			GL11.glPushMatrix();
 
 			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
 			GL30.glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 
-			GlStateManager.popMatrix();
+			GL11.glPopMatrix();
 		}
 
 	}

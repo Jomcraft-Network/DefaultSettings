@@ -30,6 +30,8 @@ public class DefaultSettings {
 	public static String mcVersion = FMLInjectionData.data()[4].toString();
 	public static Map<String, KeyContainer> keyRebinds_19 = new HashMap<String, KeyContainer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
+	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
+	public static final boolean is18 = DefaultSettings.mcVersion.startsWith("1.8");
 
 	@Instance
 	public static DefaultSettings instance;

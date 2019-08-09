@@ -2,11 +2,9 @@ package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraftforge.fml.relauncher.Side;
@@ -113,7 +111,7 @@ public class SearchbarSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color(f, f1, f2, f3);
+		GL11.glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), null, false, null, false);
 
@@ -124,7 +122,7 @@ public class SearchbarSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color(f, f1, f2, f3);
+		GL11.glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX() - 10, this.getPosY() - 1, this.getPosX() - 8, this.getPosY() + this.getHeight() + 1, null, false, null, false);
 
@@ -138,7 +136,7 @@ public class SearchbarSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color(f, f1, f2, f3);
+		GL11.glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX() + 1, this.getPosY() + 1, this.getPosX() + this.getWidth() - 1, this.getPosY() + this.getHeight() - 1, null, false, null, false);
 
@@ -149,7 +147,7 @@ public class SearchbarSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color(f, f1, f2, f3);
+		GL11.glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX() + 2, this.getPosY() + 2, this.getPosX() + this.getWidth() - 2, this.getPosY() + this.getHeight() - 2, null, false, null, false);
 
@@ -166,7 +164,7 @@ public class SearchbarSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GlStateManager.color(f, f1, f2, f3);
+			GL11.glColor4f(f, f1, f2, f3);
 
 			Segment.drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}

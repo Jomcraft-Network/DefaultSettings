@@ -55,8 +55,8 @@ public class CommandDefaultSettings_19 extends CommandBase {
 		if (args[0].toLowerCase().equals("save")) {
 
 			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-				sender.sendMessage(new TextComponentString(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
-				sender.sendMessage(new TextComponentString(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
+				sender.sendMessage(new TextComponentString(TextFormatting.RED + "The intended files already exist! If you want to"));
+				sender.sendMessage(new TextComponentString(TextFormatting.RED + "overwrite them, add the '-o' argument"));
 				return;
 			}
 

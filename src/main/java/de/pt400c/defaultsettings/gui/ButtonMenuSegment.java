@@ -8,9 +8,9 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 
 @SideOnly(Side.CLIENT)
@@ -38,7 +38,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		final double func = triple * triple * triple * 6;
 		this.width = this.origLength - this.menu.offs * 1.6F;
 
-		float percent = MathHelper.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
+		float percent = GuiConfig.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
 		
 		if(!(width < 3.5F)) {
 		
@@ -60,7 +60,11 @@ public class ButtonMenuSegment extends ButtonSegment {
 		
 		GL11.glEnable(GL11.GL_BLEND);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		ScaledResolution scaledResolution = new ScaledResolution(MC);
+		ScaledResolution scaledResolution;
+		if(DefaultSettings.is180)
+			scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+		else
+			scaledResolution = new ScaledResolution(MC);
 		int scaleFactor = scaledResolution.getScaleFactor();
 		GL11.glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 		MC.fontRenderer.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);

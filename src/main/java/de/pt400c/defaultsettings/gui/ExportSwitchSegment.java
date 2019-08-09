@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -85,7 +84,7 @@ public class ExportSwitchSegment extends Segment {
 		
 		float radius = 7;
 		
-		GlStateManager.color(f, f1, f2, f3);
+		GL11.glColor4f(f, f1, f2, f3);
 		
 		Segment.drawCircle((float) this.getPosX() + 7, (float) this.getPosY() + 7,  radius, 90, 50);
 		
@@ -115,11 +114,11 @@ public class ExportSwitchSegment extends Segment {
 		
 		radius = 9.4F;
 		
-		GlStateManager.color(0.5F, 0.5F, 0.5F);
+		GL11.glColor3f(0.5F, 0.5F, 0.5F);
 
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		radius = 8.5F;
-		GlStateManager.color(1, 1, 1);
+		GL11.glColor3f(1, 1, 1);
 
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		

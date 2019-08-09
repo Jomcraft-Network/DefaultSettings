@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,8 +23,6 @@ public class FramebufferObject
     }
 
 	public void createBindFramebuffer(int width, int height) {
-
-		GlStateManager.enableDepth();
 
 		if (this.framebufferObject >= 0) {
 			this.deleteFramebuffer();
@@ -80,7 +77,7 @@ public class FramebufferObject
 		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject);
 
 		if (vp) 
-			GlStateManager.viewport(0, 0, this.framebufferWidth, this.framebufferHeight);
+			GL11.glViewport(0, 0, this.framebufferWidth, this.framebufferHeight);
 
 	}
 
@@ -93,7 +90,7 @@ public class FramebufferObject
     {
         this.bindFramebuffer(true);
 
-        GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         this.unbindFramebuffer();
     }
 

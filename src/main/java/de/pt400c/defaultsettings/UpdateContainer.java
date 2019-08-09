@@ -115,7 +115,7 @@ public class UpdateContainer {
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.UP_TO_DATE);
 					break;
 				case AHEAD: 
-					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.UP_TO_DATE);
+					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.AHEAD_OF_TIME);
 					break;
 				case OUTDATED: 
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.OUTDATED);
@@ -152,7 +152,7 @@ public class UpdateContainer {
 	}
 	
 	public static enum Status {
-		UNKNOWN, CHECKING, UP_TO_DATE, OUTDATED, ERROR;
+		UNKNOWN, CHECKING, UP_TO_DATE, OUTDATED, ERROR, AHEAD_OF_TIME;
 	}
 
 }

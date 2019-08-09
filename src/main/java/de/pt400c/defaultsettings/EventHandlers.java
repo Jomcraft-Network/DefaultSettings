@@ -24,7 +24,7 @@ public class EventHandlers {
 	
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
-		if ((MC.currentScreen instanceof GuiModList || MC.currentScreen == null) && InputMappings.isKeyDown(GLFW_KEY_F7) && InputMappings.isKeyDown(GLFW_KEY_G))
+		if ((MC.currentScreen instanceof GuiModList && MC.world == null) && InputMappings.isKeyDown(GLFW_KEY_F7) && InputMappings.isKeyDown(GLFW_KEY_G))
 			
 			MC.displayGuiScreen(new GuiConfig(Minecraft.getInstance().currentScreen));
 	}

@@ -19,7 +19,7 @@ public class TickHandlerClient implements ITickHandler {
 	@Override
 	public void tickStart(EnumSet type, Object... tickData) {
 		if (type.equals(EnumSet.of(TickType.CLIENT))) 
-			if(isPressed(Keyboard.KEY_F7) && isPressed(Keyboard.KEY_G) && (MC.currentScreen instanceof GuiModList || MC.currentScreen == null))
+			if((MC.currentScreen instanceof GuiModList && MC.theWorld == null) && isPressed(Keyboard.KEY_F7) && isPressed(Keyboard.KEY_G))
 				MC.displayGuiScreen(new GuiConfig(Minecraft.getMinecraft().currentScreen));
 	}
 	

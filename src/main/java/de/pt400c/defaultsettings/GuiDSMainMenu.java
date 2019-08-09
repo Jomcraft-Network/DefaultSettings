@@ -6,16 +6,13 @@ import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
-
 import com.google.common.base.Joiner;
-
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Function;
 import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.EnumChatFormatting;
 
 public class GuiDSMainMenu extends DefaultSettingsGUI {

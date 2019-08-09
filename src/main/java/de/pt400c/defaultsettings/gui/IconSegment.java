@@ -4,11 +4,9 @@ import de.pt400c.defaultsettings.DefaultSettings;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)

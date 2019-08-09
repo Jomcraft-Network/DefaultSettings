@@ -30,8 +30,7 @@ public class ButtonMovableSegment extends ButtonSegment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.dragging = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 
 			distanceX = (mouseX - this.posX);
 			distanceY = (mouseY - this.posY);

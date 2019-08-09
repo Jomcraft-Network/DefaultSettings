@@ -24,7 +24,7 @@ public class ButtonSegment extends Segment {
 	protected final int border;
 	public int color = 0xffa4a4a4;
 
-	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, boolean popupSegment) {
+	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, LeftMenu menu, boolean popupSegment) {
 		super(gui, posX, posY, width, height, popupSegment);
 		this.title = title;
 		this.function = function;
@@ -32,8 +32,12 @@ public class ButtonSegment extends Segment {
 		this.hoverMessage = hoverMessage;
 	}
 	
+	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, boolean popupSegment) {
+		this(gui, posX, posY, title, function, width, height, border, hoverMessage, null, popupSegment);
+	}
+	
 	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage) {
-		this(gui, posX, posY, title, function, width, height, border, hoverMessage, false);
+		this(gui, posX, posY, title, function, width, height, border, hoverMessage, null, false);
 	}
 	
 	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border) {
@@ -101,8 +105,7 @@ public class ButtonSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
-			menu.getVariants().get(menu.index).selected = null;
+			((DefaultSettingsGUI) this.gui).resetSelected();
 
 			return true;
 		} else {

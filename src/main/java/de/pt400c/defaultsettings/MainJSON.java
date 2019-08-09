@@ -14,6 +14,7 @@ public class MainJSON {
 	private String version;
 	private String identifier;
 	private String prevVersion;
+	protected boolean initPopup = false;
 	private boolean exportMode = false;
 	public List<String> activeConfigs = new ArrayList<String>();
 	public HashMap<String, String> overrides = new HashMap<String, String>();

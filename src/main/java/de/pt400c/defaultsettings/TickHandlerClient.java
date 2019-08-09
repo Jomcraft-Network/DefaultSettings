@@ -12,15 +12,29 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.EntityRenderer;
 
-
 public class TickHandlerClient implements ITickHandler {
+	
+	private static boolean bootedUp;
 	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void tickStart(EnumSet type, Object... tickData) {
-		if (type.equals(EnumSet.of(TickType.CLIENT))) 
+		if (type.equals(EnumSet.of(TickType.CLIENT))) {
 			if((MC.currentScreen instanceof GuiModList && MC.theWorld == null) && isPressed(Keyboard.KEY_F7) && isPressed(Keyboard.KEY_G))
 				MC.displayGuiScreen(new GuiConfig(Minecraft.getMinecraft().currentScreen));
+			
+			if (!bootedUp) {
+
+				if(MC.currentScreen instanceof GuiMainMenu) {
+					bootedUp = true;
+
+					if(FileUtil.getMainJSON().initPopup) 
+						MC.displayGuiScreen(new GuiDSMainMenu(new GuiMainMenu()));
+
+				}
+			}
+
+		}
 	}
 	
 	@SuppressWarnings({"rawtypes"})

@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-   deobfCompile 'de.pt400c.defaultsettings:DefaultSettings-[EDITION]:[VERSION]'
+   deobfCompile 'de.pt400c.defaultsettings:DefaultSettings-1.6.4:[VERSION]'
 }
 ```
 

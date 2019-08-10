@@ -226,9 +226,9 @@ public class ScrollableSegment extends Segment {
 
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 
-			Segment.drawGradientFromTop(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737);
+			Segment.drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
 			
-			Segment.drawGradientFromBottom(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737);
+			Segment.drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
 
 			GL11.glShadeModel(GL11.GL_FLAT);
 			GL11.glDisable(GL11.GL_BLEND);

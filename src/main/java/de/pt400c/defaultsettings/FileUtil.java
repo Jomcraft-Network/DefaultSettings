@@ -371,7 +371,7 @@ public class FileUtil {
 					if(DefaultSettings.mcVersion.startsWith("1.8"))
 						DefaultSettings.keyRebinds_18.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
 					else
-						DefaultSettings.keyRebinds_19.put(line.split(":")[0], new KeyContainer(Integer.parseInt(line.split(":")[1]), KeyModifier.valueFromString(line.split(":")[2])));
+						DefaultSettings.keyRebinds_19.put(line.split(":")[0], new KeyContainer(Integer.parseInt(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
 				}
 			} catch (IOException e) {
 				throw e;

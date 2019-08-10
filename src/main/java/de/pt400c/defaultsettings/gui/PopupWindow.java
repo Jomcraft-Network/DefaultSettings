@@ -3,8 +3,8 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import de.pt400c.defaultsettings.GuiConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,19 +36,19 @@ public class PopupWindow extends Segment {
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
      	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		Minecraft.getMinecraft().fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - Minecraft.getMinecraft().fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), calcAlpha(0xff1b1b1b, this.alphaRate).getRGB(), false);
+		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), calcAlpha(0xff1b1b1b, this.alphaRate).getRGB(), false);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
+		
 		synchronized (this.children) {
 			this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
-
 			this.children.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
 		}
 		
 		if (this.dragging) {
 
-			double origX = this.posX;
-			double origY = this.posY;
+			final double origX = this.posX;
+			final double origY = this.posY;
 			
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
@@ -66,31 +66,29 @@ public class PopupWindow extends Segment {
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 			synchronized (this.children) {
 				for (Segment segment : children) {
-					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
 						return true;
-					}
+
 				}
 				
 			}
 
 			if (this.isSelected(mouseX, mouseY)) {
 				this.dragging = true;
-				distanceX = (mouseX - this.posX);
-				distanceY = (mouseY - this.posY);
+				this.distanceX = (mouseX - this.posX);
+				this.distanceY = (mouseY - this.posY);
 				
 				return true;
-			} else {
+			} else 
 				return false;
-			}
 	}
 	
 	@Override
 	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
 			synchronized (this.children) {
 				for (Segment segment : this.children) {
-					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_))
 						break;
-					}
 
 				}
 			}
@@ -101,9 +99,8 @@ public class PopupWindow extends Segment {
 	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
 			synchronized (this.children) {
 				for (Segment segment : this.children) {
-					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_))
 						return true;
-					}
 
 				}
 			}
@@ -128,5 +125,4 @@ public class PopupWindow extends Segment {
 	public List<Segment> getChildren() {
 		return this.children;
 	}
-
 }

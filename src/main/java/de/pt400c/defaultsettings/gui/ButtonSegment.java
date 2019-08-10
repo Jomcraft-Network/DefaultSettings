@@ -50,7 +50,7 @@ public class ButtonSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
+		final float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
 
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha((this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color), alpha).getRGB(), calcAlpha(0xffdcdcdc, alpha).getRGB(), this.border);
 		
@@ -66,7 +66,7 @@ public class ButtonSegment extends Segment {
 	public void hoverCheck(float mouseX, float mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
-			ArrayList<String> lines = new ArrayList<String>();
+			final ArrayList<String> lines = new ArrayList<String>();
 			
 			int textWidth = (int) (mouseX + 12 + MC.fontRenderer.getStringWidth(this.hoverMessage));
 			if(textWidth > this.gui.width) {
@@ -95,8 +95,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	protected static Color darkenColor(int color) {
-		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE),
-		(int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
+		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE), (int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
 	}
 	
 	@Override
@@ -124,9 +123,8 @@ public class ButtonSegment extends Segment {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
 
-			if (this.function.apply(this)) {
+			if (this.function.apply(this)) 
 				this.clickSound();
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);

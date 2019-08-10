@@ -38,7 +38,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		final double func = triple * triple * triple * 6;
 		this.width = this.origLength - this.menu.offs * 1.6F;
 
-		float percent = GuiConfig.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
+		final float percent = GuiConfig.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
 		
 		if(!(width < 3.5F)) {
 		
@@ -49,13 +49,14 @@ public class ButtonMenuSegment extends ButtonSegment {
 		else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated)){
 			offsetTick -= 0.5;
 		}
-		offsetX = func;
+		
+		this.offsetX = func;
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		Segment.drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
 		GL11.glDisable(GL11.GL_BLEND);
-		//	
+	
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		
 		GL11.glEnable(GL11.GL_BLEND);
@@ -65,7 +66,8 @@ public class ButtonMenuSegment extends ButtonSegment {
 			scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 		else
 			scaledResolution = new ScaledResolution(MC);
-		int scaleFactor = scaledResolution.getScaleFactor();
+		
+		final int scaleFactor = scaledResolution.getScaleFactor();
 		GL11.glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 		MC.fontRenderer.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);
 		GL11.glDisable(GL11.GL_BLEND);
@@ -74,9 +76,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		GL11.glPopMatrix();
 		}
 		
-	
-		
-		int plus = this.activated ? 9 : 0;
+		final int plus = this.activated ? 9 : 0;
 		GL11.glColor4d(1, 1, 1, 1);
 		if(this.activated) 
 			Segment.drawRect(posX + 29 + (-25) * percent, posY, posX + 29 + 3 + (-25) * percent, posY + 19, calcAlpha(0xffff8518, 1 - percent).getRGB(), true, null, false);

@@ -29,7 +29,7 @@ public class SearchbarSegment extends Segment {
 	@Override
 	protected boolean keyTyped(char typedChar, int keyCode) {
 		if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
-			String s1 = ChatAllowedCharacters.filterAllowedCharacters(Character.toString(typedChar));
+			final String s1 = ChatAllowedCharacters.filterAllowedCharacters(Character.toString(typedChar));
 			if (this.query.isEmpty() && s1.equals(" "))
 				return true;
 
@@ -79,7 +79,7 @@ public class SearchbarSegment extends Segment {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
-		float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
 
 		int color = 0;
 
@@ -93,7 +93,6 @@ public class SearchbarSegment extends Segment {
 		if (widthString >= this.gui.width - 190) 
 			text = MC.fontRenderer.trimStringToWidth(text, (int) (this.gui.width - 190 - 1 - dots)) + "...";
 		
-
 		MenuScreen menu = ((GuiConfig) this.gui).menu;
 
 		if (menu.getVariants().get(menu.index).selected == this)
@@ -204,15 +203,15 @@ public class SearchbarSegment extends Segment {
 	public boolean mouseDragged(double mouseX, double mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY))
 			this.grabbed = false;
+		
 		return super.mouseDragged(mouseX, mouseY, button);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (this.grabbed) {
-			if (this.isSelected(mouseX, mouseY)) {
+			if (this.isSelected(mouseX, mouseY)) 
 				this.grabbed = false;
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);

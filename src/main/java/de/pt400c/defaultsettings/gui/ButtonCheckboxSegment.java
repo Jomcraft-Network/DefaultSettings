@@ -49,13 +49,14 @@ public class ButtonCheckboxSegment extends Segment {
 				this.timer -= 0.05;
 
 		}
+		
 		float tempTimer = this.timer;
 		if (this.timer > (Math.PI / 3))
 			tempTimer = (float) (Math.PI / 3);
 		else if (this.timer < 0)
 			tempTimer = 0;
 
-		float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
 		int color = 0xff000000;
 		this.offX = customPosX;

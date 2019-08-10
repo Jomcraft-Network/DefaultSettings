@@ -18,15 +18,13 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
 	
     public final GuiScreen parentScreen;
 
-    public GuiDSMainMenu(GuiScreen parentScreen)
-    {
+    public GuiDSMainMenu(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;
     }
     
     @Override
-    public void initGui()
-    {
+    public void initGui() {
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
         
@@ -42,7 +40,7 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
         
         ArrayList<String> lines = new ArrayList<String>();
 		
-		int textWidth = MC.fontRenderer.getStringWidth(text);
+		final int textWidth = MC.fontRenderer.getStringWidth(text);
 		if(textWidth > this.width - 20) 
 			lines.addAll(MC.fontRenderer.listFormattedStringToWidth(text, this.width - 20));
 		else 

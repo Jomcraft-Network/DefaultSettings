@@ -178,7 +178,6 @@ public abstract class Segment {
             y2 = j1;
         }
         
-        
         int f3 = (int)(color1 >> 24 & 255);
         int f = (int)(color1 >> 16 & 255);
         int f1 = (int)(color1 >> 8 & 255);
@@ -218,7 +217,6 @@ public abstract class Segment {
             y1 = y2;
             y2 = j1;
         }
-        
         
         int f3 = (int)(color1 >> 24 & 255);
         int f = (int)(color1 >> 16 & 255);
@@ -273,22 +271,19 @@ public abstract class Segment {
 			posX2 = x + cx;
 			posY2 = y + cy;
 			
-			
-			int f3 = (int)(color2 >> 24 & 255);
-	        int f = (int)(color2 >> 16 & 255);
-	        int f1 = (int)(color2 >> 8 & 255);
-	        int f2 = (int)(color2 & 255);
+			final int f3 = (int)(color2 >> 24 & 255);
+			final int f = (int)(color2 >> 16 & 255);
+			final int f1 = (int)(color2 >> 8 & 255);
+			final int f2 = (int)(color2 & 255);
 	        
 	        setColor(f, f1, f2, f3);
 
-
 			addVertex((float) posX1, (float) posY1, 0);
 			
-			int f13 = (int)(color1 >> 24 & 255);
-	        int f0 = (int)(color1 >> 16 & 255);
-	        int f11 = (int)(color1 >> 8 & 255);
-	        int f12 = (int)(color1 & 255);
-			
+			final int f13 = (int)(color1 >> 24 & 255);
+			final int f0 = (int)(color1 >> 16 & 255);
+			final int f11 = (int)(color1 >> 8 & 255);
+			final int f12 = (int)(color1 & 255);
 			
 	        setColor(f0, f11, f12, f13);
 			addVertex((float) cx, (float) cy, 0);
@@ -335,10 +330,10 @@ public abstract class Segment {
         }
         
         if(color != null) {
-        	float f3 = (float)(color >> 24 & 255) / 255.0F;
-            float f = (float)(color >> 16 & 255) / 255.0F;
-            float f1 = (float)(color >> 8 & 255) / 255.0F;
-            float f2 = (float)(color & 255) / 255.0F;
+        	final float f3 = (float)(color >> 24 & 255) / 255.0F;
+        	final float f = (float)(color >> 16 & 255) / 255.0F;
+        	final float f1 = (float)(color >> 8 & 255) / 255.0F;
+        	final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
             	GlStateManager.color(f, f1, f2, f3);
             else if(multiply)
@@ -380,10 +375,8 @@ public abstract class Segment {
         
         drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
         
-
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
-       
     }
 	
 	protected static Color darkenColor(int color, float darken) {
@@ -417,10 +410,10 @@ public abstract class Segment {
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
-        float f = (float)(color >> 24 & 255) / 255.0F;
-        float f1 = (float)(color >> 16 & 255) / 255.0F;
-        float f2 = (float)(color >> 8 & 255) / 255.0F;
-        float f3 = (float)(color & 255) / 255.0F;
+		final float f = (float)(color >> 24 & 255) / 255.0F;
+        final float f1 = (float)(color >> 16 & 255) / 255.0F;
+        final float f2 = (float)(color >> 8 & 255) / 255.0F;
+        final float f3 = (float)(color & 255) / 255.0F;
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -431,9 +424,7 @@ public abstract class Segment {
         
         drawCircle(x2 - 10, y2 - 10, 10, 0F, 75);
         
-
         drawRect(x1, y1, x2, y2 - 10, null, false, null, false);
-        
         
         drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
@@ -584,13 +575,11 @@ public abstract class Segment {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 24);
 			
-			
 			if (hasColor) {
 				byteBuffer.position(20);
 				GL11.glColorPointer(4, true, 32, byteBuffer);
 				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
 			}
-			
 			
 			byteBuffer.position(0);
 			GL11.glVertexPointer(3, 32, floatBuffer);
@@ -605,7 +594,6 @@ public abstract class Segment {
 		}
 		
 		hasColor = false;
-
 		reset();
 	}
 	
@@ -620,7 +608,6 @@ public abstract class Segment {
 
 		GL11.glVertex3f(vector.x, vector.y, 0.0f);
 		
-
 		GL11.glEnd();
 		GL11.glDisable(GL11.GL_POINT_SMOOTH);
 		
@@ -659,7 +646,6 @@ public abstract class Segment {
 		GL11.glEnd();
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		
-		
 		GL11.glEnable(GL11.GL_POINT_SMOOTH);
 	
 		GL11.glPointSize(3.0F * (factor / 2F));
@@ -691,7 +677,6 @@ public abstract class Segment {
 		
 		GL11.glEnd();
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		
 		
 		GL11.glEnable(GL11.GL_POINT_SMOOTH);
 		if(!(factor == 1))

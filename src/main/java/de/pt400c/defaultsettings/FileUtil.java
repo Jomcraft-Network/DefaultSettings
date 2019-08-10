@@ -272,11 +272,9 @@ public class FileUtil {
 			final File main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
 		}else {
-			for(String name : getOverrides().keySet()) {
-				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) {
+			for(String name : getOverrides().keySet()) 
+				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) 
 					restoreSingleConfig(name);
-				}
-			}
 			
 			final File main = new File(mcDataDir, mainLocation);
 			getMainJSON().setExportMode(false);
@@ -300,13 +298,10 @@ public class FileUtil {
 			resourceRepository.updateRepositoryEntriesAll();
 			List<Entry> repositoryEntries = new ArrayList<Entry>();
 			
-			for (String resourcePack : gameSettings.resourcePacks) {
-				for (Entry entry : resourceRepository.getRepositoryEntriesAll()) {
-					if (entry.getResourcePackName().equals(resourcePack)) {
+			for (String resourcePack : gameSettings.resourcePacks) 
+				for (Entry entry : resourceRepository.getRepositoryEntriesAll()) 
+					if (entry.getResourcePackName().equals(resourcePack)) 
 						repositoryEntries.add(entry);
-					}
-				}
-			}
 
 			resourceRepository.setRepositories(repositoryEntries);
 
@@ -339,9 +334,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(optionsFile));	
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "options.txt")));
 				String line;
-				while ((line = reader.readLine()) != null) {
+				while ((line = reader.readLine()) != null) 
 					writer.print(line + "\n");
-				}
+				
 			} catch (IOException e) {
 				throw e;
 			} finally {
@@ -370,9 +365,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(keysFile));
 				String line;
 				while ((line = reader.readLine()) != null) {
-					if (line.isEmpty()) {
+					if (line.isEmpty()) 
 						continue;
-					}
+
 					if(DefaultSettings.mcVersion.startsWith("1.8"))
 						DefaultSettings.keyRebinds_18.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
 					else
@@ -395,9 +390,9 @@ public class FileUtil {
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				if(DefaultSettings.mcVersion.startsWith("1.8")) {
-					if (DefaultSettings.keyRebinds_18.containsKey(keyBinding.getKeyDescription())) {
+					if (DefaultSettings.keyRebinds_18.containsKey(keyBinding.getKeyDescription())) 
 						keyBinding.keyCodeDefault = DefaultSettings.keyRebinds_18.get(keyBinding.getKeyDescription());
-					}
+					
 				}else {
 					
 					if (DefaultSettings.keyRebinds_19.containsKey(keyBinding.getKeyDescription())) {
@@ -445,12 +440,11 @@ public class FileUtil {
 	public static void restoreSingleConfig(String name) throws IOException {
 		try {
 			File file = new File(getMainFolder(), name);
-			if(file.isDirectory()) {
+			if(file.isDirectory()) 
 				FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
-			}
-			else {
+			
+			else 
 				FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
-			}
 			
 			String random = getOverrides().get(name);
 			
@@ -463,8 +457,7 @@ public class FileUtil {
 	}
 
 	public static void restoreConfigs() throws IOException {
-		try {
-			
+		try {	
 			FileUtils.copyDirectory(getMainFolder(), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
@@ -482,6 +475,7 @@ public class FileUtil {
 			File fileDir = new File(mcDataDir, "config");
 			if(deletePersistent)
 				new File(mcDataDir, persistentLocation).delete();
+			
 			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilterModular);
 			for (File f : fileDir.listFiles(fileFilterModular)) {
 				
@@ -490,8 +484,8 @@ public class FileUtil {
 				else
 					//f.delete() calls updates, not appropriate
 					Files.delete(f.toPath());
-
 			}
+			
 		} catch (IOException e) {
 			throw e;
 		}
@@ -557,9 +551,9 @@ public class FileUtil {
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("key_")) {
+				if (line.startsWith("key_"))
 					continue;
-				}
+				
 				writer.print(line + "\n");
 			}
 		} catch (IOException e) {
@@ -577,17 +571,16 @@ public class FileUtil {
 			}
 		}
 
-		if (!FMLClientHandler.instance().hasOptifine()) {
+		if (!FMLClientHandler.instance().hasOptifine()) 
 			return;
-		}
 
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "optionsof.txt")));
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsof.txt")));
 			String line;
-			while ((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != null)
 				writer.print(line + "\n");
-			}
+			
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {
@@ -626,9 +619,9 @@ public class FileUtil {
 		byte[] mac = inter.getHardwareAddress();
 		if (mac != null) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < mac.length; i++) {
+			for (int i = 0; i < mac.length; i++) 
 				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-			}
+			
 			String address = sb.toString();
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(address.getBytes());

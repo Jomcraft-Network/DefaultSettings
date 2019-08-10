@@ -16,7 +16,6 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	private final LeftMenu menu;
 
 	public ButtonUpdateChecker(GuiScreen gui, float posY, LeftMenu menu) {
-		
 		super(gui, 0, posY, null, null, 20, 20, 2);
 		
 		this.menu = menu;
@@ -27,18 +26,18 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		timer += 0.05;
-		float right = this.menu.width - this.menu.offs + this.width + 6;
+		this.timer += 0.05;
+		final float right = this.menu.width - this.menu.offs + this.width + 6;
 		this.posX = right / 2 - this.width / 2;
 				
-		float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(this.timer - Math.PI / 2) + 1) / 4 + 0.5);
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
 	
 	}
 
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
-		String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
+		final String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
 		if(this.isSelected(mouseX, mouseY) && text != null) {
 			
 			ArrayList<String> lines = new ArrayList<String>();
@@ -98,20 +97,19 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	
 	public static String statusToIdentifier(UpdateContainer.Status status) {
 		switch (status) {
-		case CHECKING: 
+		case CHECKING:
 			return "Checking ...";
-		case OUTDATED: 
+		case OUTDATED:
 			return String.format("Your mod's version is outdated\nPlease update to %s", DefaultSettings.getUpdater().getOnlineVersion());
-		case AHEAD_OF_TIME: 
+		case AHEAD_OF_TIME:
 			return "Heck, you're ahead of reality?!";
-		case UP_TO_DATE: 
+		case UP_TO_DATE:
 			return "Up to date";
-		case ERROR: 
+		case ERROR:
 
-		default: 
+		default:
 			return "Something went wrong :(\nWe couldn't check if your\ninstallation is up-to-date";
 		}
-		
 	}
 	
 	public static int statusToColor(UpdateContainer.Status status, float darken) {
@@ -126,7 +124,6 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		case UP_TO_DATE: 
 			return 0xff68f521;
 		case ERROR: 
-
 		default: 
 			return 0xfff42310;
 		}

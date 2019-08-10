@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.channels.ClosedByInterruptException;
@@ -28,13 +27,12 @@ import de.pt400c.defaultsettings.gui.QuitButtonSegment;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 
 public class GuiConfig extends DefaultSettingsGUI {
+	
     public final GuiScreen parentScreen;
-   	
    	public LeftMenu leftMenu;
     public PopupSegment popup;
     public ButtonSegment buttonS;
@@ -43,12 +41,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
-    int rot = 0;
 	public FramebufferObject framebufferMc;
 	public boolean legacy;
 
-    public GuiConfig(GuiScreen parentScreen)
-    {
+    public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;  
     }
@@ -62,14 +58,13 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void initGui()
-    {
-    	final boolean fbo = Minecraft.getMinecraft().gameSettings.fboEnable;
+    public void initGui() {
+    	final boolean fbo = MC.gameSettings.fboEnable;
         if(!fbo)
         	legacy = true;
         
         if(!legacy)
-        	this.framebufferMc = new FramebufferObject(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        	this.framebufferMc = new FramebufferObject(MC.displayWidth, MC.displayHeight);
         
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
@@ -156,8 +151,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void updateScreen()
-    {
+    public void updateScreen() {
     	super.updateScreen();
         for(int id = 0; id < cooldowns.length; id++) {
         	if(cooldowns[id].renderCooldown > 0)
@@ -180,15 +174,15 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
 
-			int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+			final int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
 
 			this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
 
 			this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
 		} else {
@@ -224,15 +218,15 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
 
-			int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+			final int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
 
 			this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
 
 			this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
 			this.framebufferMc.unbindFramebuffer();
@@ -242,7 +236,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 			GL11.glPushMatrix();
 
 			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-			GL30.glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+			GL30.glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 
 			GL11.glPopMatrix();
 		}
@@ -576,5 +570,4 @@ public class GuiConfig extends DefaultSettingsGUI {
             return num > max ? max : num;
         }
     }
-	
 }

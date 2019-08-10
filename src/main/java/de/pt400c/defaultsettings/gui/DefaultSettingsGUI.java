@@ -29,7 +29,7 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 	
 	public void resetSelected() {
-		MenuScreen menu = this.menu;
+		final MenuScreen menu = this.menu;
 		if(menu != null)
 			menu.getVariants().get(menu.index).selected = null;
 	}
@@ -62,7 +62,7 @@ public class DefaultSettingsGUI extends GuiScreen {
 				
 				if(this.popupField == null) {
 				
-				this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
+					this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
 				
 				}else {
 					this.popupField.hoverCheck(mouseX, mouseY);

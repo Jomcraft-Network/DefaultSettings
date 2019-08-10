@@ -12,7 +12,6 @@ public class PopupSegment extends Segment {
 
 	@Nonnull
 	private PopupWindow window;
-	
 	public boolean isVisible = false;
 	public float backgroundTimer = 0;
 	public float windowTimer = 0;
@@ -24,32 +23,31 @@ public class PopupSegment extends Segment {
 	
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		if(this.isVisible) {
+		if (this.isVisible) {
 
-			
-			if(open) {
-			if(this.backgroundTimer <= (Math.PI / 3))
-				this.backgroundTimer += 0.05;
-			
-			if(this.windowTimer <= (Math.PI / 3))
-				this.windowTimer += 0.05;
-			
-		}else {
-			if(this.backgroundTimer > 0)
-				this.backgroundTimer -= 0.05;
-			else {
-				this.isVisible = false;
-				((GuiConfig) this.gui).popupField = null;
+			if (this.open) {
+				if (this.backgroundTimer <= (Math.PI / 3))
+					this.backgroundTimer += 0.05;
+
+				if (this.windowTimer <= (Math.PI / 3))
+					this.windowTimer += 0.05;
+
+			} else {
+				if (this.backgroundTimer > 0)
+					this.backgroundTimer -= 0.05;
+				else {
+					this.isVisible = false;
+					((GuiConfig) this.gui).popupField = null;
+				}
+
+				if (this.windowTimer > 0)
+					this.windowTimer -= 0.05;
+
 			}
 			
-			if(this.windowTimer > 0)
-				this.windowTimer -= 0.05;
-			
-
-		}
 			float alpha = 0;
-			
-			if(open)
+
+			if (this.open)
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			else
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);

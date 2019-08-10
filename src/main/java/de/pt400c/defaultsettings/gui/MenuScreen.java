@@ -27,7 +27,6 @@ public class MenuScreen extends Segment {
 					this.supply.setByte((byte) 1);
 			}
 		}).start();
-
 	}
 	
 	@Override
@@ -65,7 +64,6 @@ public class MenuScreen extends Segment {
 	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.variants) {
 			this.variants.get(this.index).mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
-
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
@@ -73,9 +71,7 @@ public class MenuScreen extends Segment {
 	@Override
 	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.variants) {
-
 			this.variants.get(this.index).mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
-
 		}
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
 	}
@@ -98,7 +94,6 @@ public class MenuScreen extends Segment {
 	abstract private class ThreadRunnable implements Runnable {
 	 	   
         final MutableByte supply;
-
         ThreadRunnable(MutableByte supply) {
             this.supply = supply;
         }

@@ -60,7 +60,6 @@ public class DefaultSettings {
     }
 
 	@SuppressWarnings("deprecation")
-	//This is necessary for the MC 1.8.0 edition
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
 		

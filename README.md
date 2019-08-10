@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.jomcraft.net/job/DefaultSettings/job/master-1.14.4/badge/icon)](https://jenkins.jomcraft.net/job/DefaultSettings/job/master-1.14.4/)
+[![Build Status](https://jenkins.jomcraft.net/job/DefaultSettings/job/1.14.x/badge/icon)](https://jenkins.jomcraft.net/job/DefaultSettings/job/1.14.x/)
 
 ### DefaultSettings
 
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-   deobfCompile 'de.pt400c.defaultsettings:DefaultSettings-[EDITION]:[VERSION]'
+   deobfCompile 'de.pt400c.defaultsettings:DefaultSettings-1.14.x:[VERSION]'
 }
 ```
 

@@ -64,7 +64,7 @@ public abstract class Segment {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
     }
-    
+
     public boolean handleMouseInput() {
     	float mouseX = Mouse.getEventX() * this.width / MC.displayWidth;
         float mouseY = this.height - Mouse.getEventY() * this.height / MC.displayHeight - 1;
@@ -155,6 +155,9 @@ public abstract class Segment {
 		if(rotation == 1) {
 			addVertex((float) x1, (float) y2, 0);
 	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 2) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
 		}else if(rotation == 3) {
 			addVertex((float) x2, (float) y1, 0);
 	        addVertex((float) x1, (float) y1, 0);
@@ -173,6 +176,9 @@ public abstract class Segment {
 		if(rotation == 1) {
 			addVertex((float) x2, (float) y1, 0);
 	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 2) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
 		}else if(rotation == 3) {
 			addVertex((float) x1, (float) y2, 0);
 	        addVertex((float) x2, (float) y2, 0);
@@ -269,6 +275,7 @@ public abstract class Segment {
 
         if(blending) {
         	GL11.glEnable(GL11.GL_BLEND);
+        	GlStateManager.disableAlpha();
         	GL11.glDisable(GL11.GL_TEXTURE_2D);
         	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
@@ -294,6 +301,7 @@ public abstract class Segment {
 		draw(false);
 		if(blending) {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GlStateManager.enableAlpha();
         	GL11.glDisable(GL11.GL_BLEND);
 		}
     }
@@ -307,6 +315,7 @@ public abstract class Segment {
         float f3 = (float)(color & 255) / 255.0F;
 
         GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.disableAlpha();
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f - alpha);
@@ -320,6 +329,7 @@ public abstract class Segment {
         drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
         
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableAlpha();
         GL11.glDisable(GL11.GL_BLEND);
     }
 	
@@ -360,6 +370,7 @@ public abstract class Segment {
         final float f3 = (float)(color & 255) / 255.0F;
 
         GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.disableAlpha();
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f - alpha);
@@ -373,6 +384,7 @@ public abstract class Segment {
         drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableAlpha();
         GL11.glDisable(GL11.GL_BLEND);
        
     }
@@ -497,7 +509,7 @@ public abstract class Segment {
 		if (!triangle) {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 32);
-			
+
 			if (hasColor) {
 				byteBuffer.position(20);
 				GL11.glColorPointer(4, true, 32, byteBuffer);
@@ -530,13 +542,11 @@ public abstract class Segment {
 			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-			
-			 if (hasColor)
-             {
-                 GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
-             }
+
+			if (hasColor) {
+				GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+			}
 		}
-		
 		hasColor = false;
 		reset();
 	}

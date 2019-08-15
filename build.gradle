@@ -46,6 +46,11 @@ jar {
         attributes("FMLAT": "defaultsettings_at.cfg")
 		attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'false'
+        attributes([
+            "Build-ID": Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase(),
+            "Build-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+        
     }
 }
 

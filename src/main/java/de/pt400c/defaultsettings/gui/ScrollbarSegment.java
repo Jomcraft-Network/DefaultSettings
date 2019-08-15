@@ -2,6 +2,7 @@ package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -48,7 +49,7 @@ public class ScrollbarSegment extends ButtonSegment {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GlStateManager.disableAlpha();
 		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -61,7 +62,7 @@ public class ScrollbarSegment extends ButtonSegment {
 
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GlStateManager.enableAlpha();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);

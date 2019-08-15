@@ -11,6 +11,7 @@ import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -69,6 +70,7 @@ public class ButtonCheckboxSegment extends Segment {
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlpha();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -152,6 +154,7 @@ public class ButtonCheckboxSegment extends Segment {
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enableAlpha();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 	}

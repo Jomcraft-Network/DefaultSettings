@@ -1,8 +1,11 @@
 package de.pt400c.defaultsettings;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarInputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +13,7 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
@@ -30,6 +34,8 @@ public class DefaultSettings {
 	public static String mcVersion = FMLInjectionData.data()[4].toString();
 	public static Map<String, KeyContainer> keyRebinds_19 = new HashMap<String, KeyContainer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
+	public static String BUILD_ID = "<UNKNOWN>";
+	public static String BUILD_TIME = "<UNKNOWN>";
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
 	public static final boolean is18 = DefaultSettings.mcVersion.startsWith("1.8");
 
@@ -78,6 +84,13 @@ public class DefaultSettings {
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
 		try {
+			getBuildID();
+			getBuildTime();
+		} catch(NullPointerException | IOException e) {
+			
+		}
+		
+		try {
 			FileUtil.restoreKeys();
 		} catch (IOException e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
@@ -86,6 +99,20 @@ public class DefaultSettings {
 		}
 	}
 	
+	private static void getBuildID() throws FileNotFoundException, IOException {
+		ModContainer mc = FMLCommonHandler.instance().findContainerFor(DefaultSettings.getInstance());
+		try (JarInputStream jarStream = new JarInputStream(new FileInputStream(mc.getSource()))) {
+			BUILD_ID = jarStream.getManifest().getMainAttributes().getValue("Build-ID");
+		}
+	}
+	
+	private static void getBuildTime() throws FileNotFoundException, IOException {
+		ModContainer mc = FMLCommonHandler.instance().findContainerFor(DefaultSettings.getInstance());
+		try (JarInputStream jarStream = new JarInputStream(new FileInputStream(mc.getSource()))) {
+			BUILD_TIME = jarStream.getManifest().getMainAttributes().getValue("Build-Date");
+		}
+	}
+
 	public static UpdateContainer getUpdater() {
 		return updateContainer;
 	}

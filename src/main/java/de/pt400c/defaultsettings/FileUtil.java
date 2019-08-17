@@ -202,7 +202,6 @@ public class FileUtil {
 		File persFile = new File(mcDataDir, persistentLocation);
 		if(persFile.exists()) {
 			getPersistent().check.forEach((k, v) -> mainJson.check.put(k, v));
-			System.out.println("DELETE!!");
 			persFile.delete();
 		}
 		

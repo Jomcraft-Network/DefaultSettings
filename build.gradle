@@ -95,10 +95,10 @@ task signJar {
             ant.signjar(
                 jar: it,
 				storetype:"jks",
-				alias: project.property("signing.alias"),
-                storepass: project.property("signing.keyStorePassword"),
+				alias: System.getenv("signing_alias"),
+                storepass: System.getenv("signing_keyStorePassword"),
                 keystore: "${keystoreFile.absolutePath}",
-                keypass: project.property("signing.keyStorePassword"),
+                keypass: System.getenv("signing_keyStorePassword"),
                 preservelastmodified:"true"
             )
             signing.sign(it)

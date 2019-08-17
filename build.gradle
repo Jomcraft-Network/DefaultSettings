@@ -152,7 +152,7 @@ build.dependsOn zipVerification
 
 curseforge {
 
-  apiKey = project.property("cursegradle.api_token")
+  apiKey = System.getenv("curse_api")
   project {
     id = '318012'
     releaseType = 'beta'

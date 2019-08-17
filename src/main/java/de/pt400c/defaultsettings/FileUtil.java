@@ -49,6 +49,7 @@ public class FileUtil {
 	public static PersistentJSON persistentJson;
 	public static final String persistentLocation = "config/ds_dont_export.json";
 	public static final String mainLocation = "config/defaultsettings.json";
+	public HashMap<String, String> check = new HashMap<String, String>();
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -143,14 +144,9 @@ public class FileUtil {
 				persistentJson = gson.fromJson(reader, PersistentJSON.class);
 				
 			 } catch (Exception e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing persistent configs: ", e);
-				persistentJson = new PersistentJSON();
-				persistentJson.save(new File(mcDataDir, persistentLocation));
-		     }
+				 
+			 }
 			
-		}else {
-			persistentJson = new PersistentJSON();
-			persistentJson.save(new File(mcDataDir, persistentLocation));
 		}
 		
 		return persistentJson;
@@ -201,7 +197,22 @@ public class FileUtil {
 		final String identifier = mainJson.getIdentifier();
 		
 		if(!getIdentifier().equals(identifier))
-			mainJson.setIdentifier(identifier);
+			mainJson.setIdentifier(getIdentifier());
+		
+		File persFile = new File(mcDataDir, persistentLocation);
+		if(persFile.exists()) {
+			getPersistent().check.forEach((k, v) -> mainJson.check.put(k, v));
+			System.out.println("DELETE!!");
+			persFile.delete();
+		}
+		
+		final String created_for = mainJson.created_for;
+		
+		if(!getUUID(DefaultSettings.UUID).equals(created_for)) {
+			mainJson.created_for = getUUID(DefaultSettings.UUID);
+			mainJson.check.clear();
+			
+		}
 		
 		mainJson.save(main);
 	}
@@ -239,7 +250,14 @@ public class FileUtil {
 			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
 				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
 			}
+			
 			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
+			
+			try {
+				mainJson.created_for = getUUID(DefaultSettings.UUID);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
 			mainJson.initPopup = true;
 			File fileDir = new File(mcDataDir, "config");
 			for (File file : fileDir.listFiles(fileFilter)) 
@@ -273,7 +291,7 @@ public class FileUtil {
 			mainJson.save(main);
 		}else {
 			for(String name : getOverrides().keySet()) 
-				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) 
+				if(getActives().contains(name) && (!getMainJSON().check.containsKey(name) || !getMainJSON().check.get(name).equals(mainJson.overrides.get(name)))) 
 					restoreSingleConfig(name);
 			
 			final File main = new File(mcDataDir, mainLocation);
@@ -440,16 +458,21 @@ public class FileUtil {
 	public static void restoreSingleConfig(String name) throws IOException {
 		try {
 			File file = new File(getMainFolder(), name);
-			if(file.isDirectory()) 
-				FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
-			
-			else 
-				FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
+			if (file.exists()) {
+				if (file.isDirectory())
+					FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
+
+				else
+					FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
+			}else {
+				DefaultSettings.log.log(Level.WARN, "Couldn't restore a config file as it's missing: " + name);
+				return;
+			}
 			
 			String random = getOverrides().get(name);
 			
-			getPersistent().check.put(name, random);
-			persistentJson.save(new File(mcDataDir, persistentLocation));
+			getMainJSON().check.put(name, random);
+			mainJson.save(new File(mcDataDir, mainLocation));
 
 		} catch (IOException e) {
 			throw e;
@@ -517,7 +540,11 @@ public class FileUtil {
 	
 	public static void restoreServers() throws IOException {
 		try {
-			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
+			File file = new File(getMainFolder(), "servers.dat");
+			if(file.exists())
+				FileUtils.copyFile(file, new File(mcDataDir, "servers.dat"));
+			else
+				DefaultSettings.log.log(Level.WARN, "Couldn't restore the server config as it's not included");
 		} catch (IOException e) {
 			DefaultSettings.log.log(Level.ERROR, "Couldn't restore the server config: ", e);
 		}
@@ -611,6 +638,15 @@ public class FileUtil {
 	public static boolean serversFileExists() {
 		final File serversFile = new File(getMainFolder(), "servers.dat");
 		return serversFile.exists();
+	}
+	
+	public static String getUUID(String uuid) throws NoSuchAlgorithmException {
+
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		md.update(uuid.getBytes());
+		byte[] digest = md.digest();
+		return DatatypeConverter.printHexBinary(digest).toUpperCase();
+
 	}
 	
 	public static String getIdentifier() throws UnknownHostException, SocketException, NoSuchAlgorithmException {

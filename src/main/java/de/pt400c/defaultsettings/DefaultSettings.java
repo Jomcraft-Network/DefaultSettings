@@ -20,6 +20,7 @@ import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;

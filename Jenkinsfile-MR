@@ -1,0 +1,49 @@
+pipeline 
+{
+	agent any
+	parameters {
+	    booleanParam(defaultValue: false, description: 'Should a timer be created?', name: 'timerUsed')
+	}
+	options
+	{
+		gitLabConnection('Jenkins')
+        gitlabBuilds(builds: ['Prebuild', 'Build', 'Deploy'])
+	}
+	stages 
+	{
+		stage('Prebuild')
+		{
+			steps
+			{
+				gitlabCommitStatus("Prebuild")
+				{
+				    checkout scm
+				}
+			}
+		}
+		stage('Build') 
+		{
+			steps 
+			{
+				gitlabCommitStatus("Build")
+				{
+				    sh 'chmod +x gradlew'
+                    sh './gradlew build'
+
+				}
+			}
+			
+		}
+		stage('Deploy')
+		{
+			steps
+			{
+				gitlabCommitStatus("Deploy")
+				{
+				    archiveArtifacts artifacts: 'build/libs/DefaultSettings-*.jar', fingerprint: true
+                    cleanWs()
+				}
+			}
+		}
+	}
+}

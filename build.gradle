@@ -141,6 +141,9 @@ task zipVerification {
                 include(name: 'pubkey.gpg')
             }
         }
+        delete fileTree("$buildDir/libs/") {
+			include '**/*.asc'
+		}
         project.logger.lifecycle("Created verification ZIP")
     }
 }
@@ -200,8 +203,8 @@ publishing {
   repositories {
   		maven {
   			credentials {
-        		username project.property("maven.username")
-        		password project.property("maven.password")
+        		username System.getenv("maven_username")
+        		password System.getenv("maven_password")
     		}
     	url "https://maven.jomcraft.net/repository/release"
     }

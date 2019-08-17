@@ -26,9 +26,9 @@ def fileVersion = "1.3.3"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 
-def keystoreFile = new File(project.gradle.gradleUserHomeDir.absolutePath + '/keystore.jks')
+def keystoreFile = System.getenv("keystore_jks")
 
-ext."signing.secretKeyRingFile" = new File(project.gradle.gradleUserHomeDir.absolutePath + '/keyring.gpg')
+ext."signing.secretKeyRingFile" = System.getenv("keyring_gpg")
 
 archivesBaseName = "DefaultSettings"
 

@@ -70,7 +70,7 @@ processResources
 }
 
 task signJar {
-    echo "BuildID: " + buildID
+    echo "BuildID: $buildID"
     doLast {
         configurations.archives.allArtifacts.files.each {
             ant.signjar(

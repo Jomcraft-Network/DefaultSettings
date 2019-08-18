@@ -11,10 +11,10 @@ before_script:
 build:
   stage: build
   script:
-    - "echo \"\nsigning.keyId=$GPG_KEY_ID\" >> gradle.properties"
-    - "echo \"\nsigning.password=$GPG_PASSPHRASE\" >> gradle.properties"
-    - "echo \"$GPG_KEY_RING_FILE\" > /tmp/key"
-    - "echo \"\nsigning.secretKeyRingFile=/tmp/key\" >> gradle.properties"
+    - echo "signing.keyId=$GPG_KEY_ID" >> gradle.properties
+    - echo "signing.password=$GPG_PASSPHRASE" >> gradle.properties
+    - echo "$GPG_KEY_RING_FILE" > /tmp/key"
+    - echo "signing.secretKeyRingFile=/tmp/key" >> gradle.properties
     - ./gradlew build --stacktrace
   only:
     variables:

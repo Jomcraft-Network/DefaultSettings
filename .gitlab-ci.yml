@@ -7,16 +7,16 @@ stages:
 before_script:
   - chmod +x gradlew
   - export GRADLE_USER_HOME=/cache/.gradle
-  - echo $GPG_KEY_RING_FILE
   - echo $GPG_KEY_RING_FILE | base64 -d > /tmp/key
+  - echo $JAVA_KEY_FILE | base64 -d > /tmp/key2
 
 build:
   stage: build
   script:
     - echo "signing.keyId=$GPG_KEY_ID" >> gradle.properties
     - echo "signing.password=$GPG_PASSPHRASE" >> gradle.properties
-    - cat /tmp/key
     - echo "signing.secretKeyRingFile=/tmp/key" >> gradle.properties
+    - echo "signing.keystorePath=/tmp/key2" >> gradle.properties
     - ./gradlew build --stacktrace
   only:
     variables:

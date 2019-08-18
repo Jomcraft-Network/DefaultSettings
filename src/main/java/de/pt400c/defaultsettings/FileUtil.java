@@ -205,15 +205,31 @@ public class FileUtil {
 			persFile.delete();
 		}
 		
-		final String created_for = mainJson.created_for;
-		
-		if(!getUUID(DefaultSettings.UUID).equals(created_for)) {
-			mainJson.created_for = getUUID(DefaultSettings.UUID);
-			mainJson.check.clear();
-			
-		}
-		
 		mainJson.save(main);
+	}
+	
+	public static void initUUID() throws NoSuchAlgorithmException {
+		DefaultSettings.UUID = MC.getSession().getProfile().getId().toString();
+		if (getMainJSON().created_for.equals("NEW")) {
+			final File main = new File(mcDataDir, mainLocation);
+
+			try {
+				mainJson.created_for = getUUID(DefaultSettings.UUID);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+
+			mainJson.save(main);
+		}else {
+		
+			final String created_for = mainJson.created_for;
+
+			if (!getUUID(DefaultSettings.UUID).equals(created_for)) {
+				mainJson.created_for = getUUID(DefaultSettings.UUID);
+				mainJson.check.clear();
+
+			}
+		}
 	}
 	
 	/**
@@ -251,12 +267,7 @@ public class FileUtil {
 			}
 			
 			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
-			
-			try {
-				mainJson.created_for = getUUID(DefaultSettings.UUID);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
+			mainJson.created_for = "NEW";
 			mainJson.initPopup = true;
 			File fileDir = new File(mcDataDir, "config");
 			for (File file : fileDir.listFiles(fileFilter)) 

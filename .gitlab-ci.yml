@@ -6,9 +6,14 @@ stages:
   
 before_script:
   - chmod +x gradlew
-  - export GRADLE_USER_HOME=/cache/.gradle
   - echo $GPG_KEY_RING_FILE | base64 -d > /tmp/key
   - echo $JAVA_KEY_FILE | base64 -d > /tmp/key2
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
 
 build:
   stage: build

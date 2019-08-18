@@ -50,6 +50,7 @@ public class FileUtil {
 	public static final String persistentLocation = "config/ds_dont_export.json";
 	public static final String mainLocation = "config/defaultsettings.json";
 	public HashMap<String, String> check = new HashMap<String, String>();
+	public static String PLAYER_UUID;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -188,6 +189,7 @@ public class FileUtil {
 	}
 	
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
+		PLAYER_UUID = Minecraft.getMinecraft().getSession().getPlayerID();
 		final File main = new File(mcDataDir, mainLocation);
 		final String version = getMainJSON().getVersion();
 		
@@ -207,8 +209,8 @@ public class FileUtil {
 		
 		final String created_for = mainJson.created_for;
 		
-		if(!getUUID(DefaultSettings.UUID).equals(created_for)) {
-			mainJson.created_for = getUUID(DefaultSettings.UUID);
+		if(!getUUID(FileUtil.PLAYER_UUID).equals(created_for)) {
+			mainJson.created_for = getUUID(FileUtil.PLAYER_UUID);
 			mainJson.check.clear();
 			
 		}
@@ -253,7 +255,7 @@ public class FileUtil {
 			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
 			
 			try {
-				mainJson.created_for = getUUID(DefaultSettings.UUID);
+				mainJson.created_for = getUUID(FileUtil.PLAYER_UUID);
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}

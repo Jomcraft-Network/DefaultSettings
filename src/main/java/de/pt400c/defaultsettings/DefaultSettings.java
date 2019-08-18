@@ -9,7 +9,6 @@ import java.util.jar.JarInputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -37,7 +36,6 @@ public class DefaultSettings {
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static String BUILD_ID = "<UNKNOWN>";
 	public static String BUILD_TIME = "<UNKNOWN>";
-	public static final String UUID = Minecraft.getMinecraft().getSession().getProfile().getId().toString();
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
 	public static final boolean is18 = DefaultSettings.mcVersion.startsWith("1.8");
 

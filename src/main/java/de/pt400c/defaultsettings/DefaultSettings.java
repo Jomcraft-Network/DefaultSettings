@@ -92,7 +92,7 @@ public class DefaultSettings {
 			getBuildID();
 			getBuildTime();
 		} catch(NullPointerException | IOException | NoSuchAlgorithmException e) {
-			
+			e.printStackTrace();
 		}
 		
 		try {

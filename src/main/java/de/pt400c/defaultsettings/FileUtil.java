@@ -211,8 +211,7 @@ public class FileUtil {
 	public static void initUUID() throws NoSuchAlgorithmException {
 		DefaultSettings.UUID = MC.getSession().getProfile().getId().toString();
 		final File main = new File(mcDataDir, mainLocation);
-		if (getMainJSON().created_for.equals("NEW")) {
-			
+		if (getMainJSON().created_for == null || getMainJSON().created_for.equals("NEW")) {
 
 			try {
 				mainJson.created_for = getUUID(DefaultSettings.UUID);
@@ -222,7 +221,7 @@ public class FileUtil {
 
 			mainJson.save(main);
 		}else {
-		
+
 			final String created_for = mainJson.created_for;
 
 			if (!getUUID(DefaultSettings.UUID).equals(created_for)) {

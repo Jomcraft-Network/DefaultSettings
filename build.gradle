@@ -39,6 +39,7 @@ minecraft {
 }
 
 jar {
+    println "BuildID: $buildID"
 	exclude('net/**')   
     manifest {
         attributes("FMLAT": "defaultsettings_at.cfg")
@@ -70,7 +71,6 @@ processResources
 }
 
 task signJar {
-    project.logger.lifecycle("BuildID: $buildID")
     doLast {
         configurations.archives.allArtifacts.files.each {
             ant.signjar(

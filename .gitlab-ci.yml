@@ -22,7 +22,7 @@ build:
     - echo "signing.password=$GPG_PASSPHRASE" >> gradle.properties
     - echo "signing.secretKeyRingFile=/tmp/key" >> gradle.properties
     - echo "signing.keystorePath=/tmp/key2" >> gradle.properties
-    - ./gradlew build --stacktrace
+    - ./gradlew build
   only:
     variables:
        - $BUILD_MAVEN != "publish"

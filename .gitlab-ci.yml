@@ -10,6 +10,8 @@ before_script:
 build:
   stage: build
   script:
+    - "echo \"\nsigning.keyId=$GPG_KEY_ID\" >> gradle.properties"
+    - "echo \"\nsigning.password=$GPG_PASSPHRASE\" >> gradle.properties"
     - ./gradlew build
   only:
     variables:

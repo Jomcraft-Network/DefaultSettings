@@ -20,6 +20,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'signing'
 
 version = "1.8.x-1.12.x-1.3.4"
+def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
 def fileVersion = "1.3.4"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
@@ -44,7 +45,7 @@ jar {
 		attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'false'
         attributes([
-            "Build-ID": Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase(),
+            "Build-ID": buildID,
             "Build-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
         
@@ -69,7 +70,7 @@ processResources
 }
 
 task signJar {
-
+    echo "BuildID: " + buildID
     doLast {
         configurations.archives.allArtifacts.files.each {
             ant.signjar(

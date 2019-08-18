@@ -145,3 +145,65 @@ task zipVerification {
 }
 
 build.dependsOn zipVerification
+
+curseforge {
+
+  apiKey = System.getenv("curse_api")
+  project {
+    id = '318012'
+    releaseType = 'beta'
+    addGameVersion '1.14.2'
+    addGameVersion '1.14.3'
+    addGameVersion '1.14.4'
+    mainArtifact(jar) {
+    	displayName = "$archivesBaseName-$version"
+    }
+    
+    addArtifact (sourcesJar) {
+    	releaseType = 'beta'
+    	displayName = "$archivesBaseName-$version-sources"
+    }
+    
+    addArtifact (deobfJar) {
+    	releaseType = 'beta'
+    	displayName = "$archivesBaseName-$version-deobf"
+    }
+    
+    addArtifact ("$buildDir/libs/verification.zip") {
+    	releaseType = 'beta'
+    	displayName = 'GPGVerification'
+    }
+    
+  }
+
+}
+
+publishing {
+    tasks.publish.dependsOn 'build'
+    publications {
+        mavenJava(MavenPublication) {
+        	groupId = 'de.pt400c.defaultsettings'
+            artifactId = 'DefaultSettings-1.14.x'
+            version = "$fileVersion"
+            artifact jar
+            artifact deobfJar
+            artifact sourcesJar
+           
+            artifact("$buildDir/libs/verification.zip"){
+           		classifier "verification"
+        		extension "zip"
+            }
+            
+        }
+    }
+  repositories {
+  		maven {
+  			credentials {
+        		username System.getenv("maven_username")
+        		password System.getenv("maven_password")
+    		}
+    	url "https://maven.jomcraft.net/repository/release"
+    }
+    
+}
+}

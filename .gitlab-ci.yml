@@ -34,6 +34,7 @@ build:
   artifacts:
     paths:
       - build/libs/
+    expire_in: 6 months
     
 deploy:
   stage: deploy

@@ -16,7 +16,7 @@ build:
     - "echo \"\nsigning.secretKeyRingFile=$GPG_KEY_RING_FILE\" >> gradle.properties"
     - "echo \"$GPG_KEY_RING_FILE\" > /tmp/key"
     - "gpg --import /tmp/key"
-    - ./gradlew build
+    - ./gradlew build --stacktrace
   only:
     variables:
        - $BUILD_MAVEN != "publish"

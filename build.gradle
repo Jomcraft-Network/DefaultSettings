@@ -86,10 +86,8 @@ jar {
 }
 
 signing {
-    def signingKey = System.getenv("GPG_KEY_RING_FILE")
-    def signingPassword = System.getenv("GPG_PASSPHRASE")
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    configurations.archives
+    useGpgCmd()
+    sign configurations.archives
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

@@ -91,10 +91,10 @@ task signJar {
             ant.signjar(
                 jar: it,
 				storetype:"jks",
-				alias: System.getenv("signing_alias"),
-                storepass: System.getenv("signing_keyStorePassword"),
+				alias: project.property("signing.alias"),
+                storepass:project.property("signing.keyStorePassword"),
                 keystore: project.property("signing.keystorePath"),
-                keypass: System.getenv("signing_keyStorePassword"),
+                keypass: project.property("signing.keyStorePassword"),
                 preservelastmodified:"true"
             )
             signing.sign(it)
@@ -148,7 +148,7 @@ build.dependsOn zipVerification
 
 curseforge {
 
-  apiKey = System.getenv("curse_api")
+  apiKey = project.property("cursegradle.api_token")
   project {
     id = '318012'
     releaseType = 'beta'
@@ -199,8 +199,8 @@ publishing {
   repositories {
   		maven {
   			credentials {
-        		username System.getenv("maven_username")
-        		password System.getenv("maven_password")
+        		username project.property("maven.username")
+        		password project.property("maven.password")
     		}
     	url "https://maven.jomcraft.net/repository/release"
     }

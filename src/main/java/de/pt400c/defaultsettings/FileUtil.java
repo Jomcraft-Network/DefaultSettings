@@ -210,8 +210,9 @@ public class FileUtil {
 	
 	public static void initUUID() throws NoSuchAlgorithmException {
 		DefaultSettings.UUID = MC.getSession().getProfile().getId().toString();
+		final File main = new File(mcDataDir, mainLocation);
 		if (getMainJSON().created_for.equals("NEW")) {
-			final File main = new File(mcDataDir, mainLocation);
+			
 
 			try {
 				mainJson.created_for = getUUID(DefaultSettings.UUID);
@@ -229,6 +230,8 @@ public class FileUtil {
 				mainJson.check.clear();
 
 			}
+			
+			mainJson.save(main);
 		}
 	}
 	
@@ -480,7 +483,6 @@ public class FileUtil {
 			}
 			
 			String random = getOverrides().get(name);
-			
 			getMainJSON().check.put(name, random);
 			mainJson.save(new File(mcDataDir, mainLocation));
 

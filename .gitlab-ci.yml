@@ -6,12 +6,14 @@ stages:
   
 before_script:
   - chmod +x gradlew
+  - export GRADLE_USER_HOME=/cache/.gradle
 
 build:
   stage: build
   script:
     - "echo \"\nsigning.keyId=$GPG_KEY_ID\" >> gradle.properties"
     - "echo \"\nsigning.password=$GPG_PASSPHRASE\" >> gradle.properties"
+    - "echo \"\nsigning.secretKeyRingFile=$GPG_KEY_RING_FILE\" >> gradle.properties"
     - ./gradlew build
   only:
     variables:

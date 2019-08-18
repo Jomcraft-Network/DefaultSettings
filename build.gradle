@@ -88,6 +88,15 @@ jar {
 task signJar {
     doLast {
         configurations.archives.allArtifacts.files.each {
+            ant.signjar(
+                jar: it,
+				storetype:"jks",
+				alias: System.getenv("signing_alias"),
+                storepass: System.getenv("signing_keyStorePassword"),
+                keystore: System.getenv("signing_keyStoreActual"),
+                keypass: System.getenv("signing_keyStorePassword"),
+                preservelastmodified:"true"
+            )
             signing.sign(it)
 			project.logger.lifecycle("JAR Signed: " + it.name)
         }

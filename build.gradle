@@ -70,7 +70,7 @@ processResources
 }
 
 task signJar {
-    echo "BuildID: $buildID"
+    project.logger.lifecycle("BuildID: $buildID")
     doLast {
         configurations.archives.allArtifacts.files.each {
             ant.signjar(

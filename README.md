@@ -1,4 +1,4 @@
-[![Build Status](https://jenkins.jomcraft.net/job/DefaultSettings/job/master-1.6.4/badge/icon)](https://jenkins.jomcraft.net/job/DefaultSettings/job/master-1.6.4/)
+[![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/master-1.6.4/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/master-1.6.4)
 
 ### DefaultSettings
 

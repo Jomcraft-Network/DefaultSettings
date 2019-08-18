@@ -14,11 +14,11 @@ buildscript {
 plugins {
     id 'com.matthewprenger.cursegradle' version '1.3.0'
     id "maven-publish"
-    id 'signing'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
+apply plugin: 'signing'
 
 version = "1.14.x-1.3.3"
 
@@ -85,10 +85,16 @@ jar {
     }
 }
 
-signing {
-    useGpgCmd()
-    sign configurations.archives
+task signJar {
+    doLast {
+        configurations.archives.allArtifacts.files.each {
+            signing.sign(it)
+			project.logger.lifecycle("JAR Signed: " + it.name)
+        }
+    }
 }
+
+build.dependsOn signJar
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 

@@ -1,3 +1,5 @@
+image: java:8-jdk
+
 stages:
   - build
   - deploy

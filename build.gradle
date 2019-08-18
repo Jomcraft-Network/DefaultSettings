@@ -93,7 +93,7 @@ task signJar {
 				storetype:"jks",
 				alias: System.getenv("signing_alias"),
                 storepass: System.getenv("signing_keyStorePassword"),
-                keystore: System.getenv("signing_keyStoreActual"),
+                keystore: project.property("signing.keystorePath"),
                 keypass: System.getenv("signing_keyStorePassword"),
                 preservelastmodified:"true"
             )

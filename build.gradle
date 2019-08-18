@@ -27,10 +27,6 @@ def fileVersion = "1.3.3"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 
-def keystoreFile = new File(project.gradle.gradleUserHomeDir.absolutePath + '/keystore.jks')
-
-ext."signing.secretKeyRingFile" = new File(project.gradle.gradleUserHomeDir.absolutePath + '/keyring.gpg')
-
 archivesBaseName = "DefaultSettings"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -90,15 +86,14 @@ jar {
 }
 
 task signJar {
-
     doLast {
         configurations.archives.allArtifacts.files.each {
             ant.signjar(
                 jar: it,
 				storetype:"jks",
 				alias: project.property("signing.alias"),
-                storepass: project.property("signing.keyStorePassword"),
-                keystore: "${keystoreFile.absolutePath}",
+                storepass:project.property("signing.keyStorePassword"),
+                keystore: project.property("signing.keystorePath"),
                 keypass: project.property("signing.keyStorePassword"),
                 preservelastmodified:"true"
             )
@@ -135,6 +130,9 @@ task zipVerification {
                 include(name: 'pubkey.gpg')
             }
         }
+        delete fileTree("$buildDir/libs/") {
+			include '**/*.asc'
+		}
         project.logger.lifecycle("Created verification ZIP")
     }
 }

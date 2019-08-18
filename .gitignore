@@ -5,6 +5,7 @@
 !/gradlew
 !/build.gradle
 !/.gitignore
+!/.gitlab-ci.yml
 !/gradle/
 !/LICENSE
 !/pubkey.gpg

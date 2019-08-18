@@ -88,6 +88,9 @@ jar {
 task signJar {
     doLast {
         configurations.archives.allArtifacts.files.each {
+            def signingKey = System.getenv("GPG_KEY_RING_FILE")
+            def signingPassword = System.getenv("GPG_PASSPHRASE")
+            useInMemoryPgpKeys(signingKey, signingPassword)
             signing.sign(it)
 			project.logger.lifecycle("JAR Signed: " + it.name)
         }

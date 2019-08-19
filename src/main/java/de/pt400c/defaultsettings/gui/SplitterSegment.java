@@ -25,7 +25,6 @@ public class SplitterSegment extends Segment {
 		this.posX = origX - this.menu.offs;
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
-		GlStateManager.disableAlphaTest();
 		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 
@@ -33,11 +32,10 @@ public class SplitterSegment extends Segment {
 
 		Segment.drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + this.getHeight() - 4, 6, 0, 75, 0xffaaaaaa, 0x00ffffff);
 
-		Segment.drawGradient(this.getPosX(), this.getPosY() + 4, this.getPosX() + 6, this.getPosY() + this.getHeight() - 4, 0xffaaaaaa, 0x00ffffff);
+		Segment.drawGradient(this.getPosX(), this.getPosY() + 4, this.getPosX() + 6, this.getPosY() + this.getHeight() - 4, 0xffaaaaaa, 0x00ffffff, 0);
 
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
-		GlStateManager.enableAlphaTest();
 		GlStateManager.enableTexture2D();
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffbebebe, true, null, false);
 

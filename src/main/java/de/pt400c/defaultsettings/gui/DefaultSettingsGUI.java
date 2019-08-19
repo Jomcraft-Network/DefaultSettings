@@ -68,7 +68,6 @@ public class DefaultSettingsGUI extends GuiScreen {
 			this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
 
 			if (this.popupField == null) {
-
 				this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
 
 			} else {
@@ -80,7 +79,7 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 	
 	public void resetSelected() {
-		MenuScreen menu = this.menu;
+		final MenuScreen menu = this.menu;
 		if(menu != null)
 			menu.getVariants().get(menu.index).selected = null;
 	}

@@ -49,7 +49,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 		}
 
-		float alphaRate = (float) ((Math.sin(3 * timer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * timer - 3 * (Math.PI / 2)) + 1) / 2);
 
 		int color = 0xff000000;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;

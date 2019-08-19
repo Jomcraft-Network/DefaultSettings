@@ -119,8 +119,17 @@ public abstract class Segment {
         MC.getSoundHandler().play(SimpleSound.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 	
-	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
+	/**
+	 * 
+	 * @param x1 First x coord
+	 * @param y1 First y coord
+	 * @param x2 Second x coord
+	 * @param y2 Second y coord
+	 * @param color1 Start color of the gradient
+	 * @param color2 End color of the gradient
+	 * @param rotation 0 = left-right, 1 = top-down, 2 = right-left, 3 = down-top
+	 */
+	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2, final int rotation) {
 		double j1;
 
         if (x1 < x2)
@@ -144,8 +153,16 @@ public abstract class Segment {
 
         setColor(f, f1, f2, f3);
 
-        addVertex((float) x2, (float) y2, 0);
-        addVertex((float) x2, (float) y1, 0);
+        if(rotation == 1) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
+		}
         
         f3 = (int)(color2 >> 24 & 255);
         f = (int)(color2 >> 16 & 255);
@@ -154,97 +171,20 @@ public abstract class Segment {
         
         setColor(f, f1, f2, f3);
         
-        addVertex((float) x1, (float) y1, 0);
-        
-        addVertex((float) x1, (float) y2, 0);
+        if(rotation == 1) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
+		}
 
 		draw(false);
     }
-	
-	public static void drawGradientFromBottom(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
-		double j1;
 
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-        
-        setColor(f, f1, f2, f3);
-
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-
-		draw(false);
-    }
-	
-	public static void drawGradientFromTop(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-        
-        setColor(f, f1, f2, f3);
-        
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-       
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-      
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-
-		draw(false);
-    }
-	
 	public static void drawGradientCircle(float cx, float cy, float r, float rotation, int percentage, int color1, int color2) {
 
 		float x = r;
@@ -277,20 +217,20 @@ public abstract class Segment {
 			posY2 = y + cy;
 			
 			
-			int f3 = (int)(color2 >> 24 & 255);
-	        int f = (int)(color2 >> 16 & 255);
-	        int f1 = (int)(color2 >> 8 & 255);
-	        int f2 = (int)(color2 & 255);
+			final int f3 = (int)(color2 >> 24 & 255);
+			final int f = (int)(color2 >> 16 & 255);
+			final int f1 = (int)(color2 >> 8 & 255);
+			final int f2 = (int)(color2 & 255);
 	        
 	        setColor(f, f1, f2, f3);
 
 
 			addVertex((float) posX1, (float) posY1, 0);
 			
-			int f13 = (int)(color1 >> 24 & 255);
-	        int f0 = (int)(color1 >> 16 & 255);
-	        int f11 = (int)(color1 >> 8 & 255);
-	        int f12 = (int)(color1 & 255);
+			final int f13 = (int)(color1 >> 24 & 255);
+			final int f0 = (int)(color1 >> 16 & 255);
+			final int f11 = (int)(color1 >> 8 & 255);
+			final int f12 = (int)(color1 & 255);
 			
 			
 	        setColor(f0, f11, f12, f13);
@@ -493,10 +433,10 @@ public abstract class Segment {
         }
 
         if(color != null) {
-        	float f3 = (float)(color >> 24 & 255) / 255.0F;
-            float f = (float)(color >> 16 & 255) / 255.0F;
-            float f1 = (float)(color >> 8 & 255) / 255.0F;
-            float f2 = (float)(color & 255) / 255.0F;
+        	final float f3 = (float)(color >> 24 & 255) / 255.0F;
+        	final float f = (float)(color >> 16 & 255) / 255.0F;
+        	final float f1 = (float)(color >> 8 & 255) / 255.0F;
+            final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
             	GlStateManager.color4f(f, f1, f2, f3);
             else if(multiply)
@@ -576,10 +516,10 @@ public abstract class Segment {
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
-        float f = (float)(color >> 24 & 255) / 255.0F;
-        float f1 = (float)(color >> 16 & 255) / 255.0F;
-        float f2 = (float)(color >> 8 & 255) / 255.0F;
-        float f3 = (float)(color & 255) / 255.0F;
+		final float f = (float)(color >> 24 & 255) / 255.0F;
+        final float f1 = (float)(color >> 16 & 255) / 255.0F;
+        final float f2 = (float)(color >> 8 & 255) / 255.0F;
+        final float f3 = (float)(color & 255) / 255.0F;
 
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_TEXTURE_2D);

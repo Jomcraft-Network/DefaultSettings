@@ -36,9 +36,9 @@ public class ExportSwitchSegment extends Segment {
 		
 		int on = 0xff08b306;
 		
-		int off = 0xffd85755;
+		final int off = 0xffd85755;
 		float darken = 0;
-		byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();
+		final byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();
 		
 		boolean inactive = false;
 		
@@ -58,27 +58,27 @@ public class ExportSwitchSegment extends Segment {
 			
 		}
 		
-		int getRed = getRed(on);
-		int getGreen = getGreen(on);
-		int getBlue = getBlue(on);
+		final int getRed = getRed(on);
+		final int getGreen = getGreen(on);
+		final int getBlue = getBlue(on);
 		
 		this.processFactor = (float) ((Math.sin(3 * this.animTimer - (Math.PI / 2)) + 1) / 2);
 
-		float red = (getRed(off) - getRed) * (1 - processFactor);
+		final float red = (getRed(off) - getRed) * (1 - processFactor);
 		
-		float green = (getGreen(off) - getGreen) * (1 - processFactor);
+		final float green = (getGreen(off) - getGreen) * (1 - processFactor);
 		
-		float blue = (getBlue(off) - getBlue) * (1 - processFactor);
+		final float blue = (getBlue(off) - getBlue) * (1 - processFactor);
 		
 		on = new Color((int)(getRed + red), (int)(getGreen + green), (int) (getBlue + blue)).getRGB();
 		
 		if(inactive) 
 			on = darkenColor(0xff5b5b5b, darken).getRGB();
 		
-		float f3 = (float) (on >> 24 & 255) / 255.0F;
-		float f = (float) (on >> 16 & 255) / 255.0F;
-		float f1 = (float) (on >> 8 & 255) / 255.0F;
-		float f2 = (float) (on & 255) / 255.0F;
+		final float f3 = (float) (on >> 24 & 255) / 255.0F;
+		final float f = (float) (on >> 16 & 255) / 255.0F;
+		final float f1 = (float) (on >> 8 & 255) / 255.0F;
+		final float f2 = (float) (on & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -126,15 +126,13 @@ public class ExportSwitchSegment extends Segment {
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
-		
-		
 	}
 	
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
-			ArrayList<String> lines = new ArrayList<String>();
+			final ArrayList<String> lines = new ArrayList<String>();
 			
 			int textWidth = (int) (mouseX + 14 + MC.fontRenderer.getStringWidth(this.hoverMessage));
 			if(textWidth > this.gui.width) {
@@ -143,6 +141,7 @@ public class ExportSwitchSegment extends Segment {
 				lines.add(this.hoverMessage);
 			}
 			textWidth = 0;
+			
 			for(String line : lines) {
 				
 				if(MC.fontRenderer.getStringWidth(line) > textWidth)
@@ -188,12 +187,11 @@ public class ExportSwitchSegment extends Segment {
 
 			this.clickSound();
 			byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();
-			if(exportActive == 2) {
+			
+			if(exportActive == 2) 
 				((GuiConfig) this.gui).copyConfigs();
-			}else if(exportActive == 1) {
-				
+			else if(exportActive == 1) 
 				((GuiConfig) this.gui).deleteConfigs();
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);

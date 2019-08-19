@@ -19,15 +19,13 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
 	
     public final GuiScreen parentScreen;
 
-    public GuiDSMainMenu(GuiScreen parentScreen)
-    {
+    public GuiDSMainMenu(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;
     }
     
     @Override
-    public void initGui()
-    {
+    public void initGui() {
     	this.mc.keyboardListener.enableRepeatEvents(true);
         this.clearSegments();
         
@@ -38,7 +36,7 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
         
         ArrayList<String> lines = new ArrayList<String>();
 		
-		int textWidth = MC.fontRenderer.getStringWidth(text);
+		final int textWidth = MC.fontRenderer.getStringWidth(text);
 		if(textWidth > this.width - 20) 
 			lines.addAll(MC.fontRenderer.listFormattedStringToWidth(text, this.width - 20));
 		else 
@@ -65,7 +63,7 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
-		Segment.drawGradientFromTop(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff);
+		Segment.drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -74,5 +72,4 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
    
     	super.render(mouseX, mouseY, partialTicks);
     }
-	
 }

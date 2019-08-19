@@ -3,7 +3,6 @@ package de.pt400c.defaultsettings;
 import static org.lwjgl.glfw.GLFW.*;
 import java.lang.reflect.Field;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.util.InputMappings;
@@ -26,7 +25,7 @@ public class EventHandlers {
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		if ((MC.currentScreen instanceof GuiModList && MC.world == null) && InputMappings.isKeyDown(GLFW_KEY_F7) && InputMappings.isKeyDown(GLFW_KEY_G))
 			
-			MC.displayGuiScreen(new GuiConfig(Minecraft.getInstance().currentScreen));
+			MC.displayGuiScreen(new GuiConfig(MC.currentScreen));
 	}
 
 	@SubscribeEvent

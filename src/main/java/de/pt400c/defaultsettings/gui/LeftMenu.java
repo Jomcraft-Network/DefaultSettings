@@ -59,9 +59,9 @@ public class LeftMenu extends Segment {
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		synchronized (this.children) {
 			for (Segment segment : children) {
-				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
 					return true;
-				}
+				
 			}
 		}
 		return false;
@@ -71,10 +71,9 @@ public class LeftMenu extends Segment {
 	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
-				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
 					break;
-				}
-
+				
 			}
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
@@ -84,9 +83,8 @@ public class LeftMenu extends Segment {
 	public boolean mouseScrolled(double p_mouseScrolled_1_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
-				if (segment.mouseScrolled(p_mouseScrolled_1_)) {
+				if (segment.mouseScrolled(p_mouseScrolled_1_)) 
 					return true;
-				}
 
 			}
 		}
@@ -97,9 +95,8 @@ public class LeftMenu extends Segment {
 	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
-				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 
 					return true;
-				}
 
 			}
 		}
@@ -117,5 +114,4 @@ public class LeftMenu extends Segment {
 	public List<Segment> getChildren() {
 		return this.children;
 	}
-
 }

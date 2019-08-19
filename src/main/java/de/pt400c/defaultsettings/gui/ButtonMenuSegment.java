@@ -38,7 +38,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		
 		this.width = this.origLength - this.menu.offs * 1.6F;
 
-		float percent = MathHelper.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
+		final float percent = MathHelper.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
 		
 		if(!(width < 3.5F)) {
 
@@ -48,7 +48,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated)){
 			offsetTick -= 0.5;
 		}
-		offsetX = func;
+		this.offsetX = func;
 		
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
@@ -60,7 +60,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		GL11.glEnable(GL11.GL_BLEND);
 		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
 
-		int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
+		final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
 		GL11.glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 		MC.fontRenderer.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB());
 		GL11.glDisable(GL11.GL_BLEND);
@@ -69,9 +69,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		GL11.glPopMatrix();
 		}
 		
-	
-		
-		int plus = this.activated ? 9 : 0;
+		final int plus = this.activated ? 9 : 0;
 		GL11.glColor4d(1, 1, 1, 1);
 		if(this.activated) 
 			Segment.drawRect(posX + 29 + (-25) * percent, posY, posX + 29 + 3 + (-25) * percent, posY + 19, calcAlpha(0xffff8518, 1 - percent).getRGB(), true, null, false);

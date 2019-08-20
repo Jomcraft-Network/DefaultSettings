@@ -279,12 +279,10 @@ public static void switchState(Byte state, String query) {
 			final File main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
 		}else {
-			for(String name : getOverrides().keySet()) {
-				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) {
-					restoreSingleConfig(name);
-				}
-			}
-			
+			for(String name : getOverrides().keySet()) 
+				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name))))
+						restoreSingleConfig(name);
+				
 			final File main = new File(mcDataDir, mainLocation);
 			getMainJSON().setExportMode(false);
 			mainJson.save(main);
@@ -308,14 +306,11 @@ public static void switchState(Byte state, String query) {
 			gameSettings.loadOptions();
 			MC.getResourcePackList().reloadPacksFromFinders();
 			List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
-			for (String resourcePack : gameSettings.resourcePacks) {
-				for (ClientResourcePackInfo entry : MC.getResourcePackList().getAllPacks()) {
-					
-					if (entry.getName().equals(resourcePack)) {
+			for (String resourcePack : gameSettings.resourcePacks) 
+				for (ClientResourcePackInfo entry : MC.getResourcePackList().getAllPacks()) 
+					if (entry.getName().equals(resourcePack)) 
 						repositoryEntries.add(entry);
-					}
-				}
-			}
+					
 			MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
 		}
 		
@@ -327,12 +322,11 @@ public static void switchState(Byte state, String query) {
 	public static void restoreSingleConfig(String name) throws IOException {
 		try {
 			File file = new File(getMainFolder(), name);
-			if(file.isDirectory()) {
+			if(file.isDirectory()) 
 				FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
-			}
-			else {
+			
+			else 
 				FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
-			}
 			
 			String random = getOverrides().get(name);
 			
@@ -406,9 +400,9 @@ public static void switchState(Byte state, String query) {
 		byte[] mac = inter.getHardwareAddress();
 		if (mac != null) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < mac.length; i++) {
+			for (int i = 0; i < mac.length; i++) 
 				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-			}
+			
 			String address = sb.toString();
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(address.getBytes());
@@ -431,9 +425,9 @@ public static void switchState(Byte state, String query) {
 				reader = new BufferedReader(new FileReader(optionsFile));	
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "options.txt")));
 				String line;
-				while ((line = reader.readLine()) != null) {
+				while ((line = reader.readLine()) != null) 
 					writer.print(line + "\n");
-				}
+				
 			} catch (IOException e) {
 				throw e;
 			} finally {
@@ -458,10 +452,10 @@ public static void switchState(Byte state, String query) {
 				reader = new BufferedReader(new FileReader(keysFile));
 				String line;
 				while ((line = reader.readLine()) != null) {
-					if (line.isEmpty()) {
+					if (line.isEmpty()) 
 						continue;
-					}
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputMappings.getInputByName(line.split(":")[1]), KeyModifier.valueFromString(line.split(":")[2])));
+					
+					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputMappings.getInputByName(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -550,9 +544,9 @@ public static void switchState(Byte state, String query) {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
-			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
+			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
 				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
-			}
+			
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {
@@ -571,9 +565,9 @@ public static void switchState(Byte state, String query) {
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("key_")) {
+				if (line.startsWith("key_")) 
 					continue;
-				}
+				
 				writer.print(line + "\n");
 			}
 		} catch (IOException e) {

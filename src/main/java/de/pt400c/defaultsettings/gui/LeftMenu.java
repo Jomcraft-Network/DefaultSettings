@@ -35,9 +35,8 @@ public class LeftMenu extends Segment {
 		if(this.selected && offsetTick < (2 * Math.PI))
 			offsetTick += 0.4;
 	
-		else if(offsetTick > 0 && !this.selected){
+		else if(offsetTick > 0 && !this.selected)
 			offsetTick -= 0.35;
-		}
 	
 		offs = (float) func * 5;
         synchronized (this.children) {
@@ -57,11 +56,10 @@ public class LeftMenu extends Segment {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		synchronized (this.children) {
-			for (Segment segment : children) {
-				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+			for (Segment segment : children) 
+				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
 					return true;
-				}
-			}
+				
 		}
 		return false;
 	}
@@ -69,12 +67,10 @@ public class LeftMenu extends Segment {
 	@Override
 	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+			for (Segment segment : this.children) 
+				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
 					break;
-				}
 
-			}
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
@@ -82,12 +78,10 @@ public class LeftMenu extends Segment {
 	@Override
 	public boolean mouseScrolled(double p_mouseScrolled_1_) {
 		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.mouseScrolled(p_mouseScrolled_1_)) {
+			for (Segment segment : this.children) 
+				if (segment.mouseScrolled(p_mouseScrolled_1_)) 
 					return true;
-				}
-
-			}
+				
 		}
 		return false;
 	}
@@ -95,12 +89,10 @@ public class LeftMenu extends Segment {
 	@Override
 	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+			for (Segment segment : this.children)
+				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 
 					return true;
-				}
 
-			}
 		}
 		return false;
 	}

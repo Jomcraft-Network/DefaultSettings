@@ -25,9 +25,8 @@ public class FramebufferObject
 
 	public void createBindFramebuffer(int width, int height) {
 
-		if (this.framebufferObject >= 0) {
+		if (this.framebufferObject >= 0) 
 			this.deleteFramebuffer();
-		}
 
 		this.createFramebuffer(width, height);
 
@@ -50,32 +49,27 @@ public class FramebufferObject
 		this.framebufferHeight = height;
 		this.framebufferTextureWidth = width;
 		this.framebufferTextureHeight = height;
-
-		createFrameBuffer();
-		createColorAttachment();
-
+		this.createFrameBuffer();
+		this.createColorAttachment();
 		this.framebufferClear();
-
 	}
     
     private void createFrameBuffer() {
-    	framebufferObject = GL30.glGenFramebuffers();
-    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferObject);
+    	this.framebufferObject = GL30.glGenFramebuffers();
+    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.framebufferObject);
     	GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
     }
     
     private void createColorAttachment() {
-		colorBuffer = GL30.glGenRenderbuffers();
-		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
-		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 9 /*9 samples*/, GL11.GL_RGBA8, framebufferWidth, framebufferHeight);
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, colorBuffer);
-		
+    	this.colorBuffer = GL30.glGenRenderbuffers();
+		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, this.colorBuffer);
+		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 9 /*9 samples*/, GL11.GL_RGBA8, this.framebufferWidth, this.framebufferHeight);
+		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, this.colorBuffer);	
 	}
 
 	public void bindFramebuffer(boolean vp) {
 
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.framebufferObject);
-
 		if (vp) 
 			GlStateManager.viewport(0, 0, this.framebufferWidth, this.framebufferHeight);
 
@@ -87,7 +81,6 @@ public class FramebufferObject
 
     public void framebufferClear()  {
         this.bindFramebuffer(true);
-
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         this.unbindFramebuffer();
     }

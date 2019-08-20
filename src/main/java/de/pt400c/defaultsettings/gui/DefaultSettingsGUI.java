@@ -155,7 +155,7 @@ public class DefaultSettingsGUI extends Screen {
 	}
 	
 	public void resetSelected() {
-		MenuScreen menu = this.menu;
+		final MenuScreen menu = this.menu;
 		if(menu != null)
 			menu.getVariants().get(menu.index).selected = null;
 	}

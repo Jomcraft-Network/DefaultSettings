@@ -24,20 +24,20 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		timer += 0.05;
-		float right = this.menu.width - this.menu.offs + this.width + 6;
+		this.timer += 0.05;
+		final float right = this.menu.width - this.menu.offs + this.width + 6;
 		this.posX = right / 2 - this.width / 2;
-		float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
 	
 	}
 
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
-		String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
+		final String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
 		if(this.isSelected(mouseX, mouseY) && text != null) {
 			
-			ArrayList<String> lines = new ArrayList<String>();
+			final ArrayList<String> lines = new ArrayList<String>();
 			
 			int textWidth = 0;
 			lines.addAll(MC.fontRenderer.listFormattedStringToWidth(text, (int) (this.gui.width - mouseX - 12)));

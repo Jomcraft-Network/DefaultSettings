@@ -66,7 +66,7 @@ public class ButtonSegment extends Segment {
 	public void hoverCheck(float mouseX, float mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
-			ArrayList<String> lines = new ArrayList<String>();
+			final ArrayList<String> lines = new ArrayList<String>();
 			
 			int textWidth = (int) (mouseX + 12 + MC.fontRenderer.getStringWidth(this.hoverMessage));
 			if(textWidth > this.gui.width) {
@@ -95,8 +95,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	protected static Color darkenColor(int color) {
-		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE),
-		(int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
+		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE), (int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
 	}
 	
 	@Override
@@ -125,9 +124,8 @@ public class ButtonSegment extends Segment {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
 
-			if (this.function.apply(this)) {
+			if (this.function.apply(this)) 
 				this.clickSound();
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);

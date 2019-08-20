@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.TickEvent;
@@ -18,9 +17,9 @@ public class EventHandlers114 {
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		
-		if ((MC.currentScreen instanceof GuiModList && MC.world == null) && InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW_KEY_G))
+		if ((MC.currentScreen instanceof GuiModList && MC.world == null) && InputMappings.isKeyDown(MC.mainWindow.getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(MC.mainWindow.getHandle(), GLFW_KEY_G))
 			
-			MC.displayGuiScreen(new GuiConfig(Minecraft.getInstance().currentScreen));
+			MC.displayGuiScreen(new GuiConfig(MC.currentScreen));
 	}
 
 	@SubscribeEvent

@@ -30,7 +30,7 @@ public class TextSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
+		final float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
      	GlStateManager.enableAlphaTest();

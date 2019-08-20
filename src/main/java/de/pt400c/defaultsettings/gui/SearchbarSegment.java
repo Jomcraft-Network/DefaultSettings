@@ -39,10 +39,9 @@ public class SearchbarSegment extends Segment {
 			this.activated = false;
 			return true;
 		} else if (p_keyPressed_1_ == GLFW_KEY_ENTER || p_keyPressed_1_ == GLFW_KEY_KP_ENTER) {
-			if (!this.query.isEmpty()) {
+			if (!this.query.isEmpty()) 
 				this.activated = true;
 
-			}
 			this.sendQuery();
 
 			return true;
@@ -54,7 +53,7 @@ public class SearchbarSegment extends Segment {
 	@Override
 	public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_) {
 		if (SharedConstants.isAllowedCharacter(p_charTyped_1_)) {
-			String s1 = SharedConstants.filterAllowedCharacters(Character.toString(p_charTyped_1_));
+			final String s1 = SharedConstants.filterAllowedCharacters(Character.toString(p_charTyped_1_));
 			if (this.query.isEmpty() && s1.equals(" "))
 				return true;
 
@@ -90,8 +89,8 @@ public class SearchbarSegment extends Segment {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		flashingTimer += 0.07;
-		float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
+		this.flashingTimer += 0.07;
+		final float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
 
 		int color = 0;
 
@@ -207,9 +206,9 @@ public class SearchbarSegment extends Segment {
 			this.grabbed = true;
 
 			return true;
-		} else {
+		} else 
 			return false;
-		}
+		
 	}
 
 	@Override
@@ -222,9 +221,8 @@ public class SearchbarSegment extends Segment {
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (this.grabbed) {
-			if (this.isSelected(mouseX, mouseY)) {
+			if (this.isSelected(mouseX, mouseY)) 
 				this.grabbed = false;
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);

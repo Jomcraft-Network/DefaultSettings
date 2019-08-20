@@ -69,10 +69,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
     
-    	this.framebufferMc = new FramebufferObject(Minecraft.getInstance().mainWindow.getWidth(), Minecraft.getInstance().mainWindow.getHeight());
+    	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
     	this.clearSegments();
     	
@@ -269,8 +268,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void tick()
-    {
+    public void tick() {
     	super.tick();
         for(int id = 0; id < cooldowns.length; id++) {
         	if(cooldowns[id].renderCooldown > 0)
@@ -283,8 +281,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
-    {
+    public void render(int mouseX, int mouseY, float partialTicks) {
     	this.minecraft.getFramebuffer().unbindFramebuffer();
 		GlStateManager.pushMatrix();
 		GL11.glClear(16640);
@@ -309,15 +306,15 @@ public class GuiConfig extends DefaultSettingsGUI {
     	AbstractGui.fill(72, 0, width, 25, 0xffe0e0e0);
         this.font.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.font.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
         
-        int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.font.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+        final int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.font.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
         
         this.font.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
         
         this.font.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
         
-        buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-        buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-        buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+        this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+        this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+        this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         super.render(mouseX, mouseY, partialTicks);
         
         this.framebufferMc.unbindFramebuffer();
@@ -327,7 +324,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		GlStateManager.pushMatrix();
 
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		GL30.glBlitFramebuffer(0, 0, Minecraft.getInstance().mainWindow.getWidth(), Minecraft.getInstance().mainWindow.getHeight(), 0, 0, Minecraft.getInstance().mainWindow.getWidth(), Minecraft.getInstance().mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+		GL30.glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 
 		GlStateManager.popMatrix();
     }

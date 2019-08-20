@@ -20,10 +20,8 @@ public class ButtonMovableSegment extends ButtonSegment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xff7a7a7a : 0xffa4a4a4, 0xffdcdcdc, this.border);
 		if (this.dragging) {
-
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
-
 		}
 	}
 	
@@ -43,9 +41,9 @@ public class ButtonMovableSegment extends ButtonSegment {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		if (this.dragging) {
+		if (this.dragging) 
 			this.clickSound();
-		}
+		
 		this.dragging = false;
 		return false;
 	}

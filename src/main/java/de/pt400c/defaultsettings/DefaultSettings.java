@@ -1,26 +1,27 @@
 package de.pt400c.defaultsettings;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
-
+import java.util.jar.JarInputStream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.versions.forge.ForgeVersion;
@@ -40,9 +42,11 @@ public class DefaultSettings {
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
+	public static String BUILD_ID = "<UNKNOWN>";
+	public static String BUILD_TIME = "<UNKNOWN>";
+	public static String PLAYER_UUID;
 	public static final String VERSION = getModVersion();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
-	
 	public static DefaultSettings instance;
 	
 	@SuppressWarnings("unchecked")
@@ -50,80 +54,56 @@ public class DefaultSettings {
 		instance = this;
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
-		
-		DistExecutor.runWhenOn(Dist.CLIENT, new Supplier<Runnable>() {
-			@Override
-			public Runnable get() {
 
-				if (setUp)
-					return null;
-				// Not yet implemented by Forge
+		if (FMLLoader.getDist() == Dist.CLIENT) {
+			if (setUp)
+				return;
+			try {
+				Field sortedList = ModList.class.getDeclaredField("sortedList");
+				sortedList.setAccessible(true);
+				List<ModInfo> editList = (List<ModInfo>) sortedList.get(ModList.get());
+				ModInfo prevModInfo = editList.stream().filter(modInfos -> modInfos.getModId().equals(DefaultSettings.MODID)).findFirst().get();
+				NewModInfo modInfo = new NewModInfo(prevModInfo);
+				editList.set(editList.indexOf(prevModInfo), modInfo);
+				ModContainer modContainer = ModList.get().getModContainerById(DefaultSettings.MODID).get();
+				Field modInfoField = ModContainer.class.getDeclaredField("modInfo");
+				modInfoField.setAccessible(true);
+				modInfoField.set(modContainer, (IModInfo) modInfo);
 
-				// FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFingerprintViolation);
-				return new Runnable() {
-					@Override
-					public void run() {
-						
-						try {
-							Field sortedList = ModList.class.getDeclaredField("sortedList");
-				            sortedList.setAccessible(true);
-				            List<ModInfo> editList = (List<ModInfo>) sortedList.get(ModList.get());
-				            ModInfo prevModInfo = editList.stream().filter(modInfos -> modInfos.getModId().equals(DefaultSettings.MODID)).findFirst().get();
-							NewModInfo modInfo = new NewModInfo(prevModInfo);
-							editList.set(editList.indexOf(prevModInfo), modInfo);
-							ModContainer modContainer = ModList.get().getModContainerById(DefaultSettings.MODID).get();
-							Field modInfoField = ModContainer.class.getDeclaredField("modInfo");
-							modInfoField.setAccessible(true);
-							modInfoField.set(modContainer, (IModInfo) modInfo);
-					
-						}catch(NullPointerException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-						
-							e.printStackTrace();
-						}
+			} catch (NullPointerException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 
-						try {
-							FileUtil.restoreContents();
-						} catch (Exception e) {
-							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
-						}
-						setUp = true;
-						MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
-						if(MCPVersion.getMCVersion().equals("1.14.2") || MCPVersion.getMCVersion().equals("1.14.3")) {
-							
-							MinecraftForge.EVENT_BUS.register(new EventHandlers115());
-							MinecraftForge.EVENT_BUS.register(new UnregHandlers115());
-						}else {
-							
-							ComparableVersion vers = new ComparableVersion(ForgeVersion.getVersion());
-							if (vers.compareTo(new ComparableVersion("28.0.45")) < 0) {
-								MinecraftForge.EVENT_BUS.register(new EventHandlers115());
-								MinecraftForge.EVENT_BUS.register(new UnregHandlers115());
-							} else {
-								MinecraftForge.EVENT_BUS.register(new EventHandlers114());
-								MinecraftForge.EVENT_BUS.register(new UnregHandlers114());
-							}
-						}
-						
-						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new GuiConfig(screen));
-						ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()-> Pair.of(() -> "ANY", (remote, isServer) -> true));
-					}
-				};
+				e.printStackTrace();
 			}
-		});
-		
-		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, new Supplier<Runnable>() {
 
-			@Override
-			public Runnable get() {
-				return new Runnable() {
-					
-					@Override
-					public void run() {
-						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-					}
-				};
+			try {
+				FileUtil.restoreContents();
+			} catch (Exception e) {
+				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
 			}
-		});
+			setUp = true;
+			MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
+			if (MCPVersion.getMCVersion().equals("1.14.2") || MCPVersion.getMCVersion().equals("1.14.3")) {
+
+				MinecraftForge.EVENT_BUS.register(new EventHandlers115());
+				MinecraftForge.EVENT_BUS.register(new UnregHandlers115());
+			} else {
+
+				ComparableVersion vers = new ComparableVersion(ForgeVersion.getVersion());
+				if (vers.compareTo(new ComparableVersion("28.0.45")) < 0) {
+					MinecraftForge.EVENT_BUS.register(new EventHandlers115());
+					MinecraftForge.EVENT_BUS.register(new UnregHandlers115());
+				} else {
+					MinecraftForge.EVENT_BUS.register(new EventHandlers114());
+					MinecraftForge.EVENT_BUS.register(new UnregHandlers114());
+				}
+			}
+
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new GuiConfig(screen));
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> "ANY", (remote, isServer) -> true));
+
+		} else {
+			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
+		}
 
 	}
 	
@@ -147,41 +127,43 @@ public class DefaultSettings {
     }*/
 
 	public void postInit(FMLLoadCompleteEvent event) {
-		DistExecutor.runWhenOn(Dist.CLIENT, new Supplier<Runnable>() {
+		if (FMLLoader.getDist() == Dist.CLIENT) {
+			try {
+				FileUtil.initUUID();
+				getBuildID();
+				getBuildTime();
+			} catch (NullPointerException | IOException | NoSuchAlgorithmException e) {
 
-			@Override
-			public Runnable get() {
-				return new Runnable() {
-					
-					@Override
-					public void run() {
-						try {
-							FileUtil.restoreKeys();
-						} catch (IOException e) {
-							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-						} catch (NullPointerException e) {
-							DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-						}
-						
-					}
-				};
 			}
-		});
-		
-		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, new Supplier<Runnable>() {
 
-			@Override
-			public Runnable get() {
-				return new Runnable() {
-					
-					@Override
-					public void run() {
-						DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-					}
-				};
+			try {
+				FileUtil.restoreKeys();
+			} catch (IOException e) {
+				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+			} catch (NullPointerException e) {
+				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 			}
-		});
 
+		} else {
+			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
+		}
+
+	}
+	
+	private static void getBuildID() throws FileNotFoundException, IOException {
+		File file = FMLLoader.getLoadingModList().getModFileById(DefaultSettings.MODID).getFile().getFilePath().toFile();
+
+		try (JarInputStream jarStream = new JarInputStream(new FileInputStream(file))) {
+			BUILD_ID = jarStream.getManifest().getMainAttributes().getValue("Build-ID");
+		}
+	}
+	
+	private static void getBuildTime() throws FileNotFoundException, IOException {
+		File file = FMLLoader.getLoadingModList().getModFileById(DefaultSettings.MODID).getFile().getFilePath().toFile();
+
+		try (JarInputStream jarStream = new JarInputStream(new FileInputStream(file))) {
+			BUILD_TIME = jarStream.getManifest().getMainAttributes().getValue("Implementation-Timestamp");
+		}
 	}
 	
 	public static UpdateContainer getUpdater() {

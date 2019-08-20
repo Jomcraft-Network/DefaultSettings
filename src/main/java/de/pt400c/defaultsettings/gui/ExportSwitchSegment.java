@@ -83,6 +83,7 @@ public class ExportSwitchSegment extends Segment {
 		final float f2 = (float) (on & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -98,10 +99,13 @@ public class ExportSwitchSegment extends Segment {
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enableAlphaTest();
+		
 		if(!inactive) {
 		
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.disableAlphaTest();
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glScalef(0.65F, 0.65F, 0.65F);
 
@@ -109,10 +113,12 @@ public class ExportSwitchSegment extends Segment {
 
 			MC.fontRenderer.drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * (1 - processFactor), 4, 255))).getRGB());
 			GL11.glDisable(GL11.GL_BLEND);
+			GlStateManager.enableAlphaTest();
 			GL11.glPopMatrix();
 		}
 		
 		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -127,6 +133,7 @@ public class ExportSwitchSegment extends Segment {
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GlStateManager.enableAlphaTest();
 		GL11.glDisable(GL11.GL_BLEND);
 		
 		

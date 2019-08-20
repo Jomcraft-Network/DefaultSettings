@@ -13,8 +13,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
+import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
-
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
@@ -27,9 +27,9 @@ import de.pt400c.defaultsettings.gui.PopupSegment;
 import de.pt400c.defaultsettings.gui.PopupWindow;
 import de.pt400c.defaultsettings.gui.QuitButtonSegment;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
+import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
@@ -121,7 +121,7 @@ public class GuiConfig extends DefaultSettingsGUI {
         						
         				addChild(new ScrollableSegment(this, 20, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
 
-        				addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MCPVersion.getMCVersion() + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+        				addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MCPVersion.getMCVersion() + "-" + DefaultSettings.VERSION + "\n\nBuild-ID: " + DefaultSettings.BUILD_ID + "\n\nBuild-Time: " + DefaultSettings.BUILD_TIME + "\n\n\nCreated by Jomcraft Network, 2019", 0, false))));
 
     	
     	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false)).addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png")).addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu))/*.addChild(new IconSegment(this, 10, 11, 16, 16, "textures/gui/test.png", this.leftMenu))*/.addChild(new ButtonUpdateChecker(this, /*72 / 2 - 20 / 2, */this.height - 30 - 25, this.leftMenu)));
@@ -288,7 +288,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		this.framebufferMc.bindFramebuffer(true);
 		GL11.glEnable(GL13.GL_MULTISAMPLE);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-
+		GlStateManager.disableAlphaTest();
 		GL11.glClear(256);
 		GlStateManager.matrixMode(5889);
 		GlStateManager.loadIdentity();
@@ -296,10 +296,27 @@ public class GuiConfig extends DefaultSettingsGUI {
 		GlStateManager.matrixMode(5888);
 		GlStateManager.loadIdentity();
 		GlStateManager.translatef(0.0F, 0.0F, -2000.0F);
-
 		GL11.glClear(256);
-    	
+		GlStateManager.disableAlphaTest();
+		
     	AbstractGui.fill(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    	
+    	GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlphaTest();
+		GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+
+		Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+		
+		Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GlStateManager.enableAlphaTest();
+		GL11.glDisable(GL11.GL_BLEND);
+
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
         
     	AbstractGui.fill(0, 0, 72, 25, 0xff9f9f9f);
         
@@ -322,10 +339,14 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 		this.minecraft.getFramebuffer().bindFramebuffer(true);
 		GlStateManager.pushMatrix();
+		
+		GlStateManager.disableAlphaTest();
 
 		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
 		GL30.glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
 
+		GlStateManager.enableAlphaTest();
+		
 		GlStateManager.popMatrix();
     }
     

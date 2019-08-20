@@ -188,6 +188,7 @@ public class ScrollableSegment extends Segment {
 		final float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -212,12 +213,14 @@ public class ScrollableSegment extends Segment {
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 		if (!this.invisible) {
 
 			GlStateManager.disableTexture2D();
 			GlStateManager.enableBlend();
+			GlStateManager.disableAlphaTest();
 			GlStateManager.disableAlphaTest();
 			GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -228,6 +231,7 @@ public class ScrollableSegment extends Segment {
 
 			GL11.glShadeModel(GL11.GL_FLAT);
 			GlStateManager.disableBlend();
+			GlStateManager.enableAlphaTest();
 			GlStateManager.enableAlphaTest();
 			GlStateManager.enableTexture2D();
 
@@ -513,6 +517,7 @@ class SettingsButtonSegment extends Segment {
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.color4f(f, f1, f2, f3);
@@ -549,6 +554,7 @@ class SettingsButtonSegment extends Segment {
 		}
 		
 		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		this.active = false;
 	}
@@ -576,6 +582,29 @@ class SettingsButtonSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+		if (!this.isSelected(mouseX, mouseY)) {
+			this.grabbed = false;
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+
+		if (this.grabbed) {
+			if (this.isSelected(mouseX, mouseY))
+				this.grabbed = false;
+
 			GuiConfig config = ((GuiConfig) this.gui);
 			MenuScreen menu = config.menu;
 			this.clickSound();
@@ -605,20 +634,9 @@ class SettingsButtonSegment extends Segment {
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0, true));
 			
 			config.popup.isVisible = true;
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
 
-	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
-		if (!this.isSelected(mouseX, mouseY)) {
-			this.grabbed = false;
-			return false;
 		}
-		return true;
+		return super.mouseReleased(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -861,8 +879,7 @@ class PopupCheckboxSegment extends Segment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		final float alpha = ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
-	
+
 		if (active) {
 
 			if (this.timer <= (Math.PI / 3))
@@ -882,13 +899,14 @@ class PopupCheckboxSegment extends Segment {
 
 		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
-		int color = calcAlpha(0xff000000, alpha).getRGB();
+		int color = 0xff000000;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -909,7 +927,7 @@ class PopupCheckboxSegment extends Segment {
 		Segment.drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + this.width + 2, this.getPosY() - 2, null, false, null, false);
 
 		if (this.timer <= (Math.PI / 3)) {
-			color = calcAlpha(0xffffffff, alpha).getRGB();
+			color = 0xffffffff;
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -933,7 +951,7 @@ class PopupCheckboxSegment extends Segment {
 
 		}
 		
-		color = calcAlpha(0xfffe8518, alpha).getRGB();
+		color = 0xfffe8518;
 
 		f3 = (float) (color >> 24 & 255) / 255.0F;
 		f = (float) (color >> 16 & 255) / 255.0F;
@@ -957,7 +975,7 @@ class PopupCheckboxSegment extends Segment {
 		Segment.drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
 
 		if (this.timer > 0) {
-			color = calcAlpha(0xffffffff, alpha).getRGB();
+			color = 0xffffffff;
 
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
@@ -970,6 +988,7 @@ class PopupCheckboxSegment extends Segment {
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 	}

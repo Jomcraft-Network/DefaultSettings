@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,17 +29,52 @@ public class PopupWindow extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		this.alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		GL11.glEnable(GL11.GL_BLEND);
+		OpenGlHelper.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+	    GlStateManager.disableAlphaTest();
+	 	GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-		Segment.drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, this.alphaRate);
-		Segment.drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, this.alphaRate);
+		Segment.drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
 		
-		GL11.glPushMatrix();
-     	GL11.glEnable(GL11.GL_BLEND);
-     	OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
-		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), calcAlpha(0xff1b1b1b, this.alphaRate).getRGB());
+		Segment.drawGradient(this.getPosX() - 5, this.getPosY() + 10, this.getPosX() + 10, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 2);
+		
+		Segment.drawGradient(this.getPosX() + 10, this.getPosY() - 5, this.getPosX() + this.width - 10, this.getPosY() + 10, 0xff000000, 0x00101010, 3);
+		
+		Segment.drawGradient(this.getPosX() + 10, this.getPosY() + this.height - 10, this.getPosX() + this.width - 10, this.getPosY() + this.height + 5, 0xff000000, 0x00101010, 1);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + 10, 15, 180, 75, 0xff000000, 0x00101010);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + 10, 15, 270, 75, 0xff000000, 0x00101010);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + this.height - 10, 15, 0, 75, 0xff000000, 0x00101010);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopMatrix();
+		
+		Segment.drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, 0);
+		Segment.drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, 0);
+		
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	    GlStateManager.disableAlphaTest();
+	 	GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+
+		Segment.drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
+
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+
+		GL11.glDisable(GL11.GL_BLEND);
+		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
+
 		synchronized (this.children) {
 			this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
 
@@ -57,6 +93,10 @@ public class PopupWindow extends Segment {
 		}
 	}
 	
+	public boolean isSelectedLower(double mouseX, double mouseY) {
+		return (mouseX >= this.getPosX() && mouseY >= this.getPosY() + 10 && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + height) || (mouseX >= this.getPosX() + 10 && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() - 10 && mouseY < this.getPosY() + 10) || (distanceBetweenPoints((float) this.getPosX() + 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10) || (distanceBetweenPoints((float) this.getPosX() + this.getWidth() - 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10);
+	}
+	
 	@Override
 	public boolean isSelected(double mouseX, double mouseY) {
 		return (mouseX >= this.getPosX() && mouseY >= this.getPosY() + 10 && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + 24) || (mouseX >= this.getPosX() + 10 && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() - 10 && mouseY < this.getPosY() + 10) || (distanceBetweenPoints((float) this.getPosX() + 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10) || (distanceBetweenPoints((float) this.getPosX() + this.getWidth() - 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10);
@@ -64,23 +104,25 @@ public class PopupWindow extends Segment {
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-			synchronized (this.children) {
-				for (Segment segment : children) {
-					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
-						return true;
+		if (!this.isSelectedLower(mouseX, mouseY))
+			((GuiConfig) this.gui).popupField.setOpening(false);
 
-				}
-				
+		synchronized (this.children) {
+			for (Segment segment : children) {
+				if (segment.mouseClicked(mouseX, mouseY, mouseButton))
+					return true;
+
 			}
-			
-			if (this.isSelected(mouseX, mouseY)) {
-				this.dragging = true;
-				this.distanceX = (mouseX - this.posX);
-				this.distanceY = (mouseY - this.posY);
-				
-				return true;
-			} else 
-				return false;
+		}
+
+		if (this.isSelected(mouseX, mouseY)) {
+			this.dragging = true;
+			this.distanceX = (mouseX - this.posX);
+			this.distanceY = (mouseY - this.posY);
+
+			return true;
+		} else
+			return false;
 	}
 	
 	@Override

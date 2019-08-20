@@ -3,6 +3,7 @@ image: java:8-jdk
 stages:
   - build
   - deploy
+  - test
   
 before_script:
   - chmod +x gradlew
@@ -43,3 +44,13 @@ deploy:
   only:
     variables:
         - $BUILD_MAVEN == "publish"
+
+coverage_test:
+  stage: test
+  script:
+  - ./gradlew test
+  coverage: '/Total.*?([0-9]{1,3})%/'
+  artifacts:
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+  

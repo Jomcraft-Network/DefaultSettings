@@ -24,7 +24,7 @@ public class ScrollbarSegment extends ButtonSegment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 
 		if (this.grabbed) {
-			final int factor = (int) (mouseY - distanceY);
+			int factor = (int) (mouseY - distanceY);
 
 			this.posY = factor;
 
@@ -34,10 +34,10 @@ public class ScrollbarSegment extends ButtonSegment {
 			if (this.posY > this.superScrollable.posY + this.superScrollable.height - height)
 				this.posY = this.superScrollable.posY + this.superScrollable.height - height;
 
-			final double distance = Math.round(this.superScrollable.height - height);
-			final double pos = Math.round(this.posY - this.superScrollable.posY);
+			double distance = Math.round(this.superScrollable.height - height);
+			double pos = Math.round(this.posY - this.superScrollable.posY);
 
-			final float tempAdd = (int) (this.superScrollable.getPosY() + this.superScrollable.height - 1 - 20 * (this.superScrollable.list.size() - 1) - this.superScrollable.getPosY() - 18);
+			float tempAdd = (int) (this.superScrollable.getPosY() + this.superScrollable.height - 1 - 20 * (this.superScrollable.list.size() - 1) - this.superScrollable.getPosY() - 18);
 
 			this.superScrollable.add = (int) (tempAdd * (pos / distance));
 
@@ -47,13 +47,14 @@ public class ScrollbarSegment extends ButtonSegment {
 
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
+
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 
 		Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + 7, 6, 180, 50, 0xff3a3a3a, 0x003a3a3a);
 
-		Segment.drawGradient(this.getPosX() + this.getWidth() - 2, this.getPosY() + 7, this.getPosX() - 2 + 6 + this.getWidth(), this.getPosY() + this.getHeight() - 2, 0xff3a3a3a, 0x003a3a3a, 0);
+		Segment.drawGradient(this.getPosX() + this.getWidth() - 2, this.getPosY() + 7, this.getPosX() - 2 + 6 + this.getWidth(), this.getPosY() + this.getHeight() - 2, 0xff3a3a3a, 0x003a3a3a);
 
 		Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + this.getHeight() - 2, 6, 0, 50, 0xff3a3a3a, 0x003a3a3a);
 
@@ -70,6 +71,7 @@ public class ScrollbarSegment extends ButtonSegment {
 		Segment.drawRect(this.getPosX() + this.width / 2 - 2D, this.getPosY() + this.height / 2, this.getPosX() + this.width / 2 + 2D, this.getPosY() + this.height / 2 + 1, 0xff373737, true, null, false);
 
 		Segment.drawRect(this.getPosX() + this.width / 2 - 2D, this.getPosY() + this.height / 2 + 3, this.getPosX() + this.width / 2 + 2D, this.getPosY() + this.height / 2 + 1 + 3, 0xff373737, true, null, false);
+
 	}
 	
 	@Override
@@ -81,9 +83,9 @@ public class ScrollbarSegment extends ButtonSegment {
 			this.distanceY += (int) (mouseY - this.posY);
 			
 			return true;
-		} else 
+		} else {
 			return false;
-		
+		}
 	}
 
 	@Override
@@ -93,9 +95,10 @@ public class ScrollbarSegment extends ButtonSegment {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		if (this.grabbed) 
+		if (this.grabbed) {
 				this.grabbed = false;
-
+				
+		}
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
 

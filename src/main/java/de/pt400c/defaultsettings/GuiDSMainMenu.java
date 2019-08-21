@@ -20,25 +20,27 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
 	
     public final GuiScreen parentScreen;
 
-    public GuiDSMainMenu(GuiScreen parentScreen) {
+    public GuiDSMainMenu(GuiScreen parentScreen)
+    {
         this.mc = MC;
         this.parentScreen = parentScreen;
     }
     
     @SuppressWarnings("unchecked")
 	@Override
-    public void initGui() {
+    public void initGui()
+    {
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
         
         this.addSegment(new TextSegment(this, this.width / 2 - MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2, 9, 0, 0, "- DefaultSettings -", 0x0, false));
         
-        final String text = "This is the first bootup of " + ChatFormatting.BOLD + "DefaultSettings" + ChatFormatting.RESET + ". In order to assure proper functionality, you should consider the following:"
+        String text = "This is the first bootup of " + ChatFormatting.BOLD + "DefaultSettings" + ChatFormatting.RESET + ". In order to assure proper functionality, you should consider the following:"
         		+ " Automatically this mod ships all mod configs and doesn't replace them when you as the modpack's creator update the configs. Also neither the default keybindings, options nor the default servers are shipped by default. For the most cases that is not optional. Please customise DS by opening the management GUI (F7 + G in the mods list or click on the 'Config' button when selecting DS in that list).\n" + ChatFormatting.RED + ChatFormatting.BOLD+"Important" + ChatFormatting.RESET +": Once you finished configuring the modpack, you have to activate the 'Export Mode' in that GUI!";
         
         ArrayList<String> lines = new ArrayList<String>();
 		
-		final int textWidth = MC.fontRenderer.getStringWidth(text);
+		int textWidth = MC.fontRenderer.getStringWidth(text);
 		if(textWidth > this.width - 20) 
 			lines.addAll(MC.fontRenderer.listFormattedStringToWidth(text, this.width - 20));
 		else 
@@ -65,7 +67,7 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
-		Segment.drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
+		Segment.drawGradientFromTop(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff);
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);

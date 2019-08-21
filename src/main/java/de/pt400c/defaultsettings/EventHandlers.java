@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiOpenEvent;
 
@@ -15,7 +16,7 @@ public class EventHandlers {
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		if((MC.currentScreen instanceof GuiModList && MC.theWorld == null) && Keyboard.isKeyDown(Keyboard.KEY_F7) && Keyboard.isKeyDown(Keyboard.KEY_G))
-			MC.displayGuiScreen(new GuiConfig(MC.currentScreen));
+			MC.displayGuiScreen(new GuiConfig(Minecraft.getMinecraft().currentScreen));
 		
 	}
 	

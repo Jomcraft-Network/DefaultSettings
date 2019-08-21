@@ -23,12 +23,16 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
 import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ResourcePackRepository;
@@ -270,9 +274,11 @@ public class FileUtil {
 			final File main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
 		}else {
-			for(String name : getOverrides().keySet()) 
-				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) 
+			for(String name : getOverrides().keySet()) {
+				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) {
 					restoreSingleConfig(name);
+				}
+			}
 			
 			final File main = new File(mcDataDir, mainLocation);
 			getMainJSON().setExportMode(false);
@@ -300,9 +306,9 @@ public class FileUtil {
 				String resourcePack = (String) resourcePackObj;
 				for (Object entryObj : resourceRepository.getRepositoryEntriesAll()) {
 					Entry entry = (Entry) entryObj;
-					if (entry.getResourcePackName().equals(resourcePack)) 
+					if (entry.getResourcePackName().equals(resourcePack)) {
 						repositoryEntries.add(entry);
-					
+					}
 				}
 			}
 
@@ -343,7 +349,6 @@ public class FileUtil {
 			if(deletePersistent)
 				new File(mcDataDir, persistentLocation).delete();
 			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilterModular);
-			
 			for (File f : fileDir.listFiles(fileFilterModular)) {
 				
 				if(f.isDirectory())
@@ -388,9 +393,9 @@ public class FileUtil {
 		byte[] mac = inter.getHardwareAddress();
 		if (mac != null) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < mac.length; i++) 
+			for (int i = 0; i < mac.length; i++) {
 				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-			
+			}
 			String address = sb.toString();
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(address.getBytes());
@@ -409,9 +414,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(optionsFile));	
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "options.txt")));
 				String line;
-				while ((line = reader.readLine()) != null) 
+				while ((line = reader.readLine()) != null) {
 					writer.print(line + "\n");
-				
+				}
 			} catch (IOException e) {
 				throw e;
 			} finally {
@@ -452,9 +457,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(keysFile));
 				String line;
 				while ((line = reader.readLine()) != null) {
-					if (line.isEmpty()) 
+					if (line.isEmpty()) {
 						continue;
-					
+					}
 					DefaultSettings.keyRebinds.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
 				}
 			} catch (IOException e) {
@@ -472,10 +477,12 @@ public class FileUtil {
 				}
 			}
 
-			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
-				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) 
+			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
+				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
 					keyBinding.keyCodeDefault = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
-
+				}
+			}
+			
 			KeyBinding.resetKeyBindingArrayAndHash();
 		}
 	}
@@ -489,9 +496,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(optionsOFFile));
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "optionsof.txt")));
 				String line;
-				while ((line = reader.readLine()) != null) 
+				while ((line = reader.readLine()) != null) {
 					writer.print(line + "\n");
-				
+				}
 			} catch (IOException e) {
 				throw e;
 			} catch (NullPointerException e) {
@@ -511,6 +518,7 @@ public class FileUtil {
 	
 	public static void restoreConfigs() throws IOException {
 		try {
+			
 			FileUtils.copyDirectory(getMainFolder(), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
@@ -534,9 +542,9 @@ public class FileUtil {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
-			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
+			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
-			
+			}
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {
@@ -555,9 +563,9 @@ public class FileUtil {
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("key_")) 
+				if (line.startsWith("key_")) {
 					continue;
-				
+				}
 				writer.print(line + "\n");
 			}
 		} catch (IOException e) {
@@ -575,16 +583,17 @@ public class FileUtil {
 			}
 		}
 
-		if (!FMLClientHandler.instance().hasOptifine()) 
+		if (!FMLClientHandler.instance().hasOptifine()) {
 			return;
+		}
 
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "optionsof.txt")));
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsof.txt")));
 			String line;
-			while ((line = reader.readLine()) != null) 
+			while ((line = reader.readLine()) != null) {
 				writer.print(line + "\n");
-			
+			}
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {

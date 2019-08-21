@@ -4,6 +4,7 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -31,8 +32,10 @@ public class ExportSwitchSegment extends Segment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
 		this.drawString("Export Mode:", (float) this.getPosX() - 77, (float) this.getPosY() + 3, 0xff5d5d5d, false);
+		
 		int on = 0xff08b306;
-		final int off = 0xffd85755;
+		
+		int off = 0xffd85755;
 		float darken = 0;
 		byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();
 		
@@ -54,30 +57,29 @@ public class ExportSwitchSegment extends Segment {
 			
 		}
 		
-		final int getRed = getRed(on);
-		final int getGreen = getGreen(on);
-		final int getBlue = getBlue(on);
+		int getRed = getRed(on);
+		int getGreen = getGreen(on);
+		int getBlue = getBlue(on);
 		
 		this.processFactor = (float) ((Math.sin(3 * this.animTimer - (Math.PI / 2)) + 1) / 2);
 
-		final float red = (getRed(off) - getRed) * (1 - processFactor);
+		float red = (getRed(off) - getRed) * (1 - processFactor);
 		
-		final float green = (getGreen(off) - getGreen) * (1 - processFactor);
+		float green = (getGreen(off) - getGreen) * (1 - processFactor);
 		
-		final float blue = (getBlue(off) - getBlue) * (1 - processFactor);
+		float blue = (getBlue(off) - getBlue) * (1 - processFactor);
 		
 		on = new Color((int)(getRed + red), (int)(getGreen + green), (int) (getBlue + blue)).getRGB();
 		
 		if(inactive) 
 			on = darkenColor(0xff5b5b5b, darken).getRGB();
 		
-		final float f3 = (float) (on >> 24 & 255) / 255.0F;
-		final float f = (float) (on >> 16 & 255) / 255.0F;
-		final float f1 = (float) (on >> 8 & 255) / 255.0F;
-		final float f2 = (float) (on & 255) / 255.0F;
+		float f3 = (float) (on >> 24 & 255) / 255.0F;
+		float f = (float) (on >> 16 & 255) / 255.0F;
+		float f1 = (float) (on >> 8 & 255) / 255.0F;
+		float f2 = (float) (on & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -92,13 +94,11 @@ public class ExportSwitchSegment extends Segment {
 		Segment.drawRect(this.getPosX() + 7, (float) this.getPosY(), this.getPosX() + 7 + 15, this.getPosY() + 14, null, false, null, false);
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		if(!inactive) {
 		
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glScalef(0.65F, 0.65F, 0.65F);
 
@@ -106,12 +106,10 @@ public class ExportSwitchSegment extends Segment {
 
 			this.drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (GuiConfig.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), false);
 			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			GL11.glPopMatrix();
 		}
 		
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -126,8 +124,9 @@ public class ExportSwitchSegment extends Segment {
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
+		
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -135,22 +134,26 @@ public class ExportSwitchSegment extends Segment {
 	public void hoverCheck(float mouseX, float mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
-			final ArrayList<String> lines = new ArrayList<String>();
-			int textWidth = (int) (mouseX + 14 + MC.fontRenderer.getStringWidth(this.hoverMessage));
-			if(textWidth > this.gui.width) 
-				lines.addAll(MC.fontRenderer.listFormattedStringToWidth(this.hoverMessage, (int) (this.gui.width - mouseX - 14)));
-			else 
-				lines.add(this.hoverMessage);
+			ArrayList<String> lines = new ArrayList<String>();
 			
+			int textWidth = (int) (mouseX + 14 + MC.fontRenderer.getStringWidth(this.hoverMessage));
+			if(textWidth > this.gui.width) {
+				lines.addAll(MC.fontRenderer.listFormattedStringToWidth(this.hoverMessage, (int) (this.gui.width - mouseX - 14)));
+			}else {
+				lines.add(this.hoverMessage);
+			}
 			textWidth = 0;
-			for(String line : lines) 
+			for(String line : lines) {
+				
 				if(MC.fontRenderer.getStringWidth(line) > textWidth)
 					textWidth = MC.fontRenderer.getStringWidth(line);
+			}
 			
 			Segment.drawButton(mouseX + 8, mouseY + 7, mouseX + 14 + textWidth, mouseY + 11 + 10 * lines.size(), 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			for(String line : lines) {
+			
 				this.drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a, false);
 				offset -= 10;
 			}
@@ -185,12 +188,15 @@ public class ExportSwitchSegment extends Segment {
 
 			this.clickSound();
 			byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();
-			if(exportActive == 2) 
+			if(exportActive == 2) {
 				((GuiConfig) this.gui).copyConfigs();
-			else if(exportActive == 1) 
+			}else if(exportActive == 1) {
+				
 				((GuiConfig) this.gui).deleteConfigs();
+			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
+
 }

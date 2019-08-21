@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -28,17 +27,15 @@ public class MenuArea extends Segment {
             if(((GuiConfig) this.gui).popupField == null)
             	this.children.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
         }
-
 	}
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		synchronized (this.children) {
-			for (Segment segment : children) {
-				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+			for (Segment segment : children) 
+				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
 					return true;
-				}
-			}
+
 		}
 		this.selected = null;
 		return false;
@@ -47,12 +44,10 @@ public class MenuArea extends Segment {
 	@Override
 	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+			for (Segment segment : this.children) 
+				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
 					break;
-				}
 
-			}
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
@@ -65,12 +60,10 @@ public class MenuArea extends Segment {
 	@Override
 	public boolean handleMouseInput() {
 		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.handleMouseInput()) {
+			for (Segment segment : this.children) 
+				if (segment.handleMouseInput()) 
 					break;
-				}
 
-			}
 		}
 		return super.handleMouseInput();
 	}
@@ -78,12 +71,10 @@ public class MenuArea extends Segment {
 	@Override
 	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.children) {
-			for (Segment segment : this.children) {
-				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+			for (Segment segment : this.children) 
+				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 
 					break;
-				}
 
-			}
 		}
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
 	}
@@ -99,5 +90,4 @@ public class MenuArea extends Segment {
 	public List<Segment> getChildren() {
 		return this.children;
 	}
-
 }

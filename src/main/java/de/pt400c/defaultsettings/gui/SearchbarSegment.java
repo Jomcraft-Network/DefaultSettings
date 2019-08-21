@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -30,7 +29,7 @@ public class SearchbarSegment extends Segment {
 	@Override
 	protected boolean keyTyped(char typedChar, int keyCode) {
 		if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
-			String s1 = ChatAllowedCharacters.filerAllowedCharacters(Character.toString(typedChar));
+			final String s1 = ChatAllowedCharacters.filerAllowedCharacters(Character.toString(typedChar));
 			if (this.query.isEmpty() && s1.equals(" "))
 				return true;
 
@@ -44,10 +43,9 @@ public class SearchbarSegment extends Segment {
 			this.activated = false;
 			return true;
 		} else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
-			if (!this.query.isEmpty()) {
+			if (!this.query.isEmpty()) 
 				this.activated = true;
 
-			}
 			this.sendQuery();
 
 			return true;
@@ -63,19 +61,16 @@ public class SearchbarSegment extends Segment {
 	
 	public static int clamp(int num, int min, int max)
     {
-        if (num < min)
-        {
-            return min;
-        }
-        else
-        {
+        if (num < min)     
+            return min;     
+        else  
             return num > max ? max : num;
-        }
     }
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -94,8 +89,7 @@ public class SearchbarSegment extends Segment {
 		if (widthString >= this.gui.width - 190) 
 			text = MC.fontRenderer.trimStringToWidth(text, (int) (this.gui.width - 190 - 1 - dots)) + "...";
 		
-
-		MenuScreen menu = ((GuiConfig) this.gui).menu;
+		final MenuScreen menu = ((GuiConfig) this.gui).menu;
 
 		if (menu.getVariants().get(menu.index).selected == this)
 			this.focused = true;
@@ -171,10 +165,12 @@ public class SearchbarSegment extends Segment {
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
@@ -183,14 +179,14 @@ public class SearchbarSegment extends Segment {
 			this.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0, false);
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glPopMatrix();
-
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
-			MenuScreen menu = ((GuiConfig) this.gui).menu;
+			final MenuScreen menu = ((GuiConfig) this.gui).menu;
 			menu.getVariants().get(menu.index).selected = this;
 			this.grabbed = true;
 
@@ -210,12 +206,10 @@ public class SearchbarSegment extends Segment {
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (this.grabbed) {
-			if (this.isSelected(mouseX, mouseY)) {
+			if (this.isSelected(mouseX, mouseY)) 
 				this.grabbed = false;
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
-
 }

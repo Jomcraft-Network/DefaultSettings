@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-
 import org.apache.logging.log4j.Level;
 
 public class PersistentJSON {

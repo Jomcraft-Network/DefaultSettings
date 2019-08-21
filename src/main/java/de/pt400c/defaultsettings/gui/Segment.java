@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.DefaultSettings;
@@ -127,7 +125,17 @@ public abstract class Segment {
 		MC.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
     }
 	
-	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2) {
+	/**
+	 * 
+	 * @param x1 First x coord
+	 * @param y1 First y coord
+	 * @param x2 Second x coord
+	 * @param y2 Second y coord
+	 * @param color1 Start color of the gradient
+	 * @param color2 End color of the gradient
+	 * @param rotation 0 = left-right, 1 = top-down, 2 = right-left, 3 = down-top
+	 */
+	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2, final int rotation) {
 		double j1;
 
 		if (x1 < x2) {
@@ -149,9 +157,19 @@ public abstract class Segment {
 
 		setColor(f, f1, f2, f3);
 
-		addVertex((float) x2, (float) y2, 0);
-
-		addVertex((float) x2, (float) y1, 0);
+		if(rotation == 1) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 2) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
+		}
 
 		f3 = (int) (color2 >> 24 & 255);
 		f = (int) (color2 >> 16 & 255);
@@ -160,12 +178,22 @@ public abstract class Segment {
 
 		setColor(f, f1, f2, f3);
 
-		addVertex((float) x1, (float) y1, 0);
-
-		addVertex((float) x1, (float) y2, 0);
+		if(rotation == 1) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 2) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
+		}
 
 		draw(false);
-	}
+    }
 	
 	public static void drawScaledCustomSizeModalRect(int x, int y, float u, float v, int uWidth, int vHeight, int width, int height, float tileWidth, float tileHeight)
     {
@@ -221,49 +249,6 @@ public abstract class Segment {
 		draw(false);
     }
 	
-	public static void drawGradientFromTop(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-
-        setColor(f, f1, f2, f3);
-        
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-       
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-      
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-
-		draw(false);
-    }
-	
 	public static void drawGradientCircle(float cx, float cy, float r, float rotation, int percentage, int color1, int color2) {
 
 		float x = r;
@@ -296,21 +281,19 @@ public abstract class Segment {
 			posY2 = y + cy;
 			
 			
-			int f3 = (int)(color2 >> 24 & 255);
-	        int f = (int)(color2 >> 16 & 255);
-	        int f1 = (int)(color2 >> 8 & 255);
-	        int f2 = (int)(color2 & 255);
+			final int f3 = (int)(color2 >> 24 & 255);
+			final int f = (int)(color2 >> 16 & 255);
+			final int f1 = (int)(color2 >> 8 & 255);
+			final int f2 = (int)(color2 & 255);
 	        
 	        setColor(f, f1, f2, f3);
 
-
 			addVertex((float) posX1, (float) posY1, 0);
 			
-			int f13 = (int)(color1 >> 24 & 255);
-	        int f0 = (int)(color1 >> 16 & 255);
-	        int f11 = (int)(color1 >> 8 & 255);
-	        int f12 = (int)(color1 & 255);
-			
+			final int f13 = (int)(color1 >> 24 & 255);
+			final int f0 = (int)(color1 >> 16 & 255);
+			final int f11 = (int)(color1 >> 8 & 255);
+			final int f12 = (int)(color1 & 255);
 			
 	        setColor(f0, f11, f12, f13);
 			addVertex((float) cx, (float) cy, 0);
@@ -441,15 +424,16 @@ public abstract class Segment {
 
         if(blending) {
         	GL11.glEnable(GL11.GL_BLEND);
+        	GL11.glDisable(GL11.GL_ALPHA_TEST);
         	GL11.glDisable(GL11.GL_TEXTURE_2D);
         	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
         
         if(color != null) {
-        	float f3 = (float)(color >> 24 & 255) / 255.0F;
-            float f = (float)(color >> 16 & 255) / 255.0F;
-            float f1 = (float)(color >> 8 & 255) / 255.0F;
-            float f2 = (float)(color & 255) / 255.0F;
+        	final float f3 = (float)(color >> 24 & 255) / 255.0F;
+        	final float f = (float)(color >> 16 & 255) / 255.0F;
+        	final float f1 = (float)(color >> 8 & 255) / 255.0F;
+        	final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
             	GL11.glColor4f(f, f1, f2, f3);
             else if(multiply)
@@ -467,6 +451,7 @@ public abstract class Segment {
 
 		if(blending) {
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
         	GL11.glDisable(GL11.GL_BLEND);
 		}
     }
@@ -540,12 +525,13 @@ public abstract class Segment {
 	public static void drawRectRoundedUpper(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
-        float f = (float)(color >> 24 & 255) / 255.0F;
-        float f1 = (float)(color >> 16 & 255) / 255.0F;
-        float f2 = (float)(color >> 8 & 255) / 255.0F;
-        float f3 = (float)(color & 255) / 255.0F;
+		final float f = (float)(color >> 24 & 255) / 255.0F;
+		final float f1 = (float)(color >> 16 & 255) / 255.0F;
+		final float f2 = (float)(color >> 8 & 255) / 255.0F;
+		final float f3 = (float)(color & 255) / 255.0F;
 
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f - alpha);
@@ -560,6 +546,7 @@ public abstract class Segment {
         
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_BLEND);
        
     }
@@ -567,12 +554,13 @@ public abstract class Segment {
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
-        float f = (float)(color >> 24 & 255) / 255.0F;
-        float f1 = (float)(color >> 16 & 255) / 255.0F;
-        float f2 = (float)(color >> 8 & 255) / 255.0F;
-        float f3 = (float)(color & 255) / 255.0F;
+		final float f = (float)(color >> 24 & 255) / 255.0F;
+		final float f1 = (float)(color >> 16 & 255) / 255.0F;
+		final float f2 = (float)(color >> 8 & 255) / 255.0F;
+		final float f3 = (float)(color & 255) / 255.0F;
 
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f - alpha);
@@ -590,8 +578,8 @@ public abstract class Segment {
         drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_BLEND);
-       
     }
 	
 	protected static Color darkenColor(int color, float darken) {
@@ -669,14 +657,12 @@ public abstract class Segment {
 			y *= radialFactor;
 
 		}
-
 	}
 
 	public static void addVertex(float x, float y, float z) {
 		if (hasColor)
-        {
 			buffer[bufferIndex + 5] = color;
-        }
+        
 		buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
 		buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
 		buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
@@ -700,9 +686,7 @@ public abstract class Segment {
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 			
 			if (hasColor)
-            {
                 GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
-            }
 
 		} else {
 			intBuffer.clear();
@@ -718,9 +702,8 @@ public abstract class Segment {
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
 			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
 			if (hasColor)
-            {
                 GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
-            }
+
 		}
 		hasColor = false;
 		reset();

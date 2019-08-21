@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,17 +33,15 @@ public class DefaultSettingsGUI extends GuiScreen {
 	protected void keyTyped(char typedChar, int keyCode) {
 		boolean positive = false;
 		synchronized (this.segments) {
-			if (this.popupField == null) {
-				for (Segment segment : segments) {
+			if (this.popupField == null) 
+				for (Segment segment : segments)
 					if (segment.keyTyped(typedChar, keyCode)) {
 						positive = true;
 						break;
 					}
-				}
-			} else {
-
+			else
 				positive = this.popupField.keyTyped(typedChar, keyCode);
-			}
+			
 		}
 		if(!positive)
 			super.keyTyped(typedChar, keyCode);
@@ -56,13 +53,13 @@ public class DefaultSettingsGUI extends GuiScreen {
         synchronized (this.segments) {
         	this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
 			
-			if(this.popupField == null) {
+			if(this.popupField == null) 
 			
-			this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
+				this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
 			
-			}else {
+			else 
 				this.popupField.hoverCheck(mouseX, mouseY);
-			}
+
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
 	}
@@ -71,13 +68,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		synchronized (this.segments) {
-			if (this.popupField == null) {
-				for (Segment segment : segments) {
-					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+			if (this.popupField == null)
+				for (Segment segment : segments) 
+					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
 						break;
-					}
-				}
-			} else {
+	
+			else {
 
 				this.popupField.mouseClicked(mouseX, mouseY, mouseButton);
 			}
@@ -88,14 +84,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 	@Override
 	public void handleMouseInput() {
 		synchronized (this.segments) {
-			if (this.popupField == null) {
-				for (Segment segment : this.segments) {
-					if (segment.handleMouseInput()) {
+			if (this.popupField == null) 
+				for (Segment segment : this.segments) 
+					if (segment.handleMouseInput()) 
 						break;
-					}
-
-				}
-			} else {
+				
+			else {
 				this.popupField.handleMouseInput();
 			}
 		}
@@ -106,14 +100,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 	public void mouseClickMove(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_, long p_mouseDragged_8_) {
 		this.dragging = true;
 		synchronized (this.segments) {
-			if (this.popupField == null) {
-				for (Segment segment : this.segments) {
-					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+			if (this.popupField == null)
+				for (Segment segment : this.segments) 
+					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
 						break;
-					}
 
-				}
-			} else {
+			else {
 				this.popupField.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 			}
 		}
@@ -121,7 +113,7 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 	
 	public void resetSelected() {
-		MenuScreen menu = this.menu;
+		final MenuScreen menu = this.menu;
 		if(menu != null)
 			menu.getVariants().get(menu.index).selected = null;
 	}
@@ -130,14 +122,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 	public void mouseMovedOrUp(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		this.dragging = false;
 		synchronized (this.segments) {
-			if (this.popupField == null) {
-				for (Segment segment : this.segments) {
-					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+			if (this.popupField == null) 
+				for (Segment segment : this.segments) 
+					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 
 						break;
-					}
 
-				}
-			} else {
+			else {
 				this.popupField.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
 			}
 		}

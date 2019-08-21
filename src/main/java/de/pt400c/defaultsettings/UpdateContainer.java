@@ -1,11 +1,6 @@
 package de.pt400c.defaultsettings;
 
-import static net.minecraftforge.common.ForgeVersion.Status.AHEAD;
-import static net.minecraftforge.common.ForgeVersion.Status.BETA;
-import static net.minecraftforge.common.ForgeVersion.Status.BETA_OUTDATED;
-import static net.minecraftforge.common.ForgeVersion.Status.OUTDATED;
-import static net.minecraftforge.common.ForgeVersion.Status.PENDING;
-import static net.minecraftforge.common.ForgeVersion.Status.UP_TO_DATE;
+import static net.minecraftforge.common.ForgeVersion.Status.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -17,7 +12,6 @@ import java.util.concurrent.Executors;
 import org.apache.logging.log4j.Level;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.versioning.ComparableVersion;

@@ -5,9 +5,7 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-
 import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
@@ -58,6 +56,7 @@ public class ButtonBulkActionSegment extends Segment {
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -152,6 +151,7 @@ public class ButtonBulkActionSegment extends Segment {
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 	}

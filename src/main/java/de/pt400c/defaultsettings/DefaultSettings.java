@@ -3,7 +3,6 @@ package de.pt400c.defaultsettings;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarInputStream;
@@ -15,9 +14,11 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLConstructionEvent;
+import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -80,10 +81,9 @@ public class DefaultSettings {
 			return;
 		
 		try {
-			FileUtil.initUUID();
 			getBuildID();
 			getBuildTime();
-		} catch(NullPointerException | IOException | NoSuchAlgorithmException e) {
+		} catch(NullPointerException | IOException e) {
 			
 		}
 

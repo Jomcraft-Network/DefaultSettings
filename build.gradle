@@ -25,6 +25,8 @@ apply plugin: 'signing'
 
 version = "1.7.10-1.3.4"
 
+def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
+
 sourceCompatibility = targetCompatibility = '1.8'
 
 def fileVersion = "1.3.4"
@@ -43,12 +45,13 @@ minecraft {
 }
 
 jar {
+	println "BuildID: $buildID"
     manifest {
         attributes("FMLAT": "defaultsettings_at.cfg")
         attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'false'
         attributes([
-            "Build-ID": Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase(),
+            "Build-ID": buildID,
             "Build-Date": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonCheckboxSegment extends Segment {
@@ -33,7 +33,7 @@ public class ButtonCheckboxSegment extends Segment {
 		this.id = id;
 		timer = active ? (float) (Math.PI / 3) : 0;
 	}
-
+	
 	@Override
 	public void customRender(float mouseX, float mouseY, float customPosX, float customPosY, float partialTicks) {
 
@@ -48,13 +48,14 @@ public class ButtonCheckboxSegment extends Segment {
 				this.timer -= 0.05;
 
 		}
+		
 		float tempTimer = this.timer;
 		if (this.timer > (Math.PI / 3))
 			tempTimer = (float) (Math.PI / 3);
 		else if (this.timer < 0)
 			tempTimer = 0;
 
-		float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
 		int color = 0xff000000;
 		this.offX = customPosX;
@@ -66,11 +67,11 @@ public class ButtonCheckboxSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL11.GL_BLEND);
+		glDisable(GL11.GL_TEXTURE_2D);
+		glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GL11.glColor4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) customPosX - 2, (float) customPosY - 2, 3, 180, 75);
 
@@ -92,7 +93,7 @@ public class ButtonCheckboxSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GL11.glColor4f(f, f1, f2, f3);
+			glColor4f(f, f1, f2, f3);
 
 			Segment.drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
 
@@ -114,7 +115,7 @@ public class ButtonCheckboxSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glColor4f(f, f1, f2, f3 - alphaRate);
+		glColor4f(f, f1, f2, f3 - alphaRate);
 
 		Segment.drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
 
@@ -144,8 +145,8 @@ public class ButtonCheckboxSegment extends Segment {
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 1, (float) customPosY + 3.5F), new Vec2f((float) customPosX + 4 - 1, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX + 7 - 1, (float) customPosY - 5 + 3.5F));
 		}
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL11.GL_BLEND);
+		glEnable(GL11.GL_TEXTURE_2D);
 
 	}
 	
@@ -201,8 +202,8 @@ public class ButtonCheckboxSegment extends Segment {
 					@Override
 					public boolean accept(File file) {
 
-						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json")
-								&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("ds_dont_export.json")
+						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json")
+								&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
 								&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
 								&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 							return true;
@@ -217,7 +218,6 @@ public class ButtonCheckboxSegment extends Segment {
 			List<RowItem> rows = parent.list;
 			int activeCount = 0;
 			for (int i = 0; i < rows.size(); i++) {
-
 				try {
 					boolean active = FileUtil.getActives().contains(files[i].getName());
 					if (active)
@@ -226,7 +226,6 @@ public class ButtonCheckboxSegment extends Segment {
 					activeCount = 0;
 					break;
 				}
-
 			}
 
 			if (rows.size() != 0 && activeCount == rows.size())

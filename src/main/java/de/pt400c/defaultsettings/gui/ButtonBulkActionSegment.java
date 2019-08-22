@@ -1,19 +1,17 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-
 import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonBulkActionSegment extends Segment {
@@ -49,7 +47,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 		}
 
-		float alphaRate = (float) ((Math.sin(3 * timer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * timer - 3 * (Math.PI / 2)) + 1) / 2);
 
 		int color = 0xff000000;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
@@ -57,11 +55,11 @@ public class ButtonBulkActionSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL11.GL_BLEND);
+		glDisable(GL11.GL_TEXTURE_2D);
+		glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GL11.glColor4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
 
@@ -83,7 +81,7 @@ public class ButtonBulkActionSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GL11.glColor4f(f, f1, f2, f3);
+			glColor4f(f, f1, f2, f3);
 
 			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -105,7 +103,7 @@ public class ButtonBulkActionSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glColor4f(f, f1, f2, f3 - alphaRate);
+		glColor4f(f, f1, f2, f3 - alphaRate);
 
 		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -151,8 +149,8 @@ public class ButtonBulkActionSegment extends Segment {
 
 		}
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL11.GL_BLEND);
+		glEnable(GL11.GL_TEXTURE_2D);
 
 	}
 	
@@ -202,7 +200,8 @@ public class ButtonBulkActionSegment extends Segment {
 
 							if (!file.getName().equals("defaultsettings")
 									&& !file.getName().equals("defaultsettings.json")
-									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("ds_dont_export.json")
+									&& !file.getName().equals("ds_dont_export.json")
+									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
 									&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
 									&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 								return true;
@@ -256,11 +255,10 @@ public class ButtonBulkActionSegment extends Segment {
 
 							}
 
-						}else if (child instanceof SettingsButtonSegment) {
+						} else if (child instanceof SettingsButtonSegment) {
 							SettingsButtonSegment set = (SettingsButtonSegment) child;
 							set.mark = false;
 						}
-
 					}
 
 				}
@@ -310,7 +308,7 @@ public class ButtonBulkActionSegment extends Segment {
 							ButtonCheckboxSegment checkbox = (ButtonCheckboxSegment) child;
 							if (checkbox.active) {
 								checkbox.active = false;
-
+	
 								int yOffTemp = 18 + 20 * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)

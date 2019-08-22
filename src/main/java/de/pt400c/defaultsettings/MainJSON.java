@@ -18,6 +18,8 @@ public class MainJSON {
 	private boolean exportMode = false;
 	public List<String> activeConfigs = new ArrayList<String>();
 	public HashMap<String, String> overrides = new HashMap<String, String>();
+	public HashMap<String, String> check = new HashMap<String, String>();
+	public String created_for;
 	
 	@SuppressWarnings("unused")
 	private String initially_created;
@@ -69,5 +71,4 @@ public class MainJSON {
         	DefaultSettings.log.log(Level.SEVERE, "Exception at processing configs: ", e);
         }
 	}
-
 }

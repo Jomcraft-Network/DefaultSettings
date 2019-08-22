@@ -12,7 +12,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.text.Bidi;
 import java.util.logging.Level;
-
+import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.DefaultSettings;
@@ -87,348 +87,6 @@ public abstract class Segment {
     	return false;
     }
     
-    protected static void drawDot(float red, float green, float blue, float alpha, float scaleFactor, float size, Vec2f vector) {
-		GL11.glColor4f(red, green, blue, alpha);
-
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
-
-		GL11.glPointSize(size * (scaleFactor / 2F));
-
-		GL11.glBegin(GL11.GL_POINTS);
-
-		GL11.glVertex3f(vector.x, vector.y, 0.0f);
-		
-
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
-		
-	}
-    
-    public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-        
-        //x1 = LOWER, x2 = HIGHER
-        
-        setColor(f, f1, f2, f3);
-        
-  //      addVertex((float) 50, (float) 50, 0);
-   //     addVertex((float) 50, (float) 100, 0);
-
-        //BLACK
-        
-        //HIGH LEFT
-        
-        addVertex((float) x2, (float) y2, 0);
-        
-        //LOW LEFT
-       addVertex((float) x2, (float) y1, 0);
-        
-       
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-        
-        //WHITE
-     //   addVertex((float) 100, (float) 100, 0);
-        
-      //  addVertex((float) 100, (float) 50, 0);
-     
-        //LOW RIGHT
-        addVertex((float) x1, (float) y1, 0);
-        
-        //HIGH RIGHT
-        
-        addVertex((float) x1, (float) y2, 0);
-
-		draw(false);
-    }
-	
-	public static void drawGradientFromBottom(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-        
-        //x1 = LOWER, x2 = HIGHER
-        
-        setColor(f, f1, f2, f3);
-        
-        
-
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-
-		draw(false);
-    }
-	
-	public static void drawGradientFromTop(double x1, double y1, double x2, double y2, int color1, int color2)
-    {
-		double j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
-        
-        int f3 = (int)(color1 >> 24 & 255);
-        int f = (int)(color1 >> 16 & 255);
-        int f1 = (int)(color1 >> 8 & 255);
-        int f2 = (int)(color1 & 255);
-        
-        //x1 = LOWER, x2 = HIGHER
-        
-        setColor(f, f1, f2, f3);
-        
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
-       
-        
-        f3 = (int)(color2 >> 24 & 255);
-        f = (int)(color2 >> 16 & 255);
-        f1 = (int)(color2 >> 8 & 255);
-        f2 = (int)(color2 & 255);
-        
-        setColor(f, f1, f2, f3);
-      
-        addVertex((float) x2, (float) y1, 0);
-        addVertex((float) x1, (float) y1, 0);
-
-		draw(false);
-    }
-	
-	public static void drawGradientCircle(float cx, float cy, float r, float rotation, int percentage, int color1, int color2) {
-
-		float x = r;
-
-		float y = 0;
-
-		float posX1 = 0;
-		float posY1 = 0;
-
-		for (int l = 0; l < Math.round(100F / 360F * rotation); l++) {
-
-			float tx = -y;
-			float ty = x;
-
-			x += tx * tangetialFactor;
-			y += ty * tangetialFactor;
-
-			x *= radialFactor;
-			y *= radialFactor;
-		}
-
-		float posX2 = cx;
-		float posY2 = cy;
-
-		for (int i = 0; i < (100 + 1 - percentage); i++) {
-			posX1 = posX2;
-			posY1 = posY2;
-
-			posX2 = x + cx;
-			posY2 = y + cy;
-			
-			
-			int f3 = (int)(color2 >> 24 & 255);
-	        int f = (int)(color2 >> 16 & 255);
-	        int f1 = (int)(color2 >> 8 & 255);
-	        int f2 = (int)(color2 & 255);
-	        
-	        setColor(f, f1, f2, f3);
-
-
-			addVertex((float) posX1, (float) posY1, 0);
-			
-			int f13 = (int)(color1 >> 24 & 255);
-	        int f0 = (int)(color1 >> 16 & 255);
-	        int f11 = (int)(color1 >> 8 & 255);
-	        int f12 = (int)(color1 & 255);
-			
-			
-	        setColor(f0, f11, f12, f13);
-			addVertex((float) cx, (float) cy, 0);
-			setColor(f, f1, f2, f3);
-			addVertex((float) posX2, (float) posY2, 0);
-
-			draw(true);
-
-			float tx = -y;
-			float ty = x;
-
-			x += tx * tangetialFactor;
-			y += ty * tangetialFactor;
-
-			x *= radialFactor;
-			y *= radialFactor;
-
-		}
-
-	}
-
-	public static void setColor(int par1, int par2, int par3, int par4) {
-        if (par1 > 255)
-        {
-            par1 = 255;
-        }
-
-        if (par2 > 255)
-        {
-            par2 = 255;
-        }
-
-        if (par3 > 255)
-        {
-            par3 = 255;
-        }
-
-        if (par4 > 255)
-        {
-            par4 = 255;
-        }
-
-        if (par1 < 0)
-        {
-            par1 = 0;
-        }
-
-        if (par2 < 0)
-        {
-            par2 = 0;
-        }
-
-        if (par3 < 0)
-        {
-            par3 = 0;
-        }
-
-        if (par4 < 0)
-        {
-            par4 = 0;
-        }
-
-        hasColor = true;
-
-        if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN)
-        {
-            color = par4 << 24 | par3 << 16 | par2 << 8 | par1;
-        }
-        else
-        {
-            color = par1 << 24 | par2 << 16 | par3 << 8 | par4;
-        }
-    
-	}
-	
-	protected static void drawDots(float red, float green, float blue, float alpha, float scaleFactor, Vec2f... vectors) {
-		GL11.glColor4f(red, green, blue, alpha);
-
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
-
-		GL11.glPointSize(6.5F * (scaleFactor / 2F));
-
-		GL11.glBegin(GL11.GL_POINTS);
-		
-		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
-		}
-
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
-		
-	}
-	
-	protected static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-
-		GL11.glLineWidth(3.0F * (factor / 2F));
-
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glColor4f(red, green, blue, alpha);
-		
-		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
-		}
-		
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		
-		
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
-	
-		GL11.glPointSize(3.0F * (factor / 2F));
-
-		GL11.glBegin(GL11.GL_POINTS);
-		
-		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
-		}
-
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
-
-	}
-    
     public void guiContentUpdate(String... arg) {};
 	
 	public void hoverCheck(float mouseX, float mouseY) {}
@@ -475,39 +133,139 @@ public abstract class Segment {
         MC.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
     }
 	
-	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		if(!(factor == 1))
-			GL11.glLineWidth(3.0F * (factor - 1));
-		else
-			GL11.glLineWidth(1F);
+	/**
+	 * 
+	 * @param x1 First x coord
+	 * @param y1 First y coord
+	 * @param x2 Second x coord
+	 * @param y2 Second y coord
+	 * @param color1 Start color of the gradient
+	 * @param color2 End color of the gradient
+	 * @param rotation 0 = left-right, 1 = top-down, 2 = right-left, 3 = down-top
+	 */
+	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2, final int rotation) {
+		double j1;
 
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glColor4f(red, green, blue, alpha);
-		
-		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
-		}
-		
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		
-		
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
-		if(!(factor == 1))
-			GL11.glPointSize(3.0F * (factor - 1));
-		else
-			GL11.glPointSize(1F);
-		GL11.glBegin(GL11.GL_POINTS);
-		
-		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		if (x1 < x2) {
+			j1 = x1;
+			x1 = x2;
+			x2 = j1;
 		}
 
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+		if (y1 < y2) {
+			j1 = y1;
+			y1 = y2;
+			y2 = j1;
+		}
 
+		int f3 = (int) (color1 >> 24 & 255);
+		int f = (int) (color1 >> 16 & 255);
+		int f1 = (int) (color1 >> 8 & 255);
+		int f2 = (int) (color1 & 255);
+
+		setColor(f, f1, f2, f3);
 		
+		if(rotation == 1) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 2) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
+		}
+			
+		f3 = (int) (color2 >> 24 & 255);
+		f = (int) (color2 >> 16 & 255);
+		f1 = (int) (color2 >> 8 & 255);
+		f2 = (int) (color2 & 255);
+
+		setColor(f, f1, f2, f3);
+	
+		if(rotation == 1) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 2) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
+		}
+
+		draw(false);
+	}
+	
+	public static void drawGradientCircle(float cx, float cy, float r, float rotation, int percentage, int color1, int color2) {
+
+		float x = r;
+
+		float y = 0;
+
+		float posX1 = 0;
+		float posY1 = 0;
+
+		for (int l = 0; l < Math.round(100F / 360F * rotation); l++) {
+
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
+		}
+
+		float posX2 = cx;
+		float posY2 = cy;
+
+		for (int i = 0; i < (100 + 1 - percentage); i++) {
+			posX1 = posX2;
+			posY1 = posY2;
+
+			posX2 = x + cx;
+			posY2 = y + cy;
+			
+			final int f3 = (int)(color2 >> 24 & 255);
+			final int f = (int)(color2 >> 16 & 255);
+			final int f1 = (int)(color2 >> 8 & 255);
+			final int f2 = (int)(color2 & 255);
+	        
+	        setColor(f, f1, f2, f3);
+
+			addVertex((float) posX1, (float) posY1, 0);
+			
+			final int f13 = (int)(color1 >> 24 & 255);
+			final int f0 = (int)(color1 >> 16 & 255);
+			final int f11 = (int)(color1 >> 8 & 255);
+			final int f12 = (int)(color1 & 255);
+			
+	        setColor(f0, f11, f12, f13);
+			addVertex((float) cx, (float) cy, 0);
+			setColor(f, f1, f2, f3);
+			addVertex((float) posX2, (float) posY2, 0);
+
+			draw(true);
+
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
+
+		}
+
 	}
 	
 	public static void drawRect(double x1, double y1, double x2, double y2, Integer color, boolean blending, Float alpha, boolean multiply)
@@ -529,16 +287,17 @@ public abstract class Segment {
         }
 
         if(blending) {
-        	GL11.glEnable(GL11.GL_BLEND);
-        	GL11.glDisable(GL11.GL_TEXTURE_2D);
-        	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        	glEnable(GL11.GL_BLEND);
+        	glDisable(GL11.GL_ALPHA_TEST);
+        	glDisable(GL11.GL_TEXTURE_2D);
+        	glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
         
         if(color != null) {
-        	float f3 = (float)(color >> 24 & 255) / 255.0F;
-            float f = (float)(color >> 16 & 255) / 255.0F;
-            float f1 = (float)(color >> 8 & 255) / 255.0F;
-            float f2 = (float)(color & 255) / 255.0F;
+        	final float f3 = (float)(color >> 24 & 255) / 255.0F;
+        	final float f = (float)(color >> 16 & 255) / 255.0F;
+        	final float f1 = (float)(color >> 8 & 255) / 255.0F;
+        	final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
             	GL11.glColor4f(f, f1, f2, f3);
             else if(multiply)
@@ -546,20 +305,20 @@ public abstract class Segment {
             else
             	GL11.glColor4f(f, f1, f2, f3 - alpha);
         }
-
+        
         addVertex((float) x1, (float) y2, 0);
         addVertex((float) x2, (float) y2, 0);
         addVertex((float) x2, (float) y1, 0);
         addVertex((float) x1, (float) y1, 0);
 
 		draw(false);
-
 		if(blending) {
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-        	GL11.glDisable(GL11.GL_BLEND);
+			glEnable(GL11.GL_TEXTURE_2D);
+			glEnable(GL11.GL_ALPHA_TEST);
+        	glDisable(GL11.GL_BLEND);
 		}
     }
-	
+
 	public static void drawRectRoundedUpper(float x1, float y1, float x2, float y2, int color, float alpha)
     {
 
@@ -568,10 +327,11 @@ public abstract class Segment {
         float f2 = (float)(color >> 8 & 255) / 255.0F;
         float f3 = (float)(color & 255) / 255.0F;
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(f1, f2, f3, f - alpha);
+        glEnable(GL11.GL_BLEND);
+        glDisable(GL11.GL_ALPHA_TEST);
+        glDisable(GL11.GL_TEXTURE_2D);
+        glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(f1, f2, f3, f - alpha);
         
         drawCircle(x1 + 10, y1 + 10, 10, 180F, 75);
 
@@ -581,40 +341,9 @@ public abstract class Segment {
         
         drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
         
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-       
-    }
-	
-	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
-    {
-
-        float f = (float)(color >> 24 & 255) / 255.0F;
-        float f1 = (float)(color >> 16 & 255) / 255.0F;
-        float f2 = (float)(color >> 8 & 255) / 255.0F;
-        float f3 = (float)(color & 255) / 255.0F;
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(f1, f2, f3, f - alpha);
-        
-        drawCircle(x1 + 10, y2 - 10, 10, 90F, 75);
-        
-     
-        
-        drawCircle(x2 - 10, y2 - 10, 10, 0F, 75);
-        
-
-        drawRect(x1, y1, x2, y2 - 10, null, false, null, false);
-        
-        
-        drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-       
+        glEnable(GL11.GL_TEXTURE_2D);
+        glEnable(GL11.GL_ALPHA_TEST);
+        glDisable(GL11.GL_BLEND);
     }
 	
 	protected static Color darkenColor(int color, float darken) {
@@ -644,6 +373,34 @@ public abstract class Segment {
 	protected static Color calcAlpha(int color, float alpha) {
 		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
 	}
+
+	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color, float alpha)
+    {
+
+		final float f = (float)(color >> 24 & 255) / 255.0F;
+        final float f1 = (float)(color >> 16 & 255) / 255.0F;
+        final float f2 = (float)(color >> 8 & 255) / 255.0F;
+        final float f3 = (float)(color & 255) / 255.0F;
+
+        glEnable(GL11.GL_BLEND);
+        glDisable(GL11.GL_ALPHA_TEST);
+        glDisable(GL11.GL_TEXTURE_2D);
+        glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(f1, f2, f3, f - alpha);
+        
+        drawCircle(x1 + 10, y2 - 10, 10, 90F, 75);
+        
+        drawCircle(x2 - 10, y2 - 10, 10, 0F, 75);
+        
+        drawRect(x1, y1, x2, y2 - 10, null, false, null, false);
+        
+        drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
+
+        glEnable(GL11.GL_TEXTURE_2D);
+        glEnable(GL11.GL_ALPHA_TEST);
+        glDisable(GL11.GL_BLEND);
+       
+    }
 	
 	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage) {
 
@@ -695,11 +452,66 @@ public abstract class Segment {
 
 	}
 
+	public static void setColor(int par1, int par2, int par3, int par4) {
+            if (par1 > 255)
+            {
+                par1 = 255;
+            }
+
+            if (par2 > 255)
+            {
+                par2 = 255;
+            }
+
+            if (par3 > 255)
+            {
+                par3 = 255;
+            }
+
+            if (par4 > 255)
+            {
+                par4 = 255;
+            }
+
+            if (par1 < 0)
+            {
+                par1 = 0;
+            }
+
+            if (par2 < 0)
+            {
+                par2 = 0;
+            }
+
+            if (par3 < 0)
+            {
+                par3 = 0;
+            }
+
+            if (par4 < 0)
+            {
+                par4 = 0;
+            }
+
+            hasColor = true;
+
+            if (ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN)
+            {
+                color = par4 << 24 | par3 << 16 | par2 << 8 | par1;
+            }
+            else
+            {
+                color = par1 << 24 | par2 << 16 | par3 << 8 | par4;
+            }
+        
+    }
+	
 	public static void addVertex(float x, float y, float z) {
 		if (hasColor)
         {
 			buffer[bufferIndex + 5] = color;
         }
+		
 		buffer[bufferIndex + 0] = Float.floatToRawIntBits(x);
 		buffer[bufferIndex + 1] = Float.floatToRawIntBits(y);
 		buffer[bufferIndex + 2] = Float.floatToRawIntBits(z);
@@ -710,41 +522,142 @@ public abstract class Segment {
 		if (!triangle) {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 32);
+
 			if (hasColor) {
 				byteBuffer.position(20);
-				GL11.glColorPointer(4, true, 32, byteBuffer);
-				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+				glColorPointer(4, true, 32, byteBuffer);
+				glEnableClientState(GL11.GL_COLOR_ARRAY);
 			}
+			
 			byteBuffer.position(0);
-			GL11.glVertexPointer(3, 32, floatBuffer);
-			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
-			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			glVertexPointer(3, 32, floatBuffer);
+			glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			glDrawArrays(GL11.GL_QUADS, 0, 4);
+			glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			
 			if (hasColor)
             {
-                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                glDisableClientState(GL11.GL_COLOR_ARRAY);
             }
+			
 		} else {
 			intBuffer.clear();
 			intBuffer.put(buffer, 0, 24);
+			
 			if (hasColor) {
 				byteBuffer.position(20);
-				GL11.glColorPointer(4, true, 32, byteBuffer);
-				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+				glColorPointer(4, true, 32, byteBuffer);
+				glEnableClientState(GL11.GL_COLOR_ARRAY);
 			}
+			
 			byteBuffer.position(0);
-			GL11.glVertexPointer(3, 32, floatBuffer);
-			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
-			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-			if (hasColor)
-            {
-                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
-            }
-		}
+			glVertexPointer(3, 32, floatBuffer);
+			glEnableClientState(GL11.GL_VERTEX_ARRAY);
+			glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
+			glDisableClientState(GL11.GL_VERTEX_ARRAY);
 
+			if (hasColor) {
+				glDisableClientState(GL11.GL_COLOR_ARRAY);
+			}
+		}
 		hasColor = false;
 		reset();
+	}
+	
+	protected static void drawDot(float red, float green, float blue, float alpha, float scaleFactor, float size, Vec2f vector) {
+		glColor4f(red, green, blue, alpha);
+
+		glEnable(GL11.GL_POINT_SMOOTH);
+
+		glPointSize(size * (scaleFactor / 2F));
+
+		glBegin(GL11.GL_POINTS);
+
+		glVertex3d(vector.x, vector.y, 0.0f);
+		
+		glEnd();
+		glDisable(GL11.GL_POINT_SMOOTH);
+		
+	}
+	
+	protected static void drawDots(float red, float green, float blue, float alpha, float scaleFactor, Vec2f... vectors) {
+		glColor4f(red, green, blue, alpha);
+
+		glEnable(GL11.GL_POINT_SMOOTH);
+
+		glPointSize(6.5F * (scaleFactor / 2F));
+
+		glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			glVertex3d(vector.x, vector.y, 0.0f);
+		}
+
+		glEnd();
+		glDisable(GL11.GL_POINT_SMOOTH);
+		
+	}
+	
+	protected static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
+		glEnable(GL11.GL_LINE_SMOOTH);
+
+		glLineWidth(3.0F * (factor / 2F));
+
+		glBegin(GL11.GL_LINE_STRIP);
+		glColor4f(red, green, blue, alpha);
+		
+		for(Vec2f vector : vectors) {
+			glVertex3d(vector.x, vector.y, 0.0f);
+		}
+		
+		glEnd();
+		glDisable(GL11.GL_LINE_SMOOTH);
+		
+		glEnable(GL11.GL_POINT_SMOOTH);
+	
+		glPointSize(3.0F * (factor / 2F));
+
+		glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			glVertex3d(vector.x, vector.y, 0.0f);
+		}
+
+		glEnd();
+		glDisable(GL11.GL_POINT_SMOOTH);
+
+	}
+	
+	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
+		glEnable(GL11.GL_LINE_SMOOTH);
+		if(!(factor == 1))
+			glLineWidth(3.0F * (factor - 1));
+		else
+			glLineWidth(1F);
+
+		glBegin(GL11.GL_LINE_STRIP);
+		glColor4f(red, green, blue, alpha);
+		
+		for(Vec2f vector : vectors) {
+			glVertex3d(vector.x, vector.y, 0.0f);
+		}
+		
+		glEnd();
+		glDisable(GL11.GL_LINE_SMOOTH);
+		
+		glEnable(GL11.GL_POINT_SMOOTH);
+		if(!(factor == 1))
+			glPointSize(3.0F * (factor - 1));
+		else
+			glPointSize(1F);
+		glBegin(GL11.GL_POINTS);
+		
+		for(Vec2f vector : vectors) {
+			glVertex3d(vector.x, vector.y, 0.0f);
+		}
+
+		glEnd();
+		glDisable(GL11.GL_POINT_SMOOTH);
 	}
 
 	private static void reset() {

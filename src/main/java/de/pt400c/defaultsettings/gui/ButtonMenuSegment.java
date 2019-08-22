@@ -1,14 +1,14 @@
 package de.pt400c.defaultsettings.gui;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import static de.pt400c.defaultsettings.FileUtil.MC;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import de.pt400c.defaultsettings.GuiConfig;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class ButtonMenuSegment extends ButtonSegment {
@@ -33,71 +33,52 @@ public class ButtonMenuSegment extends ButtonSegment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		final double triple = Math.sin(0.25 * offsetTick);
 		final double func = triple * triple * triple * 6;
-
 		this.width = this.origLength - this.menu.offs * 1.6F;
 
-		float percent = clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
+		final float percent = GuiConfig.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
 		
 		if(!(width < 3.5F)) {
 		
-		if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < (2 * Math.PI))
-			offsetTick += 0.4;
+			if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < (2 * Math.PI))
+				offsetTick += 0.4;
 	
-		else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated)){
-			offsetTick -= 0.5;
-		}
-		offsetX = func;
-		
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_BLEND);
-		GL14.glBlendFuncSeparate(770, 771, 1, 0);
-		Segment.drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
-		GL11.glDisable(GL11.GL_BLEND);
-		
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL14.glBlendFuncSeparate(770, 771, 1, 0);
-		ScaledResolution scaledResolution = new ScaledResolution(MC.gameSettings, MC.displayWidth, MC.displayHeight);
-		int scaleFactor = scaledResolution.getScaleFactor();
-		GL11.glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
-		this.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+			else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated))
+				offsetTick -= 0.5;
+			
+			this.offsetX = func;
+			glPushMatrix();
+			glEnable(GL11.GL_BLEND);
+			glBlendFuncSeparate(770, 771, 1, 0);
+			Segment.drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
+			glDisable(GL11.GL_BLEND);
+			glEnable(GL11.GL_SCISSOR_TEST);
+			glEnable(GL11.GL_BLEND);
+			glBlendFuncSeparate(770, 771, 1, 0);
+			ScaledResolution scaledResolution = new ScaledResolution(MC.gameSettings, MC.displayWidth, MC.displayHeight);
+			int scaleFactor = scaledResolution.getScaleFactor();
+			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
+			this.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);
+			glDisable(GL11.GL_BLEND);
+			glDisable(GL11.GL_SCISSOR_TEST);
 	
-		GL11.glPopMatrix();
+			glPopMatrix();
 		}
 		
-	
-		
-		int plus = this.activated ? 9 : 0;
-		GL11.glColor4d(1, 1, 1, 1);
+		final int plus = this.activated ? 9 : 0;
+		glColor4f(1, 1, 1, 1);
 		if(this.activated) 
 			Segment.drawRect(posX + 29 + (-25) * percent, posY, posX + 29 + 3 + (-25) * percent, posY + 19, calcAlpha(0xffff8518, 1 - percent).getRGB(), true, null, false);
 		
-		GL11.glColor4d(1, 1, 1, percent);
+		glColor4f(1, 1, 1, percent);
 		this.icon.customRender(mouseX, mouseY, (-25 + plus) * percent, 0, partialTicks);
 	}
 	
-	public static float clamp(float num, float min, float max)
-    {
-        if (num < min)
-        {
-            return min;
-        }
-        else
-        {
-            return num > max ? max : num;
-        }
-    }
-	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-
 		if (this.isSelected(mouseX, mouseY)) {
+
 			this.grabbed = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
-
 			return true;
 		} else {
 			return false;
@@ -121,10 +102,8 @@ public class ButtonMenuSegment extends ButtonSegment {
 				this.setActive(this.activated ^ true, false);
 				this.clickSound();
 			}
-
 			return true;
 			}
-			
 		}
 		return false;
 	}

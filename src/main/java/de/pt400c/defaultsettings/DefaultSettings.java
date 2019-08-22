@@ -1,8 +1,11 @@
 package de.pt400c.defaultsettings;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -10,6 +13,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -27,6 +31,8 @@ public class DefaultSettings {
 	public static final String VERSION = "@VERSION@";
 	public static final Logger log = LogManager.getLogManager().getLogger(DefaultSettings.MODID);
 	public static boolean isServer = false;
+	public static String BUILD_ID = "<UNKNOWN>";
+	public static String BUILD_TIME = "<UNKNOWN>";
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 
@@ -73,6 +79,13 @@ public class DefaultSettings {
 	public static void postInit(FMLPostInitializationEvent event) {
 		if (isServer)
 			return;
+		
+		try {
+			getBuildID();
+			getBuildTime();
+		} catch(NullPointerException | IOException e) {
+			
+		}
 
 		try {
 			FileUtil.restoreKeys();
@@ -83,6 +96,20 @@ public class DefaultSettings {
 		}
 	}
 	
+	private static void getBuildID() throws FileNotFoundException, IOException {
+		ModContainer mc = FMLCommonHandler.instance().findContainerFor(DefaultSettings.getInstance());
+		try (JarInputStream jarStream = new JarInputStream(new FileInputStream(mc.getSource()))) {
+			BUILD_ID = jarStream.getManifest().getMainAttributes().getValue("Build-ID");
+		}
+	}
+	
+	private static void getBuildTime() throws FileNotFoundException, IOException {
+		ModContainer mc = FMLCommonHandler.instance().findContainerFor(DefaultSettings.getInstance());
+		try (JarInputStream jarStream = new JarInputStream(new FileInputStream(mc.getSource()))) {
+			BUILD_TIME = jarStream.getManifest().getMainAttributes().getValue("Build-Date");
+		}
+	}
+	
 	public static UpdateContainer getUpdater() {
 		return updateContainer;
 	}
@@ -90,5 +117,4 @@ public class DefaultSettings {
 	public static DefaultSettings getInstance() {
 		return instance;
 	}
-
 }

@@ -1,14 +1,11 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.util.EnumSet;
 import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.renderer.EntityRenderer;
 
@@ -21,7 +18,7 @@ public class TickHandlerClient implements ITickHandler {
 	public void tickStart(EnumSet type, Object... tickData) {
 		if (type.equals(EnumSet.of(TickType.CLIENT))) {
 			if((MC.currentScreen instanceof GuiModList && MC.theWorld == null) && isPressed(Keyboard.KEY_F7) && isPressed(Keyboard.KEY_G))
-				MC.displayGuiScreen(new GuiConfig(Minecraft.getMinecraft().currentScreen));
+				MC.displayGuiScreen(new GuiConfig(MC.currentScreen));
 			
 			if (!bootedUp) {
 

@@ -26,13 +26,12 @@ public class ButtonMovableSegment extends ButtonSegment {
 	
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-
 		if (this.isSelected(mouseX, mouseY)) {
 			this.dragging = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
-
 			distanceX = (mouseX - this.posX);
 			distanceY = (mouseY - this.posY);
+			
 			return true;
 		} else {
 			return false;
@@ -41,9 +40,9 @@ public class ButtonMovableSegment extends ButtonSegment {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		if (this.dragging) {
+		if (this.dragging) 
 			this.clickSound();
-		}
+		
 		this.dragging = false;
 		return false;
 	}

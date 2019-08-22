@@ -13,13 +13,12 @@ import net.minecraft.client.gui.GuiScreen;
 public class ButtonUpdateChecker extends ButtonSegment {
 
 	public float timer = 0;
-
 	private final LeftMenu menu;
 
 	public ButtonUpdateChecker(GuiScreen gui, float posY, LeftMenu menu) {
 		super(gui, 0, posY, null, null, 20, 20, 2);
-		this.menu = menu;
 		
+		this.menu = menu;
 		if(DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.ERROR || DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.UNKNOWN)
 			DefaultSettings.getUpdater().update();
 		
@@ -27,10 +26,11 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		timer += 0.05;
-		float right = this.menu.width - this.menu.offs + this.width + 6;
+		this.timer += 0.05;
+		final float right = this.menu.width - this.menu.offs + this.width + 6;
 		this.posX = right / 2 - this.width / 2;
-		float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
+				
+		final float darken = (float) ((Math.sin(this.timer - Math.PI / 2) + 1) / 4 + 0.5);
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
 	
 	}
@@ -38,7 +38,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
-		String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
+		final String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
 		if(this.isSelected(mouseX, mouseY) && text != null) {
 			
 			ArrayList<String> lines = new ArrayList<String>();
@@ -69,7 +69,6 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
-
 			return true;
 		} else {
 			return false;
@@ -99,20 +98,19 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	
 	public static String statusToIdentifier(UpdateContainer.Status status) {
 		switch (status) {
-		case CHECKING: 
+		case CHECKING:
 			return "Checking ...";
-		case OUTDATED: 
+		case OUTDATED:
 			return String.format("Your mod's version is outdated\nPlease update to %s", DefaultSettings.getUpdater().getOnlineVersion());
-		case UP_TO_DATE: 
-			return "Up to date";
-		case AHEAD_OF_TIME: 
+		case AHEAD_OF_TIME:
 			return "Heck, you're ahead of reality?!";
-		case ERROR: 
+		case UP_TO_DATE:
+			return "Up to date";
+		case ERROR:
 
-		default: 
+		default:
 			return "Something went wrong :(\nWe couldn't check if your\ninstallation is up-to-date";
 		}
-		
 	}
 	
 	public static int statusToColor(UpdateContainer.Status status, float darken) {
@@ -122,12 +120,11 @@ public class ButtonUpdateChecker extends ButtonSegment {
 			return darkenColor(0xffcfcfcf, darken).getRGB();
 		case OUTDATED: 
 			return 0xfff5ac21;
-		case UP_TO_DATE: 
-			return 0xff68f521;
 		case AHEAD_OF_TIME: 
 			return 0xff0884b6;
+		case UP_TO_DATE: 
+			return 0xff68f521;
 		case ERROR: 
-
 		default: 
 			return 0xfff42310;
 		}

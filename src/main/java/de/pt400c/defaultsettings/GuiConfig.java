@@ -67,17 +67,17 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
-        
-        this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, new Function<ButtonSegment, Boolean>() {
+    	
+    	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment button) {
 				
 				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
 				return true;}
 		}, false));
-        
-    	this.menu = new MenuScreen(this, 74, 25);
     	
+    	this.menu = new MenuScreen(this, 74, 25);
+
     	this.leftMenu = new LeftMenu(this, 0, 25, 46, this.height - 25);
     	
     	this.addSegment(this.menu.
@@ -99,6 +99,7 @@ public class GuiConfig extends DefaultSettingsGUI {
         				addChild(this.buttonS = new ButtonSegment(this, this.menu.getWidth() / 2 + 52, this.menu.getHeight() / 2 - 30, "Save servers", new Function<ButtonSegment, Boolean>() {
 							@Override
 							public Boolean apply(ButtonSegment button) {
+								
 								tpe.execute(new Runnable() {
 									@Override
 									public void run() {
@@ -123,9 +124,10 @@ public class GuiConfig extends DefaultSettingsGUI {
         	}
 						}, 80, 25, 3, "Save keybindings"))
         				).addVariant(new MenuArea(this, 74, 25).
-        						
+
         					addChild(new ScrollableSegment(this, 20, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
-    						addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + Loader.instance().getMCVersionString().split(" ")[1] + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+        			
+        					addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + Loader.instance().getMCVersionString().split(" ")[1] + "-" + DefaultSettings.VERSION + "\n\nBuild-ID: " + DefaultSettings.BUILD_ID + "\n\nBuild-Time: " + DefaultSettings.BUILD_TIME + "\n\n\nCreated by Jomcraft Network, 2019", 0, false))));
     	
     	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", new Function<ButtonSegment, Boolean>() {
 			@Override
@@ -139,7 +141,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu))/*.addChild(new IconSegment(this, 10, 11, 16, 16, "textures/gui/test.png", this.leftMenu))*/.addChild(new ButtonUpdateChecker(this, /*72 / 2 - 20 / 2, */this.height - 30 - 25, this.leftMenu)));
     	
     	this.addSegment(new ExportSwitchSegment(this, 160, 7));
-    	
+
     	this.addSegment(this.popup = new PopupSegment(this, 0, 0, this.width, this.height).setWindow(new PopupWindow(this, this.width / 2 - 210 / 2, this.height / 2 - 100 / 2, 210, 100, "").addChild(new QuitButtonSegment(this, 190, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment button) {

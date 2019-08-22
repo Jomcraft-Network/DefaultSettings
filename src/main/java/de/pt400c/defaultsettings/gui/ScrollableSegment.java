@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.io.File;
 import java.io.FileFilter;
@@ -10,14 +9,12 @@ import java.util.Collections;
 import java.util.List;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -191,12 +188,11 @@ public class ScrollableSegment extends Segment {
 		final float f1 = (float) (color >> 8 & 255) / 255.0F;
 		final float f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlpha();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		NEX.en(GL11.GL_BLEND);
+		NEX.dis(GL11.GL_TEXTURE_2D);
+		NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GlStateManager.color(f, f1, f2, f3);
+		NEX.color4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
 
@@ -210,32 +206,29 @@ public class ScrollableSegment extends Segment {
 		
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
 
-		GlStateManager.color(f, f1, f2, f3);	
+		NEX.color4f(f, f1, f2, f3);	
 		
 		Segment.drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
-		GlStateManager.enableAlpha();
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		NEX.dis(GL11.GL_BLEND);
+		NEX.en(GL11.GL_TEXTURE_2D);
 	
 		if(!this.invisible) {
 			
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GlStateManager.disableAlpha();
-			GL11.glEnable(GL11.GL_BLEND);
-			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+			NEX.dis(GL11.GL_TEXTURE_2D);
+			NEX.en(GL11.GL_BLEND);
+			NEX.blendSep(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
-			GL11.glShadeModel(GL11.GL_SMOOTH);
+			NEX.shadeModel(GL11.GL_SMOOTH);
 
 			Segment.drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
 			
 			Segment.drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
 
-			GL11.glShadeModel(GL11.GL_FLAT);
-			GlStateManager.enableAlpha();
-			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			NEX.shadeModel(GL11.GL_FLAT);
+			NEX.dis(GL11.GL_BLEND);
+			NEX.en(GL11.GL_TEXTURE_2D);
 
 		}
 
@@ -282,9 +275,9 @@ public class ScrollableSegment extends Segment {
 			scaledResolution = new ScaledResolution(MC);
 		final int scaleFactor = scaledResolution.getScaleFactor();
 
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
+		NEX.pushMX();
+		NEX.en(GL11.GL_SCISSOR_TEST);
+		NEX.scissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
 			final int yOffTemp = 18 + 20 * i + add;
@@ -317,8 +310,8 @@ public class ScrollableSegment extends Segment {
 
 		}
 
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
-		GL11.glPopMatrix();
+		NEX.dis(GL11.GL_SCISSOR_TEST);
+		NEX.popMX();
 
 		final float percentHeight = height / this.maxSize;
 
@@ -521,11 +514,10 @@ class SettingsButtonSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlpha();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GlStateManager.color(f, f1, f2, f3);
+		NEX.en(GL11.GL_BLEND);
+		NEX.dis(GL11.GL_TEXTURE_2D);
+		NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		NEX.color4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) customPosX, (float) customPosY + 3.3F, 7, 0, 0);
 		color = 0xff202020;
@@ -549,7 +541,7 @@ class SettingsButtonSegment extends Segment {
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
-			GlStateManager.color(f, f1, f2, f3);
+			NEX.color4f(f, f1, f2, f3);
 			Segment.drawCircle((float) customPosX - 15, (float) customPosY + 3.3F, 7, 0, 0);
 
 			color = 0xffffffff;
@@ -562,9 +554,8 @@ class SettingsButtonSegment extends Segment {
 			Segment.drawDot(f, f1, f2, f3, scaleFactor, 3, new Vec2f((float) customPosX - 15, (float) customPosY + 7.3F));
 		}
 		
-		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlpha();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		NEX.dis(GL11.GL_BLEND);
+		NEX.en(GL11.GL_TEXTURE_2D);
 		this.active = false;
 	}
 	
@@ -916,12 +907,11 @@ class PopupCheckboxSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlpha();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		NEX.en(GL11.GL_BLEND);
+		NEX.dis(GL11.GL_TEXTURE_2D);
+		NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GlStateManager.color(f, f1, f2, f3);
+		NEX.color4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
 
@@ -944,7 +934,7 @@ class PopupCheckboxSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GlStateManager.color(f, f1, f2, f3);
+			NEX.color4f(f, f1, f2, f3);
 
 			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -969,7 +959,7 @@ class PopupCheckboxSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color(f, f1, f2, f3 - alphaRate);
+		NEX.color4f(f, f1, f2, f3 - alphaRate);
 
 		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -1003,10 +993,7 @@ class PopupCheckboxSegment extends Segment {
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
 		}
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlpha();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		
+		NEX.dis(GL11.GL_BLEND);
+		NEX.en(GL11.GL_TEXTURE_2D);
 	}
-
 }

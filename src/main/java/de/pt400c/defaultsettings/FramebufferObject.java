@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,14 +26,14 @@ public class FramebufferObject
 			this.deleteFramebuffer();
 
 		this.createFramebuffer(width, height);
-		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, 0);
+		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 	}
 
 	public void deleteFramebuffer() {
 		this.unbindFramebuffer();
 		if (this.framebufferObject > -1) {
-			OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, 0);
-			OpenGlHelper.glDeleteFramebuffers(this.framebufferObject);
+			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+			GL30.glDeleteFramebuffers(this.framebufferObject);
 			this.framebufferObject = -1;
 		}
 	}
@@ -64,7 +63,7 @@ public class FramebufferObject
 	}
 
 	public void bindFramebuffer(final boolean vp) {
-		OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, this.framebufferObject);
+		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.framebufferObject);
 
 		if (vp) 
 			GL11.glViewport(0, 0, this.framebufferWidth, this.framebufferHeight);
@@ -72,7 +71,7 @@ public class FramebufferObject
 	}
 
     public void unbindFramebuffer() {
-    	OpenGlHelper.glBindFramebuffer(OpenGlHelper.GL_FRAMEBUFFER, 0);
+    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
     }
 
     public void framebufferClear() {

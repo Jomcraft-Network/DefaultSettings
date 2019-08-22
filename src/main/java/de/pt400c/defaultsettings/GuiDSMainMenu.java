@@ -10,7 +10,6 @@ import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.text.TextFormatting;
 
@@ -62,19 +61,17 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
+		NEX.dis(GL11.GL_TEXTURE_2D);
+		NEX.en(GL11.GL_BLEND);
+		NEX.dis(GL11.GL_ALPHA_TEST);
+		NEX.blendSep(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		NEX.shadeModel(GL11.GL_SMOOTH);
 		Segment.drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		NEX.shadeModel(GL11.GL_FLAT);
+		NEX.dis(GL11.GL_BLEND);
+		NEX.dis(GL11.GL_ALPHA_TEST);
+		NEX.en(GL11.GL_TEXTURE_2D);
     	GuiConfig.drawRect(0, 0, width, 25, 0xffe0e0e0);
-   
     	super.drawScreen(mouseX, mouseY, partialTicks);
     }
-	
 }

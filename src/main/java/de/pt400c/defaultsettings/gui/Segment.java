@@ -10,10 +10,14 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -274,10 +278,10 @@ public abstract class Segment {
         }
 
         if(blending) {
-        	GL11.glEnable(GL11.GL_BLEND);
-        	GlStateManager.disableAlpha();
-        	GL11.glDisable(GL11.GL_TEXTURE_2D);
-        	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        	NEX.en(GL11.GL_BLEND);
+        	NEX.dis(GL11.GL_ALPHA_TEST);
+        	NEX.dis(GL11.GL_TEXTURE_2D);
+        	NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
         
         if(color != null) {
@@ -300,9 +304,9 @@ public abstract class Segment {
 
 		draw(false);
 		if(blending) {
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-			GlStateManager.enableAlpha();
-        	GL11.glDisable(GL11.GL_BLEND);
+			NEX.en(GL11.GL_TEXTURE_2D);
+			NEX.en(GL11.GL_ALPHA_TEST);
+        	NEX.dis(GL11.GL_BLEND);
 		}
     }
 
@@ -314,11 +318,11 @@ public abstract class Segment {
         float f2 = (float)(color >> 8 & 255) / 255.0F;
         float f3 = (float)(color & 255) / 255.0F;
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GlStateManager.disableAlpha();
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(f1, f2, f3, f - alpha);
+        NEX.en(GL11.GL_BLEND);
+        NEX.dis(GL11.GL_ALPHA_TEST);
+        NEX.dis(GL11.GL_TEXTURE_2D);
+        NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        NEX.color4f(f1, f2, f3, f - alpha);
         
         drawCircle(x1 + 10, y1 + 10, 10, 180F, 75);
 
@@ -328,9 +332,9 @@ public abstract class Segment {
         
         drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
         
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GlStateManager.enableAlpha();
-        GL11.glDisable(GL11.GL_BLEND);
+        NEX.en(GL11.GL_TEXTURE_2D);
+        NEX.en(GL11.GL_ALPHA_TEST);
+        NEX.dis(GL11.GL_BLEND);
     }
 	
 	protected static Color darkenColor(int color, float darken) {
@@ -369,11 +373,11 @@ public abstract class Segment {
         final float f2 = (float)(color >> 8 & 255) / 255.0F;
         final float f3 = (float)(color & 255) / 255.0F;
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GlStateManager.disableAlpha();
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(f1, f2, f3, f - alpha);
+        NEX.en(GL11.GL_BLEND);
+        NEX.dis(GL11.GL_ALPHA_TEST);
+        NEX.dis(GL11.GL_TEXTURE_2D);
+        NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        NEX.color4f(f1, f2, f3, f - alpha);
         
         drawCircle(x1 + 10, y2 - 10, 10, 90F, 75);
         
@@ -383,9 +387,9 @@ public abstract class Segment {
         
         drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GlStateManager.enableAlpha();
-        GL11.glDisable(GL11.GL_BLEND);
+        NEX.en(GL11.GL_TEXTURE_2D);
+        NEX.en(GL11.GL_ALPHA_TEST);
+        NEX.dis(GL11.GL_BLEND);
        
     }
 	
@@ -512,19 +516,19 @@ public abstract class Segment {
 
 			if (hasColor) {
 				byteBuffer.position(20);
-				GL11.glColorPointer(4, true, 32, byteBuffer);
-				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+				NEX.colorPointer(4, true, 32, byteBuffer);
+				NEX.enState(GL11.GL_COLOR_ARRAY);
 			}
 			
 			byteBuffer.position(0);
-			GL11.glVertexPointer(3, 32, floatBuffer);
-			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			GL11.glDrawArrays(GL11.GL_QUADS, 0, 4);
-			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			NEX.vtPointer(3, 32, floatBuffer);
+			NEX.enState(GL11.GL_VERTEX_ARRAY);
+			NEX.drawArrays(GL11.GL_QUADS, 0, 4);
+			NEX.disState(GL11.GL_VERTEX_ARRAY);
 			
 			if (hasColor)
             {
-                GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+                NEX.disState(GL11.GL_COLOR_ARRAY);
             }
 			
 		} else {
@@ -533,18 +537,18 @@ public abstract class Segment {
 			
 			if (hasColor) {
 				byteBuffer.position(20);
-				GL11.glColorPointer(4, true, 32, byteBuffer);
-				GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+				NEX.colorPointer(4, true, 32, byteBuffer);
+				NEX.enState(GL11.GL_COLOR_ARRAY);
 			}
 			
 			byteBuffer.position(0);
-			GL11.glVertexPointer(3, 32, floatBuffer);
-			GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
-			GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			NEX.vtPointer(3, 32, floatBuffer);
+			NEX.enState(GL11.GL_VERTEX_ARRAY);
+			NEX.drawArrays(GL11.GL_TRIANGLES, 0, 3);
+			NEX.disState(GL11.GL_VERTEX_ARRAY);
 
 			if (hasColor) {
-				GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+				NEX.disState(GL11.GL_COLOR_ARRAY);
 			}
 		}
 		hasColor = false;
@@ -552,100 +556,113 @@ public abstract class Segment {
 	}
 	
 	protected static void drawDot(float red, float green, float blue, float alpha, float scaleFactor, float size, Vec2f vector) {
-		GL11.glColor4f(red, green, blue, alpha);
+		NEX.color4f(red, green, blue, alpha);
 
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		NEX.en(GL11.GL_POINT_SMOOTH);
 
-		GL11.glPointSize(size * (scaleFactor / 2F));
+		NEX.pointSize(size * (scaleFactor / 2F));
 
-		GL11.glBegin(GL11.GL_POINTS);
+		NEX.begin(GL11.GL_POINTS);
 
-		GL11.glVertex3f(vector.x, vector.y, 0.0f);
+		NEX.vert3f(vector.x, vector.y, 0.0f);
 		
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+		NEX.end();
+		NEX.dis(GL11.GL_POINT_SMOOTH);
 		
 	}
 	
 	protected static void drawDots(float red, float green, float blue, float alpha, float scaleFactor, Vec2f... vectors) {
-		GL11.glColor4f(red, green, blue, alpha);
+		NEX.color4f(red, green, blue, alpha);
 
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		NEX.en(GL11.GL_POINT_SMOOTH);
 
-		GL11.glPointSize(6.5F * (scaleFactor / 2F));
+		NEX.pointSize(6.5F * (scaleFactor / 2F));
 
-		GL11.glBegin(GL11.GL_POINTS);
+		NEX.begin(GL11.GL_POINTS);
 		
 		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+			NEX.vert3f(vector.x, vector.y, 0.0f);
 		}
 
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+		NEX.end();
+		NEX.dis(GL11.GL_POINT_SMOOTH);
 		
 	}
 	
 	protected static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		NEX.en(GL11.GL_LINE_SMOOTH);
 
-		GL11.glLineWidth(3.0F * (factor / 2F));
+		NEX.lineWidth(3.0F * (factor / 2F));
 
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glColor4f(red, green, blue, alpha);
+		NEX.begin(GL11.GL_LINE_STRIP);
+		NEX.color4f(red, green, blue, alpha);
 		
 		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+			NEX.vert3f(vector.x, vector.y, 0.0f);
 		}
 		
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		NEX.end();
+		NEX.dis(GL11.GL_LINE_SMOOTH);
 		
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		NEX.en(GL11.GL_POINT_SMOOTH);
 	
-		GL11.glPointSize(3.0F * (factor / 2F));
+		NEX.pointSize(3.0F * (factor / 2F));
 
-		GL11.glBegin(GL11.GL_POINTS);
+		NEX.begin(GL11.GL_POINTS);
 		
 		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+			NEX.vert3f(vector.x, vector.y, 0.0f);
 		}
 
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
+		NEX.end();
+		NEX.dis(GL11.GL_POINT_SMOOTH);
 
 	}
 	
+	public static void drawScaledCustomSizeModalRect(int x, int y, float u, float v, int uWidth, int vHeight, int width, int height, float tileWidth, float tileHeight)
+    {
+		float f = 1.0F / tileWidth;
+        float f1 = 1.0F / tileHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos((double)x, (double)(y + height), 0.0D).tex((double)(u * f), (double)((v + (float)vHeight) * f1)).endVertex();
+        bufferbuilder.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * f), (double)((v + (float)vHeight) * f1)).endVertex();
+        bufferbuilder.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * f), (double)(v * f1)).endVertex();
+        bufferbuilder.pos((double)x, (double)y, 0.0D).tex((double)(u * f), (double)(v * f1)).endVertex();
+        tessellator.draw();
+    }
+	
 	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		NEX.en(GL11.GL_LINE_SMOOTH);
 		if(!(factor == 1))
-			GL11.glLineWidth(3.0F * (factor - 1));
+			NEX.lineWidth(3.0F * (factor - 1));
 		else
-			GL11.glLineWidth(1F);
+			NEX.lineWidth(1F);
 
-		GL11.glBegin(GL11.GL_LINE_STRIP);
-		GL11.glColor4f(red, green, blue, alpha);
+		NEX.begin(GL11.GL_LINE_STRIP);
+		NEX.color4f(red, green, blue, alpha);
 		
 		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+			NEX.vert3f(vector.x, vector.y, 0.0f);
 		}
 		
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		NEX.end();
+		NEX.dis(GL11.GL_LINE_SMOOTH);
 		
-		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		NEX.en(GL11.GL_POINT_SMOOTH);
 		if(!(factor == 1))
-			GL11.glPointSize(3.0F * (factor - 1));
+			NEX.pointSize(3.0F * (factor - 1));
 		else
-			GL11.glPointSize(1F);
-		GL11.glBegin(GL11.GL_POINTS);
+			NEX.pointSize(1F);
+		NEX.begin(GL11.GL_POINTS);
 		
 		for(Vec2f vector : vectors) {
-			GL11.glVertex3f(vector.x, vector.y, 0.0f);
+			NEX.vert3f(vector.x, vector.y, 0.0f);
 		}
 
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_POINT_SMOOTH);
-
+		NEX.end();
+		NEX.dis(GL11.GL_POINT_SMOOTH);
 	}
 
 	private static void reset() {

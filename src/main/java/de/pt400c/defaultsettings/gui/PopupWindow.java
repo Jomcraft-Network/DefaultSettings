@@ -3,13 +3,10 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-
 import de.pt400c.defaultsettings.GuiConfig;
-
+import de.pt400c.defaultsettings.NEX;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,11 +27,11 @@ public class PopupWindow extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-	    GlStateManager.disableAlpha();
-	 	GL11.glShadeModel(GL11.GL_SMOOTH);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		NEX.en(GL11.GL_BLEND);
+		NEX.blendSep(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		NEX.dis(GL11.GL_ALPHA_TEST);
+	    NEX.shadeModel(GL11.GL_SMOOTH);
+	 	NEX.dis(GL11.GL_TEXTURE_2D);
 
 		Segment.drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
 		
@@ -52,26 +49,26 @@ public class PopupWindow extends Segment {
 		
 		Segment.drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		GL11.glDisable(GL11.GL_BLEND);
+		NEX.en(GL11.GL_TEXTURE_2D);
+		NEX.shadeModel(GL11.GL_FLAT);
+		NEX.en(GL11.GL_ALPHA_TEST);
+		NEX.dis(GL11.GL_BLEND);
 		
 		Segment.drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, 0);
 		Segment.drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, 0);
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	    GlStateManager.disableAlpha();
-	 	GL11.glShadeModel(GL11.GL_SMOOTH);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		NEX.en(GL11.GL_BLEND);
+		NEX.blend(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	    NEX.dis(GL11.GL_ALPHA_TEST);
+	    NEX.shadeModel(GL11.GL_SMOOTH);
+	 	NEX.dis(GL11.GL_TEXTURE_2D);
 
 		Segment.drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		GL11.glDisable(GL11.GL_BLEND);
+		NEX.en(GL11.GL_TEXTURE_2D);
+		NEX.shadeModel(GL11.GL_FLAT);
+		NEX.en(GL11.GL_ALPHA_TEST);
+		NEX.dis(GL11.GL_BLEND);
 		
 		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b, false);
 		

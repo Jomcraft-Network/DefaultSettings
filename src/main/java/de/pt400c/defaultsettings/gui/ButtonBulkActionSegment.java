@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -57,12 +56,11 @@ public class ButtonBulkActionSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlpha();
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		NEX.en(GL11.GL_BLEND);
+		NEX.dis(GL11.GL_TEXTURE_2D);
+		NEX.blend(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-		GL11.glColor4f(f, f1, f2, f3);
+		NEX.color4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
 
@@ -84,7 +82,7 @@ public class ButtonBulkActionSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GL11.glColor4f(f, f1, f2, f3);
+			NEX.color4f(f, f1, f2, f3);
 
 			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -106,7 +104,7 @@ public class ButtonBulkActionSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GL11.glColor4f(f, f1, f2, f3 - alphaRate);
+		NEX.color4f(f, f1, f2, f3 - alphaRate);
 
 		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
@@ -162,9 +160,8 @@ public class ButtonBulkActionSegment extends Segment {
 
 		}
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlpha();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		NEX.dis(GL11.GL_BLEND);
+		NEX.en(GL11.GL_TEXTURE_2D);
 
 	}
 	

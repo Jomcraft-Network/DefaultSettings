@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +43,6 @@ public class DefaultSettings {
 	public static boolean setUp = false;
 	public static String BUILD_ID = "<UNKNOWN>";
 	public static String BUILD_TIME = "<UNKNOWN>";
-	public static String PLAYER_UUID;
 	public static final String VERSION = getModVersion();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static DefaultSettings instance;
@@ -129,10 +127,9 @@ public class DefaultSettings {
 	public void postInit(FMLLoadCompleteEvent event) {
 		if (FMLLoader.getDist() == Dist.CLIENT) {
 			try {
-				FileUtil.initUUID();
 				getBuildID();
 				getBuildTime();
-			} catch (NullPointerException | IOException | NoSuchAlgorithmException e) {
+			} catch (NullPointerException | IOException  e) {
 
 			}
 

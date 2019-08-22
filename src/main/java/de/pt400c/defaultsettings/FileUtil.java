@@ -45,6 +45,7 @@ public class FileUtil {
 	public static final boolean devEnv = !isntDev();
 	public static PersistentJSON persistentJson;
 	public static final String persistentLocation = "config/ds_dont_export.json";
+	public static String PLAYER_UUID;
 	public static final String mainLocation = "config/defaultsettings.json";
 	
 	public static boolean isntDev() {
@@ -180,15 +181,16 @@ public static void switchState(Byte state, String query) {
 	}
 	
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
+		PLAYER_UUID = MC.getSession().getPlayerID();
 		final File main = new File(mcDataDir, mainLocation);
 		final String version = getMainJSON().getVersion();
-		
-		if(!DefaultSettings.VERSION.equals(version)) 
+
+		if (!DefaultSettings.VERSION.equals(version))
 			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
-		
+
 		final String identifier = mainJson.getIdentifier();
-		
-		if(!getIdentifier().equals(identifier))
+
+		if (!getIdentifier().equals(identifier))
 			mainJson.setIdentifier(getIdentifier());
 
 		File persFile = new File(mcDataDir, persistentLocation);
@@ -196,34 +198,15 @@ public static void switchState(Byte state, String query) {
 			getPersistent().check.forEach((k, v) -> mainJson.check.put(k, v));
 			persFile.delete();
 		}
-		
-		mainJson.save(main);
-	}
-	
-	public static void initUUID() throws NoSuchAlgorithmException {
-		DefaultSettings.PLAYER_UUID = MC.getSession().getProfile().getId().toString();
-		final File main = new File(mcDataDir, mainLocation);
-		if (getMainJSON().created_for == null || getMainJSON().created_for.equals("NEW")) {
 
-			try {
-				mainJson.created_for = getUUID(DefaultSettings.PLAYER_UUID);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
+		final String created_for = mainJson.created_for;
 
-			mainJson.save(main);
-		} else {
+		if (!getUUID(PLAYER_UUID).equals(created_for)) {
+			mainJson.created_for = getUUID(PLAYER_UUID);
+			mainJson.check.clear();
 
-			final String created_for = mainJson.created_for;
-
-			if (!getUUID(DefaultSettings.PLAYER_UUID).equals(created_for)) {
-				mainJson.created_for = getUUID(DefaultSettings.PLAYER_UUID);
-				mainJson.check.clear();
-
-			}
-			
-			mainJson.save(main);
 		}
+		mainJson.save(main);
 	}
 	
 	/**
@@ -260,7 +243,11 @@ public static void switchState(Byte state, String query) {
 				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
 			}
 			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date));
-			mainJson.created_for = "NEW";
+			try {
+				mainJson.created_for = getUUID(PLAYER_UUID);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
 			mainJson.initPopup = true;
 			File fileDir = new File(mcDataDir, "config");
 			for (File file : fileDir.listFiles(fileFilter)) 

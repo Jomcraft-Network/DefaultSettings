@@ -13,10 +13,9 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.common.MinecraftForge;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
@@ -30,6 +29,7 @@ import de.pt400c.defaultsettings.gui.PopupSegment;
 import de.pt400c.defaultsettings.gui.PopupWindow;
 import de.pt400c.defaultsettings.gui.QuitButtonSegment;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
+import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 
@@ -46,8 +46,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public FramebufferObject framebufferMc;
 	public boolean legacy;
     
-    public GuiConfig(GuiScreen parentScreen)
-    {
+    public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;
     }
@@ -63,12 +62,12 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void initGui()
     {
-    	final boolean fbo = Minecraft.getMinecraft().gameSettings.fboEnable;
+    	final boolean fbo = MC.gameSettings.fboEnable;
         if(!fbo)
         	legacy = true;
         
         if(!legacy)
-        	this.framebufferMc = new FramebufferObject(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        	this.framebufferMc = new FramebufferObject(MC.displayWidth, MC.displayHeight);
 
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
@@ -120,7 +119,7 @@ public class GuiConfig extends DefaultSettingsGUI {
         						addChild(new ScrollableSegment(this, 20, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
         			
         								
-        						addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MinecraftForge.MC_VERSION + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+        						addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MinecraftForge.MC_VERSION + "-" + DefaultSettings.VERSION + "\n\nBuild-ID: " + DefaultSettings.BUILD_ID + "\n\nBuild-Time: " + DefaultSettings.BUILD_TIME + "\n\n\nCreated by Jomcraft Network, 2019", 0, false))));
 
     	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false)).addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png")).addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu))/*.addChild(new IconSegment(this, 10, 11, 16, 16, "textures/gui/test.png", this.leftMenu))*/.addChild(new ButtonUpdateChecker(this, /*72 / 2 - 20 / 2, */this.height - 30 - 25, this.leftMenu)));
     	
@@ -273,81 +272,99 @@ public class GuiConfig extends DefaultSettingsGUI {
 		}
 	}
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+	@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
     	if (legacy) {
+    		GL11.glDisable(GL11.GL_ALPHA_TEST);
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 
 			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
-
 			MC.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (MC.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
 
-			int posX = clamp((this.width - 74) / 2 + 74 - (MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+			final int posX = clamp((this.width - 74) / 2 + 74 - (MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
 
 			MC.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
 
 			MC.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
-
-		} else {
-
-			this.mc.getFramebuffer().unbindFramebuffer();
+			
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+    	}else {
+    		this.mc.getFramebuffer().unbindFramebuffer();
 
 			GL11.glPushMatrix();
 			GL11.glClear(16640);
 			this.framebufferMc.bindFramebuffer(true);
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
-
-			ScaledResolution scaledresolution = new ScaledResolution(this.mc, MC.displayWidth, MC.displayHeight);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			GL11.glClear(256);
 			GL11.glMatrixMode(5889);
 			GL11.glLoadIdentity();
+			final ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+
 			GL11.glOrtho(0.0D, scaledresolution.getScaledWidth_double(), scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
 			GL11.glMatrixMode(5888);
 			GL11.glLoadIdentity();
 			GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
 
 			GL11.glClear(256);
-
+			
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+			
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+			GL11.glShadeModel(GL11.GL_SMOOTH);
 
-			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
+			Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+			
+			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
-			MC.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (MC.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+			GL11.glShadeModel(GL11.GL_FLAT);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GL11.glDisable(GL11.GL_BLEND);
 
-			int posX = clamp((this.width - 74) / 2 + 74 - (MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+	        
+	        GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+	        
+	        GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
+	        MC.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (MC.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+	        
+	        final int posX = clamp((this.width - 74) / 2 + 74 - (MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+	        
+	        MC.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+	        
+	        MC.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-			MC.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
-
-			MC.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
-
-			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			super.drawScreen(mouseX, mouseY, partialTicks);
-
-			this.framebufferMc.unbindFramebuffer();
+	        this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+	        this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+	        this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+	        super.drawScreen(mouseX, mouseY, partialTicks);
+	        
+	        this.framebufferMc.unbindFramebuffer();
 			GL11.glPopMatrix();
 
 			this.mc.getFramebuffer().bindFramebuffer(true);
 			GL11.glPushMatrix();
-
+			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-			GL30.glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-
+			GL30.glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			GL11.glPopMatrix();
-		}
+    	}
     }
     
     public static int clamp(int num, int min, int max)

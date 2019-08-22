@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import java.awt.Color;
 import java.io.File;
 import java.io.FileFilter;
@@ -10,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
@@ -38,7 +36,7 @@ public class ScrollableSegment extends Segment {
 	private final byte id;
 	private float velocity = 0;
 
-	public ScrollableSegment(GuiScreen gui, float posX, float posY, int width, int height, byte id) {
+	public ScrollableSegment(GuiScreen gui, float posX, float posY, int width, int height, byte id) {	
 		super(gui, posX, posY, width, height, false);
 		this.scrollBar = new ScrollbarSegment(this.gui, (float) (posX + width), (float) posY, 10, 20, this);
 		this.id = id;
@@ -47,10 +45,15 @@ public class ScrollableSegment extends Segment {
 		this.searchbar = new SearchbarSegment(gui, posX + 112, posY - 1, 45, 18, false, this);
 	}
 	
+	@Override
+	public void init() {
+		this.list = getRowList(null);
+	}
+	
 	public List<RowItem> getRowList(String[] arg) {
 		this.add = 0;
 		switch (id) {
-
+		
 		case 0: {
 
 			List<RowItem> rows = new ArrayList<RowItem>();
@@ -103,12 +106,26 @@ public class ScrollableSegment extends Segment {
 	}
 	
 	@Override
+	public boolean handleMouseInput() {
+		final float scroll = Mouse.getEventDWheel();
+		this.maxSize = 18 + 20 * (this.list.size() - 1);
+		if(!this.invisible)
+			this.velocity += scroll / 120F;
+		return true;
+	}
+	
+	@Override
+	public void guiContentUpdate(String... arg){
+		this.list = getRowList(arg);
+	}
+	
+	@Override
 	public void hoverCheck(float mouseX, float mouseY) {
 		
-		float offX = (float) (this.getWidth() + 58);
-		float offY = 53;
-		float tempHeight = this.getHeight() + 2;
-		float tempWidth = 35;
+		final float offX = (float) (this.getWidth() + 58);
+		final float offY = 53;
+		final float tempHeight = this.getHeight() + 2;
+		final float tempWidth = 35;
 		
 		if(mouseX >= offX && mouseY >= offY && mouseX < offX + tempWidth && mouseY < offY + tempHeight) {
 			for (int i = 0; i < this.list.size(); i++) {
@@ -127,29 +144,9 @@ public class ScrollableSegment extends Segment {
 		}
 			
 	}
-	
-	@Override
-	public boolean handleMouseInput() {
-		float scroll = Mouse.getEventDWheel();
-		this.maxSize = 18 + 20 * (this.list.size() - 1);
-		if(!this.invisible)
-			this.velocity += scroll / 120F;
-		return true;
-	}
-	
-	@Override
-	public void init() {
-		this.list = getRowList(null);
-	}
-	
-	@Override
-	public void guiContentUpdate(String... arg){
-		this.list = getRowList(arg);
-	}
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-
 		this.add += (int) (this.velocity);
 		
 		if (this.add > 0) {
@@ -158,9 +155,9 @@ public class ScrollableSegment extends Segment {
 		}
 
 		if (this.add < 0) {
-			int yOff = maxSize + this.add;
-			int movable = (int) (this.getPosY() + yOff);
-			int fix = (int) (this.getPosY() + height - 1);
+			final int yOff = maxSize + this.add;
+			final int movable = (int) (this.getPosY() + yOff);
+			final int fix = (int) (this.getPosY() + height - 1);
 
 			if (movable < fix) {
 
@@ -183,14 +180,15 @@ public class ScrollableSegment extends Segment {
 		}
 
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
-		int color = 0xff818181;
+		final int color = 0xff818181;
 
-		float f3 = (float) (color >> 24 & 255) / 255.0F;
-		float f = (float) (color >> 16 & 255) / 255.0F;
-		float f1 = (float) (color >> 8 & 255) / 255.0F;
-		float f2 = (float) (color & 255) / 255.0F;
+		final float f3 = (float) (color >> 24 & 255) / 255.0F;
+		final float f = (float) (color >> 16 & 255) / 255.0F;
+		final float f1 = (float) (color >> 8 & 255) / 255.0F;
+		final float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -205,7 +203,7 @@ public class ScrollableSegment extends Segment {
 		Segment.drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);
 
 		Segment.drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
-
+		
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
 
 		GL11.glColor4f(f, f1, f2, f3);	
@@ -213,28 +211,29 @@ public class ScrollableSegment extends Segment {
 		Segment.drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
-
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		
+	
 		if(!this.invisible) {
 			
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glDisable(GL11.GL_ALPHA_TEST);
+			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		        GL11.glShadeModel(GL11.GL_SMOOTH);
 
-			Segment.drawGradientFromTop(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737);
+			GL11.glShadeModel(GL11.GL_SMOOTH);
+
+			Segment.drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
 			
-			Segment.drawGradientFromBottom(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737);
+			Segment.drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
 
-	    GL11.glShadeModel(GL11.GL_FLAT);
-	    GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-	    GL11.glEnable(GL11.GL_TEXTURE_2D);
-	    
-			}
+			GL11.glShadeModel(GL11.GL_FLAT);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+			GL11.glDisable(GL11.GL_BLEND);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+		}
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 
@@ -248,9 +247,9 @@ public class ScrollableSegment extends Segment {
 					factor = 0;
 
 				if (factor < 0) {
-					int yOff = maxSize + factor;
-					int movable = (int) (this.getPosY() + yOff);
-					int fix = (int) (this.getPosY() + height - 1);
+					final int yOff = maxSize + factor;
+					final int movable = (int) (this.getPosY() + yOff);
+					final int fix = (int) (this.getPosY() + height - 1);
 
 					if (movable < fix) {
 
@@ -273,26 +272,25 @@ public class ScrollableSegment extends Segment {
 			this.invisible = false;
 
 		ScaledResolution scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
-		int scaleFactor = scaledResolution.getScaleFactor();
+		final int scaleFactor = scaledResolution.getScaleFactor();
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		GL11.glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
-			int yOffTemp = 18 + 20 * i + add;
+			final int yOffTemp = 18 + 20 * i + add;
 
 			if (yOffTemp < -3)
 				continue;
 			if (yOffTemp > this.height + 18)
 				break;
 			
-			String text = this.list.get(i).displayString;
-			int dots = MC.fontRenderer.getStringWidth("...");
+			final String text = this.list.get(i).displayString;
+			final int dots = MC.fontRenderer.getStringWidth("...");
 
-			int widthString = MC.fontRenderer.getStringWidth(text);
-
-			SettingsButtonSegment button = (SettingsButtonSegment) this.list.get(i).childs[1];
+			final int widthString = MC.fontRenderer.getStringWidth(text);
+			final SettingsButtonSegment button = (SettingsButtonSegment) this.list.get(i).childs[1];
 			if (widthString >= (width - (button.mark ? 55 : 40))) {
 
 				MC.fontRenderer.drawString(MC.fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots)) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
@@ -301,11 +299,8 @@ public class ScrollableSegment extends Segment {
 				MC.fontRenderer.drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
 			}
 
-			for (Segment segment : this.list.get(i).childs) {
-
+			for (Segment segment : this.list.get(i).childs) 
 				segment.customRender(mouseX, mouseY, 0, this.add, partialTicks);
-
-			}
 
 			if (!(i == this.list.size() - 1))
 				Segment.drawRect(this.getPosX(), this.getPosY() + yOffTemp, this.getPosX() + this.getWidth(), this.getPosY() + yOffTemp + 2, 0xff373737, true, null, false);
@@ -317,18 +312,18 @@ public class ScrollableSegment extends Segment {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glPopMatrix();
 
-		float percentHeight = height / this.maxSize;
+		final float percentHeight = height / this.maxSize;
 
 		this.scrollBar.height = clamp(height * percentHeight, 5, Integer.MAX_VALUE);
 
-		int first = (int) (this.maxSize - height + 1);
-		int second = -this.add;
+		final int first = (int) (this.maxSize - height + 1);
+		final int second = -this.add;
 		boolean active = true;
 
 		if (first > second)
 			active = false;
 
-		float posPercentage = -(float) (this.add) / (float) (this.maxSize - height + (active ? 1 : -1));
+		final float posPercentage = -(float) (this.add) / (float) (this.maxSize - height + (active ? 1 : -1));
 		this.scrollBar.setPos((float) (posX + width), (float) posY + (height - this.scrollBar.height) * posPercentage);
 
 		Segment.drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width, this.getPosY() + this.getHeight(), 0xff818181, true, null, false);
@@ -507,7 +502,7 @@ class SettingsButtonSegment extends Segment {
 		else if(!this.active && this.timer > 0)
 			timer -= 0.3;
 
-		float darken = (float) ((Math.sin(timer + Math.PI / 2) + 1) / 6 + 0.67);
+		final float darken = (float) ((Math.sin(timer + Math.PI / 2) + 1) / 6 + 0.67);
 
 		int color = darkenColor(0xffe0e0e0, darken).getRGB();
 		this.offX = customPosX;
@@ -520,6 +515,7 @@ class SettingsButtonSegment extends Segment {
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor4f(f, f1, f2, f3);
@@ -532,7 +528,7 @@ class SettingsButtonSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 		ScaledResolution scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
-		int scaleFactor = scaledResolution.getScaleFactor();
+		final int scaleFactor = scaledResolution.getScaleFactor();
 		Segment.drawDots(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX, (float) customPosY + 3.3F), new Vec2f((float) customPosX, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX, (float) customPosY - 5 + 4F));
 
 		if (this.mark) {
@@ -556,6 +552,7 @@ class SettingsButtonSegment extends Segment {
 		}
 		
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		this.active = false;
 	}
@@ -567,14 +564,14 @@ class SettingsButtonSegment extends Segment {
 	
 	@Override
 	public boolean isSelected(double mouseX, double mouseY) {
-		double tempX = this.getPosX() + this.offX; 
-		double tempY = this.getPosY() + this.offY; 
+		final double tempX = this.getPosX() + this.offX; 
+		final double tempY = this.getPosY() + this.offY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 8 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 2 && mouseY < tempY + this.getHeight() + 4;
 	}
 	
 	public boolean isSelectedMark(double mouseX, double mouseY) {
-		double tempX = this.getPosX() + this.offX; 
-		double tempY = this.getPosY() + this.offY; 
+		final double tempX = this.getPosX() + this.offX; 
+		final double tempY = this.getPosY() + this.offY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 24 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() - 14 && mouseY < tempY + this.getHeight() + 4;
 	}
 
@@ -583,6 +580,29 @@ class SettingsButtonSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+		if (!this.isSelected(mouseX, mouseY)) {
+			this.grabbed = false;
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		
+		
+		if (this.grabbed) {
+			if (this.isSelected(mouseX, mouseY))
+				this.grabbed = false;
+
 			GuiConfig config = ((GuiConfig) this.gui);
 			MenuScreen menu = config.menu;
 			this.clickSound();
@@ -612,20 +632,10 @@ class SettingsButtonSegment extends Segment {
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0, true));
 			
 			config.popup.isVisible = true;
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
 
-	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
-		if (!this.isSelected(mouseX, mouseY)) {
-			this.grabbed = false;
-			return false;
 		}
-		return true;
+		return super.mouseReleased(mouseX, mouseY, button);
+		
 	}
 
 	@Override
@@ -687,181 +697,188 @@ class PopupCheckboxSegment extends Segment {
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 
-			if (this.isSelected(mouseX, mouseY)) {
-				this.grabbed = false;
-			if(!this.active) {
-				
-				
-			if(Boolean.logicalXor(this.active, true)) {
+		if (this.isSelected(mouseX, mouseY)) {
+			this.grabbed = false;
+			if (!this.active) {
+
+				if (Boolean.logicalXor(this.active, true)) {
 					for (Segment child : this.parent.getWindow().getChildren()) {
-						if(child instanceof PopupCheckboxSegment) {
+						if (child instanceof PopupCheckboxSegment) {
 							PopupCheckboxSegment checkButton = (PopupCheckboxSegment) child;
 							checkButton.active = false;
 						}
 					}
-			}
-			this.active = Boolean.logicalXor(this.active, true);
-			
-			
-			if(this.type == 0) {
-
-				RowItem item = this.segment.list.get(this.id);
-				ButtonCheckboxSegment but = (ButtonCheckboxSegment) item.childs[0];
-				but.active = true;
-				FileUtil.setActive(this.name, true);
-				FileUtil.setOverride(this.name, false);
-				SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
-				set.mark = false;
-				File fileDir = new File(FileUtil.mcDataDir, "config");
-				FileFilter ff = null;
-				String arg = this.segment.searchbar.query;
-				if (arg != null) {
-					ff = new FileFilter() {
-
-						@Override
-						public boolean accept(File file) {
-
-							if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json")
-									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-									&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
-									&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
-								return true;
-
-							return false;
-						}
-					};
-				} else {
-					ff = FileUtil.fileFilter;
 				}
-				File[] files = fileDir.listFiles(ff);
-				List<RowItem> rows = this.segment.list;
-				int activeCount = 0;
-				for (int i = 0; i < rows.size(); i++) {
+				this.active = Boolean.logicalXor(this.active, true);
 
-					boolean active = FileUtil.getActives().contains(files[i].getName());
-					if (active)
-						activeCount++;
+				if (this.type == 0) {
 
-				}
+					RowItem item = this.segment.list.get(this.id);
+					ButtonCheckboxSegment but = (ButtonCheckboxSegment) item.childs[0];
+					but.active = true;
+					FileUtil.setActive(this.name, true);
+					FileUtil.setOverride(this.name, false);
+					SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
+					set.mark = false;
+					File fileDir = new File(FileUtil.mcDataDir, "config");
+					FileFilter ff = null;
+					String arg = this.segment.searchbar.query;
+					if (arg != null) {
+						ff = new FileFilter() {
 
-				if (rows.size() != 0 && activeCount == rows.size())
-					this.segment.cache_activity = 2;
-				else if (activeCount > 0)
-					this.segment.cache_activity = 1;
-				else
-					this.segment.cache_activity = 0;
-			}else if(this.type == 1) {
-				
-				RowItem item = this.segment.list.get(this.id);
-				ButtonCheckboxSegment but = (ButtonCheckboxSegment) item.childs[0];
-				SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
-				set.mark = true;
-				but.active = true;
-				FileUtil.setActive(this.name, true);
-				FileUtil.setOverride(this.name, true);
-				File fileDir = new File(FileUtil.mcDataDir, "config");
-				FileFilter ff = null;
-				String arg = this.segment.searchbar.query;
-				if (arg != null) {
-					ff = new FileFilter() {
+							@Override
+							public boolean accept(File file) {
 
-						@Override
-						public boolean accept(File file) {
+								if (!file.getName().equals("defaultsettings")
+										&& !file.getName().equals("defaultsettings.json")
+										&& !file.getName().equals("ds_dont_export.json")
+										&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
+										&& !file.getName().equals("optionsof.txt")
+										&& !file.getName().equals("servers.dat")
+										&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
+									return true;
 
-							if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json")
-									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-									&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
-									&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
-								return true;
+								return false;
+							}
+						};
+					} else {
+						ff = FileUtil.fileFilter;
+					}
+					
+					File[] files = fileDir.listFiles(ff);
+					List<RowItem> rows = this.segment.list;
+					int activeCount = 0;
+					for (int i = 0; i < rows.size(); i++) {
 
-							return false;
-						}
-					};
-				} else {
-					ff = FileUtil.fileFilter;
-				}
-				File[] files = fileDir.listFiles(ff);
-				List<RowItem> rows = this.segment.list;
-				int activeCount = 0;
-				for (int i = 0; i < rows.size(); i++) {
-					try {
 						boolean active = FileUtil.getActives().contains(files[i].getName());
 						if (active)
 							activeCount++;
-					}catch(ArrayIndexOutOfBoundsException e) {
-						activeCount = 0;
-						break;
+
 					}
-				}
 
-				if (rows.size() != 0 && activeCount == rows.size())
-					this.segment.cache_activity = 2;
-				else if (activeCount > 0)
-					this.segment.cache_activity = 1;
-				else
-					this.segment.cache_activity = 0;
-				
-			}else if(this.type == 2) {
+					if (rows.size() != 0 && activeCount == rows.size())
+						this.segment.cache_activity = 2;
+					else if (activeCount > 0)
+						this.segment.cache_activity = 1;
+					else
+						this.segment.cache_activity = 0;
+				} else if (this.type == 1) {
 
-				RowItem item = this.segment.list.get(this.id);
-				ButtonCheckboxSegment but = (ButtonCheckboxSegment) item.childs[0];
-				but.active = false;
-				FileUtil.setActive(this.name, false);
-				FileUtil.setOverride(this.name, false);
-				SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
-				set.mark = false;
-				File fileDir = new File(FileUtil.mcDataDir, "config");
-				FileFilter ff = null;
-				String arg = this.segment.searchbar.query;
-				if (arg != null) {
-					ff = new FileFilter() {
+					RowItem item = this.segment.list.get(this.id);
+					ButtonCheckboxSegment but = (ButtonCheckboxSegment) item.childs[0];
+					SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
+					set.mark = true;
+					but.active = true;
+					FileUtil.setActive(this.name, true);
+					FileUtil.setOverride(this.name, true);
+					File fileDir = new File(FileUtil.mcDataDir, "config");
+					FileFilter ff = null;
+					String arg = this.segment.searchbar.query;
+					if (arg != null) {
+						ff = new FileFilter() {
 
-						@Override
-						public boolean accept(File file) {
+							@Override
+							public boolean accept(File file) {
 
-							if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json")
-									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-									&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
-									&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
-								return true;
+								if (!file.getName().equals("defaultsettings")
+										&& !file.getName().equals("defaultsettings.json")
+										&& !file.getName().equals("ds_dont_export.json")
+										&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
+										&& !file.getName().equals("optionsof.txt")
+										&& !file.getName().equals("servers.dat")
+										&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
+									return true;
 
-							return false;
+								return false;
+							}
+						};
+					} else {
+						ff = FileUtil.fileFilter;
+					}
+					File[] files = fileDir.listFiles(ff);
+					List<RowItem> rows = this.segment.list;
+					int activeCount = 0;
+					for (int i = 0; i < rows.size(); i++) {
+						try {
+							boolean active = FileUtil.getActives().contains(files[i].getName());
+							if (active)
+								activeCount++;
+						} catch (ArrayIndexOutOfBoundsException e) {
+							activeCount = 0;
+							break;
 						}
-					};
-				} else {
-					ff = FileUtil.fileFilter;
+					}
+
+					if (rows.size() != 0 && activeCount == rows.size())
+						this.segment.cache_activity = 2;
+					else if (activeCount > 0)
+						this.segment.cache_activity = 1;
+					else
+						this.segment.cache_activity = 0;
+
+				} else if (this.type == 2) {
+
+					RowItem item = this.segment.list.get(this.id);
+					ButtonCheckboxSegment but = (ButtonCheckboxSegment) item.childs[0];
+					but.active = false;
+					FileUtil.setActive(this.name, false);
+					FileUtil.setOverride(this.name, false);
+					SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
+					set.mark = false;
+					File fileDir = new File(FileUtil.mcDataDir, "config");
+					FileFilter ff = null;
+					String arg = this.segment.searchbar.query;
+					if (arg != null) {
+						ff = new FileFilter() {
+
+							@Override
+							public boolean accept(File file) {
+
+								if (!file.getName().equals("defaultsettings")
+										&& !file.getName().equals("defaultsettings.json")
+										&& !file.getName().equals("ds_dont_export.json")
+										&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
+										&& !file.getName().equals("optionsof.txt")
+										&& !file.getName().equals("servers.dat")
+										&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
+									return true;
+
+								return false;
+							}
+						};
+					} else {
+						ff = FileUtil.fileFilter;
+					}
+					File[] files = fileDir.listFiles(ff);
+					List<RowItem> rows = this.segment.list;
+					int activeCount = 0;
+					for (int i = 0; i < rows.size(); i++) {
+
+						boolean active = FileUtil.getActives().contains(files[i].getName());
+						if (active)
+							activeCount++;
+
+					}
+
+					if (rows.size() != 0 && activeCount == rows.size()) {
+						this.segment.cache_activity = 2;
+					} else if (activeCount > 0)
+						this.segment.cache_activity = 1;
+					else
+						this.segment.cache_activity = 0;
+
 				}
-				File[] files = fileDir.listFiles(ff);
-				List<RowItem> rows = this.segment.list;
-				int activeCount = 0;
-				for (int i = 0; i < rows.size(); i++) {
 
-					boolean active = FileUtil.getActives().contains(files[i].getName());
-					if (active)
-						activeCount++;
-
-				}
-
-				if (rows.size() != 0 && activeCount == rows.size()) {
-					this.segment.cache_activity = 2;
-				}else if (activeCount > 0)
-					this.segment.cache_activity = 1;
-				else
-					this.segment.cache_activity = 0;
-				
 			}
 
-			}
-	
 			this.clickSound();
 			return true;
-			}
-			return false;
+		}
+		return false;
 	}
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		float alpha = ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
 	
 		if (active) {
 
@@ -880,15 +897,16 @@ class PopupCheckboxSegment extends Segment {
 		else if (this.timer < 0)
 			tempTimer = 0;
 
-		float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
-		int color = calcAlpha(0xff000000, alpha).getRGB();
+		int color = 0xff000000;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -909,7 +927,7 @@ class PopupCheckboxSegment extends Segment {
 		Segment.drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + this.width + 2, this.getPosY() - 2, null, false, null, false);
 
 		if (this.timer <= (Math.PI / 3)) {
-			color = calcAlpha(0xffffffff, alpha).getRGB();
+			color = 0xffffffff;
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -933,7 +951,7 @@ class PopupCheckboxSegment extends Segment {
 
 		}
 		
-		color = calcAlpha(0xfffe8518, alpha).getRGB();
+		color = 0xfffe8518;
 
 		f3 = (float) (color >> 24 & 255) / 255.0F;
 		f = (float) (color >> 16 & 255) / 255.0F;
@@ -957,7 +975,7 @@ class PopupCheckboxSegment extends Segment {
 		Segment.drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
 
 		if (this.timer > 0) {
-			color = calcAlpha(0xffffffff, alpha).getRGB();
+			color = 0xffffffff;
 
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
@@ -965,12 +983,13 @@ class PopupCheckboxSegment extends Segment {
 			f2 = (float) (color & 255) / 255.0F;
 
 			ScaledResolution scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
-			int scaleFactor = scaledResolution.getScaleFactor();
+			final int scaleFactor = scaledResolution.getScaleFactor();
 
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 	}

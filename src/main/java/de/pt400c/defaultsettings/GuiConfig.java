@@ -46,8 +46,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public FramebufferObject framebufferMc;
 	public boolean legacy;
     
-    public GuiConfig(GuiScreen parentScreen)
-    {
+    public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;
     }
@@ -61,8 +60,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void initGui()
-    {
+    public void initGui() {
     	final boolean fbo = Minecraft.getMinecraft().gameSettings.fboEnable;
         if(!fbo)
         	legacy = true;
@@ -119,8 +117,8 @@ public class GuiConfig extends DefaultSettingsGUI {
         						
         						addChild(new ScrollableSegment(this, 20, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
         			
-        								
-        						addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MinecraftForge.MC_VERSION + "-" + DefaultSettings.VERSION + "\n\nCreated by Jomcraft Network, 2019", 0, false))));
+        						addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MinecraftForge.MC_VERSION + "-" + DefaultSettings.VERSION + "\n\nBuild-ID: " + DefaultSettings.BUILD_ID + "\n\nBuild-Time: " + DefaultSettings.BUILD_TIME + "\n\n\nCreated by Jomcraft Network, 2019", 0, false))));
+	
 
     	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false)).addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png")).addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu))/*.addChild(new IconSegment(this, 10, 11, 16, 16, "textures/gui/test.png", this.leftMenu))*/.addChild(new ButtonUpdateChecker(this, /*72 / 2 - 20 / 2, */this.height - 30 - 25, this.leftMenu)));
     	
@@ -151,8 +149,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
 
     @Override
-    public void updateScreen()
-    {
+    public void updateScreen() {
     	super.updateScreen();
         for(int id = 0; id < cooldowns.length; id++) {
         	if(cooldowns[id].renderCooldown > 0)
@@ -274,8 +271,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 	}
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
     	if (legacy) {
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
@@ -350,13 +346,11 @@ public class GuiConfig extends DefaultSettingsGUI {
 		}
     }
     
-    public static int clamp(int num, int min, int max)
-    {
+    public static int clamp(int num, int min, int max) {
         return num < min ? min : (num > max ? max : num);
     }
     
-    public static float clamp(float num, float min, float max)
-    {
+    public static float clamp(float num, float min, float max) {
         return num < min ? min : (num > max ? max : num);
     }
 

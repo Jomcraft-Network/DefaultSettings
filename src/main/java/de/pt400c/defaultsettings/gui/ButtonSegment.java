@@ -5,14 +5,12 @@ import java.util.ArrayList;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.Collections;
 import java.util.function.Function;
-
 import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class ButtonSegment extends Segment {
@@ -51,16 +49,40 @@ public class ButtonSegment extends Segment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		float alpha = !this.isPopupSegment ? 0 : ((GuiConfig) this.gui).popupField == null ? 1 : ((GuiConfig) this.gui).popupField.getWindow().alphaRate;
 		
-		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha((this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color), alpha).getRGB(), calcAlpha(0xffdcdcdc, alpha).getRGB(), this.border);
+		glEnable(GL11.GL_BLEND);
+		glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	    glShadeModel(GL11.GL_SMOOTH);
+		glDisable(GL11.GL_TEXTURE_2D);
+
+		Segment.drawGradient(this.getPosX() + this.width - 2, this.getPosY() + 2, this.getPosX() + this.width + 5, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 0);
 		
-		GL11.glPushMatrix();
-     	GL11.glEnable(GL11.GL_BLEND);
-     	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-     	this.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, alpha).getRGB(), false);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopMatrix();
+		Segment.drawGradient(this.getPosX() - 5, this.getPosY() + 2, this.getPosX() + 2, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 2);
+		
+		Segment.drawGradient(this.getPosX() + 2, this.getPosY() - 5, this.getPosX() + this.width - 2, this.getPosY() + 2, 0xff000000, 0x00404040, 3);
+		
+		Segment.drawGradient(this.getPosX() + 2, this.getPosY() + this.height - 2, this.getPosX() + this.width - 2, this.getPosY() + this.height + 5, 0xff000000, 0x00404040, 1);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + 2, 7, 180, 75, 0xff000000, 0x00404040);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + 2, 7, 270, 75, 0xff000000, 0x00404040);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + this.height - 2, 7, 0, 75, 0xff000000, 0x00404040);
+		
+		Segment.drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + this.height - 2, 7, 90, 75, 0xff000000, 0x00404040);
+
+		
+		glEnable(GL11.GL_TEXTURE_2D);
+		glShadeModel(GL11.GL_FLAT);
+		glDisable(GL11.GL_BLEND);
+		
+		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, 0xffdcdcdc, this.border);
+		glPushMatrix();
+     	glEnable(GL11.GL_BLEND);
+     	glBlendFuncSeparate(770, 771, 1, 0);
+		this.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a, false);
+		glDisable(GL11.GL_BLEND);
+		glPopMatrix();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -68,7 +90,7 @@ public class ButtonSegment extends Segment {
 	public void hoverCheck(float mouseX, float mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
-			ArrayList<String> lines = new ArrayList<String>();
+			final ArrayList<String> lines = new ArrayList<String>();
 			
 			int textWidth = (int) (mouseX + 12 + MC.fontRenderer.getStringWidth(this.hoverMessage));
 			if(textWidth > this.gui.width) {
@@ -97,8 +119,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	protected static Color darkenColor(int color) {
-		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE),
-		(int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
+		return new Color((int) (((color & RED_MASK) >> 16) * BRIGHT_SCALE), (int) (((color & GREEN_MASK) >> 8) * BRIGHT_SCALE), (int) ((color & BLUE_MASK) * BRIGHT_SCALE), 255);
 	}
 	
 	@Override
@@ -107,7 +128,6 @@ public class ButtonSegment extends Segment {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
-
 			return true;
 		} else {
 			return false;
@@ -127,9 +147,8 @@ public class ButtonSegment extends Segment {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
 
-			if (this.function.apply(this)) {
+			if (this.function.apply(this)) 
 				this.clickSound();
-			}
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);

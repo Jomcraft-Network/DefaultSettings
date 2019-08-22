@@ -15,6 +15,7 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
+@Deprecated
 public class CommandDefaultSettings extends CommandBase {
 
 	public static final ArrayList<String> arg = new ArrayList<String>() {
@@ -22,7 +23,7 @@ public class CommandDefaultSettings extends CommandBase {
 		private static final long serialVersionUID = 9131616853614902481L;
 
 	{	add("save");	add("export-mode"); }};
-	
+
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
     @Override

@@ -35,16 +35,15 @@ public class ButtonMovableSegment extends ButtonSegment {
 			distanceX = (mouseX - this.posX);
 			distanceY = (mouseY - this.posY);
 			return true;
-		} else {
+		} else 
 			return false;
-		}
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		if (this.dragging) {
+		if (this.dragging) 
 			this.clickSound();
-		}
+		
 		this.dragging = false;
 		return false;
 	}

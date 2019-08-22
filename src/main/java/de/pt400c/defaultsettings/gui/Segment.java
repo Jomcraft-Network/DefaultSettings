@@ -13,11 +13,8 @@ import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -619,18 +616,13 @@ public abstract class Segment {
 
 	}
 	
-	public static void drawScaledCustomSizeModalRect(int x, int y, float u, float v, int uWidth, int vHeight, int width, int height, float tileWidth, float tileHeight)
-    {
-		float f = 1.0F / tileWidth;
-        float f1 = 1.0F / tileHeight;
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos((double)x, (double)(y + height), 0.0D).tex((double)(u * f), (double)((v + (float)vHeight) * f1)).endVertex();
-        bufferbuilder.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * f), (double)((v + (float)vHeight) * f1)).endVertex();
-        bufferbuilder.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * f), (double)(v * f1)).endVertex();
-        bufferbuilder.pos((double)x, (double)y, 0.0D).tex((double)(u * f), (double)(v * f1)).endVertex();
-        tessellator.draw();
+	public static void drawScaledCustomSizeModalRect(float x, float y, int width, int height) {
+		NEX.begin(GL11.GL_QUADS);
+		NEX.texCrd2f(0, 1); NEX.vert3f(x, 19 + y, 0);
+		NEX.texCrd2f(1, 1); NEX.vert3f(19 + x, 19 + y, 0);
+		NEX.texCrd2f(1, 0); NEX.vert3f(19 + x, y, 0);
+		NEX.texCrd2f(0, 0); NEX.vert3f(x, y, 0);
+		NEX.end();
     }
 	
 	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {

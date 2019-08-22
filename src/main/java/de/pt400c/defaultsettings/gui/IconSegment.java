@@ -4,7 +4,6 @@ import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.NEX;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,8 +29,7 @@ public class IconSegment extends Segment {
 		NEX.blendSep(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
 		this.posX = origX + customX;
-		final float actual = 128;
-		Segment.drawScaledCustomSizeModalRect((int) posX, (int) posY, 0, 0, (int) actual, (int) actual, 19, 19, actual, actual);
+		Segment.drawScaledCustomSizeModalRect((float) posX, (float) posY, 19, 19);
 		NEX.dis(GL11.GL_BLEND);
 		NEX.popMX();
 	}
@@ -43,8 +41,7 @@ public class IconSegment extends Segment {
 		NEX.en(GL11.GL_BLEND);
 		NEX.blendSep(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
-		final float actual = 128;
-		Segment.drawScaledCustomSizeModalRect((int) posX, (int) posY, 0, 0, (int) actual, (int) actual, 16, 16, actual, actual);
+		Segment.drawScaledCustomSizeModalRect((float) posX, (float) posY, 16, 16);
 		NEX.dis(GL11.GL_BLEND);
 		NEX.popMX();
 	}

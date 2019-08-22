@@ -20,14 +20,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
 import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ResourcePackRepository;
@@ -46,7 +51,6 @@ public class FileUtil {
 	public static PersistentJSON persistentJson;
 	public static final String persistentLocation = "config/ds_dont_export.json";
 	public static final String mainLocation = "config/defaultsettings.json";
-	public static String PLAYER_UUID;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -149,9 +153,15 @@ public class FileUtil {
 			try (Reader reader = new FileReader(main)) {
 				persistentJson = gson.fromJson(reader, PersistentJSON.class);
 				
-			} catch (Exception e) {
-
-			}
+			 } catch (Exception e) {
+				DefaultSettings.log.log(Level.ERROR, "Exception at processing persistent configs: ", e);
+				persistentJson = new PersistentJSON();
+				persistentJson.save(new File(mcDataDir, persistentLocation));
+		     }
+			
+		}else {
+			persistentJson = new PersistentJSON();
+			persistentJson.save(new File(mcDataDir, persistentLocation));
 		}
 		
 		return persistentJson;
@@ -170,30 +180,17 @@ public class FileUtil {
 	}
 
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
-		PLAYER_UUID = MC.getSession().getPlayerID();
 		final File main = new File(mcDataDir, mainLocation);
 		final String version = getMainJSON().getVersion();
-
-		if (!DefaultSettings.VERSION.equals(version))
+		
+		if(!DefaultSettings.VERSION.equals(version)) 
 			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
-
+		
 		final String identifier = mainJson.getIdentifier();
-
-		if (!getIdentifier().equals(identifier))
-			mainJson.setIdentifier(getIdentifier());
-
-		File persFile = new File(mcDataDir, persistentLocation);
-		if (persFile.exists()) {
-			getPersistent().check.forEach((k, v) -> mainJson.check.put(k, v));
-			persFile.delete();
-		}
-		final String created_for = mainJson.created_for;
-
-		if (!getUUID(PLAYER_UUID).equals(created_for)) {
-			mainJson.created_for = getUUID(PLAYER_UUID);
-			mainJson.check.clear();
-
-		}
+		
+		if(!getIdentifier().equals(identifier))
+			mainJson.setIdentifier(identifier);
+		
 		mainJson.save(main);
 	}
 	
@@ -230,14 +227,7 @@ public class FileUtil {
 			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
 				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
 			}
-			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date));
-			
-			try {
-				mainJson.created_for = getUUID(PLAYER_UUID);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
-			
+			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
 			mainJson.initPopup = true;
 			File fileDir = new File(mcDataDir, "config");
 			for (File file : fileDir.listFiles(fileFilter)) 
@@ -284,9 +274,11 @@ public class FileUtil {
 			final File main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
 		}else {
-			for(String name : getOverrides().keySet()) 
-				if(getActives().contains(name) && (!getMainJSON().check.containsKey(name) || !getMainJSON().check.get(name).equals(mainJson.overrides.get(name)))) 
+			for(String name : getOverrides().keySet()) {
+				if(getActives().contains(name) && (!getPersistent().check.containsKey(name) || !getPersistent().check.get(name).equals(mainJson.overrides.get(name)))) {
 					restoreSingleConfig(name);
+				}
+			}
 			
 			final File main = new File(mcDataDir, mainLocation);
 			getMainJSON().setExportMode(false);
@@ -314,9 +306,9 @@ public class FileUtil {
 				String resourcePack = (String) resourcePackObj;
 				for (Object entryObj : resourceRepository.getRepositoryEntriesAll()) {
 					Entry entry = (Entry) entryObj;
-					if (entry.getResourcePackName().equals(resourcePack)) 
+					if (entry.getResourcePackName().equals(resourcePack)) {
 						repositoryEntries.add(entry);
-					
+					}
 				}
 			}
 
@@ -333,21 +325,17 @@ public class FileUtil {
 	public static void restoreSingleConfig(String name) throws IOException {
 		try {
 			File file = new File(getMainFolder(), name);
-			if (file.exists()) {
-				if (file.isDirectory())
-					FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
-
-				else
-					FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
-			}else {
-				DefaultSettings.log.log(Level.WARN, "Couldn't restore a config file as it's missing: " + name);
-				return;
+			if(file.isDirectory()) {
+				FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
+			}
+			else {
+				FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
 			}
 			
 			String random = getOverrides().get(name);
 			
-			getMainJSON().check.put(name, random);
-			mainJson.save(new File(mcDataDir, mainLocation));
+			getPersistent().check.put(name, random);
+			persistentJson.save(new File(mcDataDir, persistentLocation));
 
 		} catch (IOException e) {
 			throw e;
@@ -405,9 +393,9 @@ public class FileUtil {
 		byte[] mac = inter.getHardwareAddress();
 		if (mac != null) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < mac.length; i++) 
+			for (int i = 0; i < mac.length; i++) {
 				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-			
+			}
 			String address = sb.toString();
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			md.update(address.getBytes());
@@ -426,9 +414,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(optionsFile));	
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "options.txt")));
 				String line;
-				while ((line = reader.readLine()) != null) 
+				while ((line = reader.readLine()) != null) {
 					writer.print(line + "\n");
-				
+				}
 			} catch (IOException e) {
 				throw e;
 			} finally {
@@ -469,9 +457,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(keysFile));
 				String line;
 				while ((line = reader.readLine()) != null) {
-					if (line.isEmpty()) 
+					if (line.isEmpty()) {
 						continue;
-					
+					}
 					DefaultSettings.keyRebinds.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
 				}
 			} catch (IOException e) {
@@ -489,10 +477,12 @@ public class FileUtil {
 				}
 			}
 
-			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
-				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) 
+			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
+				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
 					keyBinding.keyCodeDefault = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
-				
+				}
+			}
+			
 			KeyBinding.resetKeyBindingArrayAndHash();
 		}
 	}
@@ -506,9 +496,9 @@ public class FileUtil {
 				reader = new BufferedReader(new FileReader(optionsOFFile));
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "optionsof.txt")));
 				String line;
-				while ((line = reader.readLine()) != null) 
+				while ((line = reader.readLine()) != null) {
 					writer.print(line + "\n");
-				
+				}
 			} catch (IOException e) {
 				throw e;
 			} catch (NullPointerException e) {
@@ -528,6 +518,7 @@ public class FileUtil {
 	
 	public static void restoreConfigs() throws IOException {
 		try {
+			
 			FileUtils.copyDirectory(getMainFolder(), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
@@ -541,32 +532,19 @@ public class FileUtil {
 
 	public static void restoreServers() throws IOException {
 		try {
-			File file = new File(getMainFolder(), "servers.dat");
-			if(file.exists())
-				FileUtils.copyFile(file, new File(mcDataDir, "servers.dat"));
-			else
-				DefaultSettings.log.log(Level.WARN, "Couldn't restore the server config as it's not included");
+			FileUtils.copyFile(new File(getMainFolder(), "servers.dat"), new File(mcDataDir, "servers.dat"));
 		} catch (IOException e) {
 			DefaultSettings.log.log(Level.ERROR, "Couldn't restore the server config: ", e);
 		}
-	}
-	
-	public static String getUUID(String uuid) throws NoSuchAlgorithmException {
-
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(uuid.getBytes());
-		byte[] digest = md.digest();
-		return DatatypeConverter.printHexBinary(digest).toUpperCase();
-
 	}
 	
 	public static void saveKeys() throws IOException, NullPointerException {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
-			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
+			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
-			
+			}
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {
@@ -585,9 +563,9 @@ public class FileUtil {
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("key_")) 
+				if (line.startsWith("key_")) {
 					continue;
-				
+				}
 				writer.print(line + "\n");
 			}
 		} catch (IOException e) {
@@ -613,9 +591,9 @@ public class FileUtil {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "optionsof.txt")));
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsof.txt")));
 			String line;
-			while ((line = reader.readLine()) != null)
+			while ((line = reader.readLine()) != null) {
 				writer.print(line + "\n");
-			
+			}
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {

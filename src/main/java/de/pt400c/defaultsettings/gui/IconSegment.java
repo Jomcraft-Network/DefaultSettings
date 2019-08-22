@@ -26,7 +26,6 @@ public class IconSegment extends Segment {
 	
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
      	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(rof);
 		this.posX = origX + customX;
@@ -35,7 +34,6 @@ public class IconSegment extends Segment {
 		Segment.drawScaledCustomSizeModalRect((int) posX, (int) posY, 0, 0, (int) actual, (int) actual, 19, 19, actual, actual);
 
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glPopMatrix();
 	}
 	
@@ -44,7 +42,6 @@ public class IconSegment extends Segment {
 	
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
      	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(rof);
 		
@@ -52,7 +49,6 @@ public class IconSegment extends Segment {
 		Segment.drawScaledCustomSizeModalRect((int) posX, (int) posY, 0, 0, (int) actual, (int) actual, 16, 16, actual, actual);
 
 		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glPopMatrix();
 	}
 

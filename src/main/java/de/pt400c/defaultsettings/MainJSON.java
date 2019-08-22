@@ -18,8 +18,6 @@ public class MainJSON {
 	protected boolean initPopup = false;
 	private boolean exportMode = false;
 	public List<String> activeConfigs = new ArrayList<String>();
-	public HashMap<String, String> check = new HashMap<String, String>();
-	public String created_for;
 	public HashMap<String, String> overrides = new HashMap<String, String>();
 	
 	@SuppressWarnings("unused")

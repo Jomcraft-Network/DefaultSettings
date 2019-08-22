@@ -80,7 +80,6 @@ public class ExportSwitchSegment extends Segment {
 		float f2 = (float) (on & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -95,13 +94,11 @@ public class ExportSwitchSegment extends Segment {
 		Segment.drawRect(this.getPosX() + 7, (float) this.getPosY(), this.getPosX() + 7 + 15, this.getPosY() + 14, null, false, null, false);
 
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
 		if(!inactive) {
 		
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glDisable(GL11.GL_ALPHA_TEST);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			GL11.glScalef(0.65F, 0.65F, 0.65F);
 
@@ -109,12 +106,10 @@ public class ExportSwitchSegment extends Segment {
 
 			this.drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (GuiConfig.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), false);
 			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glEnable(GL11.GL_ALPHA_TEST);
 			GL11.glPopMatrix();
 		}
 		
 		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -129,9 +124,9 @@ public class ExportSwitchSegment extends Segment {
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glDisable(GL11.GL_BLEND);
-
+		
+		
 	}
 	
 	@SuppressWarnings("unchecked")

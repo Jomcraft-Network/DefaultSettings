@@ -13,7 +13,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -40,6 +39,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonSegment buttonS;
     public ButtonSegment buttonK;
     public ButtonSegment buttonO;
+    private boolean resized;
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
@@ -61,6 +61,15 @@ public class GuiConfig extends DefaultSettingsGUI {
 
     @Override
     public void initGui() {
+    	
+    	if(!resized) {
+    		resized = true;
+    		final int widthi = MC.displayWidth;
+    		final int heighti = MC.displayHeight;
+    		Minecraft.getMinecraft().resize(widthi - 1, heighti - 1);
+    		Minecraft.getMinecraft().resize(widthi, heighti);
+    	}
+    	
     	final boolean fbo = Minecraft.getMinecraft().gameSettings.fboEnable;
         if(!fbo)
         	legacy = true;

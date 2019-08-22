@@ -8,6 +8,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class IconSegment extends Segment {
@@ -24,25 +26,25 @@ public class IconSegment extends Segment {
 	@Override
 	public void customRender(float mouseX, float mouseY, float customX, float customY, float partialTicks) {
 	
-		NEX.pushMX();
-		NEX.en(GL11.GL_BLEND);
-		NEX.blendSep(770, 771, 1, 0);
+		glPushMatrix();
+		glEnable(GL11.GL_BLEND);
+		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
 		this.posX = origX + customX;
-		Segment.drawScaledCustomSizeModalRect((float) posX, (float) posY, 19, 19);
-		NEX.dis(GL11.GL_BLEND);
-		NEX.popMX();
+		NEX.drawScaledTex((float) posX, (float) posY, 19, 19);
+		glDisable(GL11.GL_BLEND);
+		glPopMatrix();
 	}
 	
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 	
-		NEX.pushMX();
-		NEX.en(GL11.GL_BLEND);
-		NEX.blendSep(770, 771, 1, 0);
+		glPushMatrix();
+		glEnable(GL11.GL_BLEND);
+		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
-		Segment.drawScaledCustomSizeModalRect((float) posX, (float) posY, 16, 16);
-		NEX.dis(GL11.GL_BLEND);
-		NEX.popMX();
+		NEX.drawScaledTex((float) posX, (float) posY, 16, 16);
+		glDisable(GL11.GL_BLEND);
+		glPopMatrix();
 	}
 }

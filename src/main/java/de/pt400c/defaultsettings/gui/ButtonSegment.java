@@ -6,10 +6,11 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.Collections;
 import java.util.function.Function;
 import org.lwjgl.opengl.GL11;
-import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class ButtonSegment extends Segment {
@@ -49,10 +50,10 @@ public class ButtonSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		NEX.en(GL11.GL_BLEND);
-		NEX.blend(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	    NEX.shadeModel(GL11.GL_SMOOTH);
-		NEX.dis(GL11.GL_TEXTURE_2D);
+		glEnable(GL11.GL_BLEND);
+		glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	    glShadeModel(GL11.GL_SMOOTH);
+		glDisable(GL11.GL_TEXTURE_2D);
 
 		Segment.drawGradient(this.getPosX() + this.width - 2, this.getPosY() + 2, this.getPosX() + this.width + 5, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 0);
 		
@@ -71,17 +72,17 @@ public class ButtonSegment extends Segment {
 		Segment.drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + this.height - 2, 7, 90, 75, 0xff000000, 0x00404040);
 
 		
-		NEX.en(GL11.GL_TEXTURE_2D);
-		NEX.shadeModel(GL11.GL_FLAT);
-		NEX.dis(GL11.GL_BLEND);
+		glEnable(GL11.GL_TEXTURE_2D);
+		glShadeModel(GL11.GL_FLAT);
+		glDisable(GL11.GL_BLEND);
 		
 		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, 0xffdcdcdc, this.border);
-		NEX.pushMX();
-     	NEX.en(GL11.GL_BLEND);
-     	NEX.blendSep(770, 771, 1, 0);
+		glPushMatrix();
+     	glEnable(GL11.GL_BLEND);
+     	glBlendFuncSeparate(770, 771, 1, 0);
 		MC.fontRenderer.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a, false);
-		NEX.dis(GL11.GL_BLEND);
-		NEX.popMX();
+		glDisable(GL11.GL_BLEND);
+		glPopMatrix();
 	}
 	
 	@Override

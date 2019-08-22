@@ -30,6 +30,9 @@ import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL30.*;
 
 public class GuiConfig extends DefaultSettingsGUI {
 	
@@ -166,7 +169,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
 		if (legacy) {
-			NEX.dis(GL11.GL_ALPHA_TEST);
+			glDisable(GL11.GL_ALPHA_TEST);
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
@@ -185,52 +188,52 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
-			NEX.en(GL11.GL_ALPHA_TEST);
+			glEnable(GL11.GL_ALPHA_TEST);
 
 		} else {
 
 			this.mc.getFramebuffer().unbindFramebuffer();
 
-			NEX.pushMX();
-			NEX.clear(16640);
+			glPushMatrix();
+			glClear(16640);
 			this.framebufferMc.bindFramebuffer(true);
-			NEX.en(GL13.GL_MULTISAMPLE);
-			NEX.en(GL11.GL_TEXTURE_2D);
-			NEX.dis(GL11.GL_ALPHA_TEST);
+			glEnable(GL13.GL_MULTISAMPLE);
+			glEnable(GL11.GL_TEXTURE_2D);
+			glDisable(GL11.GL_ALPHA_TEST);
 			ScaledResolution scaledresolution;
 			if(DefaultSettings.is180)
 				scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
 			else
 				scaledresolution = new ScaledResolution(this.mc);
 			
-			NEX.clear(256);
-			NEX.matrixMode(5889);
-			NEX.loadIdentity();
-			NEX.ortho(0.0D, scaledresolution.getScaledWidth_double(), scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-			NEX.matrixMode(5888);
-			NEX.loadIdentity();
-			NEX.translatef(0.0F, 0.0F, -2000.0F);
+			glClear(256);
+			glMatrixMode(5889);
+			glLoadIdentity();
+			glOrtho(0.0D, scaledresolution.getScaledWidth_double(), scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+			glMatrixMode(5888);
+			glLoadIdentity();
+			glTranslatef(0.0F, 0.0F, -2000.0F);
 
-			NEX.clear(256);
-			NEX.dis(GL11.GL_ALPHA_TEST);
+			glClear(256);
+			glDisable(GL11.GL_ALPHA_TEST);
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
-			NEX.dis(GL11.GL_TEXTURE_2D);
+			glDisable(GL11.GL_TEXTURE_2D);
 
-			NEX.en(GL11.GL_BLEND);
-			NEX.dis(GL11.GL_ALPHA_TEST);
-			NEX.blendSep(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-			NEX.shadeModel(GL11.GL_SMOOTH);
+			glEnable(GL11.GL_BLEND);
+			glDisable(GL11.GL_ALPHA_TEST);
+			glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+			glShadeModel(GL11.GL_SMOOTH);
 
 			Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 			
 			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
-			NEX.shadeModel(GL11.GL_FLAT);
-			NEX.en(GL11.GL_ALPHA_TEST);
-			NEX.dis(GL11.GL_BLEND);
+			glShadeModel(GL11.GL_FLAT);
+			glEnable(GL11.GL_ALPHA_TEST);
+			glDisable(GL11.GL_BLEND);
 
-			NEX.en(GL11.GL_TEXTURE_2D);
+			glEnable(GL11.GL_TEXTURE_2D);
 			
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 
@@ -250,15 +253,15 @@ public class GuiConfig extends DefaultSettingsGUI {
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
 			this.framebufferMc.unbindFramebuffer();
-			NEX.popMX();
+			glPopMatrix();
 
 			this.mc.getFramebuffer().bindFramebuffer(true);
-			NEX.pushMX();
-			NEX.dis(GL11.GL_ALPHA_TEST);
-			NEX.bindFBO(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-			NEX.blitFBO(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-			NEX.en(GL11.GL_ALPHA_TEST);
-			NEX.popMX();
+			glPushMatrix();
+			glDisable(GL11.GL_ALPHA_TEST);
+			glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+			glEnable(GL11.GL_ALPHA_TEST);
+			glPopMatrix();
 		}
 
 	}

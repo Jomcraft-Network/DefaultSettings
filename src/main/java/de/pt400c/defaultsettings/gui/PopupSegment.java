@@ -6,10 +6,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.FramebufferPopup;
-import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class PopupSegment extends Segment {
@@ -57,54 +59,54 @@ public class PopupSegment extends Segment {
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			else
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
-			NEX.dis(GL11.GL_ALPHA_TEST);
+			glDisable(GL11.GL_ALPHA_TEST);
 			Segment.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
-			NEX.en(GL11.GL_ALPHA_TEST);
+			glEnable(GL11.GL_ALPHA_TEST);
 			((GuiConfig) this.gui).framebufferMc.unbindFramebuffer();
 
-			NEX.clear(16640);
+			glClear(16640);
 
-			NEX.bindFBO(GL30.GL_FRAMEBUFFER, framebufferMc.msFbo);
+			glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferMc.msFbo);
 
-			NEX.clear(GL11.GL_COLOR_BUFFER_BIT);
+			glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-			NEX.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			
 			this.window.render(mouseX, mouseY, partialTicks);
 			
-			NEX.dis(GL11.GL_ALPHA_TEST);
-			NEX.bindFBO(GL30.GL_READ_FRAMEBUFFER, framebufferMc.msFbo);
-			NEX.bindFBO(GL30.GL_DRAW_FRAMEBUFFER, framebufferMc.fbo);
-			NEX.blitFBO(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-			NEX.bindFBO(GL30.GL_FRAMEBUFFER, 0);
+			glDisable(GL11.GL_ALPHA_TEST);
+			glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.msFbo);
+			glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, framebufferMc.fbo);
+			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+			glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
 			((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
 
-			NEX.en(GL11.GL_TEXTURE_2D);
+			glEnable(GL11.GL_TEXTURE_2D);
 
-			NEX.en(GL11.GL_BLEND);
+			glEnable(GL11.GL_BLEND);
 
-			NEX.blendSep(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-			NEX.bindTex(GL11.GL_TEXTURE_2D, framebufferMc.texture);
+			glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+			glBindTexture(GL11.GL_TEXTURE_2D, framebufferMc.texture);
 
-			NEX.texParI(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-			NEX.texParI(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-			NEX.texParI(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-			NEX.texParI(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+			glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+			glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+			glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+			glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
 			
 			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
-			NEX.color4f(1, 1, 1, 1 - alphaRate);
-			NEX.begin(GL11.GL_QUADS);
-			NEX.texCrd2f(0, 0); NEX.vert3f(0, height, 0);
-			NEX.texCrd2f(1, 0); NEX.vert3f(width, height, 0);
-			NEX.texCrd2f(1, 1); NEX.vert3f(width, 0, 0);
-			NEX.texCrd2f(0, 1); NEX.vert3f(0, 0, 0);
-			NEX.end();
+			glColor4f(1, 1, 1, 1 - alphaRate);
+			glBegin(GL11.GL_QUADS);
+			glTexCoord2f(0, 0); glVertex3d(0, height, 0);
+			glTexCoord2f(1, 0); glVertex3d(width, height, 0);
+			glTexCoord2f(1, 1); glVertex3d(width, 0, 0);
+			glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
+			glEnd();
 
-			NEX.bindTex(GL11.GL_TEXTURE_2D, 0);
-			NEX.en(GL11.GL_ALPHA_TEST);
-			NEX.dis(GL11.GL_BLEND);
+			glBindTexture(GL11.GL_TEXTURE_2D, 0);
+			glEnable(GL11.GL_ALPHA_TEST);
+			glDisable(GL11.GL_BLEND);
 
 			this.window.hoverCheck(mouseX, mouseY);
 		}

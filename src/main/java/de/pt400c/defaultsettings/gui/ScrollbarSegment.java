@@ -1,10 +1,11 @@
 package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.opengl.GL11;
-import de.pt400c.defaultsettings.NEX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class ScrollbarSegment extends ButtonSegment {
@@ -45,10 +46,10 @@ public class ScrollbarSegment extends ButtonSegment {
 			distanceY = 0;
 		}
 
-		NEX.dis(GL11.GL_TEXTURE_2D);
-		NEX.en(GL11.GL_BLEND);
+		glDisable(GL11.GL_TEXTURE_2D);
+		glEnable(GL11.GL_BLEND);
 
-		NEX.blendSep(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 
@@ -58,9 +59,9 @@ public class ScrollbarSegment extends ButtonSegment {
 
 		Segment.drawGradientCircle((float) this.getPosX() + this.getWidth() - 2, (float) this.getPosY() + this.getHeight() - 2, 6, 0, 50, 0xff3a3a3a, 0x003a3a3a);
 
-		NEX.shadeModel(GL11.GL_FLAT);
-		NEX.dis(GL11.GL_BLEND);
-		NEX.en(GL11.GL_TEXTURE_2D);
+		glShadeModel(GL11.GL_FLAT);
+		glDisable(GL11.GL_BLEND);
+		glEnable(GL11.GL_TEXTURE_2D);
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 

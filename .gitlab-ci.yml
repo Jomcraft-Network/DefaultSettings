@@ -2,6 +2,7 @@ image: java:8-jdk
 
 stages:
   - build
+  - test
   - deploy
   
 before_script:
@@ -9,6 +10,15 @@ before_script:
   - echo $GPG_KEY_RING_FILE | base64 -d > /tmp/key
   - echo $JAVA_KEY_FILE | base64 -d > /tmp/key2
   - export GRADLE_USER_HOME=`pwd`/.gradle
+  - echo "signing.keyId=$GPG_KEY_ID" >> gradle.properties
+  - echo "signing.password=$GPG_PASSPHRASE" >> gradle.properties
+  - echo "signing.secretKeyRingFile=/tmp/key" >> gradle.properties
+  - echo "signing.keystorePath=/tmp/key2" >> gradle.properties
+  - echo "signing.alias=$signing_alias" >> gradle.properties
+  - echo "signing.keyStorePassword=$signing_keyStorePassword" >> gradle.properties
+  - echo "cursegradle.api_token=$curse_api" >> gradle.properties
+  - echo "maven.username=$maven_username" >> gradle.properties
+  - echo "maven.password=$maven_password" >> gradle.properties
   
 cache:
   paths:
@@ -18,23 +28,22 @@ cache:
 build:
   stage: build
   script:
-    - echo "signing.keyId=$GPG_KEY_ID" >> gradle.properties
-    - echo "signing.password=$GPG_PASSPHRASE" >> gradle.properties
-    - echo "signing.secretKeyRingFile=/tmp/key" >> gradle.properties
-    - echo "signing.keystorePath=/tmp/key2" >> gradle.properties
-    - echo "signing.alias=$signing_alias" >> gradle.properties
-    - echo "signing.keyStorePassword=$signing_keyStorePassword" >> gradle.properties
-    - echo "cursegradle.api_token=$curse_api" >> gradle.properties
-    - echo "maven.username=$maven_username" >> gradle.properties
-    - echo "maven.password=$maven_password" >> gradle.properties
     - ./gradlew build
   only:
     variables:
-       - $BUILD_MAVEN != "publish"
+       - $BUILD_MAVEN != "publish" && $BUILD_MAVEN != "test"
   artifacts:
     paths:
       - build/libs/
     expire_in: 6 months
+    
+checks:
+  stage: test
+  script:
+    - ./gradlew test
+  only:
+    variables:
+        - $BUILD_MAVEN == "test"
     
 deploy:
   stage: deploy

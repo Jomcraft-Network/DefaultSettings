@@ -28,9 +28,6 @@ build:
   stage: build
   script:
     - ./gradlew build
-  only:
-    variables:
-       - $BUILD_MAVEN != "publish"
   artifacts:
     paths:
       - build/libs/

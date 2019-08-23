@@ -279,9 +279,6 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
     	if (legacy) {
-    		
-    		GlStateManager.disableAlphaTest();
-
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
@@ -299,8 +296,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.render(mouseX, mouseY, partialTicks);
-			
-			GlStateManager.enableAlphaTest();
     	}else {
     		this.mc.getFramebuffer().unbindFramebuffer();
 
@@ -309,7 +304,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.framebufferMc.bindFramebuffer(true);
 			GL11.glEnable(GL13.GL_MULTISAMPLE);
 			GlStateManager.enableTexture2D();
-			GlStateManager.disableAlphaTest();
 			GlStateManager.clear(256);
 			GlStateManager.matrixMode(5889);
 			GlStateManager.loadIdentity();
@@ -319,14 +313,12 @@ public class GuiConfig extends DefaultSettingsGUI {
 			GlStateManager.translatef(0.0F, 0.0F, -2000.0F);
 
 			GlStateManager.clear(256);
-			GlStateManager.disableAlphaTest();
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 	        
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 
 			GL11.glEnable(GL11.GL_BLEND);
-			GlStateManager.disableAlphaTest();
 			OpenGlHelper.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 
@@ -335,7 +327,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
 			GL11.glShadeModel(GL11.GL_FLAT);
-			GlStateManager.enableAlphaTest();
 			GL11.glDisable(GL11.GL_BLEND);
 
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -361,12 +352,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			this.mc.getFramebuffer().bindFramebuffer(true);
 			GlStateManager.pushMatrix();
-			GlStateManager.disableAlphaTest();
-
 			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
 			GL30.glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-			GlStateManager.enableAlphaTest();
-
 			GlStateManager.popMatrix();
     	}
     }

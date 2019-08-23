@@ -47,7 +47,6 @@ public class ScrollbarSegment extends ButtonSegment {
 		
 		GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
-        GlStateManager.disableAlphaTest();
         GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GL11.glShadeModel(GL11.GL_SMOOTH);
 	
@@ -59,7 +58,6 @@ public class ScrollbarSegment extends ButtonSegment {
 	
 		GL11.glShadeModel(GL11.GL_FLAT);
    		GlStateManager.disableBlend();
-   		GlStateManager.enableAlphaTest();
    		GlStateManager.enableTexture2D();
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);

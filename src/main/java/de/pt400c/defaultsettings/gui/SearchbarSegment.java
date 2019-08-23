@@ -84,7 +84,6 @@ public class SearchbarSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -180,12 +179,10 @@ public class SearchbarSegment extends Segment {
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		GL11.glPushMatrix();
 		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlphaTest();
 		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
@@ -194,7 +191,6 @@ public class SearchbarSegment extends Segment {
 			MC.fontRenderer.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0);
 
 		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlphaTest();
 		GL11.glPopMatrix();
 
 	}

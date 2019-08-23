@@ -2,7 +2,6 @@ image: java:8-jdk
 
 stages:
   - build
-  - test
   - deploy
   
 before_script:
@@ -29,21 +28,10 @@ build:
   stage: build
   script:
     - ./gradlew build
-  only:
-    variables:
-       - $BUILD_MAVEN != "publish" && $BUILD_MAVEN != "test"
   artifacts:
     paths:
       - build/libs/
     expire_in: 6 months
-    
-checks:
-  stage: test
-  script:
-    - ./gradlew test
-  only:
-    variables:
-        - $BUILD_MAVEN == "test"
     
 deploy:
   stage: deploy
@@ -52,3 +40,7 @@ deploy:
   only:
     variables:
         - $BUILD_MAVEN == "publish"
+  artifacts:
+    paths:
+      - build/libs/
+    expire_in: 6 months

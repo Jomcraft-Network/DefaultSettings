@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -190,7 +191,6 @@ public class ScrollableSegment extends Segment {
 		final float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -215,15 +215,12 @@ public class ScrollableSegment extends Segment {
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
 
 		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
 		if (!this.invisible) {
 
 			GlStateManager.disableTexture();
 			GlStateManager.enableBlend();
-			GlStateManager.disableAlphaTest();
-			GlStateManager.disableAlphaTest();
 			GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 			GL11.glShadeModel(GL11.GL_SMOOTH);
 
@@ -233,8 +230,6 @@ public class ScrollableSegment extends Segment {
 
 			GL11.glShadeModel(GL11.GL_FLAT);
 			GlStateManager.disableBlend();
-			GlStateManager.enableAlphaTest();
-			GlStateManager.enableAlphaTest();
 			GlStateManager.enableTexture();
 
 		}
@@ -520,7 +515,6 @@ class SettingsButtonSegment extends Segment {
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GlStateManager.color4f(f, f1, f2, f3);
@@ -557,7 +551,6 @@ class SettingsButtonSegment extends Segment {
 		}
 		
 		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		this.active = false;
 	}
@@ -628,14 +621,12 @@ class SettingsButtonSegment extends Segment {
 			
 			List<String> actives = FileUtil.getActives();
 			boolean active = actives.contains(this.name);
-			
-			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 45, this.name, this.parent, config.popupField, (byte) 0, active && !FileUtil.getOverrides().containsKey(this.name)));
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 45, 0, 0, "Always", 0, true));
-			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 65, this.name, this.parent, config.popupField, (byte) 1, active && FileUtil.getOverrides().containsKey(this.name)));
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 65, 0, 0, "Replaced once", 0, true));
-			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 85, this.name, this.parent, config.popupField, (byte) 2, !active));
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0, true));
-			
+			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 45, this.name, this.parent, config.popupField, (byte) 0, active && !FileUtil.getOverrides().containsKey(this.name)));
+			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 65, this.name, this.parent, config.popupField, (byte) 1, active && FileUtil.getOverrides().containsKey(this.name)));
+			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 85, this.name, this.parent, config.popupField, (byte) 2, !active));
 			config.popup.isVisible = true;
 			
 		}
@@ -910,9 +901,8 @@ class PopupCheckboxSegment extends Segment {
 		float f2 = (float) (color & 255) / 255.0F;
 
 		GL11.glEnable(GL11.GL_BLEND);
-		GlStateManager.disableAlphaTest();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL14.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE);
 
 		GlStateManager.color4f(f, f1, f2, f3);
 
@@ -992,7 +982,6 @@ class PopupCheckboxSegment extends Segment {
 		}
 
 		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlphaTest();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);	
 	}
 }

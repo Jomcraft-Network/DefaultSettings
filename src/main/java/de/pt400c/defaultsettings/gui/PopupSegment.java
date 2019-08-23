@@ -1,13 +1,10 @@
 package de.pt400c.defaultsettings.gui;
 
 import javax.annotation.Nonnull;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
-
 import de.pt400c.defaultsettings.FramebufferPopup;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import de.pt400c.defaultsettings.GuiConfig;

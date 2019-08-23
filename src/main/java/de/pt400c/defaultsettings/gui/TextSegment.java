@@ -31,7 +31,6 @@ public class TextSegment extends Segment {
 
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
-     	GlStateManager.disableAlphaTest();
      	GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
      	int offsetY = 0;
      	for(String line : this.text.split("\n")) {
@@ -39,7 +38,6 @@ public class TextSegment extends Segment {
      		offsetY += this.offset;
      	}
 		GL11.glDisable(GL11.GL_BLEND);
-		GlStateManager.enableAlphaTest();
 		GL11.glPopMatrix();
 		
 	}

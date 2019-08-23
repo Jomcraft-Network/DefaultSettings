@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.function.Function;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,7 +50,6 @@ public class ButtonSegment extends Segment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	    GlStateManager.disableAlphaTest();
 	 	GL11.glShadeModel(GL11.GL_SMOOTH);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 
@@ -79,10 +77,8 @@ public class ButtonSegment extends Segment {
 
 		GL11.glPushMatrix();
      	GL11.glEnable(GL11.GL_BLEND);
-     	GlStateManager.disableAlphaTest();
      	GLX.glBlendFuncSeparate(770, 771, 1, 0);
      	MC.fontRenderer.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a);
-		GlStateManager.enableAlphaTest();
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 

@@ -620,13 +620,12 @@ class SettingsButtonSegment extends Segment {
 			List<String> actives = FileUtil.getActives();
 			boolean active = actives.contains(this.name);
 			
-			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 45, this.name, this.parent, config.popupField, (byte) 0, active && !FileUtil.getOverrides().containsKey(this.name)));
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 45, 0, 0, "Always", 0, true));
-			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 65, this.name, this.parent, config.popupField, (byte) 1, active && FileUtil.getOverrides().containsKey(this.name)));
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 65, 0, 0, "Replaced once", 0, true));
-			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 85, this.name, this.parent, config.popupField, (byte) 2, !active));
 			config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0, true));
-			
+			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 45, this.name, this.parent, config.popupField, (byte) 0, active && !FileUtil.getOverrides().containsKey(this.name)));
+			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 65, this.name, this.parent, config.popupField, (byte) 1, active && FileUtil.getOverrides().containsKey(this.name)));
+			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 85, this.name, this.parent, config.popupField, (byte) 2, !active));
 			config.popup.isVisible = true;
 
 		}

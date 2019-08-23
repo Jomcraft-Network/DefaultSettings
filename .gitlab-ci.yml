@@ -33,7 +33,19 @@ build:
       - build/libs/
     expire_in: 6 months
 
-deploy:
+curseforge:
+  stage: deploy
+  script:
+    - ./gradlew build curseforge
+  only:
+    variables:
+        - $BUILD_MAVEN == "curseforge"
+  artifacts:
+    paths:
+      - build/libs/
+    expire_in: 6 months
+
+maven:
   stage: deploy
   script:
     - ./gradlew build publish

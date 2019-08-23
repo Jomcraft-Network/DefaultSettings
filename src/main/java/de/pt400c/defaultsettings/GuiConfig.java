@@ -169,7 +169,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
 		if (legacy) {
-			glDisable(GL11.GL_ALPHA_TEST);
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
@@ -188,7 +187,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
-			glEnable(GL11.GL_ALPHA_TEST);
 
 		} else {
 
@@ -199,7 +197,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.framebufferMc.bindFramebuffer(true);
 			glEnable(GL13.GL_MULTISAMPLE);
 			glEnable(GL11.GL_TEXTURE_2D);
-			glDisable(GL11.GL_ALPHA_TEST);
+
 			ScaledResolution scaledresolution;
 			if(DefaultSettings.is180)
 				scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
@@ -215,13 +213,13 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glTranslatef(0.0F, 0.0F, -2000.0F);
 
 			glClear(256);
-			glDisable(GL11.GL_ALPHA_TEST);
+
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
 			glDisable(GL11.GL_TEXTURE_2D);
 
 			glEnable(GL11.GL_BLEND);
-			glDisable(GL11.GL_ALPHA_TEST);
+
 			glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 			glShadeModel(GL11.GL_SMOOTH);
 
@@ -230,7 +228,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
 			glShadeModel(GL11.GL_FLAT);
-			glEnable(GL11.GL_ALPHA_TEST);
+
 			glDisable(GL11.GL_BLEND);
 
 			glEnable(GL11.GL_TEXTURE_2D);
@@ -257,13 +255,12 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			this.mc.getFramebuffer().bindFramebuffer(true);
 			glPushMatrix();
-			glDisable(GL11.GL_ALPHA_TEST);
+
 			glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
 			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-			glEnable(GL11.GL_ALPHA_TEST);
+
 			glPopMatrix();
 		}
-
 	}
 	
 	public void saveServers() throws ClosedByInterruptException {

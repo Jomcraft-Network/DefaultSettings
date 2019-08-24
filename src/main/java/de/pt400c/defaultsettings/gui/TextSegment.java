@@ -1,8 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.platform.GlStateManager;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,17 +28,16 @@ public class TextSegment extends Segment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-
-		GL11.glPushMatrix();
-     	GL11.glEnable(GL11.GL_BLEND);
-     	GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		
+		glPushMatrix();
+     	glEnable(GL_BLEND);
+     	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
      	int offsetY = 0;
      	for(String line : this.text.split("\n")) {
      		MC.fontRenderer.drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, this.color);
      		offsetY += this.offset;
      	}
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopMatrix();
-		
+		glDisable(GL_BLEND);
+		glPopMatrix();
 	}
 }

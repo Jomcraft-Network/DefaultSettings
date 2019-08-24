@@ -1,12 +1,11 @@
 package de.pt400c.defaultsettings.gui;
 
 import javax.annotation.Nonnull;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
-import de.pt400c.defaultsettings.FramebufferPopup;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL30.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
+import de.pt400c.defaultsettings.FramebufferPopup;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,6 +30,7 @@ public class PopupSegment extends Segment {
 	
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
+
 		if (this.isVisible) {
 
 			if (this.open) {
@@ -59,59 +59,55 @@ public class PopupSegment extends Segment {
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			else
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
-			
-			GlStateManager.disableAlphaTest();
-
+			glDisable(GL_ALPHA_TEST);
 			Segment.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			
-			GlStateManager.enableAlphaTest();
-			
+			glEnable(GL_ALPHA_TEST);
 			((GuiConfig) this.gui).framebufferMc.unbindFramebuffer();
 
-			GL11.glClear(16640);
+			glClear(16640);
 
-			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferMc.msFbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, framebufferMc.msFbo);
 
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 			this.window.render(mouseX, mouseY, partialTicks);
-			
-			GlStateManager.disableAlphaTest();
-			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.msFbo);
-			GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, framebufferMc.fbo);
-			GL30.glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+			glDisable(GL_ALPHA_TEST);
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.msFbo);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebufferMc.fbo);
+			glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
 
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			glEnable(GL_TEXTURE_2D);
 
-			GL11.glEnable(GL11.GL_BLEND);
+			glEnable(GL_BLEND);
 
-			GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, framebufferMc.texture);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glBindTexture(GL_TEXTURE_2D, framebufferMc.texture);
 
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-			GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			
 			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
-			GL11.glColor4f(1, 1, 1, 1 - alphaRate);
-			GL11.glBegin(GL11.GL_QUADS);
-			GL11.glTexCoord2f(0, 0); GL11.glVertex3f(0, height, 0);
-			GL11.glTexCoord2f(1, 0); GL11.glVertex3f(width, height, 0);
-			GL11.glTexCoord2f(1, 1); GL11.glVertex3f(width, 0, 0);
-			GL11.glTexCoord2f(0, 1); GL11.glVertex3f(0, 0, 0);
-			GL11.glEnd();
+			glColor4f(1, 1, 1, 1 - alphaRate);
+			glBegin(GL_QUADS);
+			glTexCoord2f(0, 0); glVertex3f(0, height, 0);
+			glTexCoord2f(1, 0); glVertex3f(width, height, 0);
+			glTexCoord2f(1, 1); glVertex3f(width, 0, 0);
+			glTexCoord2f(0, 1); glVertex3f(0, 0, 0);
+			glEnd();
 
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-			GlStateManager.enableAlphaTest();
-			GL11.glDisable(GL11.GL_BLEND);
-			
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glEnable(GL_ALPHA_TEST);
+			glDisable(GL_BLEND);
+
 			this.window.hoverCheck(mouseX, mouseY);
 		}
 	}
@@ -150,5 +146,4 @@ public class PopupSegment extends Segment {
 	public PopupWindow getWindow() {
 		return this.window;
 	}
-
 }

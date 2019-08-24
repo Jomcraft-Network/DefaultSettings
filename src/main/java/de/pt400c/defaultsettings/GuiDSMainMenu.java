@@ -3,10 +3,6 @@ package de.pt400c.defaultsettings;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.util.ArrayList;
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.GLX;
-
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Segment;
@@ -14,6 +10,8 @@ import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TextFormatting;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class GuiDSMainMenu extends DefaultSettingsGUI {
@@ -60,19 +58,17 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
     	AbstractGui.fill(0, 0, this.width, this.height, Color.WHITE.getRGB());
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
+    	glDisable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		glShadeModel(GL_SMOOTH);
 		Segment.drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		glShadeModel(GL_FLAT);
+		glDisable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glEnable(GL_TEXTURE_2D);
 		AbstractGui.fill(0, 0, width, 25, 0xffe0e0e0);
-   
     	super.render(mouseX, mouseY, partialTicks);
     }
-	
 }

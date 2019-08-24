@@ -47,5 +47,4 @@ public class ButtonMovableSegment extends ButtonSegment {
 		this.dragging = false;
 		return false;
 	}
-
 }

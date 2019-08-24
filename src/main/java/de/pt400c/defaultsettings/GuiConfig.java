@@ -9,27 +9,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
-
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
-import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
-import de.pt400c.defaultsettings.gui.ButtonSegment;
-import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
-import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
-import de.pt400c.defaultsettings.gui.ExportSwitchSegment;
-import de.pt400c.defaultsettings.gui.LeftMenu;
-import de.pt400c.defaultsettings.gui.MenuArea;
-import de.pt400c.defaultsettings.gui.MenuScreen;
-import de.pt400c.defaultsettings.gui.PopupSegment;
-import de.pt400c.defaultsettings.gui.PopupWindow;
-import de.pt400c.defaultsettings.gui.QuitButtonSegment;
-import de.pt400c.defaultsettings.gui.ScrollableSegment;
-import de.pt400c.defaultsettings.gui.Segment;
-import de.pt400c.defaultsettings.gui.SplitterSegment;
-import de.pt400c.defaultsettings.gui.TextSegment;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL30.*;
+import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
@@ -277,69 +261,61 @@ public class GuiConfig extends DefaultSettingsGUI {
         		cooldowns[id].renderCooldown++;	
         }
     }
-    
-    
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
     	this.minecraft.getFramebuffer().unbindFramebuffer();
-		GlStateManager.pushMatrix();
-		GL11.glClear(16640);
+		glPushMatrix();
+		glClear(16640);
 		this.framebufferMc.bindFramebuffer(true);
-		GL11.glEnable(GL13.GL_MULTISAMPLE);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glClear(256);
-		GlStateManager.matrixMode(5889);
-		GlStateManager.loadIdentity();
-		GlStateManager.ortho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
-		GlStateManager.matrixMode(5888);
-		GlStateManager.loadIdentity();
-		GlStateManager.translatef(0.0F, 0.0F, -2000.0F);
-		GL11.glClear(256);
-		
-    	AbstractGui.fill(0, 0, this.width, this.height, Color.WHITE.getRGB());
-    	
-    	GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-		GL11.glEnable(GL11.GL_BLEND);
-		GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
+		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_TEXTURE_2D);
+		glClear(256);
+		glMatrixMode(5889);
+		glLoadIdentity();
+		glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
+		glMatrixMode(5888);
+		glLoadIdentity();
+		glTranslatef(0.0F, 0.0F, -2000.0F);
+		glClear(256);
+		AbstractGui.fill(0, 0, this.width, this.height, Color.WHITE.getRGB());
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		glShadeModel(GL_SMOOTH);
 
 		Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 		
 		Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glDisable(GL11.GL_BLEND);
-
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		glShadeModel(GL_FLAT);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		
+		AbstractGui.fill(0, 0, 72, 25, 0xff9f9f9f);
         
-    	AbstractGui.fill(0, 0, 72, 25, 0xff9f9f9f);
-        
-    	AbstractGui.fill(72, 0, width, 25, 0xffe0e0e0);
-        this.font.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.font.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+		AbstractGui.fill(72, 0, width, 25, 0xffe0e0e0);
+		this.font.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.font.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
         
         final int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.font.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
         
         this.font.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
         
         this.font.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
-        
+
         this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         super.render(mouseX, mouseY, partialTicks);
         
         this.framebufferMc.unbindFramebuffer();
-		GlStateManager.popMatrix();
+        glPopMatrix();
 
 		this.minecraft.getFramebuffer().bindFramebuffer(true);
-		GlStateManager.pushMatrix();
-
-		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		GL30.glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-		
-		GlStateManager.popMatrix();
+		glPushMatrix();
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+		glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glPopMatrix();
     }
     
     public void saveServers() {

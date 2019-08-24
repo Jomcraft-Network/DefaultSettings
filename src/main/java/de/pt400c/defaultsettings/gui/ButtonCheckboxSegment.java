@@ -7,7 +7,6 @@ import java.util.List;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
-import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.api.distmarker.Dist;
@@ -72,17 +71,17 @@ public class ButtonCheckboxSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		drawCircle((float) customPosX - 2, (float) customPosY - 2, 3, 180, 75);
+		Segment.drawCircle((float) customPosX - 2, (float) customPosY - 2, 3, 180, 75);
 
-		drawCircle((float) customPosX - 2, (float) customPosY + this.height + 2, 3, 90, 75);
+		Segment.drawCircle((float) customPosX - 2, (float) customPosY + this.height + 2, 3, 90, 75);
 
-		drawCircle((float) customPosX + this.width + 2, (float) customPosY + this.height + 2, 3, 0, 75);
+		Segment.drawCircle((float) customPosX + this.width + 2, (float) customPosY + this.height + 2, 3, 0, 75);
 
-		drawCircle((float) customPosX + this.width + 2, (float) customPosY - 2, 3, 270, 75);
+		Segment.drawCircle((float) customPosX + this.width + 2, (float) customPosY - 2, 3, 270, 75);
 
-		drawRect(customPosX - 5, customPosY - 2, customPosX + this.width + 5, customPosY + this.height + 2, null, false, null, false);
+		Segment.drawRect(customPosX - 5, customPosY - 2, customPosX + this.width + 5, customPosY + this.height + 2, null, false, null, false);
 
-		drawRect(customPosX - 2, customPosY - 5, customPosX + width + 2, customPosY + this.height + 5, null, false, null, false);
+		Segment.drawRect(customPosX - 2, customPosY - 5, customPosX + width + 2, customPosY + this.height + 5, null, false, null, false);
 
 		if (this.timer <= (Math.PI / 3)) {
 			color = 0xffffffff;
@@ -94,17 +93,17 @@ public class ButtonCheckboxSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
+			Segment.drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
 
-			drawCircle((float) customPosX - 1, (float) customPosY + this.height + 1, 3, 90, 75);
+			Segment.drawCircle((float) customPosX - 1, (float) customPosY + this.height + 1, 3, 90, 75);
 
-			drawCircle((float) customPosX + this.width + 1, (float) customPosY + this.height + 1, 3, 0, 75);
+			Segment.drawCircle((float) customPosX + this.width + 1, (float) customPosY + this.height + 1, 3, 0, 75);
 
-			drawCircle((float) customPosX + this.width + 1, (float) customPosY - 1, 3, 270, 75);
+			Segment.drawCircle((float) customPosX + this.width + 1, (float) customPosY - 1, 3, 270, 75);
 
-			drawRect(customPosX - 1, customPosY - 4, customPosX + width + 1, customPosY + this.height + 4, null, false, null, false);
+			Segment.drawRect(customPosX - 1, customPosY - 4, customPosX + width + 1, customPosY + this.height + 4, null, false, null, false);
 
-			drawRect(customPosX - 4, customPosY - 1, customPosX + width + 4, customPosY + this.height + 1, null, false, null, false);
+			Segment.drawRect(customPosX - 4, customPosY - 1, customPosX + width + 4, customPosY + this.height + 1, null, false, null, false);
 
 		}
 
@@ -116,19 +115,19 @@ public class ButtonCheckboxSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3 - alphaRate);
 
-		drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
+		Segment.drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
 
-		drawCircle((float) customPosX - 1, (float) customPosY + this.height + 1, 3, 90, 75);
+		Segment.drawCircle((float) customPosX - 1, (float) customPosY + this.height + 1, 3, 90, 75);
 
-		drawCircle((float) customPosX + this.width + 1, (float) customPosY + this.height + 1, 3, 0, 75);
+		Segment.drawCircle((float) customPosX + this.width + 1, (float) customPosY + this.height + 1, 3, 0, 75);
 
-		drawCircle((float) customPosX + this.width + 1, (float) customPosY - 1, 3, 270, 75);
+		Segment.drawCircle((float) customPosX + this.width + 1, (float) customPosY - 1, 3, 270, 75);
 
-		drawRect(customPosX - 1, customPosY - 4, customPosX + width + 1, customPosY - 1, null, false, null, false);
+		Segment.drawRect(customPosX - 1, customPosY - 4, customPosX + width + 1, customPosY - 1, null, false, null, false);
 
-		drawRect(customPosX - 1, customPosY + this.height + 1, customPosX + width + 1, customPosY + this.height + 4, null, false, null, false);
+		Segment.drawRect(customPosX - 1, customPosY + this.height + 1, customPosX + width + 1, customPosY + this.height + 4, null, false, null, false);
 
-		drawRect(customPosX - 4, customPosY - 1, customPosX + width + 4, customPosY + this.height + 1, null, false, null, false);
+		Segment.drawRect(customPosX - 4, customPosY - 1, customPosX + width + 4, customPosY + this.height + 1, null, false, null, false);
 
 		if (this.timer > 0) {
 			color = 0xffffffff;
@@ -140,7 +139,7 @@ public class ButtonCheckboxSegment extends Segment {
 
 			int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
 
-			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 1, (float) customPosY + 3.5F), new Vec2f((float) customPosX + 4 - 1, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX + 7 - 1, (float) customPosY - 5 + 3.5F));
+			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 1, (float) customPosY + 3.5F), new Vec2f((float) customPosX + 4 - 1, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX + 7 - 1, (float) customPosY - 5 + 3.5F));
 		}
 
 		glDisable(GL_BLEND);

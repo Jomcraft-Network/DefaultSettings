@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
-import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,29 +35,29 @@ public class PopupWindow extends Segment {
 	 	glShadeModel(GL_SMOOTH);
 		glDisable(GL_TEXTURE_2D);
 
-		drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
+		Segment.drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
 		
-		drawGradient(this.getPosX() - 5, this.getPosY() + 10, this.getPosX() + 10, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 2);
+		Segment.drawGradient(this.getPosX() - 5, this.getPosY() + 10, this.getPosX() + 10, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 2);
 		
-		drawGradient(this.getPosX() + 10, this.getPosY() - 5, this.getPosX() + this.width - 10, this.getPosY() + 10, 0xff000000, 0x00101010, 3);
+		Segment.drawGradient(this.getPosX() + 10, this.getPosY() - 5, this.getPosX() + this.width - 10, this.getPosY() + 10, 0xff000000, 0x00101010, 3);
 		
-		drawGradient(this.getPosX() + 10, this.getPosY() + this.height - 10, this.getPosX() + this.width - 10, this.getPosY() + this.height + 5, 0xff000000, 0x00101010, 1);
+		Segment.drawGradient(this.getPosX() + 10, this.getPosY() + this.height - 10, this.getPosX() + this.width - 10, this.getPosY() + this.height + 5, 0xff000000, 0x00101010, 1);
 		
-		drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + 10, 15, 180, 75, 0xff000000, 0x00101010);
+		Segment.drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + 10, 15, 180, 75, 0xff000000, 0x00101010);
 		
-		drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + 10, 15, 270, 75, 0xff000000, 0x00101010);
+		Segment.drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + 10, 15, 270, 75, 0xff000000, 0x00101010);
 		
-		drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + this.height - 10, 15, 0, 75, 0xff000000, 0x00101010);
+		Segment.drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + this.height - 10, 15, 0, 75, 0xff000000, 0x00101010);
 		
-		drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
+		Segment.drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
 		
 		glEnable(GL_TEXTURE_2D);
 		glShadeModel(GL_FLAT);
 		glEnable(GL_ALPHA_TEST);
 		glDisable(GL_BLEND);
 		
-		drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, 0);
-		drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, 0);
+		Segment.drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, 0);
+		Segment.drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, 0);
 		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -66,7 +65,7 @@ public class PopupWindow extends Segment {
 	 	glShadeModel(GL_SMOOTH);
 		glDisable(GL_TEXTURE_2D);
 
-		drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
+		Segment.drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
 
 		glEnable(GL_TEXTURE_2D);
 		glShadeModel(GL_FLAT);
@@ -76,9 +75,9 @@ public class PopupWindow extends Segment {
 		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
 
 		synchronized (this.children) {
-			this.children.forEach(segment -> render(mouseX, mouseY, partialTicks));
+			this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
 
-			this.children.forEach(segment -> hoverCheck(mouseX, mouseY));
+			this.children.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
 		}
 
 		if (this.dragging) {
@@ -89,7 +88,7 @@ public class PopupWindow extends Segment {
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
 			
-			this.children.forEach(segment -> setPos(posX + (this.posX - origX), posY + (this.posY - origY)));
+			this.children.forEach(segment -> segment.setPos(segment.posX + (this.posX - origX), segment.posY + (this.posY - origY)));
 		}
 	}
 	
@@ -153,7 +152,7 @@ public class PopupWindow extends Segment {
 
 	public PopupWindow addChild(Segment segment) {
 		synchronized (this.children) {
-			this.children.add(setPos(this.posX + posX, this.posY + posY));
+			this.children.add(segment.setPos(this.posX + segment.posX, this.posY + segment.posY));
 		}
 		return this;
 	}

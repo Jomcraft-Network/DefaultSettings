@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.UpdateContainer;
-import de.pt400c.neptunefx.NEX;
-import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +28,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		final float right = this.menu.width - this.menu.offs + this.width + 6;
 		this.posX = right / 2 - this.width / 2;
 		final float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
-		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
+		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
 	
 	}
 
@@ -49,7 +47,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 					textWidth = MC.fontRenderer.getStringWidth(line);
 			}
 			
-			drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
+			Segment.drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			Collections.reverse(lines);
@@ -117,7 +115,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		
 		switch (status) {
 		case CHECKING: 
-			return NEX.darkenColor(0xffcfcfcf, darken).getRGB();
+			return darkenColor(0xffcfcfcf, darken).getRGB();
 		case OUTDATED: 
 			return 0xfff5ac21;
 		case UP_TO_DATE: 
@@ -129,5 +127,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		default: 
 			return 0xfff42310;
 		}
+		
 	}
+
 }

@@ -4,7 +4,6 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -68,9 +67,9 @@ public class ButtonCheckboxSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		glEnable(GL11.GL_BLEND);
-		glDisable(GL11.GL_TEXTURE_2D);
-		glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glColor4f(f, f1, f2, f3);
 
@@ -151,8 +150,8 @@ public class ButtonCheckboxSegment extends Segment {
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 1, (float) customPosY + 3.5F), new Vec2f((float) customPosX + 4 - 1, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX + 7 - 1, (float) customPosY - 5 + 3.5F));
 		}
 
-		glDisable(GL11.GL_BLEND);
-		glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 
 	}
 	

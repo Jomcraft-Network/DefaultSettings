@@ -1,12 +1,11 @@
 package de.pt400c.defaultsettings.gui;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class TextSegment extends Segment {
@@ -30,14 +29,14 @@ public class TextSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		glPushMatrix();
-     	glEnable(GL11.GL_BLEND);
-     	glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+     	glEnable(GL_BLEND);
+     	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
      	int offsetY = 0;
      	for(String line : this.text.split("\n")) {
      		MC.fontRenderer.drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, this.color, false);
      		offsetY += this.offset;
      	}
-		glDisable(GL11.GL_BLEND);
+		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
 }

@@ -10,30 +10,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
-import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
-import de.pt400c.defaultsettings.gui.ButtonSegment;
-import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
-import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
-import de.pt400c.defaultsettings.gui.ExportSwitchSegment;
-import de.pt400c.defaultsettings.gui.LeftMenu;
-import de.pt400c.defaultsettings.gui.MenuArea;
-import de.pt400c.defaultsettings.gui.MenuScreen;
-import de.pt400c.defaultsettings.gui.PopupSegment;
-import de.pt400c.defaultsettings.gui.PopupWindow;
-import de.pt400c.defaultsettings.gui.QuitButtonSegment;
-import de.pt400c.defaultsettings.gui.ScrollableSegment;
-import de.pt400c.defaultsettings.gui.Segment;
-import de.pt400c.defaultsettings.gui.SplitterSegment;
-import de.pt400c.defaultsettings.gui.TextSegment;
+import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL11.*;
 
+@SideOnly(Side.CLIENT)
 public class GuiConfig extends DefaultSettingsGUI {
 	
     public final GuiScreen parentScreen;
@@ -195,8 +182,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glPushMatrix();
 			glClear(16640);
 			this.framebufferMc.bindFramebuffer(true);
-			glEnable(GL13.GL_MULTISAMPLE);
-			glEnable(GL11.GL_TEXTURE_2D);
+			glEnable(GL_MULTISAMPLE);
+			glEnable(GL_TEXTURE_2D);
 
 			ScaledResolution scaledresolution;
 			if(DefaultSettings.is180)
@@ -216,22 +203,22 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
-			glDisable(GL11.GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);
 
-			glEnable(GL11.GL_BLEND);
+			glEnable(GL_BLEND);
 
-			glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-			glShadeModel(GL11.GL_SMOOTH);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glShadeModel(GL_SMOOTH);
 
 			Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 			
 			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
-			glShadeModel(GL11.GL_FLAT);
+			glShadeModel(GL_FLAT);
 
-			glDisable(GL11.GL_BLEND);
+			glDisable(GL_BLEND);
 
-			glEnable(GL11.GL_TEXTURE_2D);
+			glEnable(GL_TEXTURE_2D);
 			
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 
@@ -256,8 +243,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.mc.getFramebuffer().bindFramebuffer(true);
 			glPushMatrix();
 
-			glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 			glPopMatrix();
 		}

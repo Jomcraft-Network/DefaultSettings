@@ -3,13 +3,12 @@ package de.pt400c.defaultsettings.gui;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.NEX;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class IconSegment extends Segment {
@@ -27,12 +26,12 @@ public class IconSegment extends Segment {
 	public void customRender(float mouseX, float mouseY, float customX, float customY, float partialTicks) {
 	
 		glPushMatrix();
-		glEnable(GL11.GL_BLEND);
+		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
 		this.posX = origX + customX;
 		NEX.drawScaledTex((float) posX, (float) posY, 19, 19);
-		glDisable(GL11.GL_BLEND);
+		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
 	
@@ -40,11 +39,11 @@ public class IconSegment extends Segment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 	
 		glPushMatrix();
-		glEnable(GL11.GL_BLEND);
+		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
 		NEX.drawScaledTex((float) posX, (float) posY, 16, 16);
-		glDisable(GL11.GL_BLEND);
+		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
 }

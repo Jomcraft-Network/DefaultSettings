@@ -9,6 +9,7 @@ import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonMenuSegment extends ButtonSegment {
@@ -57,7 +58,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			ScaledResolution scaledResolution = new ScaledResolution(MC.gameSettings, MC.displayWidth, MC.displayHeight);
 			int scaleFactor = scaledResolution.getScaleFactor();
 			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
-			this.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);
+			drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);
 			glDisable(GL_BLEND);
 			glDisable(GL_SCISSOR_TEST);
 	

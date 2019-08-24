@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class PopupWindow extends Segment {
@@ -71,7 +72,7 @@ public class PopupWindow extends Segment {
 		glEnable(GL_ALPHA_TEST);
 		glDisable(GL_BLEND);
 		
-		this.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b, false);
+		drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b, false);
 		
 		synchronized (this.children) {
 			for(Segment child : this.children)

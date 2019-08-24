@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class QuitButtonSegment extends ButtonSegment {
@@ -20,7 +21,7 @@ public class QuitButtonSegment extends ButtonSegment {
 		glPushMatrix();
      	glEnable(GL_BLEND);
      	glBlendFuncSeparate(770, 771, 1, 0);
-		this.drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), 0xffffffff, false);
+		drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), 0xffffffff, false);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}

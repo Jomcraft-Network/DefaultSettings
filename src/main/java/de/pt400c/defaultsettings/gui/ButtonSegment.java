@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonSegment extends Segment {
@@ -78,7 +79,7 @@ public class ButtonSegment extends Segment {
 		glPushMatrix();
      	glEnable(GL_BLEND);
      	glBlendFuncSeparate(770, 771, 1, 0);
-		this.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a, false);
+		drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a, false);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
@@ -110,7 +111,7 @@ public class ButtonSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				this.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
+				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
 		}

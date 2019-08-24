@@ -18,6 +18,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class ScrollableSegment extends Segment {
@@ -291,10 +292,10 @@ public class ScrollableSegment extends Segment {
 			final SettingsButtonSegment button = (SettingsButtonSegment) this.list.get(i).childs[1];
 			if (widthString >= (width - (button.mark ? 55 : 40))) {
 
-				MC.fontRenderer.drawString(MC.fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots)) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
+				drawString(MC.fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots)) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
 
 			} else {
-				MC.fontRenderer.drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
+				drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
 			}
 
 			for (Segment segment : this.list.get(i).childs) 
@@ -482,7 +483,7 @@ class SettingsButtonSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				this.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
+				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
 			

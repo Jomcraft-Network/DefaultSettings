@@ -10,6 +10,7 @@ import net.minecraft.util.ChatAllowedCharacters;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class SearchbarSegment extends Segment {
@@ -176,9 +177,9 @@ public class SearchbarSegment extends Segment {
 		glBlendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
-			this.drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffb8b8b8, darken).getRGB() : 0xff7a7a7a, false);
+			drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffb8b8b8, darken).getRGB() : 0xff7a7a7a, false);
 		else
-			this.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0, false);
+			drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0, false);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}

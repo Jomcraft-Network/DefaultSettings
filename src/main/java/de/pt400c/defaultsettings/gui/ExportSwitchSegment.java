@@ -9,6 +9,7 @@ import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @SideOnly(Side.CLIENT)
 public class ExportSwitchSegment extends Segment {
@@ -31,7 +32,7 @@ public class ExportSwitchSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		this.drawString("Export Mode:", (float) this.getPosX() - 77, (float) this.getPosY() + 3, 0xff5d5d5d, false);
+		drawString("Export Mode:", (float) this.getPosX() - 77, (float) this.getPosY() + 3, 0xff5d5d5d, false);
 		
 		int on = 0xff08b306;
 		
@@ -103,9 +104,9 @@ public class ExportSwitchSegment extends Segment {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glScalef(0.65F, 0.65F, 0.65F);
 
-			this.drawString("ON", (float) this.getPosX() + 110, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (GuiConfig.clamp(255 * processFactor, 4, 255))).getRGB(), false);
+			drawString("ON", (float) this.getPosX() + 110, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (GuiConfig.clamp(255 * processFactor, 4, 255))).getRGB(), false);
 
-			this.drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (GuiConfig.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), false);
+			drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (GuiConfig.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), false);
 			glDisable(GL_BLEND);
 			glPopMatrix();
 		}
@@ -153,7 +154,7 @@ public class ExportSwitchSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				this.drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a, false);
+				drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a, false);
 				offset -= 10;
 			}
 		}

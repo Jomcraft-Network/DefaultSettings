@@ -1,10 +1,10 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,29 +48,29 @@ public class ButtonMenuSegment extends ButtonSegment {
 		}
 		this.offsetX = func;
 		
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(770, 771, 1, 0);
 		Segment.drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+		glDisable(GL_BLEND);
+		glEnable(GL_SCISSOR_TEST);
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(770, 771, 1, 0);
 		final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
-		GL11.glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
+		glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 		MC.fontRenderer.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB());
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		glDisable(GL_BLEND);
+		glDisable(GL_SCISSOR_TEST);
 	
-		GL11.glPopMatrix();
+		glPopMatrix();
 		}
 		
 		final int plus = this.activated ? 9 : 0;
-		GL11.glColor4d(1, 1, 1, 1);
+		glColor4d(1, 1, 1, 1);
 		if(this.activated) 
 			Segment.drawRect(posX + 29 + (-25) * percent, posY, posX + 29 + 3 + (-25) * percent, posY + 19, calcAlpha(0xffff8518, 1 - percent).getRGB(), true, null, false);
 		
-		GL11.glColor4d(1, 1, 1, percent);
+		glColor4d(1, 1, 1, percent);
 		this.icon.customRender(mouseX, mouseY, (-25 + plus) * percent, 0, partialTicks);
 
 	}

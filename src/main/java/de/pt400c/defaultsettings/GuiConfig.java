@@ -9,9 +9,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
@@ -28,11 +25,16 @@ import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.versions.mcp.MCPVersion;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL30.*;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiConfig extends DefaultSettingsGUI {
 
     public final GuiScreen parentScreen;
@@ -297,39 +299,36 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.render(mouseX, mouseY, partialTicks);
     	}else {
+    		
     		this.mc.getFramebuffer().unbindFramebuffer();
 
-			GlStateManager.pushMatrix();
-			GlStateManager.clear(16640);
+    		glPushMatrix();
+			glClear(16640);
 			this.framebufferMc.bindFramebuffer(true);
-			GL11.glEnable(GL13.GL_MULTISAMPLE);
-			GlStateManager.enableTexture2D();
-			GlStateManager.clear(256);
-			GlStateManager.matrixMode(5889);
-			GlStateManager.loadIdentity();
-			GlStateManager.ortho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
-			GlStateManager.matrixMode(5888);
-			GlStateManager.loadIdentity();
-			GlStateManager.translatef(0.0F, 0.0F, -2000.0F);
-
-			GlStateManager.clear(256);
-
+			glEnable(GL_MULTISAMPLE);
+			glEnable(GL_TEXTURE_2D);
+			glClear(256);
+			glMatrixMode(5889);
+			glLoadIdentity();
+			glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
+			glMatrixMode(5888);
+			glLoadIdentity();
+			glTranslatef(0.0F, 0.0F, -2000.0F);
+			glClear(256);
+			
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
-	        
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-			GL11.glEnable(GL11.GL_BLEND);
-			OpenGlHelper.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-			GL11.glShadeModel(GL11.GL_SMOOTH);
+			glDisable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glShadeModel(GL_SMOOTH);
 
 			Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 			
 			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
-			GL11.glShadeModel(GL11.GL_FLAT);
-			GL11.glDisable(GL11.GL_BLEND);
-
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			glShadeModel(GL_FLAT);
+			glDisable(GL_BLEND);
+			glEnable(GL_TEXTURE_2D);
 			
 	        GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 	        
@@ -348,13 +347,13 @@ public class GuiConfig extends DefaultSettingsGUI {
 	        super.render(mouseX, mouseY, partialTicks);
 	        
 	        this.framebufferMc.unbindFramebuffer();
-			GlStateManager.popMatrix();
+	        glPopMatrix();
 
 			this.mc.getFramebuffer().bindFramebuffer(true);
-			GlStateManager.pushMatrix();
-			GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-			GL30.glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-			GlStateManager.popMatrix();
+			glPushMatrix();
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+			glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			glPopMatrix();
     	}
     }
     

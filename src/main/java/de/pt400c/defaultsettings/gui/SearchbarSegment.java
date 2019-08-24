@@ -1,15 +1,13 @@
 package de.pt400c.defaultsettings.gui;
 
-import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.util.SharedConstants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -83,9 +81,9 @@ public class SearchbarSegment extends Segment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
 		final float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
@@ -120,7 +118,7 @@ public class SearchbarSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), null, false, null, false);
 
@@ -131,7 +129,7 @@ public class SearchbarSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX() - 10, this.getPosY() - 1, this.getPosX() - 8, this.getPosY() + this.getHeight() + 1, null, false, null, false);
 
@@ -145,7 +143,7 @@ public class SearchbarSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX() + 1, this.getPosY() + 1, this.getPosX() + this.getWidth() - 1, this.getPosY() + this.getHeight() - 1, null, false, null, false);
 
@@ -156,7 +154,7 @@ public class SearchbarSegment extends Segment {
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
 
-		GlStateManager.color4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 
 		Segment.drawRect(this.getPosX() + 2, this.getPosY() + 2, this.getPosX() + this.getWidth() - 2, this.getPosY() + this.getHeight() - 2, null, false, null, false);
 
@@ -173,25 +171,25 @@ public class SearchbarSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			GlStateManager.color4f(f, f1, f2, f3);
+			glColor4f(f, f1, f2, f3);
 
 			Segment.drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
 			MC.fontRenderer.drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffb8b8b8, darken).getRGB() : 0xff7a7a7a);
 		else
 			MC.fontRenderer.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0);
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopMatrix();
+		glDisable(GL_BLEND);
+		glPopMatrix();
 
 	}
 

@@ -1,10 +1,10 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,11 +18,11 @@ public class QuitButtonSegment extends ButtonSegment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, true, null, false);
-		GL11.glPushMatrix();
-		GL11.glEnable(GL11.GL_BLEND);
-		OpenGlHelper.glBlendFuncSeparate(770, 771, 1, 0);
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.fontRenderer.drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), 0xffffffff);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopMatrix();
+		glDisable(GL_BLEND);
+		glPopMatrix();
 	}
 }

@@ -3,10 +3,9 @@ package de.pt400c.defaultsettings.gui;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.util.ArrayList;
-import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
+import static org.lwjgl.opengl.GL11.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,8 +53,7 @@ public class ExportSwitchSegment extends Segment {
 		}else {
 			inactive = true;
 			flickerTimer += 0.05;
-			darken = (float) ((Math.sin(flickerTimer - Math.PI / 2) + 1) / 4 + 0.5);
-			
+			darken = (float) ((Math.sin(flickerTimer - Math.PI / 2) + 1) / 4 + 0.5);	
 		}
 		
 		final int getRed = getRed(on);
@@ -80,13 +78,13 @@ public class ExportSwitchSegment extends Segment {
 		final float f1 = (float) (on >> 8 & 255) / 255.0F;
 		final float f2 = (float) (on & 255) / 255.0F;
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		float radius = 7;
 		
-		GlStateManager.color4f(f, f1, f2, f3);
+		glColor4f(f, f1, f2, f3);
 		
 		Segment.drawCircle((float) this.getPosX() + 7, (float) this.getPosY() + 7,  radius, 90, 50);
 		
@@ -94,38 +92,38 @@ public class ExportSwitchSegment extends Segment {
 		
 		Segment.drawRect(this.getPosX() + 7, (float) this.getPosY(), this.getPosX() + 7 + 15, this.getPosY() + 14, null, false, null, false);
 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
 		if(!inactive) {
 		
-			GL11.glPushMatrix();
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glScalef(0.65F, 0.65F, 0.65F);
+			glPushMatrix();
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glScalef(0.65F, 0.65F, 0.65F);
 
 			MC.fontRenderer.drawString("ON", (float) this.getPosX() + 110, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * processFactor, 4, 255))).getRGB());
 
 			MC.fontRenderer.drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * (1 - processFactor), 4, 255))).getRGB());
-			GL11.glDisable(GL11.GL_BLEND);
-			GL11.glPopMatrix();
+			glDisable(GL_BLEND);
+			glPopMatrix();
 		}
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		radius = 9.4F;
 		
-		GlStateManager.color3f(0.5F, 0.5F, 0.5F);
+		glColor3f(0.5F, 0.5F, 0.5F);
 
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		radius = 8.5F;
-		GlStateManager.color3f(1, 1, 1);
+		glColor3f(1, 1, 1);
 
 		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
 	}
 	
 	@Override

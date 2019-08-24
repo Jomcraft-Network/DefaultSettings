@@ -76,9 +76,9 @@ public class PopupWindow extends Segment {
 		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
 
 		synchronized (this.children) {
-			this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
+			this.children.forEach(segment -> render(mouseX, mouseY, partialTicks));
 
-			this.children.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
+			this.children.forEach(segment -> hoverCheck(mouseX, mouseY));
 		}
 
 		if (this.dragging) {
@@ -89,7 +89,7 @@ public class PopupWindow extends Segment {
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
 			
-			this.children.forEach(segment -> segment.setPos(posX + (this.posX - origX), posY + (this.posY - origY)));
+			this.children.forEach(segment -> setPos(posX + (this.posX - origX), posY + (this.posY - origY)));
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class PopupWindow extends Segment {
 
 	public PopupWindow addChild(Segment segment) {
 		synchronized (this.children) {
-			this.children.add(segment.setPos(this.posX + posX, this.posY + posY));
+			this.children.add(setPos(this.posX + posX, this.posY + posY));
 		}
 		return this;
 	}

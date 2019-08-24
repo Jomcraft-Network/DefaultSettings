@@ -89,6 +89,9 @@ public class PopupWindow extends Segment {
 			
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
+
+			if((this.posX - origX) == 0 && (this.posY - origY) == 0)
+				return;
 			
 			for(Segment child : this.children)
 				child.setPos(child.posX + (PopupWindow.this.posX - origX), child.posY + (PopupWindow.this.posY - origY));

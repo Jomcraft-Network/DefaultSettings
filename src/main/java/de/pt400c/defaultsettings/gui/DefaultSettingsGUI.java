@@ -72,6 +72,17 @@ public class DefaultSettingsGUI extends GuiScreen {
 		}
 		super.handleMouseInput();
 	}
+	
+	@Override
+	public void initGui() {
+		
+		synchronized (this.segments) {
+        	for(Segment segment : this.segments)
+	        	segment.initSegment();
+
+        }
+		super.initGui();
+	}
 
 	@Override
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {

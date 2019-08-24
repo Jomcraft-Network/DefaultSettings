@@ -87,4 +87,8 @@ public abstract class Segment {
 	public void clickSound() {
         MC.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
     }
+
+	public void initSegment() {
+
+	}
 }

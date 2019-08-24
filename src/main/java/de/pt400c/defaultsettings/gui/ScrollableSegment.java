@@ -7,10 +7,12 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.api.distmarker.Dist;
@@ -192,23 +194,23 @@ public class ScrollableSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
+		drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
 
-		Segment.drawCircle((float) this.getPosX(), (float) this.getPosY() + this.height, 5, 90, 75);
+		drawCircle((float) this.getPosX(), (float) this.getPosY() + this.height, 5, 90, 75);
 
-		Segment.drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY() + this.height, 5, 0, 75);
+		drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY() + this.height, 5, 0, 75);
 
-		Segment.drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);	
+		drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);	
 		
-		Segment.drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
+		drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
 		
-		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
+		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
 		
 		glColor4f(f, f1, f2, f3);	
 
-		Segment.drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
+		drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
-		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
+		drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
 
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
@@ -219,16 +221,16 @@ public class ScrollableSegment extends Segment {
 			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 			glShadeModel(GL_SMOOTH);
 
-			Segment.drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
+			drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
 
-			Segment.drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
+			drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
 
 			glShadeModel(GL_FLAT);
 			glDisable(GL_BLEND);
 			glEnable(GL_TEXTURE_2D);
 		}
 
-		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
+		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
 
 		if (this.grabbed) {
 			if (this.invisible)
@@ -297,9 +299,9 @@ public class ScrollableSegment extends Segment {
 				segment.customRender(mouseX, mouseY, 0, this.add, partialTicks);
 
 			if (!(i == this.list.size() - 1))
-				Segment.drawRect(this.getPosX(), this.getPosY() + yOffTemp, this.getPosX() + this.getWidth(), this.getPosY() + yOffTemp + 2, 0xff373737, true, null, false);
+				drawRect(this.getPosX(), this.getPosY() + yOffTemp, this.getPosX() + this.getWidth(), this.getPosY() + yOffTemp + 2, 0xff373737, true, null, false);
 			else
-				Segment.drawRect(this.getPosX(), this.getPosY() + (maxSize + this.add), this.getPosX() + this.getWidth(), this.getPosY() + (maxSize + this.add) + 1, 0xff373737, true, null, false);
+				drawRect(this.getPosX(), this.getPosY() + (maxSize + this.add), this.getPosX() + this.getWidth(), this.getPosY() + (maxSize + this.add) + 1, 0xff373737, true, null, false);
 
 		}
 
@@ -320,7 +322,7 @@ public class ScrollableSegment extends Segment {
 		final float posPercentage = -(float) (this.add) / (float) (this.maxSize - height + (active ? 1 : -1));
 		this.scrollBar.setPos((float) (posX + width), (float) posY + (height - this.scrollBar.height) * posPercentage);
 
-		Segment.drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width, this.getPosY() + this.getHeight(), 0xff818181, true, null, false);
+		drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width, this.getPosY() + this.getHeight(), 0xff818181, true, null, false);
 
 		if (!this.invisible)
 			this.scrollBar.render(mouseX, mouseY, partialTicks);
@@ -470,7 +472,7 @@ class SettingsButtonSegment extends Segment {
 					textWidth = MC.fontRenderer.getStringWidth(line);
 			}
 			
-			Segment.drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
+			drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			Collections.reverse(lines);
@@ -497,7 +499,7 @@ class SettingsButtonSegment extends Segment {
 
 		final float darken = (float) ((Math.sin(timer + Math.PI / 2) + 1) / 6 + 0.67);
 
-		int color = darkenColor(0xffe0e0e0, darken).getRGB();
+		int color = NEX.darkenColor(0xffe0e0e0, darken).getRGB();
 		this.offX = customPosX;
 		this.offY = customPosY;
 		customPosX += this.getPosX();
@@ -512,7 +514,7 @@ class SettingsButtonSegment extends Segment {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawCircle((float) customPosX, (float) customPosY + 3.3F, 7, 0, 0);
+		drawCircle((float) customPosX, (float) customPosY + 3.3F, 7, 0, 0);
 		color = 0xff202020;
 
 		f3 = (float) (color >> 24 & 255) / 255.0F;
@@ -521,7 +523,7 @@ class SettingsButtonSegment extends Segment {
 		f2 = (float) (color & 255) / 255.0F;
 
 		final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
-		Segment.drawDots(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX, (float) customPosY + 3.3F), new Vec2f((float) customPosX, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX, (float) customPosY - 5 + 4F));
+		drawDots(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX, (float) customPosY + 3.3F), new Vec2f((float) customPosX, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX, (float) customPosY - 5 + 4F));
 
 		if (this.mark) {
 			color = 0xff3d9d20;
@@ -531,7 +533,7 @@ class SettingsButtonSegment extends Segment {
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 			glColor4f(f, f1, f2, f3);
-			Segment.drawCircle((float) customPosX - 15, (float) customPosY + 3.3F, 7, 0, 0);
+			drawCircle((float) customPosX - 15, (float) customPosY + 3.3F, 7, 0, 0);
 
 			color = 0xffffffff;
 
@@ -539,8 +541,8 @@ class SettingsButtonSegment extends Segment {
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
-			Segment.drawLine2D_2(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 15, (float) customPosY), new Vec2f((float) customPosX - 15, (float) customPosY + 4.5F));
-			Segment.drawDot(f, f1, f2, f3, scaleFactor, 3, new Vec2f((float) customPosX - 15, (float) customPosY + 7.3F));
+			drawLine2D_2(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 15, (float) customPosY), new Vec2f((float) customPosX - 15, (float) customPosY + 4.5F));
+			drawDot(f, f1, f2, f3, scaleFactor, 3, new Vec2f((float) customPosX - 15, (float) customPosY + 7.3F));
 		}
 		
 		glDisable(GL_BLEND);
@@ -899,19 +901,19 @@ class PopupCheckboxSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
+		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
 
-		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() + this.height + 2, 3, 90, 75);
+		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() + this.height + 2, 3, 90, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() + this.height + 2, 3, 0, 75);
+		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() + this.height + 2, 3, 0, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() - 2, 3, 270, 75);
+		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() - 2, 3, 270, 75);
 
-		Segment.drawRect(this.getPosX() - 5, this.getPosY() - 2, this.getPosX() + this.width + 5, this.getPosY() + this.height + 2, null, false, null, false);
+		drawRect(this.getPosX() - 5, this.getPosY() - 2, this.getPosX() + this.width + 5, this.getPosY() + this.height + 2, null, false, null, false);
 		
-		Segment.drawRect(this.getPosX() - 2, this.getPosY() + this.height + 2, this.getPosX() + this.width + 2, this.getPosY() + this.height + 5, null, false, null, false);
+		drawRect(this.getPosX() - 2, this.getPosY() + this.height + 2, this.getPosX() + this.width + 2, this.getPosY() + this.height + 5, null, false, null, false);
 		
-		Segment.drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + this.width + 2, this.getPosY() - 2, null, false, null, false);
+		drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + this.width + 2, this.getPosY() - 2, null, false, null, false);
 
 		if (this.timer <= (Math.PI / 3)) {
 			color = 0xffffffff;
@@ -922,19 +924,19 @@ class PopupCheckboxSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
+			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
-			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
+			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
 
-			Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
+			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
 
-			Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
+			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
 
-			Segment.drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
+			drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
 			
-			Segment.drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
+			drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
 			
-			Segment.drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
+			drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
 
 		}
 		
@@ -947,19 +949,19 @@ class PopupCheckboxSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3 - alphaRate);
 
-		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
+		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
-		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
+		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
+		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
+		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
 
-		Segment.drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
+		drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
 
-		Segment.drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
+		drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
 
-		Segment.drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
+		drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
 
 		if (this.timer > 0) {
 			color = 0xffffffff;
@@ -971,7 +973,7 @@ class PopupCheckboxSegment extends Segment {
 
 			final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
 
-			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
+			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
 		}
 
 		glDisable(GL_BLEND);

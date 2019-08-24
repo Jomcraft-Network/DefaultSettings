@@ -17,6 +17,7 @@ import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
+import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -284,9 +285,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		glShadeModel(GL_SMOOTH);
 
-		Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+		drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 		
-		Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+		drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
 		glShadeModel(GL_FLAT);
 		glDisable(GL_BLEND);

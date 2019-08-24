@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -50,7 +51,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			glPushMatrix();
 			glEnable(GL_BLEND);
 			glBlendFuncSeparate(770, 771, 1, 0);
-			Segment.drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
+			drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
 			glDisable(GL_BLEND);
 			glEnable(GL_SCISSOR_TEST);
 			glEnable(GL_BLEND);
@@ -73,7 +74,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		final int plus = this.activated ? 9 : 0;
 		glColor4f(1, 1, 1, 1);
 		if(this.activated) 
-			Segment.drawRect(posX + 29 + (-25) * percent, posY, posX + 29 + 3 + (-25) * percent, posY + 19, calcAlpha(0xffff8518, 1 - percent).getRGB(), true, null, false);
+			drawRect(posX + 29 + (-25) * percent, posY, posX + 29 + 3 + (-25) * percent, posY + 19, calcAlpha(0xffff8518, 1 - percent).getRGB(), true, null, false);
 		
 		glColor4f(1, 1, 1, percent);
 		this.icon.customRender(mouseX, mouseY, (-25 + plus) * percent, 0, partialTicks);

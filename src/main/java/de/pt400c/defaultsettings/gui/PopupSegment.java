@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL30.*;
 
 @SideOnly(Side.CLIENT)
@@ -58,7 +59,7 @@ public class PopupSegment extends Segment {
 			else
 				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			glDisable(GL_ALPHA_TEST);
-			Segment.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
+			drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			glEnable(GL_ALPHA_TEST);
 			((GuiConfig) this.gui).framebufferMc.unbindFramebuffer();
 

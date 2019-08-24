@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
@@ -210,9 +211,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 			glShadeModel(GL_SMOOTH);
 
-			Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+			drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 			
-			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+			drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
 			glShadeModel(GL_FLAT);
 

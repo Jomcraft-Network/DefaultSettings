@@ -3,6 +3,7 @@ package de.pt400c.defaultsettings.gui;
 import java.util.function.Function;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
+import static de.pt400c.neptunefx.NEX.*;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
@@ -18,7 +19,7 @@ public class ButtonMovableSegment extends ButtonSegment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xff7a7a7a : 0xffa4a4a4, 0xffdcdcdc, this.border);
+		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xff7a7a7a : 0xffa4a4a4, 0xffdcdcdc, this.border);
 		if (this.dragging) {
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;

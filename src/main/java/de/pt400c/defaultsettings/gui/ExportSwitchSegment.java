@@ -7,6 +7,7 @@ import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
@@ -87,11 +88,11 @@ public class ExportSwitchSegment extends Segment {
 		
 		glColor4f(f, f1, f2, f3);
 		
-		Segment.drawCircle((float) this.getPosX() + 7, (float) this.getPosY() + 7,  radius, 90, 50);
+		drawCircle((float) this.getPosX() + 7, (float) this.getPosY() + 7,  radius, 90, 50);
 		
-		Segment.drawCircle((float) this.getPosX() + 15 + 7, (float) this.getPosY() + 7, radius, 270, 50);
+		drawCircle((float) this.getPosX() + 15 + 7, (float) this.getPosY() + 7, radius, 270, 50);
 		
-		Segment.drawRect(this.getPosX() + 7, (float) this.getPosY(), this.getPosX() + 7 + 15, this.getPosY() + 14, null, false, null, false);
+		drawRect(this.getPosX() + 7, (float) this.getPosY(), this.getPosX() + 7 + 15, this.getPosY() + 14, null, false, null, false);
 
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
@@ -117,11 +118,11 @@ public class ExportSwitchSegment extends Segment {
 		
 		glColor3f(0.5F, 0.5F, 0.5F);
 
-		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
+		drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		radius = 8.5F;
 		glColor3f(1, 1, 1);
 
-		Segment.drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
+		drawCircle((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, radius, 0, 0);
 		
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
@@ -134,23 +135,21 @@ public class ExportSwitchSegment extends Segment {
 			ArrayList<String> lines = new ArrayList<String>();
 			
 			int textWidth = (int) (mouseX + 14 + MC.fontRenderer.getStringWidth(this.hoverMessage));
-			if(textWidth > this.gui.width) {
+			if(textWidth > this.gui.width)
 				lines.addAll(MC.fontRenderer.listFormattedStringToWidth(this.hoverMessage, (int) (this.gui.width - mouseX - 14)));
-			}else {
+			else 
 				lines.add(this.hoverMessage);
-			}
+			
 			textWidth = 0;
 			for(String line : lines) {
-				
 				if(MC.fontRenderer.getStringWidth(line) > textWidth)
 					textWidth = MC.fontRenderer.getStringWidth(line);
 			}
 			
-			Segment.drawButton(mouseX + 8, mouseY + 7, mouseX + 14 + textWidth, mouseY + 11 + 10 * lines.size(), 0xff3a3a3a, 0xffdcdcdc, 2);
+			drawButton(mouseX + 8, mouseY + 7, mouseX + 14 + textWidth, mouseY + 11 + 10 * lines.size(), 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			for(String line : lines) {
-			
 				MC.fontRenderer.drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a, false);
 				offset -= 10;
 			}

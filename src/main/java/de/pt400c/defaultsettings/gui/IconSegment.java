@@ -1,7 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import de.pt400c.defaultsettings.DefaultSettings;
-import de.pt400c.defaultsettings.NEX;
+import static de.pt400c.neptunefx.NEX.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
@@ -30,7 +30,7 @@ public class IconSegment extends Segment {
 		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
 		this.posX = origX + customX;
-		NEX.drawScaledTex((float) posX, (float) posY, 19, 19);
+		drawScaledTex((float) posX, (float) posY, 19, 19);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
@@ -42,7 +42,7 @@ public class IconSegment extends Segment {
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
-		NEX.drawScaledTex((float) posX, (float) posY, 16, 16);
+		drawScaledTex((float) posX, (float) posY, 16, 16);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}

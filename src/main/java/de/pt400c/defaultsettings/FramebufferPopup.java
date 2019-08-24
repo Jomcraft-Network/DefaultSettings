@@ -1,8 +1,8 @@
 package de.pt400c.defaultsettings;
 
 import java.nio.ByteBuffer;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public class FramebufferPopup {
 	
@@ -20,27 +20,27 @@ public class FramebufferPopup {
 	}
 
 	public void setupFBO() {
-        msColorRenderBuffer = GL30.glGenRenderbuffers();
-        msFbo = GL30.glGenFramebuffers();
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, msFbo);
-        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, msColorRenderBuffer);
-        GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 9, GL11.GL_RGBA8, width, height);
-        GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, msColorRenderBuffer);
+        msColorRenderBuffer = glGenRenderbuffers();
+        msFbo = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, msFbo);
+        glBindRenderbuffer(GL_RENDERBUFFER, msColorRenderBuffer);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 9, GL_RGBA8, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msColorRenderBuffer);
 
-        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        texture = GL11.glGenTextures();
-        fbo = GL30.glGenFramebuffers();
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        texture = glGenTextures();
+        fbo = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) null);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
-        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }

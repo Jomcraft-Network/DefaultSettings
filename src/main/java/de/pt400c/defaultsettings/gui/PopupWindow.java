@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -28,11 +27,11 @@ public class PopupWindow extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 
-		glEnable(GL11.GL_BLEND);
-		glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		glDisable(GL11.GL_ALPHA_TEST);
-	    glShadeModel(GL11.GL_SMOOTH);
-	 	glDisable(GL11.GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		glDisable(GL_ALPHA_TEST);
+	    glShadeModel(GL_SMOOTH);
+	 	glDisable(GL_TEXTURE_2D);
 
 		Segment.drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
 		
@@ -50,26 +49,26 @@ public class PopupWindow extends Segment {
 		
 		Segment.drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
 		
-		glEnable(GL11.GL_TEXTURE_2D);
-		glShadeModel(GL11.GL_FLAT);
-		glEnable(GL11.GL_ALPHA_TEST);
-		glDisable(GL11.GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		glShadeModel(GL_FLAT);
+		glEnable(GL_ALPHA_TEST);
+		glDisable(GL_BLEND);
 		
 		Segment.drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, 0);
 		Segment.drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, 0);
 		
-		glEnable(GL11.GL_BLEND);
-		glBlendFunc(GL11.GL_DST_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	    glDisable(GL11.GL_ALPHA_TEST);
-	    glShadeModel(GL11.GL_SMOOTH);
-	 	glDisable(GL11.GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	    glDisable(GL_ALPHA_TEST);
+	    glShadeModel(GL_SMOOTH);
+	 	glDisable(GL_TEXTURE_2D);
 
 		Segment.drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
 		
-		glEnable(GL11.GL_TEXTURE_2D);
-		glShadeModel(GL11.GL_FLAT);
-		glEnable(GL11.GL_ALPHA_TEST);
-		glDisable(GL11.GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
+		glShadeModel(GL_FLAT);
+		glEnable(GL_ALPHA_TEST);
+		glDisable(GL_BLEND);
 		
 		this.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b, false);
 		

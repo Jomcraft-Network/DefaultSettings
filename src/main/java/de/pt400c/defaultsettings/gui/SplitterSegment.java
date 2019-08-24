@@ -1,11 +1,10 @@
 package de.pt400c.defaultsettings.gui;
 
-import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class SplitterSegment extends Segment {
@@ -23,16 +22,16 @@ public class SplitterSegment extends Segment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
 		this.posX = origX - this.menu.offs;
-		glDisable(GL11.GL_TEXTURE_2D);
-		glEnable(GL11.GL_BLEND);
-		glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-		glShadeModel(GL11.GL_SMOOTH);
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		glShadeModel(GL_SMOOTH);
 		Segment.drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + 4, 6, 270, 75, 0xffaaaaaa, 0x00ffffff);
 		Segment.drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + this.getHeight() - 4, 6, 0, 75, 0xffaaaaaa, 0x00ffffff);
 		Segment.drawGradient(this.getPosX(), this.getPosY() + 4, this.getPosX() + 6, this.getPosY() + this.getHeight() - 4, 0xffaaaaaa, 0x00ffffff, 0);
-		glShadeModel(GL11.GL_FLAT);
-		glDisable(GL11.GL_BLEND);
-		glEnable(GL11.GL_TEXTURE_2D);
+		glShadeModel(GL_FLAT);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffbebebe, true, null, false);	
 	}
 }

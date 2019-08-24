@@ -1,9 +1,9 @@
 package de.pt400c.defaultsettings;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class FramebufferObject
@@ -26,14 +26,14 @@ public class FramebufferObject
 			this.deleteFramebuffer();
 
 		this.createFramebuffer(width, height);
-		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	public void deleteFramebuffer() {
 		this.unbindFramebuffer();
 		if (this.framebufferObject > -1) {
-			GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-			GL30.glDeleteFramebuffers(this.framebufferObject);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDeleteFramebuffers(this.framebufferObject);
 			this.framebufferObject = -1;
 		}
 	}
@@ -49,34 +49,34 @@ public class FramebufferObject
 	}
     
     private void createFrameBuffer() {
-    	this.framebufferObject = GL30.glGenFramebuffers();
-    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.framebufferObject);
-    	GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+    	this.framebufferObject = glGenFramebuffers();
+    	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferObject);
+    	glDrawBuffer(GL_COLOR_ATTACHMENT0);
     }
     
     private void createColorAttachment() {
-		this.colorBuffer = GL30.glGenRenderbuffers();
-		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, this.colorBuffer);
-		GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 9 /*9 samples*/, GL11.GL_RGBA8, this.framebufferWidth, this.framebufferHeight);
+		this.colorBuffer = glGenRenderbuffers();
+		glBindRenderbuffer(GL_RENDERBUFFER, this.colorBuffer);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 9 /*9 samples*/, GL_RGBA8, this.framebufferWidth, this.framebufferHeight);
 
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, this.colorBuffer);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, this.colorBuffer);
 	}
 
 	public void bindFramebuffer(final boolean vp) {
-		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, this.framebufferObject);
+		glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferObject);
 
 		if (vp) 
-			GL11.glViewport(0, 0, this.framebufferWidth, this.framebufferHeight);
+			glViewport(0, 0, this.framebufferWidth, this.framebufferHeight);
 
 	}
 
     public void unbindFramebuffer() {
-    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+    	glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     public void framebufferClear() {
         this.bindFramebuffer(true);
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
         this.unbindFramebuffer();
     }
 }

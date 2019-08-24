@@ -10,9 +10,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import cpw.mods.fml.common.Loader;
 import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
@@ -316,24 +317,41 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-		GL11.glPushMatrix();
-		GL11.glClear(16640);
+		glPushMatrix();
+		glClear(16640);
 		this.framebufferMc.bindFramebuffer(true);
-		GL11.glEnable(GL13.GL_MULTISAMPLE);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_TEXTURE_2D);
 
 		ScaledResolution scaledResolution = new ScaledResolution(MC.gameSettings, MC.displayWidth, MC.displayHeight);
-		GL11.glClear(256);
-		GL11.glMatrixMode(5889);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0.0D, scaledResolution.getScaledWidth_double(), scaledResolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		GL11.glMatrixMode(5888);
-		GL11.glLoadIdentity();
-		GL11.glTranslatef(0.0F, 0.0F, -2000.0F);
+		glClear(256);
+		glMatrixMode(5889);
+		glLoadIdentity();
+		glOrtho(0.0D, scaledResolution.getScaledWidth_double(), scaledResolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+		glMatrixMode(5888);
+		glLoadIdentity();
+		glTranslatef(0.0F, 0.0F, -2000.0F);
 
-		GL11.glClear(256);
+		glClear(256);
     	
     	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    	
+    	glDisable(GL_TEXTURE_2D);
+
+		glEnable(GL_BLEND);
+
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		glShadeModel(GL_SMOOTH);
+
+		Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+		
+		Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+
+		glShadeModel(GL_FLAT);
+
+		glDisable(GL_BLEND);
+
+		glEnable(GL_TEXTURE_2D);
         
     	GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
         
@@ -353,15 +371,12 @@ public class GuiConfig extends DefaultSettingsGUI {
         super.drawScreen(mouseX, mouseY, partialTicks);
         
         this.framebufferMc.unbindFramebuffer();
-		GL11.glPopMatrix();
+		glPopMatrix();
 
-		GL11.glPushMatrix();
-
-		GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		GL30.glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-
-		GL11.glPopMatrix();
-
+		glPushMatrix();
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+		glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glPopMatrix();
     }
     
     public static int clamp(int num, int min, int max)

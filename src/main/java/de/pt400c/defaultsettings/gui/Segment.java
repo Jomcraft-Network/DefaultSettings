@@ -14,7 +14,6 @@ import java.text.Bidi;
 import java.util.logging.Level;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.FontRenderer;
@@ -287,10 +286,10 @@ public abstract class Segment {
         }
 
         if(blending) {
-        	glEnable(GL11.GL_BLEND);
-        	glDisable(GL11.GL_ALPHA_TEST);
-        	glDisable(GL11.GL_TEXTURE_2D);
-        	glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        	glEnable(GL_BLEND);
+        	glDisable(GL_ALPHA_TEST);
+        	glDisable(GL_TEXTURE_2D);
+        	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
         
         if(color != null) {
@@ -299,11 +298,11 @@ public abstract class Segment {
         	final float f1 = (float)(color >> 8 & 255) / 255.0F;
         	final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
-            	GL11.glColor4f(f, f1, f2, f3);
+            	glColor4f(f, f1, f2, f3);
             else if(multiply)
-            	GL11.glColor4f(f, f1, f2, f3 * alpha);
+            	glColor4f(f, f1, f2, f3 * alpha);
             else
-            	GL11.glColor4f(f, f1, f2, f3 - alpha);
+            	glColor4f(f, f1, f2, f3 - alpha);
         }
         
         addVertex((float) x1, (float) y2, 0);
@@ -313,9 +312,9 @@ public abstract class Segment {
 
 		draw(false);
 		if(blending) {
-			glEnable(GL11.GL_TEXTURE_2D);
-			glEnable(GL11.GL_ALPHA_TEST);
-        	glDisable(GL11.GL_BLEND);
+			glEnable(GL_TEXTURE_2D);
+			glEnable(GL_ALPHA_TEST);
+        	glDisable(GL_BLEND);
 		}
     }
 
@@ -327,10 +326,10 @@ public abstract class Segment {
         float f2 = (float)(color >> 8 & 255) / 255.0F;
         float f3 = (float)(color & 255) / 255.0F;
 
-        glEnable(GL11.GL_BLEND);
-        glDisable(GL11.GL_ALPHA_TEST);
-        glDisable(GL11.GL_TEXTURE_2D);
-        glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4f(f1, f2, f3, f - alpha);
         
         drawCircle(x1 + 10, y1 + 10, 10, 180F, 75);
@@ -341,9 +340,9 @@ public abstract class Segment {
         
         drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
         
-        glEnable(GL11.GL_TEXTURE_2D);
-        glEnable(GL11.GL_ALPHA_TEST);
-        glDisable(GL11.GL_BLEND);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND);
     }
 	
 	protected static Color darkenColor(int color, float darken) {
@@ -382,10 +381,10 @@ public abstract class Segment {
         final float f2 = (float)(color >> 8 & 255) / 255.0F;
         final float f3 = (float)(color & 255) / 255.0F;
 
-        glEnable(GL11.GL_BLEND);
-        glDisable(GL11.GL_ALPHA_TEST);
-        glDisable(GL11.GL_TEXTURE_2D);
-        glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glDisable(GL_ALPHA_TEST);
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4f(f1, f2, f3, f - alpha);
         
         drawCircle(x1 + 10, y2 - 10, 10, 90F, 75);
@@ -396,9 +395,9 @@ public abstract class Segment {
         
         drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
-        glEnable(GL11.GL_TEXTURE_2D);
-        glEnable(GL11.GL_ALPHA_TEST);
-        glDisable(GL11.GL_BLEND);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_ALPHA_TEST);
+        glDisable(GL_BLEND);
        
     }
 	
@@ -526,18 +525,18 @@ public abstract class Segment {
 			if (hasColor) {
 				byteBuffer.position(20);
 				glColorPointer(4, true, 32, byteBuffer);
-				glEnableClientState(GL11.GL_COLOR_ARRAY);
+				glEnableClientState(GL_COLOR_ARRAY);
 			}
 			
 			byteBuffer.position(0);
 			glVertexPointer(3, 32, floatBuffer);
-			glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			glDrawArrays(GL11.GL_QUADS, 0, 4);
-			glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glDrawArrays(GL_QUADS, 0, 4);
+			glDisableClientState(GL_VERTEX_ARRAY);
 			
 			if (hasColor)
             {
-                glDisableClientState(GL11.GL_COLOR_ARRAY);
+                glDisableClientState(GL_COLOR_ARRAY);
             }
 			
 		} else {
@@ -547,17 +546,17 @@ public abstract class Segment {
 			if (hasColor) {
 				byteBuffer.position(20);
 				glColorPointer(4, true, 32, byteBuffer);
-				glEnableClientState(GL11.GL_COLOR_ARRAY);
+				glEnableClientState(GL_COLOR_ARRAY);
 			}
 			
 			byteBuffer.position(0);
 			glVertexPointer(3, 32, floatBuffer);
-			glEnableClientState(GL11.GL_VERTEX_ARRAY);
-			glDrawArrays(GL11.GL_TRIANGLES, 0, 3);
-			glDisableClientState(GL11.GL_VERTEX_ARRAY);
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDisableClientState(GL_VERTEX_ARRAY);
 
 			if (hasColor) {
-				glDisableClientState(GL11.GL_COLOR_ARRAY);
+				glDisableClientState(GL_COLOR_ARRAY);
 			}
 		}
 		hasColor = false;
@@ -567,43 +566,43 @@ public abstract class Segment {
 	protected static void drawDot(float red, float green, float blue, float alpha, float scaleFactor, float size, Vec2f vector) {
 		glColor4f(red, green, blue, alpha);
 
-		glEnable(GL11.GL_POINT_SMOOTH);
+		glEnable(GL_POINT_SMOOTH);
 
 		glPointSize(size * (scaleFactor / 2F));
 
-		glBegin(GL11.GL_POINTS);
+		glBegin(GL_POINTS);
 
 		glVertex3d(vector.x, vector.y, 0.0f);
 		
 		glEnd();
-		glDisable(GL11.GL_POINT_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);
 		
 	}
 	
 	protected static void drawDots(float red, float green, float blue, float alpha, float scaleFactor, Vec2f... vectors) {
 		glColor4f(red, green, blue, alpha);
 
-		glEnable(GL11.GL_POINT_SMOOTH);
+		glEnable(GL_POINT_SMOOTH);
 
 		glPointSize(6.5F * (scaleFactor / 2F));
 
-		glBegin(GL11.GL_POINTS);
+		glBegin(GL_POINTS);
 		
 		for(Vec2f vector : vectors) {
 			glVertex3d(vector.x, vector.y, 0.0f);
 		}
 
 		glEnd();
-		glDisable(GL11.GL_POINT_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);
 		
 	}
 	
 	protected static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
-		glEnable(GL11.GL_LINE_SMOOTH);
+		glEnable(GL_LINE_SMOOTH);
 
 		glLineWidth(3.0F * (factor / 2F));
 
-		glBegin(GL11.GL_LINE_STRIP);
+		glBegin(GL_LINE_STRIP);
 		glColor4f(red, green, blue, alpha);
 		
 		for(Vec2f vector : vectors) {
@@ -611,31 +610,31 @@ public abstract class Segment {
 		}
 		
 		glEnd();
-		glDisable(GL11.GL_LINE_SMOOTH);
+		glDisable(GL_LINE_SMOOTH);
 		
-		glEnable(GL11.GL_POINT_SMOOTH);
+		glEnable(GL_POINT_SMOOTH);
 	
 		glPointSize(3.0F * (factor / 2F));
 
-		glBegin(GL11.GL_POINTS);
+		glBegin(GL_POINTS);
 		
 		for(Vec2f vector : vectors) {
 			glVertex3d(vector.x, vector.y, 0.0f);
 		}
 
 		glEnd();
-		glDisable(GL11.GL_POINT_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);
 
 	}
 	
 	protected static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vectors) {
-		glEnable(GL11.GL_LINE_SMOOTH);
+		glEnable(GL_LINE_SMOOTH);
 		if(!(factor == 1))
 			glLineWidth(3.0F * (factor - 1));
 		else
 			glLineWidth(1F);
 
-		glBegin(GL11.GL_LINE_STRIP);
+		glBegin(GL_LINE_STRIP);
 		glColor4f(red, green, blue, alpha);
 		
 		for(Vec2f vector : vectors) {
@@ -643,21 +642,21 @@ public abstract class Segment {
 		}
 		
 		glEnd();
-		glDisable(GL11.GL_LINE_SMOOTH);
+		glDisable(GL_LINE_SMOOTH);
 		
-		glEnable(GL11.GL_POINT_SMOOTH);
+		glEnable(GL_POINT_SMOOTH);
 		if(!(factor == 1))
 			glPointSize(3.0F * (factor - 1));
 		else
 			glPointSize(1F);
-		glBegin(GL11.GL_POINTS);
+		glBegin(GL_POINTS);
 		
 		for(Vec2f vector : vectors) {
 			glVertex3d(vector.x, vector.y, 0.0f);
 		}
 
 		glEnd();
-		glDisable(GL11.GL_POINT_SMOOTH);
+		glDisable(GL_POINT_SMOOTH);
 	}
 
 	private static void reset() {
@@ -671,7 +670,7 @@ public abstract class Segment {
 	}
 
 	public int drawString(String p_85187_1_, double p_85187_2_, double p_85187_3_, int p_85187_4_, boolean p_85187_5_) {
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		glEnable(GL_ALPHA_TEST);
 		
         this.resetStyles();
         int l = this.renderString(p_85187_1_, p_85187_2_, p_85187_3_, p_85187_4_, false);
@@ -723,7 +722,7 @@ public abstract class Segment {
             setField(blueFr, (float)(p_78258_4_ >> 8 & 255) / 255.0F, MC.fontRenderer);
             setField(greenFr, (float)(p_78258_4_ & 255) / 255.0F, MC.fontRenderer);
             setField(alphaFr, (float)(p_78258_4_ >> 24 & 255) / 255.0F, MC.fontRenderer);
-            GL11.glColor4f((float) getField(redFr, MC.fontRenderer), (float) getField(blueFr, MC.fontRenderer), (float) getField(greenFr, MC.fontRenderer), (float) getField(alphaFr, MC.fontRenderer));
+            glColor4f((float) getField(redFr, MC.fontRenderer), (float) getField(blueFr, MC.fontRenderer), (float) getField(greenFr, MC.fontRenderer), (float) getField(alphaFr, MC.fontRenderer));
             setField(posXFr, (float)p_78258_2_, MC.fontRenderer);
             setField(posYFr, (float)p_78258_3_, MC.fontRenderer);
             this.renderStringAtPos(p_78258_1_, p_78258_5_);
@@ -841,7 +840,7 @@ public abstract class Segment {
 
                     k = ((int[])(getField(colorCodeFr, MC.fontRenderer)))[j];
                     setField(textColorFr, k, MC.fontRenderer);
-                    GL11.glColor4f((float)(k >> 16) / 255.0F, (float)(k >> 8 & 255) / 255.0F, (float)(k & 255) / 255.0F, (float) getField(alphaFr, MC.fontRenderer));
+                    glColor4f((float)(k >> 16) / 255.0F, (float)(k >> 8 & 255) / 255.0F, (float)(k & 255) / 255.0F, (float) getField(alphaFr, MC.fontRenderer));
                 }
                 else if (j == 16)
                 {
@@ -871,7 +870,7 @@ public abstract class Segment {
                 	setField(underlineStyleFr, false, MC.fontRenderer);
                 	setField(italicStyleFr, false, MC.fontRenderer);
                 	
-                    GL11.glColor4f((float) getField(redFr, MC.fontRenderer), (float) getField(blueFr, MC.fontRenderer), (float) getField(greenFr, MC.fontRenderer), (float) getField(alphaFr, MC.fontRenderer));
+                    glColor4f((float) getField(redFr, MC.fontRenderer), (float) getField(blueFr, MC.fontRenderer), (float) getField(greenFr, MC.fontRenderer), (float) getField(alphaFr, MC.fontRenderer));
                 }
 
                 ++i;
@@ -945,20 +944,20 @@ public abstract class Segment {
                 if ((boolean) getField(strikethroughStyleFr, MC.fontRenderer))
                 {
                     tessellator = Tessellator.instance;
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+                    glDisable(GL_TEXTURE_2D);
                     tessellator.startDrawingQuads();
                     tessellator.addVertex((double)(float) getField(posXFr, MC.fontRenderer), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2)), 0.0D);
                     tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2)), 0.0D);
                     tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F), 0.0D);
                     tessellator.addVertex((double)(float) getField(posXFr, MC.fontRenderer), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F), 0.0D);
                     tessellator.draw();
-                    GL11.glEnable(GL11.GL_TEXTURE_2D);
+                    glEnable(GL_TEXTURE_2D);
                 }
 
                 if ((boolean) getField(underlineStyleFr, MC.fontRenderer))
                 {
                     tessellator = Tessellator.instance;
-                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+                    glDisable(GL_TEXTURE_2D);
                     tessellator.startDrawingQuads();
                     int l = (boolean) getField(underlineStyleFr, MC.fontRenderer) ? -1 : 0;
                     tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + (float)l), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT), 0.0D);
@@ -966,7 +965,7 @@ public abstract class Segment {
                     tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F), 0.0D);
                     tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + (float)l), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F), 0.0D);
                     tessellator.draw();
-                    GL11.glEnable(GL11.GL_TEXTURE_2D);
+                    glEnable(GL_TEXTURE_2D);
                 }
 
                 setField(posXFr, (float)((int)f) + (float) getField(posXFr, MC.fontRenderer), MC.fontRenderer);

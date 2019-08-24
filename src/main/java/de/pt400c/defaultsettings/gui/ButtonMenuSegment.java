@@ -1,6 +1,5 @@
 package de.pt400c.defaultsettings.gui;
 
-import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import static de.pt400c.defaultsettings.FileUtil.MC;
@@ -47,19 +46,19 @@ public class ButtonMenuSegment extends ButtonSegment {
 			
 			this.offsetX = func;
 			glPushMatrix();
-			glEnable(GL11.GL_BLEND);
+			glEnable(GL_BLEND);
 			glBlendFuncSeparate(770, 771, 1, 0);
 			Segment.drawButton(this.getPosX() + this.offsetX, this.getPosY(), this.getPosX() + this.offsetX + this.getWidth(), this.getPosY() + this.getHeight(), calcAlpha(this.getRenderColor((byte) (this.activated ? 2 : this.isSelected(mouseX, mouseY) ? 1 : 0)), percent).getRGB(), calcAlpha(0xffdcdcdc, percent).getRGB(), this.border);
-			glDisable(GL11.GL_BLEND);
-			glEnable(GL11.GL_SCISSOR_TEST);
-			glEnable(GL11.GL_BLEND);
+			glDisable(GL_BLEND);
+			glEnable(GL_SCISSOR_TEST);
+			glEnable(GL_BLEND);
 			glBlendFuncSeparate(770, 771, 1, 0);
 			ScaledResolution scaledResolution = new ScaledResolution(MC.gameSettings, MC.displayWidth, MC.displayHeight);
 			int scaleFactor = scaledResolution.getScaleFactor();
 			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 			this.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB(), false);
-			glDisable(GL11.GL_BLEND);
-			glDisable(GL11.GL_SCISSOR_TEST);
+			glDisable(GL_BLEND);
+			glDisable(GL_SCISSOR_TEST);
 	
 			glPopMatrix();
 		}

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static de.pt400c.neptunefx.NEX.*;
 import java.util.Collections;
 import java.util.function.Function;
 import static org.lwjgl.opengl.GL11.*;
@@ -53,27 +54,27 @@ public class ButtonSegment extends Segment {
 	 	glShadeModel(GL_SMOOTH);
 		glDisable(GL_TEXTURE_2D);
 
-		Segment.drawGradient(this.getPosX() + this.width - 2, this.getPosY() + 2, this.getPosX() + this.width + 5, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 0);
+		drawGradient(this.getPosX() + this.width - 2, this.getPosY() + 2, this.getPosX() + this.width + 5, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 0);
 		
-		Segment.drawGradient(this.getPosX() - 5, this.getPosY() + 2, this.getPosX() + 2, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 2);
+		drawGradient(this.getPosX() - 5, this.getPosY() + 2, this.getPosX() + 2, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 2);
 		
-		Segment.drawGradient(this.getPosX() + 2, this.getPosY() - 5, this.getPosX() + this.width - 2, this.getPosY() + 2, 0xff000000, 0x00404040, 3);
+		drawGradient(this.getPosX() + 2, this.getPosY() - 5, this.getPosX() + this.width - 2, this.getPosY() + 2, 0xff000000, 0x00404040, 3);
 		
-		Segment.drawGradient(this.getPosX() + 2, this.getPosY() + this.height - 2, this.getPosX() + this.width - 2, this.getPosY() + this.height + 5, 0xff000000, 0x00404040, 1);
+		drawGradient(this.getPosX() + 2, this.getPosY() + this.height - 2, this.getPosX() + this.width - 2, this.getPosY() + this.height + 5, 0xff000000, 0x00404040, 1);
 		
-		Segment.drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + 2, 7, 180, 75, 0xff000000, 0x00404040);
+		drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + 2, 7, 180, 75, 0xff000000, 0x00404040);
 		
-		Segment.drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + 2, 7, 270, 75, 0xff000000, 0x00404040);
+		drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + 2, 7, 270, 75, 0xff000000, 0x00404040);
 		
-		Segment.drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + this.height - 2, 7, 0, 75, 0xff000000, 0x00404040);
+		drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + this.height - 2, 7, 0, 75, 0xff000000, 0x00404040);
 		
-		Segment.drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + this.height - 2, 7, 90, 75, 0xff000000, 0x00404040);
+		drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + this.height - 2, 7, 90, 75, 0xff000000, 0x00404040);
 		glEnable(GL_TEXTURE_2D);
 		glShadeModel(GL_FLAT);
 		glEnable(GL_ALPHA_TEST);
 		glDisable(GL_BLEND);
 		
-		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, 0xffdcdcdc, this.border);
+		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, 0xffdcdcdc, this.border);
 
 		glPushMatrix();
      	glEnable(GL_BLEND);
@@ -103,7 +104,7 @@ public class ButtonSegment extends Segment {
 					textWidth = MC.fontRenderer.getStringWidth(line);
 			}
 			
-			Segment.drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
+			drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			Collections.reverse(lines);

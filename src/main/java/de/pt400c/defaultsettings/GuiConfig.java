@@ -9,26 +9,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
-import de.pt400c.defaultsettings.gui.ButtonMenuSegment;
-import de.pt400c.defaultsettings.gui.ButtonSegment;
-import de.pt400c.defaultsettings.gui.ButtonUpdateChecker;
-import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
-import de.pt400c.defaultsettings.gui.ExportSwitchSegment;
-import de.pt400c.defaultsettings.gui.LeftMenu;
-import de.pt400c.defaultsettings.gui.MenuArea;
-import de.pt400c.defaultsettings.gui.MenuScreen;
-import de.pt400c.defaultsettings.gui.PopupSegment;
-import de.pt400c.defaultsettings.gui.PopupWindow;
-import de.pt400c.defaultsettings.gui.QuitButtonSegment;
-import de.pt400c.defaultsettings.gui.ScrollableSegment;
-import de.pt400c.defaultsettings.gui.Segment;
-import de.pt400c.defaultsettings.gui.SplitterSegment;
-import de.pt400c.defaultsettings.gui.TextSegment;
+import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.versions.mcp.MCPVersion;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -322,9 +309,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 			glShadeModel(GL_SMOOTH);
 
-			Segment.drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+			drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 			
-			Segment.drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+			drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
 			glShadeModel(GL_FLAT);
 			glDisable(GL_BLEND);

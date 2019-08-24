@@ -2,8 +2,8 @@ package de.pt400c.defaultsettings;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 @OnlyIn(Dist.CLIENT)
 public class FramebufferObject {

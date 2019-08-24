@@ -9,6 +9,7 @@ import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.Vec2f;
+import static de.pt400c.neptunefx.NEX.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -60,17 +61,17 @@ public class ButtonBulkActionSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
+		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
 
-		Segment.drawCircle((float) this.getPosX() - 2, (float) this.getPosY() + this.height + 2, 3, 90, 75);
+		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() + this.height + 2, 3, 90, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() + this.height + 2, 3, 0, 75);
+		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() + this.height + 2, 3, 0, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() - 2, 3, 270, 75);
+		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() - 2, 3, 270, 75);
 
-		Segment.drawRect(this.getPosX() - 5, this.getPosY() - 2, this.getPosX() + this.width + 5, this.getPosY() + this.height + 2, null, false, null, false);
+		drawRect(this.getPosX() - 5, this.getPosY() - 2, this.getPosX() + this.width + 5, this.getPosY() + this.height + 2, null, false, null, false);
 
-		Segment.drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + width + 2, this.getPosY() + this.height + 5, null, false, null, false);
+		drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + width + 2, this.getPosY() + this.height + 5, null, false, null, false);
 
 		if (this.timer <= (Math.PI / 3)) {
 			color = 0xffffffff;
@@ -82,17 +83,17 @@ public class ButtonBulkActionSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
+			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
-			Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
+			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
 
-			Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
+			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
 
-			Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
+			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
 
-			Segment.drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
+			drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
 
-			Segment.drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
+			drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
 
 		}
 
@@ -104,19 +105,19 @@ public class ButtonBulkActionSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3 - alphaRate);
 
-		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
+		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
 
-		Segment.drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
+		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
+		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
 
-		Segment.drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
+		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
 
-		Segment.drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
+		drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
 
-		Segment.drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
+		drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
 
-		Segment.drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
+		drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
 
 		if (this.parent.cache_activity == 1) {
 			color = 0xffffffff;
@@ -128,7 +129,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 			int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
 
-			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX(), (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 5.5F, (float) this.getPosY() + 3.5F));
+			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX(), (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 5.5F, (float) this.getPosY() + 3.5F));
 
 		}
 
@@ -142,7 +143,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 			int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
 
-			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
+			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
 
 		}
 

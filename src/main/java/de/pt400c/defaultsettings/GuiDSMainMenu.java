@@ -3,12 +3,13 @@ package de.pt400c.defaultsettings;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.util.ArrayList;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import de.pt400c.defaultsettings.gui.ButtonSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
-import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.TextSegment;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,18 +58,18 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-    	GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    	Gui.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		glShadeModel(GL_SMOOTH);
-		Segment.drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
+		drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
 		glShadeModel(GL_FLAT);
 		glDisable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-    	GuiConfig.drawRect(0, 0, width, 25, 0xffe0e0e0);
+    	Gui.drawRect(0, 0, width, 25, 0xffe0e0e0);
     	super.render(mouseX, mouseY, partialTicks);
     }
 }

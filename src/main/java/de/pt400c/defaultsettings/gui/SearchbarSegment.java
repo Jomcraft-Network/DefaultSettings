@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.SharedConstants;
 import net.minecraftforge.api.distmarker.Dist;
+import static de.pt400c.neptunefx.NEX.*;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -120,7 +121,7 @@ public class SearchbarSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), null, false, null, false);
+		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), null, false, null, false);
 
 		color = 0xff272727;
 
@@ -131,7 +132,7 @@ public class SearchbarSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawRect(this.getPosX() - 10, this.getPosY() - 1, this.getPosX() - 8, this.getPosY() + this.getHeight() + 1, null, false, null, false);
+		drawRect(this.getPosX() - 10, this.getPosY() - 1, this.getPosX() - 8, this.getPosY() + this.getHeight() + 1, null, false, null, false);
 
 		if (this.focused)
 			color = 0xffa0a0a0;
@@ -145,7 +146,7 @@ public class SearchbarSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawRect(this.getPosX() + 1, this.getPosY() + 1, this.getPosX() + this.getWidth() - 1, this.getPosY() + this.getHeight() - 1, null, false, null, false);
+		drawRect(this.getPosX() + 1, this.getPosY() + 1, this.getPosX() + this.getWidth() - 1, this.getPosY() + this.getHeight() - 1, null, false, null, false);
 
 		color = 0xffffffff;
 
@@ -156,7 +157,7 @@ public class SearchbarSegment extends Segment {
 
 		glColor4f(f, f1, f2, f3);
 
-		Segment.drawRect(this.getPosX() + 2, this.getPosY() + 2, this.getPosX() + this.getWidth() - 2, this.getPosY() + this.getHeight() - 2, null, false, null, false);
+		drawRect(this.getPosX() + 2, this.getPosY() + 2, this.getPosX() + this.getWidth() - 2, this.getPosY() + this.getHeight() - 2, null, false, null, false);
 
 		this.cursorTimer++;
 		if (this.cursorTimer > 80)
@@ -173,7 +174,7 @@ public class SearchbarSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			Segment.drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
+			drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 
 		glDisable(GL_BLEND);

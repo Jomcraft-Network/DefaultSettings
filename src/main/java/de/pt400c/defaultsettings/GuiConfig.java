@@ -13,6 +13,8 @@ import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -282,28 +284,26 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
     	if (legacy) {
-
-			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+    		GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 
 			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
 
-			MC.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (MC.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+			this.fontRendererObj.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRendererObj.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
 
-			int posX = clamp((this.width - 74) / 2 + 74 - (MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+			final int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRendererObj.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
 
-			MC.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+			this.fontRendererObj.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
 
-			MC.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+			this.fontRendererObj.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
 		} else {
-
 			this.mc.getFramebuffer().unbindFramebuffer();
 
 			glPushMatrix();
@@ -312,7 +312,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glEnable(GL_MULTISAMPLE);
 			glEnable(GL_TEXTURE_2D);
 
-			ScaledResolution scaledresolution = new ScaledResolution(this.mc, MC.displayWidth, MC.displayHeight);
+			ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+			
 			glClear(256);
 			glMatrixMode(5889);
 			glLoadIdentity();
@@ -325,21 +326,38 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
+			glDisable(GL_TEXTURE_2D);
+
+			glEnable(GL_BLEND);
+
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glShadeModel(GL_SMOOTH);
+
+			drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+			
+			drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+
+			glShadeModel(GL_FLAT);
+
+			glDisable(GL_BLEND);
+
+			glEnable(GL_TEXTURE_2D);
+			
 			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 
 			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
+		
+			this.fontRendererObj.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRendererObj.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
 
-			MC.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (MC.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+			final int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRendererObj.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
 
-			int posX = clamp((this.width - 74) / 2 + 74 - (MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+			this.fontRendererObj.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
 
-			MC.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+			this.fontRendererObj.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
 
-			MC.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
-
-			buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
-			buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
+			this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			super.drawScreen(mouseX, mouseY, partialTicks);
 
 			this.framebufferMc.unbindFramebuffer();
@@ -349,7 +367,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glPushMatrix();
 
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-			glBlitFramebuffer(0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, 0, 0, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 			glPopMatrix();
 		}

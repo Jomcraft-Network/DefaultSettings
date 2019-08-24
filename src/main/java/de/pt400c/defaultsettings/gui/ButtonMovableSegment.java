@@ -4,6 +4,7 @@ import java.util.function.Function;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
+import static de.pt400c.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonMovableSegment extends ButtonSegment {
@@ -18,7 +19,7 @@ public class ButtonMovableSegment extends ButtonSegment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		Segment.drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xff7a7a7a : 0xffa4a4a4, 0xffdcdcdc, this.border);
+		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xff7a7a7a : 0xffa4a4a4, 0xffdcdcdc, this.border);
 		if (this.dragging) {
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;

@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -75,9 +74,9 @@ public class SearchbarSegment extends Segment {
 
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
-		glEnable(GL11.GL_BLEND);
-		glDisable(GL11.GL_TEXTURE_2D);
-		glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
 		final float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
@@ -169,17 +168,17 @@ public class SearchbarSegment extends Segment {
 			Segment.drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 		
-		glDisable(GL11.GL_BLEND);
-		glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
-		glEnable(GL11.GL_BLEND);
+		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
 			this.drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffb8b8b8, darken).getRGB() : 0xff7a7a7a, false);
 		else
 			this.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0, false);
-		glDisable(GL11.GL_BLEND);
+		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
 

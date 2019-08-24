@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
@@ -190,9 +188,9 @@ public class ScrollableSegment extends Segment {
 		final float f1 = (float) (color >> 8 & 255) / 255.0F;
 		final float f2 = (float) (color & 255) / 255.0F;
 
-		glEnable(GL11.GL_BLEND);
-		glDisable(GL11.GL_TEXTURE_2D);
-		glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glColor4f(f, f1, f2, f3);
 
@@ -213,24 +211,24 @@ public class ScrollableSegment extends Segment {
 		Segment.drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
 		Segment.drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
-		glDisable(GL11.GL_BLEND);
-		glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 	
 		if(!this.invisible) {
 			
-			glDisable(GL11.GL_TEXTURE_2D);
-			glEnable(GL11.GL_BLEND);
-			glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+			glDisable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-			glShadeModel(GL11.GL_SMOOTH);
+			glShadeModel(GL_SMOOTH);
 
 			Segment.drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
 			
 			Segment.drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
 
-			glShadeModel(GL11.GL_FLAT);
-			glDisable(GL11.GL_BLEND);
-			glEnable(GL11.GL_TEXTURE_2D);
+			glShadeModel(GL_FLAT);
+			glDisable(GL_BLEND);
+			glEnable(GL_TEXTURE_2D);
 
 		}
 
@@ -274,7 +272,7 @@ public class ScrollableSegment extends Segment {
 		int scaleFactor = scaledResolution.getScaleFactor();
 
 		glPushMatrix();
-		glEnable(GL11.GL_SCISSOR_TEST);
+		glEnable(GL_SCISSOR_TEST);
 		glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (scaledResolution.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
@@ -308,7 +306,7 @@ public class ScrollableSegment extends Segment {
 
 		}
 
-		glDisable(GL11.GL_SCISSOR_TEST);
+		glDisable(GL_SCISSOR_TEST);
 		glPopMatrix();
 
 		final float percentHeight = height / this.maxSize;
@@ -513,9 +511,9 @@ class SettingsButtonSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		glEnable(GL11.GL_BLEND);
-		glDisable(GL11.GL_TEXTURE_2D);
-		glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glColor4f(f, f1, f2, f3);
 
 		Segment.drawCircle((float) customPosX, (float) customPosY + 3.3F, 7, 0, 0);
@@ -549,8 +547,8 @@ class SettingsButtonSegment extends Segment {
 			Segment.drawDot(f, f1, f2, f3, scaleFactor, 3, new Vec2f((float) customPosX - 15, (float) customPosY + 7.3F));
 		}
 		
-		glDisable(GL11.GL_BLEND);
-		glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 		this.active = false;
 	}
 	
@@ -904,9 +902,9 @@ class PopupCheckboxSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		glEnable(GL11.GL_BLEND);
-		glDisable(GL11.GL_TEXTURE_2D);
-		glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
 		glColor4f(f, f1, f2, f3);
 
@@ -986,7 +984,7 @@ class PopupCheckboxSegment extends Segment {
 			Segment.drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
 		}
 
-		glDisable(GL11.GL_BLEND);
-		glEnable(GL11.GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 	}
 }

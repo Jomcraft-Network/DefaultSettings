@@ -57,8 +57,8 @@ public class PopupWindow extends Segment {
 		glEnable(GL_ALPHA_TEST);
 		glDisable(GL_BLEND);
 		
-		drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b, 0);
-		drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb, 0);
+		drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b);
+		drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb);
 		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

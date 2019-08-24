@@ -19,8 +19,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.MathHelper;
 import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.versions.mcp.MCPVersion;
 
 @OnlyIn(Dist.CLIENT)

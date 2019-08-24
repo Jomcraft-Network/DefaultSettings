@@ -51,7 +51,7 @@ maven:
     - ./gradlew build publish
   only:
     variables:
-        - $BUILD_MAVEN == "publish"
+        - $BUILD_MAVEN == "publish" 
   artifacts:
     paths:
       - build/libs/

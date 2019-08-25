@@ -191,7 +191,9 @@ public class ScrollableSegment extends Segment {
 			if(this.velocity + 1 == 0)
 				this.velocity += 1;
 		}
-
+		
+		
+		
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
 		final int color = 0xff818181;
 
@@ -203,6 +205,11 @@ public class ScrollableSegment extends Segment {
 		final float f = (float) (color >> 16 & 255) / 255.0F;
 		final float f1 = (float) (color >> 8 & 255) / 255.0F;
 		final float f2 = (float) (color & 255) / 255.0F;
+		
+		if (maxSize <= height)
+			this.invisible = true;
+		else
+			this.invisible = false;
 
 		glColor4f(f, f1, f2, f3);
 
@@ -287,11 +294,6 @@ public class ScrollableSegment extends Segment {
 		} else {
 			distanceY = 0;
 		}
-
-		if (maxSize <= height)
-			this.invisible = true;
-		else
-			this.invisible = false;
 
 		ScaledResolution scaledResolution;
 		if(DefaultSettings.is180)

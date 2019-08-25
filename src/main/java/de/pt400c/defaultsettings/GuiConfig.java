@@ -13,6 +13,7 @@ import org.lwjgl.input.Keyboard;
 import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL30.*;
@@ -35,6 +36,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
 	public FramebufferObject framebufferMc;
 	public boolean legacy;
+	private int bgDPLList = -1;
+    private boolean compiled;
 
     public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
@@ -51,6 +54,14 @@ public class GuiConfig extends DefaultSettingsGUI {
 
     @Override
     public void initGui() {
+    	
+    	if(this.framebufferMc != null) {
+			glDeleteRenderbuffers(this.framebufferMc.colorBuffer);
+	        glDeleteFramebuffers(this.framebufferMc.framebufferObject);
+		}
+			
+		this.compiled = false;
+    	
     	final boolean fbo = MC.gameSettings.fboEnable;
         if(!fbo)
         	legacy = true;
@@ -125,6 +136,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     		return true;}, true))));
     	
     	this.popupField = null;
+    	
+    	super.initGui();
     }
 
     @Override
@@ -204,34 +217,44 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
-			glDisable(GL_TEXTURE_2D);
+			if (compiled) 
+				glCallList(this.bgDPLList);
+			else {
+				this.bgDPLList = GLAllocation.generateDisplayLists(1);
+				glNewList(this.bgDPLList, GL_COMPILE);
 
-			glEnable(GL_BLEND);
+				glDisable(GL_TEXTURE_2D);
 
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-			glShadeModel(GL_SMOOTH);
+				glEnable(GL_BLEND);
 
-			drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
-			
-			drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+				glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+				glShadeModel(GL_SMOOTH);
 
-			glShadeModel(GL_FLAT);
+				drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 
-			glDisable(GL_BLEND);
+				drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
-			glEnable(GL_TEXTURE_2D);
-			
-			GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+				glShadeModel(GL_FLAT);
 
-			GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
-		
-			this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+				glDisable(GL_BLEND);
 
-			final int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+				glEnable(GL_TEXTURE_2D);
 
-			this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+				GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
 
-			this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+				GuiConfig.drawRect(72, 0, this.width, 25, 0xffe0e0e0);
+
+				this.fontRenderer.drawStringWithShadow("Tab", clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+
+				int posX = clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+
+				this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+
+				this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+				glEndList();
+				compiled = true;
+				glCallList(this.bgDPLList);
+			}
 
 			this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 			this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;

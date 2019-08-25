@@ -123,6 +123,17 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 	
 	@Override
+	public void initGui() {
+		
+		synchronized (this.segments) {
+        	for(Segment segment : this.segments)
+	        	segment.initSegment();
+
+        }
+		super.initGui();
+	}
+	
+	@Override
 	public void mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.segments) {
 			if (this.popupField == null) {

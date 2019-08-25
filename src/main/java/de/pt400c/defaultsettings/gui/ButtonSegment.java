@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.Collections;
 import java.util.function.Function;
-import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.client.gui.GuiScreen;
+import static de.pt400c.neptunefx.DrawString.*;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static de.pt400c.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonSegment extends Segment {
@@ -22,6 +24,8 @@ public class ButtonSegment extends Segment {
 	protected boolean grabbed;
 	protected final int border;
 	public int color = 0xffa4a4a4;
+	private int bgDPLList = -1;
+    private boolean compiled;
 
 	public ButtonSegment(GuiScreen gui, float posX, float posY, String title, Function<ButtonSegment, Boolean> function, int width, int height, int border, String hoverMessage, LeftMenu menu, boolean popupSegment) {
 		super(gui, posX, posY, width, height, popupSegment);
@@ -50,36 +54,50 @@ public class ButtonSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    glShadeModel(GL_SMOOTH);
-		glDisable(GL_TEXTURE_2D);
+		if (compiled)
+			glCallList(this.bgDPLList);
+		else {
+			this.bgDPLList = GLAllocation.generateDisplayLists(1);
+			glNewList(this.bgDPLList, GL_COMPILE);
+			glPushMatrix();
 
-		drawGradient(this.getPosX() + this.width - 2, this.getPosY() + 2, this.getPosX() + this.width + 5, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 0);
-		
-		drawGradient(this.getPosX() - 5, this.getPosY() + 2, this.getPosX() + 2, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 2);
-		
-		drawGradient(this.getPosX() + 2, this.getPosY() - 5, this.getPosX() + this.width - 2, this.getPosY() + 2, 0xff000000, 0x00404040, 3);
-		
-		drawGradient(this.getPosX() + 2, this.getPosY() + this.height - 2, this.getPosX() + this.width - 2, this.getPosY() + this.height + 5, 0xff000000, 0x00404040, 1);
-		
-		drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + 2, 7, 180, 75, 0xff000000, 0x00404040);
-		
-		drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + 2, 7, 270, 75, 0xff000000, 0x00404040);
-		
-		drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + this.height - 2, 7, 0, 75, 0xff000000, 0x00404040);
-		
-		drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + this.height - 2, 7, 90, 75, 0xff000000, 0x00404040);
-		
-		glEnable(GL_TEXTURE_2D);
-		glShadeModel(GL_FLAT);
-		glDisable(GL_BLEND);
-		
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glShadeModel(GL_SMOOTH);
+			glDisable(GL_TEXTURE_2D);
+
+			drawGradient(this.getPosX() + this.width - 2, this.getPosY() + 2, this.getPosX() + this.width + 5, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 0);
+
+			drawGradient(this.getPosX() - 5, this.getPosY() + 2, this.getPosX() + 2, this.getPosY() + this.height - 2, 0xff000000, 0x00404040, 2);
+
+			drawGradient(this.getPosX() + 2, this.getPosY() - 5, this.getPosX() + this.width - 2, this.getPosY() + 2, 0xff000000, 0x00404040, 3);
+
+			drawGradient(this.getPosX() + 2, this.getPosY() + this.height - 2, this.getPosX() + this.width - 2, this.getPosY() + this.height + 5, 0xff000000, 0x00404040, 1);
+
+			drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + 2, 7, 180, 75, 0xff000000, 0x00404040);
+
+			drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + 2, 7, 270, 75, 0xff000000, 0x00404040);
+
+			drawGradientCircle((float) this.getPosX() + this.width - 2, (float) this.getPosY() + this.height - 2, 7, 0, 75, 0xff000000, 0x00404040);
+
+			drawGradientCircle((float) this.getPosX() + 2, (float) this.getPosY() + this.height - 2, 7, 90, 75, 0xff000000, 0x00404040);
+
+			glEnable(GL_TEXTURE_2D);
+			glShadeModel(GL_FLAT);
+			glDisable(GL_BLEND);
+
+			glPopMatrix();
+
+			glEndList();
+			compiled = true;
+			glCallList(this.bgDPLList);
+		}
+
 		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, 0xffdcdcdc, this.border);
 		glPushMatrix();
      	glEnable(GL_BLEND);
      	glBlendFuncSeparate(770, 771, 1, 0);
-		MC.fontRenderer.drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a, false);
+		drawString(this.title, (float)((posX + this.getWidth() / 2) - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (posY + this.getHeight() / 2 - 4), 0xff3a3a3a, false);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
@@ -110,7 +128,7 @@ public class ButtonSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				MC.fontRenderer.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
+				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
 		}
@@ -151,5 +169,10 @@ public class ButtonSegment extends Segment {
 		}
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
-
+	
+	@Override
+	public Segment setPos(double x, double y) {
+		compiled = false;
+		return super.setPos(x, y);
+	}
 }

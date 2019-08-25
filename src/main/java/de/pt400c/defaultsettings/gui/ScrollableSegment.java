@@ -7,6 +7,7 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import static de.pt400c.neptunefx.DrawString.*;
 import org.lwjgl.input.Mouse;
 import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.DefaultSettings;
@@ -15,6 +16,7 @@ import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -38,6 +40,8 @@ public class ScrollableSegment extends Segment {
 	private int maxSize = 0;
 	private final byte id;
 	private float velocity = 0;
+	private int bgDPLList = -1;
+    private boolean compiled;
 
 	public ScrollableSegment(GuiScreen gui, float posX, float posY, int width, int height, byte id) {	
 		super(gui, posX, posY, width, height, false);
@@ -106,6 +110,12 @@ public class ScrollableSegment extends Segment {
 			return new ArrayList<RowItem>();
 		}
 
+	}
+	
+	@Override
+	public void initSegment() {
+		compiled = false;
+		super.initSegment();
 	}
 	
 	@Override
@@ -185,34 +195,47 @@ public class ScrollableSegment extends Segment {
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
 		final int color = 0xff818181;
 
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
 		final float f3 = (float) (color >> 24 & 255) / 255.0F;
 		final float f = (float) (color >> 16 & 255) / 255.0F;
 		final float f1 = (float) (color >> 8 & 255) / 255.0F;
 		final float f2 = (float) (color & 255) / 255.0F;
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		glColor4f(f, f1, f2, f3);
 
-		drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
+		if (compiled)
+			glCallList(this.bgDPLList);
+		else {
+			
+			this.bgDPLList = GLAllocation.generateDisplayLists(1);
+			glNewList(this.bgDPLList, GL_COMPILE);
 
-		drawCircle((float) this.getPosX(), (float) this.getPosY() + this.height, 5, 90, 75);
+			drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
 
-		drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY() + this.height, 5, 0, 75);
+			drawCircle((float) this.getPosX(), (float) this.getPosY() + this.height, 5, 90, 75);
 
-		drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);
+			drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY() + this.height, 5, 0, 75);
 
-		drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
+			drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);
+
+			drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
 		
-		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
+			drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
 
-		glColor4f(f, f1, f2, f3);	
+			glColor4f(f, f1, f2, f3);	
 		
-		drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
+			drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
 
-		drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
+			drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
+		
+			glEndList();
+			compiled = true;
+			glCallList(this.bgDPLList);
+		}
+
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
 	
@@ -296,10 +319,10 @@ public class ScrollableSegment extends Segment {
 			final SettingsButtonSegment button = (SettingsButtonSegment) this.list.get(i).childs[1];
 			if (widthString >= (width - (button.mark ? 55 : 40))) {
 
-				MC.fontRenderer.drawString(MC.fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots)) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
+				drawString(MC.fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots)) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
 
 			} else {
-				MC.fontRenderer.drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
+				drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0, false);
 			}
 
 			for (Segment segment : this.list.get(i).childs) 
@@ -486,7 +509,7 @@ class SettingsButtonSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				MC.fontRenderer.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
+				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
 			

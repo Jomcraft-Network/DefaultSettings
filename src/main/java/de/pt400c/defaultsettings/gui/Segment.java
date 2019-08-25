@@ -81,6 +81,10 @@ public abstract class Segment {
         return this.isPopupSegment;
 	}
 	
+	public void initSegment() {
+
+	}
+	
 	public void init() {};
 	
 	public void guiContentUpdate(String... arg) {};

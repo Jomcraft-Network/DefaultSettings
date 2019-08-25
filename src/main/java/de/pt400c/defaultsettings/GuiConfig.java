@@ -152,6 +152,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     		return true;}, true))));
     	
     	this.popupField = null;
+    	
+    	super.initGui();
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GLAllocation;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static de.pt400c.neptunefx.DrawString.*;
 import static de.pt400c.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
@@ -128,7 +129,7 @@ public class ButtonSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				this.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
+				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
 		}
@@ -175,5 +176,4 @@ public class ButtonSegment extends Segment {
 		compiled = false;
 		return super.setPos(x, y);
 	}
-
 }

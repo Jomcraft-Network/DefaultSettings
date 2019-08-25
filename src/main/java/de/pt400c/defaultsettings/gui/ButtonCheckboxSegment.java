@@ -246,5 +246,4 @@ public class ButtonCheckboxSegment extends Segment {
 	public void render(float mouseX, float mouseY, float partialTicks) {
 
 	}
-
 }

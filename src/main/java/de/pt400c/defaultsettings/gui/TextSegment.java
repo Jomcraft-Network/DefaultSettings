@@ -2,6 +2,7 @@ package de.pt400c.defaultsettings.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.DrawString.*;
 import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -32,7 +33,7 @@ public class TextSegment extends Segment {
      	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
      	int offsetY = 0;
      	for(String line : this.text.split("\n")) {
-     		this.drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, this.color, false);
+     		drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, this.color, false);
      		offsetY += this.offset;
      	}
 		glDisable(GL_BLEND);

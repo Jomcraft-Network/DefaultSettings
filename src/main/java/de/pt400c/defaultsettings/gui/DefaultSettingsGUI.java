@@ -86,6 +86,17 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 	
 	@Override
+	public void initGui() {
+		
+		synchronized (this.segments) {
+        	for(Segment segment : this.segments)
+	        	segment.initSegment();
+
+        }
+		super.initGui();
+	}
+	
+	@Override
 	public void handleMouseInput() {
 		synchronized (this.segments) {
 			if (this.popupField == null) {

@@ -94,6 +94,10 @@ public abstract class Segment {
         return this.isPopupSegment;
 	}
 	
+	public void initSegment() {
+
+	}
+	
 	public Segment setPos(double x, double y) {
 		this.posX = x;
 		this.posY = y;

@@ -25,12 +25,12 @@ public class ExportSwitchSegment extends Segment {
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
+	public boolean isSelected(int mouseX, int mouseY) {
 		return super.isSelected(mouseX, mouseY) || distanceBetweenPoints((float) this.getPosX() + (28F * (1 - processFactor)), (float) this.getPosY() + 7, (float) mouseX, (float) mouseY) <= 9.4F;
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		drawString("Export Mode:", (float) this.getPosX() - 77, (float) this.getPosY() + 3, 0xff5d5d5d, false);
 		
@@ -130,7 +130,7 @@ public class ExportSwitchSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(float mouseX, float mouseY) {
+	public void hoverCheck(int mouseX, int mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
 			ArrayList<String> lines = new ArrayList<String>();
@@ -158,7 +158,7 @@ public class ExportSwitchSegment extends Segment {
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
@@ -170,14 +170,14 @@ public class ExportSwitchSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY))
 			this.grabbed = false;
 		return super.mouseDragged(mouseX, mouseY, button);
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;

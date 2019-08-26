@@ -36,7 +36,7 @@ public class ScrollableSegment extends Segment {
 	private final ScrollbarSegment scrollBar;
 	private final ButtonBulkActionSegment bulkAction;
 	public final SearchbarSegment searchbar;
-	private double distanceY = 0;
+	private float distanceY = 0;
 	private int maxSize = 0;
 	private final byte id;
 	private float velocity = 0;
@@ -133,7 +133,7 @@ public class ScrollableSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(float mouseX, float mouseY) {
+	public void hoverCheck(int mouseX, int mouseY) {
 		
 		final float offX = (float) (this.getWidth() + 58);
 		final float offY = 53;
@@ -159,7 +159,7 @@ public class ScrollableSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		this.add += (int) (this.velocity);
 		
 		if (this.add > 0) {
@@ -378,7 +378,7 @@ public class ScrollableSegment extends Segment {
     }
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			((DefaultSettingsGUI) this.gui).resetSelected();
 			for (int i = 0; i < this.list.size(); i++) {
@@ -407,7 +407,7 @@ public class ScrollableSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		this.grabbed = false;
 
 		for (int i = 0; i < this.list.size(); i++) {
@@ -432,7 +432,7 @@ public class ScrollableSegment extends Segment {
 	}
 	
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 
 		for (int i = 0; i < this.list.size(); i++) {
 			int yOffTemp = 18 + 20 * i + add;
@@ -491,7 +491,7 @@ class SettingsButtonSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(float mouseX, float mouseY) {
+	public void hoverCheck(int mouseX, int mouseY) {
 
 		if(this.isSelectedMark(mouseX, mouseY) && this.mark) {
 			ArrayList<String> lines = new ArrayList<String>();
@@ -523,7 +523,7 @@ class SettingsButtonSegment extends Segment {
 	}
 	
 	@Override
-	public void customRender(float mouseX, float mouseY, float customPosX, float customPosY, float partialTicks) {
+	public void customRender(int mouseX, int mouseY, float customPosX, float customPosY, float partialTicks) {
 		if(this.active && this.timer <= Math.PI)
 			timer += 0.3;
 		else if(!this.active && this.timer > 0)
@@ -592,20 +592,20 @@ class SettingsButtonSegment extends Segment {
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
-		final double tempX = this.getPosX() + this.offX; 
-		final double tempY = this.getPosY() + this.offY; 
+	public boolean isSelected(int mouseX, int mouseY) {
+		final float tempX = this.getPosX() + this.offX; 
+		final float tempY = this.getPosY() + this.offY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 8 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 2 && mouseY < tempY + this.getHeight() + 4;
 	}
 	
-	public boolean isSelectedMark(double mouseX, double mouseY) {
-		final double tempX = this.getPosX() + this.offX; 
-		final double tempY = this.getPosY() + this.offY; 
+	public boolean isSelectedMark(int mouseX, int mouseY) {
+		final float tempX = this.getPosX() + this.offX; 
+		final float tempY = this.getPosY() + this.offY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 24 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() - 14 && mouseY < tempY + this.getHeight() + 4;
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
@@ -616,7 +616,7 @@ class SettingsButtonSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY)) {
 			this.grabbed = false;
 			return false;
@@ -625,8 +625,7 @@ class SettingsButtonSegment extends Segment {
 	}
 	
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
-		
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
@@ -668,7 +667,7 @@ class SettingsButtonSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 
 	}
 
@@ -697,14 +696,14 @@ class PopupCheckboxSegment extends Segment {
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
-		double tempX = this.getPosX(); 
-		double tempY = this.getPosY(); 
+	public boolean isSelected(int mouseX, int mouseY) {
+		float tempX = this.getPosX(); 
+		float tempY = this.getPosY(); 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 4 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 4&& mouseY < tempY + this.getHeight() + 4;
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
@@ -715,7 +714,7 @@ class PopupCheckboxSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY)) {
 			this.grabbed = false;
 			return false;
@@ -724,7 +723,7 @@ class PopupCheckboxSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = false;
@@ -907,7 +906,7 @@ class PopupCheckboxSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 	
 		if (active) {
 

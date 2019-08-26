@@ -10,15 +10,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ButtonMovableSegment extends ButtonSegment {
 	
 	private boolean dragging;
-	private double distanceX = 0;
-	private double distanceY = 0;
+	private float distanceX = 0;
+	private float distanceY = 0;
 
 	public ButtonMovableSegment(GuiScreen gui, float posX, float posY, Function<ButtonSegment, Boolean> function, boolean popupSegment) {
 		super(gui, posX, posY, "dummy", function, 50, 20, 2, popupSegment);
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xff7a7a7a : 0xffa4a4a4, 0xffdcdcdc, this.border);
 		if (this.dragging) {
 			this.posX = mouseX - distanceX;
@@ -27,7 +27,7 @@ public class ButtonMovableSegment extends ButtonSegment {
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.dragging = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
@@ -41,12 +41,11 @@ public class ButtonMovableSegment extends ButtonSegment {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.dragging) 
 			this.clickSound();
 		
 		this.dragging = false;
 		return false;
 	}
-
 }

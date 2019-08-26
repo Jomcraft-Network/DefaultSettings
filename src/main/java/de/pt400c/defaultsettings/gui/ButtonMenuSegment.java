@@ -18,7 +18,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 	
 	public final int id;
 	private boolean activated;
-	private double offsetX = 0;
+	private float offsetX = 0;
 	private float offsetTick = 0;
 	private final LeftMenu menu;
 	private final float origLength;
@@ -33,9 +33,9 @@ public class ButtonMenuSegment extends ButtonSegment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
-		final double triple = Math.sin(0.25 * offsetTick);
-		final double func = triple * triple * triple * 6;
+	public void render(int mouseX, int mouseY, float partialTicks) {
+		final float triple = (float) Math.sin(0.25 * offsetTick);
+		final float func = triple * triple * triple * 6;
 		this.width = this.origLength - this.menu.offs * 1.6F;
 
 		final float percent = GuiConfig.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
@@ -82,7 +82,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 
 			this.grabbed = true;
@@ -94,14 +94,14 @@ public class ButtonMenuSegment extends ButtonSegment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY))
 			this.grabbed = false;
 		return super.mouseDragged(mouseX, mouseY, button);
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY)) {
 				this.grabbed = false;
@@ -126,7 +126,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 	}
 
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
+	public boolean isSelected(int mouseX, int mouseY) {
 		return ((GuiConfig) this.gui).popupField == null && mouseX >= (this.getPosX()) && mouseY >= this.getPosY() && mouseX < (this.getPosX() + this.offsetX) + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
 	}
 	

@@ -28,7 +28,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		this.timer += 0.05;
 		final float right = this.menu.width - this.menu.offs + this.width + 6;
 		this.posX = right / 2 - this.width / 2;
@@ -39,7 +39,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	}
 
 	@Override
-	public void hoverCheck(float mouseX, float mouseY) {
+	public void hoverCheck(int mouseX, int mouseY) {
 		final String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
 		if(this.isSelected(mouseX, mouseY) && text != null) {
 			
@@ -67,7 +67,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
@@ -78,14 +78,14 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY))
 			this.grabbed = false;
 		return super.mouseDragged(mouseX, mouseY, button);
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY)) {
 				this.grabbed = false;
@@ -130,7 +130,5 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		default: 
 			return 0xfff42310;
 		}
-		
 	}
-
 }

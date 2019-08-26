@@ -28,7 +28,6 @@ public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
     public LeftMenu leftMenu;
     public PopupSegment popup;
-    private int prevIndex;
     public ButtonSegment buttonS;
     public ButtonSegment buttonK;
     public ButtonSegment buttonO;
@@ -39,9 +38,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public boolean legacy;
 	private int bgDPLList = -1;
     private boolean compiled;
-	private boolean resizing;
-	private boolean done = true;
 	private int gcAmount;
+	private int storeWidth;
+	private int storeHeight;
     
     public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
@@ -57,23 +56,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
     
-    @Override
-    public void initGui() {
-    	
-    	if(prevIndex == MC.frameTimer.getIndex()) {
-    		this.resizing = true;
-    		return;
-    	}else {
-    		prevIndex = MC.frameTimer.getIndex();
-    		this.resizing = false;
-    	}
-
-    	if(!this.done) 
-    		return;
-    	
-    	
-    	this.done = false;
-
+    public void init() {
     	if(this.framebufferMc != null) {
 			glDeleteRenderbuffers(this.framebufferMc.colorBuffer);
 	        glDeleteFramebuffers(this.framebufferMc.framebufferObject);
@@ -304,9 +287,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
     	
-    	if(this.resizing && MC.frameTimer.getIndex() != this.prevIndex) {
-    		this.done = true;
-    		this.initGui();
+    	if(MC.mainWindow.getWidth() != this.storeWidth || MC.mainWindow.getHeight() != this.storeHeight) {
+    		this.storeWidth = MC.mainWindow.getWidth();
+    		this.storeHeight = MC.mainWindow.getHeight();
+    		init();
     	}
     	
     	if (legacy) {
@@ -602,5 +586,4 @@ public class GuiConfig extends DefaultSettingsGUI {
             return num > max ? max : num;
         }
     }
-
 }

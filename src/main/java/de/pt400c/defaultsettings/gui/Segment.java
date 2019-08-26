@@ -26,6 +26,10 @@ public abstract class Segment {
 		this.isPopupSegment = popupSegment;
 	}
 	
+	public void initSegment() {
+
+	}
+	
 	public void init() {};
 	
 	public abstract void render(float mouseX, float mouseY, float partialTicks);

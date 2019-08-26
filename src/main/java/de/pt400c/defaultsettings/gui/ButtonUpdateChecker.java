@@ -6,6 +6,7 @@ import java.util.Collections;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.UpdateContainer;
 import de.pt400c.neptunefx.NEX;
+import static de.pt400c.neptunefx.DrawString.*;
 import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,7 +57,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 			
 			for(String line : lines) {
 			
-				MC.fontRenderer.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a);
+				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a);
 				offset += 10;
 			}
 		}

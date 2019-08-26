@@ -7,6 +7,7 @@ import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
 import net.minecraft.client.gui.screen.Screen;
+import static de.pt400c.neptunefx.DrawString.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +33,7 @@ public class ExportSwitchSegment extends Segment {
 	@Override
 	public void render(float mouseX, float mouseY, float partialTicks) {
 		
-		MC.fontRenderer.drawString("Export Mode:", (float) this.getPosX() - 77, (float) this.getPosY() + 3, 0xff5d5d5d);
+		drawString("Export Mode:", (float) this.getPosX() - 77, (float) this.getPosY() + 3, 0xff5d5d5d);
 		
 		int on = 0xff08b306;
 		
@@ -102,9 +103,9 @@ public class ExportSwitchSegment extends Segment {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glScalef(0.65F, 0.65F, 0.65F);
 
-			MC.fontRenderer.drawString("ON", (float) this.getPosX() + 110, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * processFactor, 4, 255))).getRGB());
+			drawString("ON", (float) this.getPosX() + 110, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * processFactor, 4, 255))).getRGB());
 
-			MC.fontRenderer.drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * (1 - processFactor), 4, 255))).getRGB());
+			drawString("OFF", (float) this.getPosX() + 95, (float) this.getPosY() + 11, new Color(255, 255, 255, (int) (MathHelper.clamp(255 * (1 - processFactor), 4, 255))).getRGB());
 			glDisable(GL_BLEND);
 			glPopMatrix();
 		}
@@ -152,7 +153,7 @@ public class ExportSwitchSegment extends Segment {
 			
 			for(String line : lines) {
 			
-				MC.fontRenderer.drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a);
+				drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a);
 				offset -= 10;
 			}
 		}

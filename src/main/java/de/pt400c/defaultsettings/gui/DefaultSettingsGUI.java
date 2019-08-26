@@ -16,7 +16,7 @@ public class DefaultSettingsGUI extends Screen {
 		super(p_i51108_1_);
 	}
 
-	private List<Segment> segments = new ArrayList<>();
+	private List<Segment> segments = new ArrayList<Segment>();
 	
 	public PopupSegment popupField = null;
 	
@@ -27,9 +27,7 @@ public class DefaultSettingsGUI extends Screen {
 	}
 	
 	public void clearSegments() {
-		synchronized (this.segments) {
-			this.segments.clear();
-		}
+		this.segments = new ArrayList<Segment>();
 	}
 	
 	@Override
@@ -82,6 +80,17 @@ public class DefaultSettingsGUI extends Screen {
 		}
 
         super.render(mouseX, mouseY, partialTicks);
+	}
+	
+	@Override
+	public void init() {
+		
+		synchronized (this.segments) {
+        	for(Segment segment : this.segments)
+	        	segment.initSegment();
+
+        }
+		super.init();
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL30.*;
 import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.math.MathHelper;
 import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -35,6 +36,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
     public FramebufferObject framebufferMc;
+    private boolean compiled;
+    private int storeWidth;
+	private int storeHeight;
+    private int gcAmount;
+    private int bgDPLList = -1;
     
     public GuiConfig(Screen parentScreen) {
     	super(new TranslationTextComponent("options.title"));
@@ -52,12 +58,25 @@ public class GuiConfig extends DefaultSettingsGUI {
 		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 
-    @Override
-    public void init() {
+    public void initGui() {
+    	
+    	if(this.framebufferMc != null) {
+			glDeleteRenderbuffers(this.framebufferMc.colorBuffer);
+	        glDeleteFramebuffers(this.framebufferMc.framebufferObject);
+		}
+			
+		this.compiled = false;
     
     	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
     	this.clearSegments();
+    	
+    	if(this.gcAmount == 9) {
+    		System.gc();
+    		this.gcAmount = 0;
+    	}
+    		
+    	this.gcAmount++;
     	
     	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, button -> {
     		
@@ -119,9 +138,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     		return true;}, true))));
     	
     	this.popupField = null;
-
     	
     	this.minecraft.keyboardListener.enableRepeatEvents(true);
+    	
+    	super.init();
     }
     
     public void copyConfigs() {
@@ -264,6 +284,13 @@ public class GuiConfig extends DefaultSettingsGUI {
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
+    	
+    	if(MC.mainWindow.getWidth() != this.storeWidth || MC.mainWindow.getHeight() != this.storeHeight) {
+    		this.storeWidth = MC.mainWindow.getWidth();
+    		this.storeHeight = MC.mainWindow.getHeight();
+    		initGui();
+    	}
+    	
     	this.minecraft.getFramebuffer().unbindFramebuffer();
 		glPushMatrix();
 		glClear(16640);
@@ -279,30 +306,42 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glTranslatef(0.0F, 0.0F, -2000.0F);
 		glClear(256);
 		AbstractGui.fill(0, 0, this.width, this.height, Color.WHITE.getRGB());
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-		glShadeModel(GL_SMOOTH);
-
-		drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 		
-		drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+		if (compiled) 
+			glCallList(this.bgDPLList);
+		else {
+			this.bgDPLList = GLAllocation.generateDisplayLists(1);
+			glNewList(this.bgDPLList, GL_COMPILE);
 
-		glShadeModel(GL_FLAT);
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glShadeModel(GL_SMOOTH);
+
+			drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 		
-		AbstractGui.fill(0, 0, 72, 25, 0xff9f9f9f);
-        
-		AbstractGui.fill(72, 0, width, 25, 0xffe0e0e0);
-		this.font.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.font.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
-        
-        final int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.font.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
-        
-        this.font.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
-        
-        this.font.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+			drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
+			glShadeModel(GL_FLAT);
+			glDisable(GL_BLEND);
+			glEnable(GL_TEXTURE_2D);
+		
+			AbstractGui.fill(0, 0, 72, 25, 0xff9f9f9f);
+        
+			AbstractGui.fill(72, 0, width, 25, 0xffe0e0e0);
+			this.font.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.font.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+        
+        	final int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.font.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+        
+        	this.font.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+        
+        	this.font.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+
+        	glEndList();
+			compiled = true;
+			glCallList(this.bgDPLList);
+		}
+        
         this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
         this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
@@ -520,5 +559,4 @@ public class GuiConfig extends DefaultSettingsGUI {
             return num > max ? max : num;
         }
     }
-
 }

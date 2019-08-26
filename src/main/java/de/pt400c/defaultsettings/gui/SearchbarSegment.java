@@ -10,6 +10,7 @@ import static de.pt400c.neptunefx.NEX.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.glfw.GLFW.*;
+import static de.pt400c.neptunefx.DrawString.*;
 
 @OnlyIn(Dist.CLIENT)
 public class SearchbarSegment extends Segment {
@@ -185,9 +186,9 @@ public class SearchbarSegment extends Segment {
 		glBlendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
-			MC.fontRenderer.drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffb8b8b8, darken).getRGB() : 0xff7a7a7a);
+			drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffb8b8b8, darken).getRGB() : 0xff7a7a7a);
 		else
-			MC.fontRenderer.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0);
+			drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xff7a7a7a, darken).getRGB() : 0x0);
 
 		glDisable(GL_BLEND);
 		glPopMatrix();

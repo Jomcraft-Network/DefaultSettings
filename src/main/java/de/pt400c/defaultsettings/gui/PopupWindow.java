@@ -6,6 +6,7 @@ import java.util.List;
 import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
+import static de.pt400c.neptunefx.DrawString.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -73,7 +74,7 @@ public class PopupWindow extends Segment {
 		glEnable(GL_ALPHA_TEST);
 
 		glDisable(GL_BLEND);
-		MC.fontRenderer.drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
+		drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
 
 		synchronized (this.children) {
 			this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
@@ -88,6 +89,9 @@ public class PopupWindow extends Segment {
 			
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
+			
+			if((this.posX - origX) == 0 && (this.posY - origY) == 0)
+				return;
 			
 			this.children.forEach(segment -> segment.setPos(segment.posX + (this.posX - origX), segment.posY + (this.posY - origY)));
 		}

@@ -22,9 +22,7 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 	
 	public void clearSegments() {
-		synchronized (this.segments) {
-			this.segments.clear();
-		}
+		segments = new ArrayList<>();
 	}
 	
 	@Override
@@ -118,6 +116,17 @@ public class DefaultSettingsGUI extends GuiScreen {
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_, p_mouseDragged_6_,
 				p_mouseDragged_8_);
+	}
+	
+	@Override
+	public void initGui() {
+		
+		synchronized (this.segments) {
+        	for(Segment segment : this.segments)
+	        	segment.initSegment();
+
+        }
+		super.initGui();
 	}
 	
 	@Override

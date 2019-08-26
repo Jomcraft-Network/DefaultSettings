@@ -3,9 +3,9 @@ package de.pt400c.defaultsettings.gui;
 import java.util.function.Function;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import static de.pt400c.neptunefx.NEX.*;
 import net.minecraft.client.gui.GuiScreen;
+import static de.pt400c.neptunefx.DrawString.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,7 +22,7 @@ public class QuitButtonSegment extends ButtonSegment {
 		glPushMatrix();
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
-		MC.fontRenderer.drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), 0xffffffff);
+		drawString(this.title, (float) (posX + this.getWidth() / 2 - 2), (float) (posY + this.getHeight() / 2 - 4), 0xffffffff);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}

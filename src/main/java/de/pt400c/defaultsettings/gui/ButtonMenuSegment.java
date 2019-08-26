@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
+import static de.pt400c.neptunefx.DrawString.*;
 import static de.pt400c.neptunefx.NEX.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -59,7 +60,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			glBlendFuncSeparate(770, 771, 1, 0);
 			final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
 			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
-			MC.fontRenderer.drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB());
+			drawString(this.title, (float) (posX + this.offsetX + 3), (float) (posY + this.getHeight() / 2 - 4), calcAlpha(0xff3a3a3a, percent).getRGB());
 			glDisable(GL_BLEND);
 			glDisable(GL_SCISSOR_TEST);
 	

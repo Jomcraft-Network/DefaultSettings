@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import de.pt400c.defaultsettings.gui.*;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,6 +28,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
     public LeftMenu leftMenu;
     public PopupSegment popup;
+    private int prevIndex;
     public ButtonSegment buttonS;
     public ButtonSegment buttonK;
     public ButtonSegment buttonO;
@@ -35,6 +37,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
     public FramebufferObject framebufferMc;
 	public boolean legacy;
+	private int bgDPLList = -1;
+    private boolean compiled;
+	private boolean resizing;
+	private boolean done = true;
+	private int gcAmount;
     
     public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
@@ -49,9 +56,30 @@ public class GuiConfig extends DefaultSettingsGUI {
     	}
 		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
-
+    
     @Override
     public void initGui() {
+    	
+    	if(prevIndex == MC.frameTimer.getIndex()) {
+    		this.resizing = true;
+    		return;
+    	}else {
+    		prevIndex = MC.frameTimer.getIndex();
+    		this.resizing = false;
+    	}
+
+    	if(!this.done) 
+    		return;
+    	
+    	
+    	this.done = false;
+
+    	if(this.framebufferMc != null) {
+			glDeleteRenderbuffers(this.framebufferMc.colorBuffer);
+	        glDeleteFramebuffers(this.framebufferMc.framebufferObject);
+		}
+			
+		this.compiled = false;
     	
     	final boolean fbo = MC.gameSettings.fboEnable;
         if(!fbo)
@@ -61,6 +89,13 @@ public class GuiConfig extends DefaultSettingsGUI {
         	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
     	this.clearSegments();
+    	
+    	if(this.gcAmount == 9) {
+    		System.gc();
+    		this.gcAmount = 0;
+    	}
+    		
+    	this.gcAmount++;
     	
     	this.addSegment(new QuitButtonSegment(this, this.width - 22, 2, 20, 20, button -> {
     		
@@ -110,7 +145,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
         				addChild(new TextSegment(this, 10, 20, 20, 20, "DefaultSettings: " + MCPVersion.getMCVersion() + "-" + DefaultSettings.VERSION + "\n\nBuild-ID: " + DefaultSettings.BUILD_ID + "\n\nBuild-Time: " + DefaultSettings.BUILD_TIME + "\n\n\nCreated by Jomcraft Network, 2019", 0, false))));
 
-    	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false)).addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png")).addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu))/*.addChild(new IconSegment(this, 10, 11, 16, 16, "textures/gui/test.png", this.leftMenu))*/.addChild(new ButtonUpdateChecker(this, /*72 / 2 - 20 / 2, */this.height - 30 - 25, this.leftMenu)));
+    	this.addSegment(this.leftMenu.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false)).addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png")).addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png")).addChild(new SplitterSegment(this, 72, 7, this.height - 42, this.leftMenu)).addChild(new ButtonUpdateChecker(this, this.height - 30 - 25, this.leftMenu)));
     	
     	this.addSegment(new ExportSwitchSegment(this, 160, 7));
     	
@@ -122,8 +157,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	this.popupField = null;
 
-    	
     	this.mc.keyboardListener.enableRepeatEvents(true);
+    	
+    	super.initGui();
     }
     
     public void changeSelected(ButtonMenuSegment segment) {
@@ -267,6 +303,12 @@ public class GuiConfig extends DefaultSettingsGUI {
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
+    	
+    	if(this.resizing && MC.frameTimer.getIndex() != this.prevIndex) {
+    		this.done = true;
+    		this.initGui();
+    	}
+    	
     	if (legacy) {
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
@@ -304,30 +346,44 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glClear(256);
 			
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+			
+			
 			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-			glShadeModel(GL_SMOOTH);
-
-			drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
+			if (compiled) 
+				glCallList(this.bgDPLList);
+			else {
+				this.bgDPLList = GLAllocation.generateDisplayLists(1);
+				glNewList(this.bgDPLList, GL_COMPILE);
 			
-			drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
+				glDisable(GL_TEXTURE_2D);
+				glEnable(GL_BLEND);
+				glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+				glShadeModel(GL_SMOOTH);
 
-			glShadeModel(GL_FLAT);
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
+				drawGradient(72, 25, this.width, 30, 0xffaaaaaa, 0x00ffffff, 1);
 			
-	        GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
-	        
-	        GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
-	        this.fontRenderer.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
-	        
-	        final int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
-	        
-	        this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
-	        
-	        this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+				drawGradient(0, 25, 72, 30, 0xff7c7c7c, 0x00ffffff, 1);
 
+				glShadeModel(GL_FLAT);
+				glDisable(GL_BLEND);
+				glEnable(GL_TEXTURE_2D);
+				
+				GuiConfig.drawRect(0, 0, 72, 25, 0xff9f9f9f);
+	        
+				GuiConfig.drawRect(72, 0, width, 25, 0xffe0e0e0);
+				this.fontRenderer.drawStringWithShadow("Tab", MathHelper.clamp(72 / 2 - (this.fontRenderer.getStringWidth("Tab") / 2), 0, Integer.MAX_VALUE), 10, 16777215);
+	        
+				final int posX = MathHelper.clamp((this.width - 74) / 2 + 74 - (this.fontRenderer.getStringWidth("- DefaultSettings -") / 2), 74, Integer.MAX_VALUE);
+	        
+				this.fontRenderer.drawString("- DefaultSettings -", posX + 1, 10 + 1, Color.WHITE.getRGB());
+	        
+				this.fontRenderer.drawString("- DefaultSettings -", posX, 10, 0xff5d5d5d);
+
+				glEndList();
+				compiled = true;
+				glCallList(this.bgDPLList);
+			}
+	        
 	        this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 	        this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;
 	        this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffa4a4a4;

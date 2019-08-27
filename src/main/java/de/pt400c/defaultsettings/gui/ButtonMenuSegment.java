@@ -142,5 +142,4 @@ public class ButtonMenuSegment extends ButtonSegment {
 			return 0xffa4a4a4;
 		}
 	}
-
 }

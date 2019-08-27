@@ -42,6 +42,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;  
+        new FileUtil.RegistryChecker();
     }
     
     @Override
@@ -118,7 +119,10 @@ public class GuiConfig extends DefaultSettingsGUI {
         					});
             				return true;
                     
-            	}, 80, 25, 3, "Save keybindings"))
+            	}, 80, 25, 3, "Save keybindings")).
+        				addChild(new DeleteSegment(this, this.menu.getWidth() / 2 - 167 + 40, this.menu.getHeight() / 2 - 30 + 50, 22, 22, 0)).
+        				addChild(new DeleteSegment(this, this.menu.getWidth() / 2 - 60 + 40, this.menu.getHeight() / 2 - 30 + 50, 22, 22, 1)).
+        				addChild(new DeleteSegment(this, this.menu.getWidth() / 2 + 52 + 40, this.menu.getHeight() / 2 - 30 + 50, 22, 22, 2))
         				).addVariant(new MenuArea(this, 74, 25).
 
         					addChild(new ScrollableSegment(this, 20, 30, width - 74 - 90, height - 25 - 10 - 30, (byte) 0))).addVariant(new MenuArea(this, 74, 25).
@@ -168,7 +172,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-
 		if (legacy) {
 			GuiConfig.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
 
@@ -329,6 +332,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			this.cooldowns[1].setProgress(false);
 
 		}
+		
+		FileUtil.servers_exists = FileUtil.serversFileExists();
 	}
     
 	public void copyConfigs() {
@@ -496,6 +501,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			}
 			this.cooldowns[0].setProgress(false);
 		}
+		
+		FileUtil.options_exists = FileUtil.optionsFilesExist();
 	}
     
 	public void saveKeys() {
@@ -555,7 +562,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			}
 			this.cooldowns[2].setProgress(false);
 		}
-
+		
+		FileUtil.keys_exists = FileUtil.keysFileExist();
 	}
     
 	private class ButtonState {

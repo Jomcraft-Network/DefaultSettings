@@ -442,6 +442,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 							GuiConfig.this.cooldowns[1].renderCooldown = -30;
 						}
 						GuiConfig.this.cooldowns[1].setProgress(false);
+						FileUtil.servers_exists = FileUtil.serversFileExists();
 					}
 				});
 
@@ -463,9 +464,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 				this.cooldowns[1].renderCooldown = -30;
 			}
 			this.cooldowns[1].setProgress(false);
+			FileUtil.servers_exists = FileUtil.serversFileExists();
 		}
-		
-		FileUtil.servers_exists = FileUtil.serversFileExists();
 	}
     
 	public void saveOptions() {
@@ -500,6 +500,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 							GuiConfig.this.cooldowns[0].renderCooldown = -30;
 						}
 						GuiConfig.this.cooldowns[0].setProgress(false);
+						FileUtil.options_exists = FileUtil.optionsFilesExist();
 					}
 				});
 				return true;
@@ -519,9 +520,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 				this.cooldowns[0].renderCooldown = -30;
 			}
 			this.cooldowns[0].setProgress(false);
+			FileUtil.options_exists = FileUtil.optionsFilesExist();
 		}
 		
-		FileUtil.options_exists = FileUtil.optionsFilesExist();
 	}
     
 	public void saveKeys() {
@@ -558,6 +559,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 							GuiConfig.this.cooldowns[2].renderCooldown = -30;
 						}
 						GuiConfig.this.cooldowns[2].setProgress(false);
+						FileUtil.keys_exists = FileUtil.keysFileExist();
 					}
 				});
 				return true;
@@ -580,9 +582,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 				this.cooldowns[2].renderCooldown = -30;
 			}
 			this.cooldowns[2].setProgress(false);
+			FileUtil.keys_exists = FileUtil.keysFileExist();
 		}
 		
-		FileUtil.keys_exists = FileUtil.keysFileExist();
+		
 	}
     
 	private class ButtonState {

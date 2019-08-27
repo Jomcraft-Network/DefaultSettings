@@ -33,7 +33,7 @@ public class DrawString {
 	private static final String colorCodeFr = devEnv ? "colorCode" : "field_78285_g";
 	private static final String charWidthFr = devEnv ? "charWidth" : "field_78286_d";
 	
-	public static int drawString(String p_85187_1_, double p_85187_2_, double p_85187_3_, int p_85187_4_, boolean p_85187_5_) {
+	public static int drawString(String p_85187_1_, float p_85187_2_, float p_85187_3_, int p_85187_4_, boolean p_85187_5_) {
 		glEnable(GL_ALPHA_TEST);
 		
         resetStyles();
@@ -59,7 +59,7 @@ public class DrawString {
 		}
 	}
 	
-	public static int renderString(String p_78258_1_, double p_78258_2_, double p_78258_3_, int p_78258_4_, boolean p_78258_5_) {
+	public static int renderString(String p_78258_1_, float p_78258_2_, float p_78258_3_, int p_78258_4_, boolean p_78258_5_) {
 		
 		if (p_78258_1_ == null)
         {
@@ -310,10 +310,10 @@ public class DrawString {
                     tessellator = Tessellator.instance;
                     glDisable(GL_TEXTURE_2D);
                     tessellator.startDrawingQuads();
-                    tessellator.addVertex((double)(float) getField(posXFr, MC.fontRenderer), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2)), 0.0D);
-                    tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2)), 0.0D);
-                    tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F), 0.0D);
-                    tessellator.addVertex((double)(float) getField(posXFr, MC.fontRenderer), (double)((float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F), 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer), (float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2), 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer) + f, (float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2), 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer) + f, (float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F, 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer), (float) getField(posYFr, MC.fontRenderer) + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F, 0.0D);
                     tessellator.draw();
                     glEnable(GL_TEXTURE_2D);
                 }
@@ -324,10 +324,10 @@ public class DrawString {
                     glDisable(GL_TEXTURE_2D);
                     tessellator.startDrawingQuads();
                     int l = (boolean) getField(underlineStyleFr, MC.fontRenderer) ? -1 : 0;
-                    tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + (float)l), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT), 0.0D);
-                    tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT), 0.0D);
-                    tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + f), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F), 0.0D);
-                    tessellator.addVertex((double)((float) getField(posXFr, MC.fontRenderer) + (float)l), (double)((float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F), 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer) + (float)l, (float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT, 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer) + f, (float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT, 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer) + f, (float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F, 0.0D);
+                    tessellator.addVertex((float) getField(posXFr, MC.fontRenderer) + (float)l, (float) getField(posYFr, MC.fontRenderer) + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F, 0.0D);
                     tessellator.draw();
                     glEnable(GL_TEXTURE_2D);
                 }

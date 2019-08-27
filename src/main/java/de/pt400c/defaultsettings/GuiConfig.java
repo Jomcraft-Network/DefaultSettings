@@ -69,7 +69,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 				
 				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
 				return true;}
-		}, false));
+		}, 5F, false));
     	
     	this.menu = new MenuScreen(this, 74, 25);
 
@@ -144,7 +144,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 				GuiConfig.this.popupField.setOpening(false);
 				
 				return true;}
-		}, true))));
+		}, 3F, true))));
     	
     	this.popupField = null;
     	
@@ -193,7 +193,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 					return true;
 				}
-			}, true));
+			}, 3F, true));
 
 			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 80, 75, "Proceed", new Function<ButtonSegment, Boolean>() {
 				@Override
@@ -408,7 +408,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 					return true;
 				}
-			}, true));
+			}, 3F, true));
 
 			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 30, 75, "Overwrite", new Function<ButtonSegment, Boolean>() {
 				@Override
@@ -470,7 +470,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 					return true;
 				}
-			}, true));
+			}, 3F, true));
 
 			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 30, 75, "Overwrite", new Function<ButtonSegment, Boolean>() {
 				@Override
@@ -530,7 +530,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 					return true;
 				}
-			}, true));
+			}, 3F, true));
 
 			this.popupField.getWindow().addChild(new ButtonSegment(this, 105 - 30, 75, "Overwrite", new Function<ButtonSegment, Boolean>() {
 				@Override

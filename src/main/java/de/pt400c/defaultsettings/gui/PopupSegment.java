@@ -52,12 +52,7 @@ public class PopupSegment extends Segment {
 
 			}
 
-			float alpha = 0;
-
-			if (this.open)
-				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
-			else
-				alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
+			float alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			glDisable(GL_ALPHA_TEST);
 			drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			glEnable(GL_ALPHA_TEST);

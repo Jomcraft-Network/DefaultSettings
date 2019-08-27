@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
-
 import static de.pt400c.neptunefx.DrawString.drawString;
 import static de.pt400c.neptunefx.NEX.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
@@ -25,6 +24,7 @@ public class DeleteSegment extends Segment {
 	final int id;
 	private boolean grabbed;
 	private boolean visible;
+	private float timer;
 	
 	public DeleteSegment(GuiScreen gui, float posX, float posY, int width, int height, int id) {
 		super(gui, posX, posY, width, height, false);
@@ -73,15 +73,31 @@ public class DeleteSegment extends Segment {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		
-		this.visible = false;
-		if(this.id == 0 && !FileUtil.keys_exists)
-			return;
-		if(this.id == 1 && !FileUtil.options_exists)
-			return;
-		if(this.id == 2 && !FileUtil.servers_exists)
-			return;
-		
 		this.visible = true;
+		
+		if(this.id == 0 && !FileUtil.keys_exists)
+			this.visible = false;
+		if(this.id == 1 && !FileUtil.options_exists)
+			this.visible = false;
+		if(this.id == 2 && !FileUtil.servers_exists)
+			this.visible = false;
+
+		if (this.visible) {
+			
+			if (this.timer <= (Math.PI / 3))
+				this.timer += 0.05;
+
+		} else {
+
+			if (this.timer > 0)
+				this.timer -= 0.05;
+
+		}
+		if(this.timer <= 0)
+			return;
+
+		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (Math.PI / 2)) + 1) / 2);
+		
 		glPushMatrix();
 		int color;
 		
@@ -102,11 +118,16 @@ public class DeleteSegment extends Segment {
 		
 		glShadeModel(GL_SMOOTH);
 		
-		drawGradientCircle((float) posX + 2.5F, (float) posY + 2.5F, 13, 0, 0, 0xff000000, 0x00000000);
+		drawGradientCircle((float) posX + 2.5F, (float) posY + 2.5F, 13, 0, 0, calcAlpha(0xff000000, alpha).getRGB(), 0x00000000);
 		
 		glShadeModel(GL_FLAT);
-		GlStateManager.color(f, f1, f2, f3);
 		
+		GlStateManager.color(1, 1, 1, 1);
+		
+		drawCircle((float) posX, (float) posY, width / 2, 0, 0);
+		
+		GlStateManager.color(f, f1, f2, f3 - alpha);
+
 		drawCircle((float) posX, (float) posY, width / 2, 0, 0);
 
 		glDisable(GL_BLEND);
@@ -114,7 +135,7 @@ public class DeleteSegment extends Segment {
 		
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
-		GlStateManager.color(1, 1, 1, 1);
+		GlStateManager.color(1, 1, 1, 1 - alpha);
 		MC.getTextureManager().bindTexture(icon);
 		drawScaledTex((float) posX - 9.5F, (float) posY - 9.5F, (int) this.width, (int) this.height);
 		glDisable(GL_BLEND);

@@ -35,7 +35,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.client.FMLClientHandler;
+import de.pt400c.defaultsettings.gui.MenuArea;
+import de.pt400c.defaultsettings.gui.ScrollableSegment;
+import de.pt400c.defaultsettings.gui.Segment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepositoryEntry;
@@ -55,6 +59,10 @@ public class FileUtil {
 	public static final String mainLocation = "config/defaultsettings.json";
 	public HashMap<String, String> check = new HashMap<String, String>();
 	public static String PLAYER_UUID;
+	public static Thread registryChecker;
+	public volatile static boolean options_exists = false;
+	public volatile static boolean keys_exists = false;
+	public volatile static boolean servers_exists = false;
 	private static HashMap<String, String> cacheUUID = new HashMap<String, String>();
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
@@ -406,6 +414,22 @@ public class FileUtil {
 		return keysFile.exists();
 	}
 	
+	public static void deleteKeys() {
+		new File(getMainFolder(), "keys.txt").delete();
+		FileUtil.keys_exists = false;
+	}
+	
+	public static void deleteServers() {
+		new File(getMainFolder(), "servers.dat").delete();
+		FileUtil.servers_exists = false;
+	}
+	
+	public static void deleteOptions() {
+		new File(getMainFolder(), "options.txt").delete();
+		new File(getMainFolder(), "optionsof.txt").delete();
+		FileUtil.options_exists = false;
+	}
+	
 	public static void restoreOptions() throws NullPointerException, IOException {
 		final File optionsFile = new File(getMainFolder(), "options.txt");
 		if (optionsFile.exists()) {
@@ -724,5 +748,56 @@ public class FileUtil {
 			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
 		}
 	}
+	
+	public static class RegistryChecker {
+		
+		public RegistryChecker() {		
+			if (FileUtil.registryChecker != null)
+				return;
+			
+			FileUtil.registryChecker = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					while (true) {
+						if(!(MC.currentScreen instanceof GuiConfig)) {
+							FileUtil.registryChecker = null;
+							break;
+						}
 
+						if(optionsFilesExist())
+							FileUtil.options_exists = true;
+						else
+							FileUtil.options_exists = false;
+						if(keysFileExist())
+							FileUtil.keys_exists = true;
+						else
+							FileUtil.keys_exists = false;
+						if(serversFileExists())
+							FileUtil.servers_exists = true;
+						else
+							FileUtil.servers_exists = false;
+						
+						GuiScreen gui = MC.currentScreen;
+						
+						if(gui instanceof GuiConfig && ((GuiConfig) gui).menu != null) {
+							for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) {
+								for(Segment segment : variant.getChildren()) {
+									if(segment instanceof ScrollableSegment)
+										segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query);
+								}
+							}
+						}
+			
+						try {
+							Thread.sleep(10000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			FileUtil.registryChecker.start();
+		}
+	}
 }

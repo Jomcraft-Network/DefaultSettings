@@ -30,7 +30,11 @@ import org.apache.logging.log4j.Level;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
+import de.pt400c.defaultsettings.gui.MenuArea;
+import de.pt400c.defaultsettings.gui.ScrollableSegment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraft.client.settings.GameSettings;
@@ -734,6 +738,13 @@ public class FileUtil {
 						else
 							FileUtil.servers_exists = false;
 			
+						GuiScreen gui = MC.currentScreen;
+						
+						if(gui instanceof GuiConfig && ((GuiConfig) gui).menu != null) {
+							for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) 
+								variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						}
+						
 						try {
 							Thread.sleep(10000);
 						} catch (InterruptedException e) {

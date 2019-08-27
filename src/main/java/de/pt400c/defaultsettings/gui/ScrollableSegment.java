@@ -129,7 +129,28 @@ public class ScrollableSegment extends Segment {
 	
 	@Override
 	public void guiContentUpdate(String... arg){
-		this.list = getRowList(arg);
+		FileFilter ff = null;
+		File fileDir = new File(FileUtil.mcDataDir, "config");
+		if (arg != null && arg.length != 0) {
+			ff = new FileFilter() {
+
+				@Override
+				public boolean accept(File file) {
+
+					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(arg[0].toLowerCase()))
+						return true;
+
+					return false;
+				}
+			};
+		} else {
+			ff = FileUtil.fileFilter;
+		}
+		File[] files = fileDir.listFiles(ff);
+		if(files.length != this.list.size()) {
+			this.list = getRowList(arg);
+			this.compiled = false;
+		}
 	}
 	
 	@Override

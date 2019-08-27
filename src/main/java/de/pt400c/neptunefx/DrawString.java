@@ -18,13 +18,10 @@ import net.minecraft.client.renderer.Tessellator;
 
 public class DrawString {
 
-	public static int drawString(String p_85187_1_, double p_85187_2_, double p_85187_3_, int p_85187_4_, boolean p_85187_5_) {
+	public static int drawString(String p_85187_1_, float p_85187_2_, float p_85187_3_, int p_85187_4_, boolean p_85187_5_) {
 		glEnable(GL_ALPHA_TEST);
-		
         resetStyles();
         int l = renderString(p_85187_1_, p_85187_2_, p_85187_3_, p_85187_4_, false);
-        
-
         return l;
     }
 	
@@ -48,7 +45,7 @@ public class DrawString {
 		}
 	}
 	
-	public static int renderString(String p_78258_1_, double p_78258_2_, double p_78258_3_, int p_78258_4_, boolean p_78258_5_) {
+	public static int renderString(String p_78258_1_, float p_78258_2_, float p_78258_3_, int p_78258_4_, boolean p_78258_5_) {
 		
 		if (p_78258_1_ == null)
         {
@@ -233,10 +230,10 @@ public class DrawString {
                     tessellator = Tessellator.instance;
                     glDisable(GL_TEXTURE_2D);
                     tessellator.startDrawingQuads();
-                    tessellator.addVertex((double)MC.fontRenderer.posX, (double)(MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2)), 0.0D);
-                    tessellator.addVertex((double)(MC.fontRenderer.posX + f), (double)(MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2)), 0.0D);
-                    tessellator.addVertex((double)(MC.fontRenderer.posX + f), (double)(MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F), 0.0D);
-                    tessellator.addVertex((double)MC.fontRenderer.posX, (double)(MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F), 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX, MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2), 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX + f, MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2), 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX + f, MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F, 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX, MC.fontRenderer.posY + (float)(MC.fontRenderer.FONT_HEIGHT / 2) - 1.0F, 0.0D);
                     tessellator.draw();
                     glEnable(GL_TEXTURE_2D);
                 }
@@ -247,10 +244,10 @@ public class DrawString {
                     glDisable(GL_TEXTURE_2D);
                     tessellator.startDrawingQuads();
                     int l = MC.fontRenderer.underlineStyle ? -1 : 0;
-                    tessellator.addVertex((double)(MC.fontRenderer.posX + (float)l), (double)(MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT), 0.0D);
-                    tessellator.addVertex((double)(MC.fontRenderer.posX + f), (double)(MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT), 0.0D);
-                    tessellator.addVertex((double)(MC.fontRenderer.posX + f), (double)(MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F), 0.0D);
-                    tessellator.addVertex((double)(MC.fontRenderer.posX + (float)l), (double)(MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F), 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX + (float)l, MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT, 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX + f, MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT, 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX + f, MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F, 0.0D);
+                    tessellator.addVertex(MC.fontRenderer.posX + (float)l, MC.fontRenderer.posY + (float)MC.fontRenderer.FONT_HEIGHT - 1.0F, 0.0D);
                     tessellator.draw();
                     glEnable(GL_TEXTURE_2D);
                 }

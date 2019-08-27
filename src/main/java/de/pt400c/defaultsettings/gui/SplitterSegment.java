@@ -21,7 +21,7 @@ public class SplitterSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		glPushMatrix();
 		glTranslatef(-this.menu.offs, 0, 0);

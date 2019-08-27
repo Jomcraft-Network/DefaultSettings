@@ -33,7 +33,7 @@ public class ButtonBulkActionSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 
 		if (parent.cache_activity == 1 || parent.cache_activity == 2) {
 
@@ -155,12 +155,12 @@ public class ButtonBulkActionSegment extends Segment {
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
+	public boolean isSelected(int mouseX, int mouseY) {
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() - 4 && mouseY >= this.getPosY() - 4 && mouseX < this.getPosX() + this.getWidth() + 4&& mouseY < this.getPosY() + this.getHeight() + 4;
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
@@ -172,7 +172,7 @@ public class ButtonBulkActionSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY)) {
 			this.grabbed = false;
 			return false;
@@ -181,7 +181,7 @@ public class ButtonBulkActionSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;

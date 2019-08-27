@@ -35,7 +35,7 @@ public class ButtonCheckboxSegment extends Segment {
 	}
 	
 	@Override
-	public void customRender(float mouseX, float mouseY, float customPosX, float customPosY, float partialTicks) {
+	public void customRender(int mouseX, int mouseY, float customPosX, float customPosY, float partialTicks) {
 
 		if (active) {
 
@@ -151,14 +151,14 @@ public class ButtonCheckboxSegment extends Segment {
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
-		double tempX = this.getPosX() + this.offX; 
-		double tempY = this.getPosY() + this.offY; 
+	public boolean isSelected(int mouseX, int mouseY) {
+		float tempX = this.getPosX() + this.offX; 
+		float tempY = this.getPosY() + this.offY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 4 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 4&& mouseY < tempY + this.getHeight() + 4;
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
@@ -170,7 +170,7 @@ public class ButtonCheckboxSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY)) {
 			this.grabbed = false;
 			return false;
@@ -179,7 +179,7 @@ public class ButtonCheckboxSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
@@ -243,7 +243,7 @@ public class ButtonCheckboxSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 
 	}
 }

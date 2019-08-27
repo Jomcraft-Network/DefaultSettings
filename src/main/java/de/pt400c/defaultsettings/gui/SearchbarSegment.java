@@ -75,7 +75,7 @@ public class SearchbarSegment extends Segment {
     }
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -167,7 +167,7 @@ public class SearchbarSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
+			drawRect(this.getPosX() + 5 + MC.fontRenderer.getStringWidth(text), this.getPosY() + 4, this.getPosX() + 5.5F + MC.fontRenderer.getStringWidth(text), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 		
 		glDisable(GL_BLEND);
@@ -185,7 +185,7 @@ public class SearchbarSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			MenuScreen menu = ((GuiConfig) this.gui).menu;
@@ -199,7 +199,7 @@ public class SearchbarSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY))
 			this.grabbed = false;
 		
@@ -207,7 +207,7 @@ public class SearchbarSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY)) 
 				this.grabbed = false;

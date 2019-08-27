@@ -123,7 +123,28 @@ public class ScrollableSegment extends Segment {
 	
 	@Override
 	public void guiContentUpdate(String... arg){
-		this.list = getRowList(arg);
+		FileFilter ff = null;
+		File fileDir = new File(FileUtil.mcDataDir, "config");
+		if (arg != null && arg.length != 0) {
+			ff = new FileFilter() {
+
+				@Override
+				public boolean accept(File file) {
+
+					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(arg[0].toLowerCase()))
+						return true;
+
+					return false;
+				}
+			};
+		} else {
+			ff = FileUtil.fileFilter;
+		}
+		File[] files = fileDir.listFiles(ff);
+		if(files.length != this.list.size()) {
+			this.list = getRowList(arg);
+			this.compiled = false;
+		}
 	}
 	
 	@Override
@@ -195,23 +216,25 @@ public class ScrollableSegment extends Segment {
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
 		final int color = 0xff818181;
 
-	
-
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
 		
 		final float f3 = (float) (color >> 24 & 255) / 255.0F;
 		final float f = (float) (color >> 16 & 255) / 255.0F;
 		final float f1 = (float) (color >> 8 & 255) / 255.0F;
 		final float f2 = (float) (color & 255) / 255.0F;
+		
+		if (maxSize <= height)
+			this.invisible = true;
+		else
+			this.invisible = false;
+		
 		glColor4f(f, f1, f2, f3);
 
 		if (compiled)
 			glCallList(this.bgDPLList);
 		else {
-			
 			this.bgDPLList = GLAllocation.generateDisplayLists(1);
 			glNewList(this.bgDPLList, GL_COMPILE);
 			drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
@@ -286,12 +309,7 @@ public class ScrollableSegment extends Segment {
 		} else {
 			distanceY = 0;
 		}
-
-		if (maxSize <= height)
-			this.invisible = true;
-		else
-			this.invisible = false;
-
+		
 		ScaledResolution scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
 		int scaleFactor = scaledResolution.getScaleFactor();
 

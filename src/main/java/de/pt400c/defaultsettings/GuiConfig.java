@@ -45,7 +45,6 @@ public class GuiConfig extends DefaultSettingsGUI {
     public GuiConfig(GuiScreen parentScreen) {
         this.mc = MC;
         this.parentScreen = parentScreen;
-        new FileUtil.RegistryChecker();
     }
     
     @Override
@@ -58,6 +57,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     }
     
     public void init() {
+    	
+    	new FileUtil.RegistryChecker();
+    	
     	if(this.framebufferMc != null) {
 			glDeleteRenderbuffers(this.framebufferMc.colorBuffer);
 	        glDeleteFramebuffers(this.framebufferMc.framebufferObject);

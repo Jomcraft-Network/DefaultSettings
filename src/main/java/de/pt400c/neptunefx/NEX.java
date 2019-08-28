@@ -385,10 +385,10 @@ public class NEX {
 	 * @param factor Game's scale factor
 	 * @param vertices Vertices
 	 */
-	public static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, Vec2f... vertices) {
+	public static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, float size, Vec2f... vertices) {
 		glEnable(GL_LINE_SMOOTH);
 
-		glLineWidth(3.0F * (factor / 2F));
+		glLineWidth(size * (factor / 2F));
 
 		glBegin(GL_LINE_STRIP);
 		glColor4f(red, green, blue, alpha);
@@ -401,7 +401,7 @@ public class NEX {
 		
 		glEnable(GL_POINT_SMOOTH);
 	
-		glPointSize(3.0F * (factor / 2F));
+		glPointSize(size * (factor / 2F));
 
 		glBegin(GL_POINTS);
 		

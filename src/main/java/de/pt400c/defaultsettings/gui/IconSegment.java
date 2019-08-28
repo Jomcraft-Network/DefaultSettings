@@ -24,7 +24,7 @@ public class IconSegment extends Segment {
 	}
 
 	@Override
-	public void customRender(float mouseX, float mouseY, float customX, float customY, float partialTicks) {
+	public void customRender(int mouseX, int mouseY, float customX, float customY, float partialTicks) {
 		glPushMatrix();
 		glEnable(GL_BLEND);
      	glBlendFuncSeparate(770, 771, 1, 0);
@@ -36,7 +36,7 @@ public class IconSegment extends Segment {
 	}
 	
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		glPushMatrix();
 		glEnable(GL_BLEND);
      	glBlendFuncSeparate(770, 771, 1, 0);

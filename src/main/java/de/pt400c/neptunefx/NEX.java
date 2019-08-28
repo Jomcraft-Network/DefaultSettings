@@ -70,8 +70,8 @@ public class NEX {
 	 * @param alpha Alpha value, no if null
 	 * @param multiply Alpha multiplying or subtracting
 	 */
-	public static void drawRect(double x1, double y1, double x2, double y2, Integer color, boolean blending, Float alpha, boolean multiply) {
-		double j1;
+	public static void drawRect(float x1, float y1, float x2, float y2, Integer color, boolean blending, Float alpha, boolean multiply) {
+		float j1;
 
         if (x1 < x2)
         {
@@ -131,8 +131,8 @@ public class NEX {
 	 * @param color2 End color of the gradient
 	 * @param rotation 0 = left-right, 1 = top-down, 2 = right-left, 3 = down-top
 	 */
-	public static void drawGradient(double x1, double y1, double x2, double y2, int color1, int color2, final int rotation) {
-		double j1;
+	public static void drawGradient(float x1, float y1, float x2, float y2, int color1, int color2, final int rotation) {
+		float j1;
 
         if (x1 < x2)
         {
@@ -660,7 +660,7 @@ public class NEX {
 	 * @param color2 Button color
 	 * @param border Border width
 	 */
-	public static void drawButton(double left, double top, double right, double bottom, int color, int color2, int border) {
+	public static void drawButton(float left, float top, float right, float bottom, int color, int color2, int border) {
 		drawRect(left, top, right, bottom, color, true, null, false);
 		drawRect(left + border, top + border, right - border, bottom - border, color2, true, null, false);
 	}

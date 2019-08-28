@@ -19,8 +19,8 @@ public class PopupWindow extends Segment {
 	public String title;
 	public float alphaRate;
 	private boolean dragging;
-	private double distanceX = 0;
-	private double distanceY = 0;
+	private float distanceX = 0;
+	private float distanceY = 0;
 
 	public PopupWindow(Screen gui, float posX, float posY, float width, float height, String title) {
 		super(gui, posX, posY, width, height, true);
@@ -28,7 +28,7 @@ public class PopupWindow extends Segment {
 	}
 	
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
@@ -84,8 +84,8 @@ public class PopupWindow extends Segment {
 
 		if (this.dragging) {
 
-			final double origX = this.posX;
-			final double origY = this.posY;
+			final float origX = this.posX;
+			final float origY = this.posY;
 			
 			this.posX = mouseX - distanceX;
 			this.posY = mouseY - distanceY;
@@ -97,17 +97,17 @@ public class PopupWindow extends Segment {
 		}
 	}
 	
-	public boolean isSelectedLower(double mouseX, double mouseY) {
+	public boolean isSelectedLower(int mouseX, int mouseY) {
 		return (mouseX >= this.getPosX() && mouseY >= this.getPosY() + 10 && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + height) || (mouseX >= this.getPosX() + 10 && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() - 10 && mouseY < this.getPosY() + 10) || (distanceBetweenPoints((float) this.getPosX() + 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10) || (distanceBetweenPoints((float) this.getPosX() + this.getWidth() - 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10);
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
+	public boolean isSelected(int mouseX, int mouseY) {
 		return (mouseX >= this.getPosX() && mouseY >= this.getPosY() + 10 && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + 24) || (mouseX >= this.getPosX() + 10 && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() - 10 && mouseY < this.getPosY() + 10) || (distanceBetweenPoints((float) this.getPosX() + 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10) || (distanceBetweenPoints((float) this.getPosX() + this.getWidth() - 10F, (float) this.getPosY() + 10F, (float) mouseX, (float) mouseY) <= 10);
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		if (!this.isSelectedLower(mouseX, mouseY))
 			((GuiConfig) this.gui).popupField.setOpening(false);
 
@@ -130,7 +130,7 @@ public class PopupWindow extends Segment {
 	}
 	
 	@Override
-	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
+	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
 			synchronized (this.children) {
 				for (Segment segment : this.children) {
 					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
@@ -142,7 +142,7 @@ public class PopupWindow extends Segment {
 	}
 	
 	@Override
-	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
+	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 			synchronized (this.children) {
 				for (Segment segment : this.children) {
 					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 
@@ -171,5 +171,4 @@ public class PopupWindow extends Segment {
 	public List<Segment> getChildren() {
 		return this.children;
 	}
-
 }

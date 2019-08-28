@@ -20,7 +20,7 @@ public class QuitButtonSegment extends ButtonSegment {
 	}
 	
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, true, null, false);
 		glPushMatrix();
 		glEnable(GL_BLEND);

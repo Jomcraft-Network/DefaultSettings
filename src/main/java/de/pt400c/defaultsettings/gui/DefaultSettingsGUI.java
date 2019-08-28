@@ -98,13 +98,13 @@ public class DefaultSettingsGUI extends Screen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : segments) {
-					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+					if (segment.mouseClicked((int) mouseX, (int) mouseY, mouseButton)) {
 						break;
 					}
 				}
 			} else {
 
-				this.popupField.mouseClicked(mouseX, mouseY, mouseButton);
+				this.popupField.mouseClicked((int) mouseX, (int) mouseY, mouseButton);
 			}
 
 		}
@@ -116,13 +116,13 @@ public class DefaultSettingsGUI extends Screen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : this.segments) {
-					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+					if (segment.mouseDragged((int) p_mouseDragged_1_, (int) p_mouseDragged_3_, p_mouseDragged_5_)) {
 						break;
 					}
 
 				}
 			} else {
-				this.popupField.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
+				this.popupField.mouseDragged((int) p_mouseDragged_1_, (int) p_mouseDragged_3_, p_mouseDragged_5_);
 			}
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_, p_mouseDragged_6_,
@@ -134,13 +134,13 @@ public class DefaultSettingsGUI extends Screen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : this.segments) {
-					if (segment.mouseScrolled(p_mouseScrolled_3_)) {
+					if (segment.mouseScrolled((float) p_mouseScrolled_3_)) {
 						return true;
 					}
 
 				}
 			} else {
-				return this.popupField.mouseScrolled(p_mouseScrolled_3_);
+				return this.popupField.mouseScrolled((float) p_mouseScrolled_3_);
 			}
 		}
 		return super.mouseScrolled(p_mouseScrolled_1_, p_mouseScrolled_2_, p_mouseScrolled_3_);
@@ -151,13 +151,13 @@ public class DefaultSettingsGUI extends Screen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : this.segments) {
-					if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+					if (segment.mouseReleased((int) p_mouseReleased_1_, (int) p_mouseReleased_3_, p_mouseReleased_5_)) {
 						break;
 					}
 
 				}
 			} else {
-				this.popupField.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
+				this.popupField.mouseReleased((int) p_mouseReleased_1_, (int) p_mouseReleased_3_, p_mouseReleased_5_);
 			}
 		}
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);

@@ -30,8 +30,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.modlauncher.api.INameMappingService;
+import de.pt400c.defaultsettings.gui.MenuArea;
+import de.pt400c.defaultsettings.gui.ScrollableSegment;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -46,6 +49,10 @@ public class FileUtil {
 	public static PersistentJSON persistentJson;
 	public static final String persistentLocation = "config/ds_dont_export.json";
 	public static String PLAYER_UUID;
+	public static Thread registryChecker;
+	public volatile static boolean options_exists = false;
+	public volatile static boolean keys_exists = false;
+	public volatile static boolean servers_exists = false;
 	public static final String mainLocation = "config/defaultsettings.json";
 	
 	public static boolean isntDev() {
@@ -365,6 +372,22 @@ public static void switchState(Byte state, String query) {
 		return keysFile.exists();
 	}
 	
+	public static void deleteKeys() {
+		new File(getMainFolder(), "keys.txt").delete();
+		FileUtil.keys_exists = false;
+	}
+	
+	public static void deleteServers() {
+		new File(getMainFolder(), "servers.dat").delete();
+		FileUtil.servers_exists = false;
+	}
+	
+	public static void deleteOptions() {
+		new File(getMainFolder(), "options.txt").delete();
+		new File(getMainFolder(), "optionsof.txt").delete();
+		FileUtil.options_exists = false;
+	}
+	
 	public static boolean serversFileExists() {
 		final File serversFile = new File(getMainFolder(), "servers.dat");
 		return serversFile.exists();
@@ -669,6 +692,54 @@ public static void switchState(Byte state, String query) {
 			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
 		} catch (SecurityException e) {
 			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
+		}
+	}
+	
+	public static class RegistryChecker {
+		
+		public RegistryChecker() {		
+			if (FileUtil.registryChecker != null)
+				return;
+			
+			FileUtil.registryChecker = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					while (true) {
+						if(!(MC.currentScreen instanceof GuiConfig)) {
+							FileUtil.registryChecker = null;
+							break;
+						}
+
+						if(optionsFilesExist())
+							FileUtil.options_exists = true;
+						else
+							FileUtil.options_exists = false;
+						if(keysFileExist())
+							FileUtil.keys_exists = true;
+						else
+							FileUtil.keys_exists = false;
+						if(serversFileExists())
+							FileUtil.servers_exists = true;
+						else
+							FileUtil.servers_exists = false;
+						
+						Screen gui = MC.currentScreen;
+						
+						if(gui instanceof GuiConfig && ((GuiConfig) gui).menu != null) {
+							for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) 
+								variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+						}
+			
+						try {
+							Thread.sleep(10000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			FileUtil.registryChecker.start();
 		}
 	}
 }

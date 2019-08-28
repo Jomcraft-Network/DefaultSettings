@@ -568,7 +568,7 @@ class SettingsButtonSegment extends Segment {
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
-			drawLine2D_2(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 15, (float) customPosY), new Vec2f((float) customPosX - 15, (float) customPosY + 4.5F));
+			drawLine2D_2(f, f1, f2, f3, scaleFactor, 3.0F, new Vec2f((float) customPosX - 15, (float) customPosY), new Vec2f((float) customPosX - 15, (float) customPosY + 4.5F));
 			drawDot(f, f1, f2, f3, scaleFactor, 3, new Vec2f((float) customPosX - 15, (float) customPosY + 7.3F));
 		}
 		
@@ -639,7 +639,7 @@ class SettingsButtonSegment extends Segment {
 				config.popupField.setOpening(false);
 
 				return true;
-			}, true));
+			}, 3F, true));
 			
 			List<String> actives = FileUtil.getActives();
 			boolean active = actives.contains(this.name);

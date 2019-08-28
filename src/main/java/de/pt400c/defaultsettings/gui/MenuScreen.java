@@ -30,7 +30,7 @@ public class MenuScreen extends Segment {
 	}
 	
 	@Override
-	public boolean mouseScrolled(double p_mouseScrolled_1_) {
+	public boolean mouseScrolled(float p_mouseScrolled_1_) {
 		synchronized (this.variants) {
 			this.variants.get(this.index).mouseScrolled(p_mouseScrolled_1_);
 		}
@@ -52,14 +52,14 @@ public class MenuScreen extends Segment {
 	}
 	
 	@Override
-    public void render(float mouseX, float mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         synchronized (this.variants) {
         	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
         }
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		synchronized (this.variants) {
 			this.variants.get(this.index).mouseClicked(mouseX, mouseY, mouseButton);
 		}
@@ -67,7 +67,7 @@ public class MenuScreen extends Segment {
 	}
 	
 	@Override
-	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
+	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.variants) {
 			this.variants.get(this.index).mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 
@@ -76,7 +76,7 @@ public class MenuScreen extends Segment {
 	}
 	
 	@Override
-	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
+	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.variants) {
 
 			this.variants.get(this.index).mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);

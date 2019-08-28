@@ -19,7 +19,7 @@ public class MenuArea extends Segment {
 	}
 	
 	@Override
-    public void render(float mouseX, float mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
 
         synchronized (this.children) {
             this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
@@ -41,7 +41,7 @@ public class MenuArea extends Segment {
 	}
 	
 	@Override
-	public boolean mouseScrolled(double p_mouseScrolled_1_) {
+	public boolean mouseScrolled(float p_mouseScrolled_1_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
 				if (segment.mouseScrolled(p_mouseScrolled_1_)) 
@@ -53,7 +53,7 @@ public class MenuArea extends Segment {
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		synchronized (this.children) {
 			for (Segment segment : children) {
 				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
@@ -66,7 +66,7 @@ public class MenuArea extends Segment {
 	}
 	
 	@Override
-	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
+	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
 				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
@@ -78,7 +78,7 @@ public class MenuArea extends Segment {
 	}
 	
 	@Override
-	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
+	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
 				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 

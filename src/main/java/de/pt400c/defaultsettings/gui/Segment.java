@@ -11,8 +11,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class Segment {
 	
 	protected final GuiScreen gui;
-	protected double posX;
-	protected double posY;
+	protected float posX;
+	protected float posY;
 	protected float width;
 	protected float height;
 	protected final boolean isPopupSegment;
@@ -28,17 +28,17 @@ public abstract class Segment {
 	
 	public void init() {};
 	
-	public abstract void render(float mouseX, float mouseY, float partialTicks);
+	public abstract void render(int mouseX, int mouseY, float partialTicks);
 	
-	public void customRender(float mouseX, float mouseY, float customPosX, float customPosY, float partialTicks) {};
+	public void customRender(int mouseX, int mouseY, float customPosX, float customPosY, float partialTicks) {};
 	
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
 	}
 	
-	public boolean mouseScrolled(double p_mouseScrolled_1_) {
-		double mouseX = MC.mouseHelper.getMouseX() * (double) MC.mainWindow.getScaledWidth() / (double) MC.mainWindow.getWidth();
-        double mouseY = MC.mouseHelper.getMouseY() * (double) MC.mainWindow.getScaledHeight() / (double) MC.mainWindow.getHeight();
+	public boolean mouseScrolled(float p_mouseScrolled_1_) {
+		int mouseX = (int) (MC.mouseHelper.getMouseX() * MC.mainWindow.getScaledWidth() / (double) MC.mainWindow.getWidth());
+        int mouseY = (int) (MC.mouseHelper.getMouseY() * MC.mainWindow.getScaledHeight() / (double) MC.mainWindow.getHeight());
         return this.isSelected(mouseX, mouseY);
     }
     
@@ -52,25 +52,25 @@ public abstract class Segment {
     
     public void guiContentUpdate(String... arg) {};
 	
-	public void hoverCheck(float mouseX, float mouseY) {}
+	public void hoverCheck(int mouseX, int mouseY) {}
 
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(int mouseX, int mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
     }
     
-    public boolean mouseDragged(double mouseX, double mouseY, int button) {
+    public boolean mouseDragged(int mouseX, int mouseY, int button) {
         return this.isSelected(mouseX, mouseY);
     }
 	
-	public boolean isSelected(double mouseX, double mouseY) {
+	public boolean isSelected(int mouseX, int mouseY) {
 		return (((DefaultSettingsGUI) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
 	}
 	
-	public double getPosX() {
+	public float getPosX() {
         return this.posX;
 	}
 	
-	public double getPosY() {
+	public float getPosY() {
         return this.posY;
 	}
 	
@@ -90,7 +90,7 @@ public abstract class Segment {
 
 	}
 	
-	public Segment setPos(double x, double y) {
+	public Segment setPos(float x, float y) {
 		this.posX = x;
 		this.posY = y;
 		return this;

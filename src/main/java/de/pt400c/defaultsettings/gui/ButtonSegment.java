@@ -52,7 +52,7 @@ public class ButtonSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		if (compiled)
 			glCallList(this.bgDPLList);
@@ -103,7 +103,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(float mouseX, float mouseY) {
+	public void hoverCheck(int mouseX, int mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
 			final ArrayList<String> lines = new ArrayList<String>();
@@ -138,7 +138,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
@@ -150,14 +150,14 @@ public class ButtonSegment extends Segment {
 	}
 
 	@Override
-	public boolean mouseDragged(double mouseX, double mouseY, int button) {
+	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 		if (!this.isSelected(mouseX, mouseY))
 			this.grabbed = false;
 		return super.mouseDragged(mouseX, mouseY, button);
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(int mouseX, int mouseY, int button) {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
@@ -170,7 +170,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	@Override
-	public Segment setPos(double x, double y) {
+	public Segment setPos(float x, float y) {
 		compiled = false;
 		return super.setPos(x, y);
 	}

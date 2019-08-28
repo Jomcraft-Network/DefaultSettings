@@ -23,15 +23,15 @@ public class LeftMenu extends Segment {
 	}
 	
 	@Override
-    public void render(float mouseX, float mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
 		this.selected = !this.isSelected(mouseX, mouseY);
 		if (!this.selected)
 			this.extend = 25;
 		else
 			this.extend = 0;
 		
-		final double triple = Math.sin(0.25 * offsetTick);
-		final double func = triple * triple * triple * 6;
+		final float triple = (float) Math.sin(0.25 * offsetTick);
+		final float func = triple * triple * triple * 6;
 		
 		if(this.selected && offsetTick < (2 * Math.PI))
 			offsetTick += 0.4;
@@ -51,12 +51,12 @@ public class LeftMenu extends Segment {
 	}
 	
 	@Override
-	public boolean isSelected(double mouseX, double mouseY) {
+	public boolean isSelected(int mouseX, int mouseY) {
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() + this.extend && mouseY < this.getPosY() + this.getHeight();
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		synchronized (this.children) {
 			for (Segment segment : children) {
 				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) 
@@ -68,7 +68,7 @@ public class LeftMenu extends Segment {
 	}
 	
 	@Override
-	public boolean mouseDragged(double p_mouseDragged_1_, double p_mouseDragged_3_, int p_mouseDragged_5_) {
+	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
 				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
@@ -80,7 +80,7 @@ public class LeftMenu extends Segment {
 	}
 	
 	@Override
-	public boolean mouseScrolled(double p_mouseScrolled_1_) {
+	public boolean mouseScrolled(float p_mouseScrolled_1_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
 				if (segment.mouseScrolled(p_mouseScrolled_1_)) 
@@ -92,7 +92,7 @@ public class LeftMenu extends Segment {
 	}
 	
 	@Override
-	public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
+	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
 				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) 

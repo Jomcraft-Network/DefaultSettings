@@ -27,7 +27,7 @@ public class TextSegment extends Segment {
 	}
 
 	@Override
-	public void render(float mouseX, float mouseY, float partialTicks) {
+	public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		glPushMatrix();
      	glEnable(GL_BLEND);

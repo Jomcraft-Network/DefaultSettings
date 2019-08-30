@@ -37,7 +37,7 @@ public class DeleteSegment extends Segment {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void hoverCheck(int mouseX, int mouseY) {
+	public boolean hoverCheck(int mouseX, int mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.visible) {
 			final String message = "Delete this saved entry";
 			final ArrayList<String> lines = new ArrayList<String>();
@@ -65,7 +65,9 @@ public class DeleteSegment extends Segment {
 				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	@Override

@@ -146,6 +146,8 @@ curseforge {
   apiKey = project.property("cursegradle.api_token")
   project {
     id = '318012'
+    changelog = file("changelog.html")
+    changelogType = 'html'
     releaseType = 'release'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"

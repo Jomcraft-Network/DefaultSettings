@@ -101,7 +101,7 @@ public class ButtonSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(int mouseX, int mouseY) {
+	public boolean hoverCheck(int mouseX, int mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
 			final ArrayList<String> lines = new ArrayList<String>();
@@ -129,7 +129,9 @@ public class ButtonSegment extends Segment {
 				drawString(line, mouseX + 9, mouseY - 14 - offset, 0xff3a3a3a);
 				offset += 10;
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	protected static Color darkenColor(int color) {

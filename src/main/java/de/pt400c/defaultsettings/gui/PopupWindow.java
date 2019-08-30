@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.neptunefx.DrawString.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,10 +18,13 @@ public class PopupWindow extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();
 	public String title;
+	public volatile boolean cleanup;
 	public float alphaRate;
 	private boolean dragging;
 	private float distanceX = 0;
 	private float distanceY = 0;
+	private int bgDPLList = -1;
+    private boolean compiled;
 
 	public PopupWindow(Screen gui, float posX, float posY, float width, float height, String title) {
 		super(gui, posX, posY, width, height, true);
@@ -30,51 +34,64 @@ public class PopupWindow extends Segment {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-	    glDisable(GL_ALPHA_TEST);
-	    
-	 	glShadeModel(GL_SMOOTH);
-		glDisable(GL_TEXTURE_2D);
+		this.compiled = false;
+		glDeleteLists(bgDPLList, 1);
+		
+		if (compiled)
+			glCallList(this.bgDPLList);
+		else {
+			this.bgDPLList = GLAllocation.generateDisplayLists(1);
+			glNewList(this.bgDPLList, GL_COMPILE);
+		
+			glEnable(GL_BLEND);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glDisable(GL_ALPHA_TEST);
+	    	glShadeModel(GL_SMOOTH);
+	 		glDisable(GL_TEXTURE_2D);
 
-		drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
+	 		drawGradient(this.getPosX() + this.width - 10, this.getPosY() + 10, this.getPosX() + this.width + 5, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 0);
 		
-		drawGradient(this.getPosX() - 5, this.getPosY() + 10, this.getPosX() + 10, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 2);
+	 		drawGradient(this.getPosX() - 5, this.getPosY() + 10, this.getPosX() + 10, this.getPosY() + this.height - 10, 0xff000000, 0x00101010, 2);
 		
-		drawGradient(this.getPosX() + 10, this.getPosY() - 5, this.getPosX() + this.width - 10, this.getPosY() + 10, 0xff000000, 0x00101010, 3);
+	 		drawGradient(this.getPosX() + 10, this.getPosY() - 5, this.getPosX() + this.width - 10, this.getPosY() + 10, 0xff000000, 0x00101010, 3);
 		
-		drawGradient(this.getPosX() + 10, this.getPosY() + this.height - 10, this.getPosX() + this.width - 10, this.getPosY() + this.height + 5, 0xff000000, 0x00101010, 1);
+	 		drawGradient(this.getPosX() + 10, this.getPosY() + this.height - 10, this.getPosX() + this.width - 10, this.getPosY() + this.height + 5, 0xff000000, 0x00101010, 1);
 		
-		drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + 10, 15, 180, 75, 0xff000000, 0x00101010);
+	 		drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + 10, 15, 180, 75, 0xff000000, 0x00101010);
 		
-		drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + 10, 15, 270, 75, 0xff000000, 0x00101010);
+	 		drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + 10, 15, 270, 75, 0xff000000, 0x00101010);
 		
-		drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + this.height - 10, 15, 0, 75, 0xff000000, 0x00101010);
+	 		drawGradientCircle((float) this.getPosX() + this.width - 10, (float) this.getPosY() + this.height - 10, 15, 0, 75, 0xff000000, 0x00101010);
 		
-		drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
+	 		drawGradientCircle((float) this.getPosX() + 10, (float) this.getPosY() + this.height - 10, 15, 90, 75, 0xff000000, 0x00101010);
 		
-		glEnable(GL_TEXTURE_2D);
-		glShadeModel(GL_FLAT);
-		glEnable(GL_ALPHA_TEST);
-		glDisable(GL_BLEND);
+	 		glEnable(GL_TEXTURE_2D);
+	 		glShadeModel(GL_FLAT);
+	 		glEnable(GL_ALPHA_TEST);
+	 		glDisable(GL_BLEND);
 		
-		drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b);
-		drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb);
+	 		drawRectRoundedUpper((float) this.posX, (float) this.posY, (float) (this.posX + width), (float) (this.posY + 24), 0xff8b8b8b);
+	 		drawRectRoundedLower((float) this.posX, (float) this.posY + 24, (float) (this.posX + width), (float) (this.posY + height), 0xfffbfbfb);
 		
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    glDisable(GL_ALPHA_TEST);
-	 	glShadeModel(GL_SMOOTH);
-		glDisable(GL_TEXTURE_2D);
+	 		glEnable(GL_BLEND);
+			glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_ALPHA_TEST);
+			glShadeModel(GL_SMOOTH);
+			glDisable(GL_TEXTURE_2D);
 
-		drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
+			drawGradient(this.getPosX(), this.getPosY() + 24, this.getPosX() + this.width, this.getPosY() + 24 + 5, 0xff606060, 0x00404040, 1);
 
-		glEnable(GL_TEXTURE_2D);
-		glShadeModel(GL_FLAT);
-		glEnable(GL_ALPHA_TEST);
+			glEnable(GL_TEXTURE_2D);
+			glShadeModel(GL_FLAT);
+			glEnable(GL_ALPHA_TEST);
 
-		glDisable(GL_BLEND);
-		drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
+			glDisable(GL_BLEND);
+			drawString(this.title, (float) (this.getPosX() + this.getWidth() / 2 + 1 - MC.fontRenderer.getStringWidth(this.title) / 2), (float) (this.getPosY() + 9), 0xff1b1b1b);
+
+			glEndList();
+			compiled = true;
+			glCallList(this.bgDPLList);
+		}
 
 		synchronized (this.children) {
 			this.children.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
@@ -92,6 +109,9 @@ public class PopupWindow extends Segment {
 			
 			if((this.posX - origX) == 0 && (this.posY - origY) == 0)
 				return;
+			
+			this.compiled = false;
+			glDeleteLists(bgDPLList, 1);
 			
 			this.children.forEach(segment -> segment.setPos(segment.posX + (this.posX - origX), segment.posY + (this.posY - origY)));
 		}
@@ -163,6 +183,7 @@ public class PopupWindow extends Segment {
 	}
 
 	public void clearChildren() {
+		this.cleanup = true;
 		synchronized (this.children) {
 			this.children.clear();
 		}

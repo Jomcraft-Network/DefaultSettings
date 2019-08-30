@@ -69,12 +69,15 @@ public class DefaultSettingsGUI extends Screen {
 
 		synchronized (this.segments) {
 			this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
-
-			if (this.popupField == null) {
-
-				this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
-
-			} else {
+			
+			if(this.popupField == null) {
+				for (Segment segment : segments) {
+					if (segment.hoverCheck(mouseX, mouseY)) {
+						break;
+					}
+				}
+			
+			}else {
 				this.popupField.hoverCheck(mouseX, mouseY);
 			}
 		}

@@ -56,7 +56,7 @@ public abstract class Segment {
     
     public void guiContentUpdate(String... arg) {};
 	
-	public void hoverCheck(int mouseX, int mouseY) {}
+	public boolean hoverCheck(int mouseX, int mouseY) { return false; }
 
     public boolean mouseReleased(int mouseX, int mouseY, int button) {
         return this.isSelected(mouseX, mouseY);

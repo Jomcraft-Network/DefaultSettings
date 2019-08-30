@@ -5,6 +5,7 @@
 !/gradlew
 !/build.gradle
 !/.gitignore
+!/changelog.html
 !/.gitlab-ci.yml
 !/gradle/
 !/LICENSE

@@ -131,10 +131,11 @@ task zipVerification {
 build.dependsOn zipVerification
 
 curseforge {
-
   apiKey = project.property("cursegradle.api_token")
   project {
     id = '318012'
+    changelog = file("changelog.html")
+    changelogType = 'html'
     releaseType = 'release'
     addGameVersion '1.8'
     addGameVersion '1.8.8'

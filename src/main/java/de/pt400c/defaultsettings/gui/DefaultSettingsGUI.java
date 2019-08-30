@@ -63,16 +63,19 @@ public class DefaultSettingsGUI extends GuiScreen {
     public void render(int mouseX, int mouseY, float partialTicks) {
 
 		synchronized (this.segments) {
-			this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
-
-			if (this.popupField == null) {
-				this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
-
-			} else {
-				this.popupField.hoverCheck(mouseX, mouseY);
-			}
+				this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
+				
+				if(this.popupField == null) {
+					for (Segment segment : segments) {
+						if (segment.hoverCheck(mouseX, mouseY)) {
+							break;
+						}
+					}
+				
+				}else {
+					this.popupField.hoverCheck(mouseX, mouseY);
+				}
 		}
-
         super.render(mouseX, mouseY, partialTicks);
 	}
 	

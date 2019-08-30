@@ -55,23 +55,6 @@ public class DefaultSettingsGUI extends GuiScreen {
 	}
 
 	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-
-		synchronized (this.segments) {
-				this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
-				
-				if(this.popupField == null) {
-				
-					this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
-				
-				}else {
-					this.popupField.hoverCheck(mouseX, mouseY);
-				}
-		}
-        super.drawScreen(mouseX, mouseY, partialTicks);
-	}
-
-	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
@@ -81,13 +64,32 @@ public class DefaultSettingsGUI extends GuiScreen {
 					}
 				}
 			} else {
-
 				this.popupField.mouseClicked(mouseX, mouseY, mouseButton);
 			}
 		}
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 	
+	@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+
+		synchronized (this.segments) {
+				this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
+				
+				if(this.popupField == null) {
+					for (Segment segment : segments) {
+						if (segment.hoverCheck(mouseX, mouseY)) {
+							break;
+						}
+					}
+				
+				}else {
+					this.popupField.hoverCheck(mouseX, mouseY);
+				}
+		}
+        super.drawScreen(mouseX, mouseY, partialTicks);
+	}
+
 	@Override
 	public void mouseClickMove(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_, long p_mouseDragged_8_) {
 		synchronized (this.segments) {

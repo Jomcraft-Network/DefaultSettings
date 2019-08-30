@@ -154,7 +154,7 @@ public class ScrollableSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(int mouseX, int mouseY) {
+	public boolean hoverCheck(int mouseX, int mouseY) {
 		
 		final float offX = (float) (this.getWidth() + 58);
 		final float offY = 53;
@@ -171,12 +171,13 @@ public class ScrollableSegment extends Segment {
 					break;
 
 				for (Segment segment : this.list.get(i).childs) {
-					segment.hoverCheck(mouseX, mouseY);
+					if(segment.hoverCheck(mouseX, mouseY))
+						return true;
 				}
 
 			}
 		}
-			
+		return false;
 	}
 
 	@Override
@@ -512,7 +513,7 @@ class SettingsButtonSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(int mouseX, int mouseY) {
+	public boolean hoverCheck(int mouseX, int mouseY) {
 
 		if(this.isSelectedMark(mouseX, mouseY) && this.mark) {
 			ArrayList<String> lines = new ArrayList<String>();
@@ -536,11 +537,13 @@ class SettingsButtonSegment extends Segment {
 				offset += 10;
 			}
 			
-			
+			return true;
 			
 		}else if(this.isSelected(mouseX, mouseY)) {
 			this.active = true;
+			return true;
 		}
+		return false;
 	}
 	
 	@Override

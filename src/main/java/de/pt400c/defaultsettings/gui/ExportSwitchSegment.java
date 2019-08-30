@@ -130,7 +130,7 @@ public class ExportSwitchSegment extends Segment {
 	}
 	
 	@Override
-	public void hoverCheck(int mouseX, int mouseY) {
+	public boolean hoverCheck(int mouseX, int mouseY) {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			
 			ArrayList<String> lines = new ArrayList<String>();
@@ -154,7 +154,9 @@ public class ExportSwitchSegment extends Segment {
 				drawString(line, (float)(mouseX + 11), (float)(mouseY + 10 - offset), 0xff3a3a3a, false);
 				offset -= 10;
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	@Override

@@ -37,7 +37,7 @@ public abstract class Segment {
         return this.isSelected(mouseX, mouseY);
 	}
 	
-	public void hoverCheck(int mouseX, int mouseY) {}
+	public boolean hoverCheck(int mouseX, int mouseY) { return false; }
 
     public boolean mouseReleased(int mouseX, int mouseY, int button) {
         return this.isSelected(mouseX, mouseY);

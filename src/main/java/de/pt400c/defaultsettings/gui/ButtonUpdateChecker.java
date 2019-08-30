@@ -40,7 +40,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void hoverCheck(int mouseX, int mouseY) {
+	public boolean hoverCheck(int mouseX, int mouseY) {
 		final String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
 		if(this.isSelected(mouseX, mouseY) && text != null) {
 			
@@ -64,7 +64,9 @@ public class ButtonUpdateChecker extends ButtonSegment {
 				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, false);
 				offset += 10;
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	@Override

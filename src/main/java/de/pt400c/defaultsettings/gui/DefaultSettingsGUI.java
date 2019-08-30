@@ -57,8 +57,11 @@ public class DefaultSettingsGUI extends GuiScreen {
         	this.segments.forEach(segment -> segment.render(mouseX, mouseY, partialTicks));
 			
 			if(this.popupField == null) {
-			
-			this.segments.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
+				for (Segment segment : segments) {
+					if (segment.hoverCheck(mouseX, mouseY)) {
+						break;
+					}
+				}
 			
 			}else {
 				this.popupField.hoverCheck(mouseX, mouseY);

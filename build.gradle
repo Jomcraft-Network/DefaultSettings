@@ -158,7 +158,7 @@ curseforge {
     id = '318012'
     changelog = file("changelog.html")
     changelogType = 'html'
-    releaseType = 'beta'
+    releaseType = 'release'
     addGameVersion '1.14.2'
     addGameVersion '1.14.3'
     addGameVersion '1.14.4'
@@ -167,17 +167,17 @@ curseforge {
     }
     
     addArtifact (sourcesJar) {
-    	releaseType = 'beta'
+    	releaseType = 'release'
     	displayName = "$archivesBaseName-$version-sources"
     }
     
     addArtifact (deobfJar) {
-    	releaseType = 'beta'
+    	releaseType = 'release'
     	displayName = "$archivesBaseName-$version-deobf"
     }
     
     addArtifact ("$buildDir/libs/verification.zip") {
-    	releaseType = 'beta'
+    	releaseType = 'release'
     	displayName = 'GPGVerification'
     }
     

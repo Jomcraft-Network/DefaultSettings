@@ -47,8 +47,7 @@ public class DefaultSettings {
 	}
 
 	@EventHandler
-	public static void construction(FMLConstructionEvent event) {
-		
+	public static void construction(FMLConstructionEvent event) {	
 		try {
 			FileUtil.restoreContents();
 		} catch (Exception e) {
@@ -72,9 +71,8 @@ public class DefaultSettings {
 		
 		if(DefaultSettings.mcVersion.startsWith("1.8")) {
 			ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_18());
-		}else {
+		}else 
 			ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_19());
-		}
 		
 		MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
 		EventHandlers handlers = new EventHandlers();
@@ -88,9 +86,7 @@ public class DefaultSettings {
 		try {
 			getBuildID();
 			getBuildTime();
-		} catch(NullPointerException | IOException e) {
-			
-		}
+		} catch(NullPointerException | IOException e) {}
 		
 		try {
 			FileUtil.restoreKeys();
@@ -122,5 +118,4 @@ public class DefaultSettings {
 	public static DefaultSettings getInstance() {
 		return instance;
 	}
-
 }

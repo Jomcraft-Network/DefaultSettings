@@ -199,15 +199,15 @@ public class FileUtil {
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
 		PLAYER_UUID = Minecraft.getMinecraft().getSession().getPlayerID();
 		final File main = new File(mcDataDir, mainLocation);
-		final String version = getMainJSON().version();
+		final String version = getMainJSON().getVersion();
 		
 		if(!DefaultSettings.VERSION.equals(version)) 
-			mainJson.version(DefaultSettings.VERSION).prevVersion(version);
+			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
 		
-		final String identifier = mainJson.identifier();
+		final String identifier = mainJson.getIdentifier();
 		
 		if(!getIdentifier().equals(identifier))
-			mainJson.identifier(getIdentifier());
+			mainJson.setIdentifier(getIdentifier());
 		
 		File persFile = new File(mcDataDir, persistentLocation);
 		if(persFile.exists()) {
@@ -259,8 +259,8 @@ public class FileUtil {
 			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
 				DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
 			}
-
-			mainJson = new MainJSON().version(DefaultSettings.VERSION).identifier(identifier).initially_created(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
+			
+			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date) + " (" + TimeZone.getDefault().getDisplayName() + ")");
 			
 			try {
 				mainJson.created_for = getUUID(FileUtil.PLAYER_UUID);
@@ -294,7 +294,7 @@ public class FileUtil {
 				moveAllConfigs(false);
 
 			restoreConfigs();
-		}else if(mainJson.exportMode()){
+		}else if(mainJson.getExportMode()){
 			restoreConfigs();
 			final File main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
@@ -304,7 +304,7 @@ public class FileUtil {
 					restoreSingleConfig(name);
 			
 			final File main = new File(mcDataDir, mainLocation);
-			getMainJSON().exportMode(false);
+			getMainJSON().setExportMode(false);
 			mainJson.save(main);
 			
 		}
@@ -512,7 +512,7 @@ public class FileUtil {
 		}
 		
 		final File main = new File(mcDataDir, mainLocation);
-		getMainJSON().exportMode(false);
+		getMainJSON().setExportMode(false);
 
 		mainJson.save(main);
 	}
@@ -539,7 +539,7 @@ public class FileUtil {
 		}
 		final File main = new File(mcDataDir, mainLocation);
 		
-		getMainJSON().exportMode(true);
+		getMainJSON().setExportMode(true);
 		mainJson.save(main);
 	}
 	
@@ -555,7 +555,7 @@ public class FileUtil {
 		
 		final File main = new File(mcDataDir, mainLocation);
 		
-		getMainJSON().exportMode(true);
+		getMainJSON().setExportMode(true);
 		mainJson.save(main);
 	}
 	
@@ -756,4 +756,5 @@ public class FileUtil {
 			FileUtil.registryChecker.start();
 		}
 	}
+	
 }

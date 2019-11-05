@@ -46,9 +46,9 @@ public class CommandDefaultSettings_18 extends CommandBase {
     }
     
     public List<String> func_180525_a(ICommandSender sender, String[] args, BlockPos pos) {
-    	if(args.length < 2) {
+    	if(args.length < 2) 
             return getListOfStringsMatchingLastWord(args, arg.toArray(new String[0]));
-        }
+        
 		return new ArrayList<String>();
     }
 
@@ -62,15 +62,15 @@ public class CommandDefaultSettings_18 extends CommandBase {
 			throw new WrongUsageException(getUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
-			sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
+			sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has finished"));
 			return;
 		}
 
 		if (args[0].toLowerCase().equals("save")) {
 
 			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-				sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
-				sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
+				sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "These files already exist! If you want to overwrite"));
+				sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "them, add the '-o' argument"));
 				return;
 			}
 
@@ -135,7 +135,7 @@ public class CommandDefaultSettings_18 extends CommandBase {
 					try {
 						if (exportMode) {
 							FileUtil.restoreConfigs();
-							sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "The export-mode has been disabled successfully"));
+							sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully deactivated the export-mode"));
 						} else {
 							FileUtil.moveAllConfigs(true);
 							sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully activated the export-mode"));
@@ -177,5 +177,4 @@ public class CommandDefaultSettings_18 extends CommandBase {
     		this.bool = bool;
     	}
     }
-
 }

@@ -47,15 +47,15 @@ public class CommandDefaultSettings_19 extends CommandBase {
 			throw new WrongUsageException(getUsage(sender));
 
 		if (tpe.getQueue().size() > 0) {
-			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has been processed!"));
+			sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has finished"));
 			return;
 		}
 
 		if (args[0].toLowerCase().equals("save")) {
 
 			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-				sender.sendMessage(new TextComponentString(TextFormatting.RED + "The intended files already exist! If you want to"));
-				sender.sendMessage(new TextComponentString(TextFormatting.RED + "overwrite them, add the '-o' argument"));
+				sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "These files already exist! If you want to overwrite"));
+				sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "them, add the '-o' argument"));
 				return;
 			}
 
@@ -118,7 +118,7 @@ public class CommandDefaultSettings_19 extends CommandBase {
 					try {
 						if (exportMode) {
 							FileUtil.restoreConfigs();
-							sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "The export-mode has been disabled successfully"));
+							sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully deactivated the export-mode"));
 						} else {
 							FileUtil.moveAllConfigs(true);
 							sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully activated the export-mode"));
@@ -130,13 +130,12 @@ public class CommandDefaultSettings_19 extends CommandBase {
 				}
 			});
 		}
-
 	}
 
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-    	if(args.length < 2) {
+    	if(args.length < 2) 
             return getListOfStringsMatchingLastWord(args, arg.toArray(new String[0]));
-        }
+        
 		return new ArrayList<String>();
     }
     
@@ -166,7 +165,5 @@ public class CommandDefaultSettings_19 extends CommandBase {
     	public void setBoolean(boolean bool) {
     		this.bool = bool;
     	}
-    	
     }
-
 }

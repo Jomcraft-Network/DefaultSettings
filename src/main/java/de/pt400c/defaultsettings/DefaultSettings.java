@@ -65,7 +65,6 @@ public class DefaultSettings {
 		FMLCommonHandler.instance().exitJava(0, true);
     }
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
 		if (isServer)

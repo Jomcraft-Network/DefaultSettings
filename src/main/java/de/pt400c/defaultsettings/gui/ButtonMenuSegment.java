@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static de.pt400c.neptunefx.NEX.*;
@@ -105,7 +104,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			
 		int blue = getBlue(outer);
 		
-		int alphaTest = MathHelper.clamp((int) ((getAlpha(outer)) - 255 * (alpha)), 0, 255);
+		int alphaTest = MathUtil.clamp((int) ((getAlpha(outer)) - 255 * (alpha)), 0, 255);
 		
 		outer = ((alphaTest & 0x0ff) << 24) | ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff);
 		
@@ -115,7 +114,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			
 		blue = getBlue(inner);
 
-		alphaTest = MathHelper.clamp((int) ((getAlpha(inner)) - 255 * (alpha)), 0, 255);
+		alphaTest = MathUtil.clamp((int) ((getAlpha(inner)) - 255 * (alpha)), 0, 255);
 		
 		inner = ((alphaTest & 0x0ff) << 24) | ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff);
 

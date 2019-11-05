@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiScreen;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -84,7 +83,7 @@ public class SearchbarSegment extends Segment {
 
 		int color = 0;
 
-		this.width = MathHelper.clamp(fontRenderer.getStringWidth(this.query, 1, false) + 15, 40, this.gui.width - 180);
+		this.width = MathUtil.clamp(fontRenderer.getStringWidth(this.query, 1, false) + 15, 40, this.gui.width - 180);
 
 		String text = this.query;
 		float dots = fontRenderer.getStringWidth("...", 1, false);

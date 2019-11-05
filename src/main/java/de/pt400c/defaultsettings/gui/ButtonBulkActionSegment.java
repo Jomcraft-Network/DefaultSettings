@@ -68,7 +68,6 @@ public class ButtonBulkActionSegment extends Segment {
 		
 		if (this.timer <= (Math.PI / 3)) {
 			color = 0xff282828;
-
 			drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
 
@@ -91,7 +90,6 @@ public class ButtonBulkActionSegment extends Segment {
 			f2 = (float) (color & 255) / 255.0F;
 
 			drawLine2D_2(f, f1, f2, f3, scaleFactor, 4, new Vec2f((float) this.getPosX(), (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 5.5F, (float) this.getPosY() + 3.5F));
-
 		}
 
 		if (this.parent.cache_activity == 2) {
@@ -103,7 +101,6 @@ public class ButtonBulkActionSegment extends Segment {
 			f2 = (float) (color & 255) / 255.0F;
 
 			drawLine2D_2(f, f1, f2, f3, scaleFactor, 4, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7, (float) this.getPosY() - 5 + 3.5F));
-
 		}
 
 		glDisable(GL_BLEND);

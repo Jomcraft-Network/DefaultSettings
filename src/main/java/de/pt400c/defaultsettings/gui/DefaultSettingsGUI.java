@@ -59,9 +59,8 @@ public class DefaultSettingsGUI extends GuiScreen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : segments) {
-					if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+					if (segment.mouseClicked(mouseX, mouseY, mouseButton))
 						break;
-					}
 				}
 			} else {
 				this.popupField.mouseClicked(mouseX, mouseY, mouseButton);
@@ -78,9 +77,9 @@ public class DefaultSettingsGUI extends GuiScreen {
 				
 				if(this.popupField == null) {
 					for (Segment segment : segments) {
-						if (segment.hoverCheck(mouseX, mouseY)) {
+						if (segment.hoverCheck(mouseX, mouseY)) 
 							break;
-						}
+						
 					}
 				
 				}else {
@@ -95,9 +94,8 @@ public class DefaultSettingsGUI extends GuiScreen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : this.segments) {
-					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+					if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) 
 						break;
-					}
 
 				}
 			} else {
@@ -112,9 +110,8 @@ public class DefaultSettingsGUI extends GuiScreen {
 		synchronized (this.segments) {
 			if (this.popupField == null) {
 				for (Segment segment : this.segments) {
-					if (segment.handleMouseInput()) {
+					if (segment.handleMouseInput()) 
 						break;
-					}
 
 				}
 			} else {

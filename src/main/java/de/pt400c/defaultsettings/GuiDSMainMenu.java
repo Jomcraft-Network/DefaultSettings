@@ -1,21 +1,21 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import java.awt.Color;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
-import de.pt400c.defaultsettings.gui.ButtonSegment;
+import de.pt400c.defaultsettings.gui.ButtonRoundSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
+import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
-import static de.pt400c.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
 public class GuiDSMainMenu extends DefaultSettingsGUI {
@@ -29,10 +29,16 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     
     @Override
     public void initGui() {
+    	
+    	if(DefaultSettings.is180)
+			Segment.scaledresolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
+		else
+			Segment.scaledresolution = new ScaledResolution(MC);
+    	
         Keyboard.enableRepeatEvents(true);
         this.clearSegments();
         
-        this.addSegment(new TextSegment(this, this.width / 2 - MC.fontRenderer.getStringWidth("- DefaultSettings -") / 2, 9, 0, 0, "- DefaultSettings -", 0x0, false));
+        this.addSegment(new TextSegment(this, this.width / 2 - DefaultSettings.fontRenderer.getStringWidth("- DefaultSettings -", 1, true) / 2, 7, 0, 0, "- DefaultSettings -", 0xfffafafa, false, 1.2F));
         String text;
         if(DefaultSettings.is18)
         
@@ -44,39 +50,39 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
         
         ArrayList<String> lines = new ArrayList<String>();
 		
-		final int textWidth = MC.fontRenderer.getStringWidth(text);
-		if(textWidth > this.width - 20) 
-			lines.addAll(MC.fontRenderer.listFormattedStringToWidth(text, this.width - 20));
+		final float textWidth = DefaultSettings.fontRenderer.getStringWidth(text, 1, true);
+		if(textWidth > this.width - 5) 
+			lines.addAll(DefaultSettings.fontRenderer.listFormattedStringToWidth(text, this.width - 5, true));
 		else 
 			lines.add(text);
 		
-        this.addSegment(new TextSegment(this, 10, 35, 0, 0, String.join("\n", lines), 0x0, 14, false));
+        this.addSegment(new TextSegment(this, 10, 35, 0, 0, String.join("\n", lines), 0xffe6e6e6, 13, false, 0.9F));
     	
-    	this.addSegment(new ButtonSegment(this, 70, this.height - 50, "Later", button -> {
+    	this.addSegment(new ButtonRoundSegment(this, 70, this.height - 50, 80, 25, "Later", null, button -> {
     		FileUtil.setPopup(true);
     		GuiDSMainMenu.this.mc.displayGuiScreen(GuiDSMainMenu.this.parentScreen);
-    		return true;}, 80, 25, 3));
-    	
-    	this.addSegment(new ButtonSegment(this, this.width - 80 - 70, this.height - 50, "Dismiss", button -> {
+    		return true;}, 1F, false));
+    																									
+    	this.addSegment(new ButtonRoundSegment(this, this.width - 80 - 70, this.height - 50, 80, 25, "Ignore", null, button -> {
     		FileUtil.setPopup(false);
     		GuiDSMainMenu.this.mc.displayGuiScreen(GuiDSMainMenu.this.parentScreen);
-    		return true;}, 80, 25, 3));
+    		return true;}, 1F, false));
     }
     
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		Gui.drawRect(0, 0, this.width, this.height, Color.WHITE.getRGB());
+		Gui.drawRect(0, 0, this.width, this.height, 0xff2c2c2c);
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		glShadeModel(GL_SMOOTH);
-		drawGradient(0, 25, width, 30, 0xffb3b3b3, 0x00ffffff, 1);
 		glShadeModel(GL_FLAT);
 		glDisable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
 		glEnable(GL_TEXTURE_2D);
-    	Gui.drawRect(0, 0, width, 25, 0xffe0e0e0);
+    	Gui.drawRect(0, 0, width, 25, 0xff505050);
+    	Gui.drawRect(0, 25, width, 26, 0xff161616);
     	super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

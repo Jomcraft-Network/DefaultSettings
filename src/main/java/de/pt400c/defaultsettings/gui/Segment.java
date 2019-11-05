@@ -5,6 +5,7 @@ import org.lwjgl.input.Mouse;
 import de.pt400c.defaultsettings.DefaultSettings;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,7 +19,12 @@ public abstract class Segment {
 	protected float posY;
 	protected float width;
 	protected float height;
+	protected float hitX;
+	protected float hitY;
 	protected final boolean isPopupSegment;
+	public static ScaledResolution scaledresolution;
+	public static int resized = 0;
+	protected int resized_mark = 0;
 	
 	public Segment(GuiScreen gui, float posX, float posY, float width, float height, boolean popupSegment) {
 		this.gui = gui;
@@ -58,7 +64,7 @@ public abstract class Segment {
     }
 	
 	public boolean isSelected(int mouseX, int mouseY) {
-        return (((DefaultSettingsGUI) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() && mouseY >= this.getPosY() && mouseX < this.getPosX() + this.getWidth() && mouseY < this.getPosY() + this.getHeight();
+        return (((DefaultSettingsGUI) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() + this.hitX && mouseY >= this.getPosY() + this.hitY && mouseX < this.getPosX() + this.hitX + this.getWidth() && mouseY < this.getPosY() + this.hitY + this.getHeight();
 	}
 	
 	public float getPosX() {
@@ -92,6 +98,14 @@ public abstract class Segment {
 	public Segment setPos(float x, float y) {
 		this.posX = x;
 		this.posY = y;
+		return this;
+	}
+	
+	public Segment setPosHit(float x, float y, float x2, float y2) {
+		this.posX = x;
+		this.posY = y;
+		this.hitX = x2;
+		this.hitY = y2;
 		return this;
 	}
 	

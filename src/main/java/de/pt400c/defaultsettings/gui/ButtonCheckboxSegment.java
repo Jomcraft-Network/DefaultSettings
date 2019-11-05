@@ -1,18 +1,16 @@
 package de.pt400c.defaultsettings.gui;
 
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.neptunefx.NEX.*;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 
 @SideOnly(Side.CLIENT)
 public class ButtonCheckboxSegment extends Segment {
@@ -26,7 +24,7 @@ public class ButtonCheckboxSegment extends Segment {
 	private final ScrollableSegment parent;
 	private final int id;
 
-	public ButtonCheckboxSegment(GuiScreen gui, float posX, float posY, int width, int height, String name, boolean popupSegment, ScrollableSegment parent, int id, boolean active) {
+	public ButtonCheckboxSegment(GuiScreen gui, float posX, float posY, float width, float height, String name, boolean popupSegment, ScrollableSegment parent, int id, boolean active) {
 		super(gui, posX, posY, width, height, popupSegment);
 		this.name = name;
 		this.active = active;
@@ -47,7 +45,6 @@ public class ButtonCheckboxSegment extends Segment {
 
 			if (this.timer > 0)
 				this.timer -= 0.05;
-
 		}
 		
 		float tempTimer = this.timer;
@@ -58,108 +55,58 @@ public class ButtonCheckboxSegment extends Segment {
 
 		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
-		int color = 0xff000000;
+		int color = 0xffe6e6e6;
 		this.offX = customPosX;
 		this.offY = customPosY;
 		customPosX += this.getPosX();
 		customPosY += this.getPosY();
-		float f3 = (float) (color >> 24 & 255) / 255.0F;
-		float f = (float) (color >> 16 & 255) / 255.0F;
-		float f1 = (float) (color >> 8 & 255) / 255.0F;
-		float f2 = (float) (color & 255) / 255.0F;
 
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glColor4f(f, f1, f2, f3);
-
-		drawCircle((float) customPosX - 2, (float) customPosY - 2, 3, 180, 75);
-
-		drawCircle((float) customPosX - 2, (float) customPosY + this.height + 2, 3, 90, 75);
-
-		drawCircle((float) customPosX + this.width + 2, (float) customPosY + this.height + 2, 3, 0, 75);
-
-		drawCircle((float) customPosX + this.width + 2, (float) customPosY - 2, 3, 270, 75);
-
-		drawRect(customPosX - 5, customPosY - 2, customPosX + this.width + 5, customPosY + this.height + 2, null, false, null, false);
-
-		drawRect(customPosX - 2, customPosY - 5, customPosX + width + 2, customPosY + this.height + 5, null, false, null, false);
+		float outRad = 3F;
+		
+		float inRad = 1F;
+		
+		drawRectRoundedCorners(customPosX - 2 - 3, customPosY - 2 - 3, (float) customPosX + this.width + 2 + 3, (float) customPosY + this.height + 2 + 3, color, outRad);
+		
+		float factor = 1F - ((outRad - inRad) / outRad);
+		
+		float innerRadius = outRad - (factor * outRad);
 
 		if (this.timer <= (Math.PI / 3)) {
-			color = 0xffffffff;
-
-			f3 = (float) (color >> 24 & 255) / 255.0F;
-			f = (float) (color >> 16 & 255) / 255.0F;
-			f1 = (float) (color >> 8 & 255) / 255.0F;
-			f2 = (float) (color & 255) / 255.0F;
-
-			glColor4f(f, f1, f2, f3);
-
-			drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
-
-			drawCircle((float) customPosX - 1, (float) customPosY + this.height + 1, 3, 90, 75);
-
-			drawCircle((float) customPosX + this.width + 1, (float) customPosY + this.height + 1, 3, 0, 75);
-
-			drawCircle((float) customPosX + this.width + 1, (float) customPosY - 1, 3, 270, 75);
-
-			drawRect(customPosX - 1, customPosY - 4, customPosX + width + 1, customPosY + this.height + 4, null, false, null, false);
-
-			drawRect(customPosX - 4, customPosY - 1, customPosX + width + 4, customPosY + this.height + 1, null, false, null, false);
-
+			color = 0xff282828;
+			drawRectRoundedCorners(customPosX - 2 - 3 + inRad, customPosY - 2 - 3 + inRad, (float) customPosX + this.width + 2 + 3 - inRad, (float) customPosY + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
 
-		color = 0xfffe8518;
-		f3 = (float) (color >> 24 & 255) / 255.0F;
-		f = (float) (color >> 16 & 255) / 255.0F;
-		f1 = (float) (color >> 8 & 255) / 255.0F;
-		f2 = (float) (color & 255) / 255.0F;
-
-		glColor4f(f, f1, f2, f3 - alphaRate);
-
-		drawCircle((float) customPosX - 1, (float) customPosY - 1, 3, 180, 75);
-
-		drawCircle((float) customPosX - 1, (float) customPosY + this.height + 1, 3, 90, 75);
-
-		drawCircle((float) customPosX + this.width + 1, (float) customPosY + this.height + 1, 3, 0, 75);
-
-		drawCircle((float) customPosX + this.width + 1, (float) customPosY - 1, 3, 270, 75);
-
-		drawRect(customPosX - 1, customPosY - 4, customPosX + width + 1, customPosY - 1, null, false, null, false);
-
-		drawRect(customPosX - 1, customPosY + this.height + 1, customPosX + width + 1, customPosY + this.height + 4, null, false, null, false);
-
-		drawRect(customPosX - 4, customPosY - 1, customPosX + width + 4, customPosY + this.height + 1, null, false, null, false);
-
+		color = 0xffff8518;
+		int value = (int) ((((color >> 24 & 255) / 255.0F) - alphaRate) * 255F) ;
+		
+		color = ((value & 0x0ff) << 24) | (((color >> 16 & 255) & 0x0ff) << 16) | (((color >> 8 & 255) & 0x0ff) << 8) | ((color & 255) & 0x0ff);
+		
+		drawRectRoundedCorners(customPosX - 2 - 3 + inRad, customPosY - 2 - 3 + inRad, (float) customPosX + this.width + 2 + 3 - inRad, (float) customPosY + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		if (this.timer > 0) {
-			color = 0xffffffff;
+			color = 0xff282828;
 
-			f3 = (float) (color >> 24 & 255) / 255.0F;
-			f = (float) (color >> 16 & 255) / 255.0F;
-			f1 = (float) (color >> 8 & 255) / 255.0F;
-			f2 = (float) (color & 255) / 255.0F;
+			float f3 = (float) (color >> 24 & 255) / 255.0F;
+			float f = (float) (color >> 16 & 255) / 255.0F;
+			float f1 = (float) (color >> 8 & 255) / 255.0F;
+			float f2 = (float) (color & 255) / 255.0F;
 
-			ScaledResolution scaledResolution;
-			if(DefaultSettings.is180)
-				scaledResolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
-			else
-				scaledResolution = new ScaledResolution(MC);
-			
-			int scaleFactor = scaledResolution.getScaleFactor();
+			int scaleFactor = scaledresolution.getScaleFactor();
 
-			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX - 1, (float) customPosY + 3.5F), new Vec2f((float) customPosX + 4 - 1, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX + 7 - 1, (float) customPosY - 5 + 3.5F));
+			drawLine2D_2(f, f1, f2, f3, scaleFactor, 3F, new Vec2f((float) customPosX - 2, (float) customPosY + 1.5F), new Vec2f((float) customPosX + 4 - 3, (float) customPosY + 4 + 1), new Vec2f((float) customPosX + 7 - 2.5F, (float) customPosY - 5 + 3F));
 		}
 
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
-
 	}
 	
 	@Override
 	public boolean isSelected(int mouseX, int mouseY) {
-		float tempX = this.getPosX() + this.offX; 
-		float tempY = this.getPosY() + this.offY; 
+		float tempX = this.getPosX() + this.offX + this.hitX; 
+		float tempY = this.getPosY() + this.offY + this.hitY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 4 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 4&& mouseY < tempY + this.getHeight() + 4;
 	}
 

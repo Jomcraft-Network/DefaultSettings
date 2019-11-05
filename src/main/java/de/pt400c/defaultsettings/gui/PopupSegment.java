@@ -1,15 +1,16 @@
 package de.pt400c.defaultsettings.gui;
 
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import javax.annotation.Nonnull;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
-import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.neptunefx.NEX.*;
+import static org.lwjgl.opengl.GL11.*;
+import static de.pt400c.defaultsettings.FileUtil.MC;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL30.*;
 
 @SideOnly(Side.CLIENT)
@@ -17,19 +18,49 @@ public class PopupSegment extends Segment {
 
 	@Nonnull
 	private PopupWindow window;
-	public boolean isVisible = false;
+	boolean isVisible = false;
 	public float backgroundTimer = 0;
 	public float windowTimer = 0;
 	public boolean open;
-	public FramebufferPopup framebufferMc;
+	public FramebufferPopup mapFrameBuffer;
+	public FramebufferPopup mapFrameBufferContents;
+	private int bufferWidth = 220;
+	private int bufferHeight = 110;
+	private float distanceX = 0;
+	private float distanceY = 0;
+	public float popX = 0;
+	public float popY = 0;
+	public boolean compiled = false;
+	public boolean dragging;
+	private float widthBuffer;
+	private float heightBuffer;
 
 	public PopupSegment(GuiScreen gui, float posX, float posY, float width, float height) {
 		super(gui, posX, posY, width, height, true);
-		this.framebufferMc = new FramebufferPopup(MC.displayWidth, MC.displayHeight);
+		
+		bufferWidth = bufferWidth * scaledresolution.getScaleFactor();
+		bufferHeight = bufferHeight * scaledresolution.getScaleFactor();
+		this.popX = this.gui.width / 2 - 210 / 2;
+		this.popY = this.gui.height / 2 - 100 / 2;
+		this.mapFrameBufferContents = new FramebufferPopup(bufferWidth, bufferHeight);
+		this.mapFrameBuffer = new FramebufferPopup(bufferWidth, bufferHeight);
 	}
 	
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
+		
+		if(resized != this.resized_mark) {
+			width = this.gui.width;
+			height = this.gui.height;
+			bufferWidth = 220 * scaledresolution.getScaleFactor();
+			bufferHeight = 110 * scaledresolution.getScaleFactor();
+			this.popX = this.gui.width / 2 - 210 / 2;
+			this.popY = this.gui.height / 2 - 100 / 2;
+			this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
+			this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
+			this.resized_mark = resized;
+		}
+		
 		if (this.isVisible) {
 
 			if (this.open) {
@@ -43,7 +74,7 @@ public class PopupSegment extends Segment {
 				if (this.backgroundTimer > 0)
 					this.backgroundTimer -= 0.05;
 				else {
-					this.isVisible = false;
+					setVisible(false);
 					((GuiConfig) this.gui).popupField = null;
 				}
 
@@ -51,65 +82,217 @@ public class PopupSegment extends Segment {
 					this.windowTimer -= 0.05;
 
 			}
-
+			
 			float alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
 			glDisable(GL_ALPHA_TEST);
 			drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			glEnable(GL_ALPHA_TEST);
-			((GuiConfig) this.gui).framebufferMc.unbindFramebuffer();
 
-			glClear(16640);
+			if (!compiled) {
+				this.heightBuffer = bufferHeight / scaledresolution.getScaleFactor();
+				this.widthBuffer = bufferWidth / scaledresolution.getScaleFactor();
+				glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+				glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
+				glViewport(0, 0, bufferWidth, bufferHeight);
+				glClear(16640);
+				glEnable(GL_TEXTURE_2D);
+				RenderHelper.disableStandardItemLighting();
+				glClear(256);
+				glMatrixMode(GL_PROJECTION);
+				glPushMatrix();
+				glLoadIdentity();
+				glOrtho(0, bufferWidth / scaledresolution.getScaleFactor(), bufferHeight / scaledresolution.getScaleFactor(), 0, 1000, 3000);
+				glMatrixMode(GL_MODELVIEW);
+				glPushMatrix();
+				glLoadIdentity();
+				glEnable(GL_BLEND);
+				glTranslatef(0.0f, 0, -2000.0f);
 
-			glBindFramebuffer(GL_FRAMEBUFFER, framebufferMc.msFbo);
+				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-			glClear(GL_COLOR_BUFFER_BIT);
+				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-			glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+				this.window.render(mouseX, mouseY, partialTicks);
+
+				glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
+				glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+				glClear(16640);
+
+				glLoadIdentity();
+
+				glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+				glMatrixMode(GL_PROJECTION);
+				glPopMatrix();
+				glMatrixMode(GL_MODELVIEW);
+				glPopMatrix();
+
+				((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
+				glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
+				compiled = true;
+			}
 			
-			this.window.render(mouseX, mouseY, partialTicks);
+			int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
+
+			glBindTexture(GL_TEXTURE_2D, this.mapFrameBuffer.texture);
 			
-			glDisable(GL_ALPHA_TEST);
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.msFbo);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebufferMc.fbo);
-			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			if (this.dragging) {
+				
+				final float origX = this.popX;
+				final float origY = this.popY;
 
-			((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
+				this.popX = mouseX - distanceX;
+				this.popY = mouseY - distanceY;
 
-			glEnable(GL_TEXTURE_2D);
+				if(!((this.popX - origX) == 0 && (this.popY - origY) == 0))
+					this.window.children.forEach(segment -> segment.setPosHit(segment.posX, segment.posY, this.popX, this.popY));
 
-			glEnable(GL_BLEND);
+			}
 
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-			glBindTexture(GL_TEXTURE_2D, framebufferMc.texture);
+			glPushMatrix();
+			glTranslated(this.popX, this.popY, 0);
+			
+			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
+			
+			glColor4f(1, 1, 1, 1 - alphaRate);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-			
-			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		    
+			glEnable(GL_BLEND);
+			glDisable(GL_ALPHA_TEST);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-			glColor4f(1, 1, 1, 1 - alphaRate);
 			glBegin(GL_QUADS);
-			glTexCoord2f(0, 0); glVertex3d(0, height, 0);
-			glTexCoord2f(1, 0); glVertex3d(width, height, 0);
-			glTexCoord2f(1, 1); glVertex3d(width, 0, 0);
+		
+			glTexCoord2f(0, 0); glVertex3d(0, heightBuffer, 0);
+			glTexCoord2f(1, 0); glVertex3d(widthBuffer, heightBuffer, 0);
+			glTexCoord2f(1, 1); glVertex3d(widthBuffer, 0, 0);
 			glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
 			glEnd();
-
-			glBindTexture(GL_TEXTURE_2D, 0);
+			
 			glEnable(GL_ALPHA_TEST);
 			glDisable(GL_BLEND);
+			
+			glBindTexture(GL_TEXTURE_2D, currBound);
+			glPopMatrix();
 
-			this.window.hoverCheck(mouseX, mouseY);
+			renderContents(mouseX, mouseY, partialTicks);
+			float c = 58F / 255F;
+			glColor4f(c, c, c, 1);
+			
+			this.window.hoverChecks(mouseX, mouseY);
+
 		}
+	}
+	
+	public boolean isSelectedUpper(int mouseX, int mouseY) {
+		return (mouseX >= popX + 5 && mouseY >= popY + 15 && mouseX <= popX + 215 && mouseY <= popY + 29) || (mouseX >= popX + 15 && mouseY >= popY + 5 && mouseX < popX + 205 && mouseY < popY + 15) || (distanceBetweenPoints(popX + 15F, popY + 15F, mouseX, mouseY) <= 10) || (distanceBetweenPoints(popX + 210 - 5F, popY + 15F, mouseX, mouseY) <= 10);
+	}
+	
+	public void renderContents(int mouseX, int mouseY, float partialTicks) {
+		this.heightBuffer = bufferHeight / scaledresolution.getScaleFactor();
+		this.widthBuffer = bufferWidth / scaledresolution.getScaleFactor();
+		glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+		glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
+		glViewport(0, 0, bufferWidth, bufferHeight);
+		glClear(16640);
+		glEnable(GL_TEXTURE_2D);
+		RenderHelper.disableStandardItemLighting();
+		glClear(256);
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(0, bufferWidth / scaledresolution.getScaleFactor(), bufferHeight / scaledresolution.getScaleFactor(), 0, 1000, 3000);
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+		glEnable(GL_BLEND);
+		glTranslatef(0.0f, 0, -2000.0f);
+
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+		this.window.renderContents(mouseX, mouseY, partialTicks);
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBufferContents.fbo);
+		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glClear(16640);
+
+		glLoadIdentity();
+
+		glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glPopMatrix();
+
+		((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
+		glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
+		
+		int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
+
+		glBindTexture(GL_TEXTURE_2D, this.mapFrameBufferContents.texture);
+
+		glPushMatrix();
+		glTranslated(this.popX, this.popY, 0);
+		
+		float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		
+		glColor4f(1, 1, 1, 1 - alphaRate);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	    
+		glEnable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+		glBegin(GL_QUADS);
+	
+		glTexCoord2f(0, 0); glVertex3d(0, heightBuffer, 0);
+		glTexCoord2f(1, 0); glVertex3d(widthBuffer, heightBuffer, 0);
+		glTexCoord2f(1, 1); glVertex3d(widthBuffer, 0, 0);
+		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
+		glEnd();
+		
+		glEnable(GL_ALPHA_TEST);
+		glDisable(GL_BLEND);
+		
+		glBindTexture(GL_TEXTURE_2D, currBound);
+		glPopMatrix();
+
+	}
+	
+	public boolean isSelectedLower(int mouseX, int mouseY) {
+		return (mouseX >= popX + 5 && mouseY >= popY + 29 && mouseX <= popX + 215 && mouseY <= popY + 105);
 	}
 	
 	@Override
 	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		if(this.isVisible)
+		if(this.isVisible) {
+
+			if(!this.isSelectedUpper(mouseX, mouseY) && !this.isSelectedLower(mouseX, mouseY))
+				((GuiConfig) this.gui).popupField.setOpening(false);
+			
+			if (this.isSelectedUpper(mouseX, mouseY)) {
+				this.dragging = true;
+				this.distanceX = (mouseX - this.popX);
+				this.distanceY = (mouseY - this.popY);
+			}
+			
 			return this.window.mouseClicked(mouseX, mouseY, mouseButton);
+		}
 		return super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 	
@@ -120,10 +303,23 @@ public class PopupSegment extends Segment {
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
 	
+	public void reset() {
+		this.popX = this.gui.width / 2 - 210 / 2;
+		this.popY = this.gui.height / 2 - 100 / 2;
+		this.compiled = false;
+	}
+	
+	public void setVisible(boolean visible) {
+		this.isVisible = visible;
+	}
+	
 	@Override
 	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
+		this.dragging = false;
+		
 		if(this.isVisible)
 			return this.window.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
+	
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
 	}
 	
@@ -140,5 +336,4 @@ public class PopupSegment extends Segment {
 	public PopupWindow getWindow() {
 		return this.window;
 	}
-
 }

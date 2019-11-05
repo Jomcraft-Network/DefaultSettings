@@ -19,10 +19,10 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'signing'
 
-version = "1.8.x-1.12.x-1.3.5"
+version = "1.8.x-1.12.x-2.0.0"
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "1.3.5"
+def fileVersion = "2.0.0"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 
@@ -35,7 +35,7 @@ minecraft {
     
     replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
 	replace 	"@FINGERPRINT@", signSHA1
-    replace   	"@VERSION@", fileVersion
+    replace   	"DS-Version", fileVersion
 }
 
 jar {

@@ -2,6 +2,7 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,13 +17,21 @@ public class LeftMenu extends Segment {
 	private float extend = 0;
 	public float offs = 0;
 	public final float maxOffTick = (float) (2 * Math.PI);
+	private final Function<GuiConfig, Integer> heightF;
 
-	public LeftMenu(GuiScreen gui, float posX, float posY, float width, float height) {
-		super(gui, posX, posY, width, height, false);
+	public LeftMenu(GuiScreen gui, float posX, float posY, float width, Function<GuiConfig, Integer> height) {
+		super(gui, posX, posY, width, height.apply((GuiConfig) gui), false);
+		this.heightF = height;
 	}
 	
 	@Override
     public void render(int mouseX, int mouseY, float partialTicks) {
+		
+		if(resized != this.resized_mark) {
+			height = heightF.apply((GuiConfig) this.gui);
+			this.resized_mark = resized;
+		}
+		
 		this.selected = !this.isSelected(mouseX, mouseY);
 		if (!this.selected)
 			this.extend = 25;

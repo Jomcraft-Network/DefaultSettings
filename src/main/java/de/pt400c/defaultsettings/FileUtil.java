@@ -197,7 +197,7 @@ public class FileUtil {
 	}
 	
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
-		PLAYER_UUID = Minecraft.getMinecraft().getSession().getPlayerID();
+		PLAYER_UUID = MC.getSession().getPlayerID();
 		final File main = new File(mcDataDir, mainLocation);
 		final String version = getMainJSON().getVersion();
 		
@@ -526,12 +526,15 @@ public class FileUtil {
 			
 			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilterModular);
 			for (File f : fileDir.listFiles(fileFilterModular)) {
-				
+				try {
 				if(f.isDirectory())
 					FileUtils.deleteDirectory(f);
 				else
 					//f.delete() calls updates, not appropriate
 					Files.delete(f.toPath());
+				}catch(IOException e) {
+					DefaultSettings.log.log(Level.ERROR, "Couldn't move config files: ", e);
+				}
 			}
 			
 		} catch (IOException e) {
@@ -741,8 +744,10 @@ public class FileUtil {
 						GuiScreen gui = MC.currentScreen;
 						
 						if(gui instanceof GuiConfig && ((GuiConfig) gui).menu != null) {
-							for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) 
-								variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+							synchronized (((GuiConfig) gui).menu) {
+								for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) 
+									variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+							}
 						}
 						
 						try {

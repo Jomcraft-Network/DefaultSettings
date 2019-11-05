@@ -16,7 +16,7 @@ public class IconSegment extends Segment {
 	private final ResourceLocation icon;
 	private final float origX;
 	
-	public IconSegment(GuiScreen gui, float posX, float posY, int width, int height, String res, LeftMenu menu) {
+	public IconSegment(GuiScreen gui, float posX, float posY, float width, float height, String res, LeftMenu menu) {
 		super(gui, posX, posY, width, height, false);
 		this.icon = new ResourceLocation(DefaultSettings.MODID, res);
 		this.origX = posX;
@@ -27,12 +27,17 @@ public class IconSegment extends Segment {
 	
 		glPushMatrix();
 		glEnable(GL_BLEND);
-		glBlendFuncSeparate(770, 771, 1, 0);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		MC.getTextureManager().bindTexture(icon);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		this.posX = origX + customX;
-		drawScaledTex((float) posX, (float) posY, 19, 19);
+		drawScaledTex((float) posX, (float) posY, (int) this.width, (int) this.height);
 		glDisable(GL_BLEND);
 		glPopMatrix();
+		
 	}
 	
 	@Override
@@ -42,8 +47,13 @@ public class IconSegment extends Segment {
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		drawScaledTex((float) posX, (float) posY, 16, 16);
 		glDisable(GL_BLEND);
 		glPopMatrix();
+		
 	}
 }

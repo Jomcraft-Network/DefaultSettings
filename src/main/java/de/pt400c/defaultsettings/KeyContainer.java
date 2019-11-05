@@ -11,5 +11,4 @@ public class KeyContainer {
 		this.input = input;
 		this.modifier = modifier;
 	}
-	
 }

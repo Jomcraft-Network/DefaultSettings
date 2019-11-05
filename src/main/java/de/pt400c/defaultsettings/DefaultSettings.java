@@ -3,12 +3,15 @@ package de.pt400c.defaultsettings;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import de.pt400c.defaultsettings.font.FontRendererClass;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -27,18 +30,20 @@ public class DefaultSettings {
 
 	public static final String MODID = "defaultsettings";
 	public static final String NAME = "DefaultSettings";
-	public static final String VERSION = "@VERSION@";
+	public static final String VERSION = "DS-Version";
 	public static final String modGuiFactory = "de.pt400c.defaultsettings.GuiConfigFactory";
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, Integer> keyRebinds_18 = new HashMap<String, Integer>();
 	public static String mcVersion = FMLInjectionData.data()[4].toString();
 	public static Map<String, KeyContainer> keyRebinds_19 = new HashMap<String, KeyContainer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
-	public static String BUILD_ID = "<UNKNOWN>";
-	public static String BUILD_TIME = "<UNKNOWN>";
+	public static String BUILD_ID = "Unknown";
+	public static String BUILD_TIME = "Unknown";
+	public static FontRendererClass fontRenderer;
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
 	public static final boolean is18 = DefaultSettings.mcVersion.startsWith("1.8");
-
+	public static final boolean debug = false;
+	
 	@Instance
 	public static DefaultSettings instance;
 	
@@ -54,7 +59,7 @@ public class DefaultSettings {
 		} catch (Exception e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
 		}
-
+		
 	}
 	
 	@EventHandler
@@ -84,7 +89,8 @@ public class DefaultSettings {
 	
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
-	
+		fontRenderer = new FontRendererClass();
+		((IReloadableResourceManager) MC.getResourceManager()).registerReloadListener(fontRenderer);
 		try {
 			getBuildID();
 			getBuildTime();

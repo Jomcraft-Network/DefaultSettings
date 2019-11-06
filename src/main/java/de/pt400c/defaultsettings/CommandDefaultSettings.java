@@ -15,7 +15,8 @@ import net.minecraft.util.EnumChatFormatting;
 public class CommandDefaultSettings extends CommandBase {
 
 	public static final ArrayList<String> arg = new ArrayList<String>() {
-		private static final long serialVersionUID = 9131616853614902481L;
+	private static final long serialVersionUID = 9131616853614902481L;
+	
 	{	add("save");	add("export-mode"); }};
 	private ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
@@ -54,15 +55,15 @@ public class CommandDefaultSettings extends CommandBase {
 		}
 
 		if (tpe.getQueue().size() > 0) {
-			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Please wait until the last request has been processed!"));
+			sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "Please wait until the last request has finished"));
 			return;
 		}
 
 		if (args[0].toLowerCase().equals("save")) {
 
 			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
-				sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "The intended files already exist! If you want to"));
-				sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.RED + "overwrite them, add the '-o' argument"));
+				sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GOLD + "These files already exist! If you want to overwrite"));
+				sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GOLD + "them, add the '-o' argument"));
 				return;
 			}
 
@@ -126,7 +127,7 @@ public class CommandDefaultSettings extends CommandBase {
 					try {
 						if (exportMode) {
 							FileUtil.restoreConfigs();
-							sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "The export-mode has been disabled successfully"));
+							sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully deactivated the export-mode"));
 						} else {
 							FileUtil.moveAllConfigs(true);
 							sender.sendChatToPlayer(ChatMessageComponent.createFromText(EnumChatFormatting.GREEN + "Successfully activated the export-mode"));
@@ -137,17 +138,15 @@ public class CommandDefaultSettings extends CommandBase {
 					}
 				}
 			});
-
 		}
-
 	}
 
     @SuppressWarnings("unchecked")
 	@Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
-        if(args.length < 2) {
+        if(args.length < 2) 
             return getListOfStringsMatchingLastWord(args, arg.toArray(new String[0]));
-        }
+        
 		return new ArrayList<String>();
     }
     
@@ -176,8 +175,6 @@ public class CommandDefaultSettings extends CommandBase {
     	
     	public void setBoolean(boolean bool) {
     		this.bool = bool;
-    	}
-    	
+    	}	
     }
-
 }

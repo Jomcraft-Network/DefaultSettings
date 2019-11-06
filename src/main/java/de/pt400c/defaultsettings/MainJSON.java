@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 
 public class MainJSON {
@@ -72,5 +71,4 @@ public class MainJSON {
         	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
         }
 	}
-	
 }

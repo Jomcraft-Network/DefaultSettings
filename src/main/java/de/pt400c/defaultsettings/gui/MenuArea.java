@@ -28,7 +28,6 @@ public class MenuArea extends Segment {
             if(((GuiConfig) this.gui).popupField == null)
             	this.children.forEach(segment -> segment.hoverCheck(mouseX, mouseY));
         }
-
 	}
 	
 	@Override
@@ -92,5 +91,4 @@ public class MenuArea extends Segment {
 	public List<Segment> getChildren() {
 		return this.children;
 	}
-
 }

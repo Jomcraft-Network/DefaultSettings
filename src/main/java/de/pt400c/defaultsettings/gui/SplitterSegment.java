@@ -1,51 +1,83 @@
 package de.pt400c.defaultsettings.gui;
 
+import net.minecraft.client.gui.GuiScreen;
+import static de.pt400c.neptunefx.NEX.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import java.util.function.Function;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GLAllocation;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
-import static de.pt400c.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
-public class SplitterSegment extends Segment {
+public class SplitterSegment extends BakedSegment {
 	
 	private final LeftMenu menu;
-	private int bgDPLList = -1;
-    private boolean compiled;
+	private final Function<GuiConfig, Integer> heightF;
 	
-	public SplitterSegment(GuiScreen gui, float posX, float posY, int height, LeftMenu menu) {
-		super(gui, posX, posY, 1, height, false);
+	public SplitterSegment(GuiScreen gui, float posX, float posY, Function<GuiConfig, Integer> height, LeftMenu menu) {
+		super(gui, 0, posX, posY, 3F, height.apply((GuiConfig) gui), 255, 255, 255, true, false);
+		this.heightF = height;
 		this.menu = menu;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		
-		glPushMatrix();
-		glTranslatef(-this.menu.offs, 0, 0);
+		if(resized != this.resized_mark) 
+			height = heightF.apply((GuiConfig) this.gui);
 		
-		if (compiled)
-			glCallList(this.bgDPLList);
-		else {
-			this.bgDPLList = GLAllocation.generateDisplayLists(1);
-			glNewList(this.bgDPLList, GL_COMPILE);
+		setup();
+
+		if(!compiled) {
+			preRender();
+	
+			glPushMatrix();
+
 			glDisable(GL_TEXTURE_2D);
 			glEnable(GL_BLEND);
 			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			glDisable(GL_ALPHA_TEST);
 			glShadeModel(GL_SMOOTH);
-			drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + 4, 6, 270, 75, 0xffaaaaaa, 0x00ffffff);
-			drawGradientCircle((float) this.getPosX(), (float) this.getPosY() + this.getHeight() - 4, 6, 0, 75, 0xffaaaaaa, 0x00ffffff);
-			drawGradient(this.getPosX(), this.getPosY() + 4, this.getPosX() + 6, this.getPosY() + this.getHeight() - 4, 0xffaaaaaa, 0x00ffffff, 0);
+			drawGradientCircle(0, 2.2F, 2F, 270, 75, 0xffaaaaaa, 0x00e6e6e6);
+			drawGradientCircle(0, this.getHeight() - 2.2F, 2F, 0, 75, 0xffaaaaaa, 0x00e6e6e6);
+			drawGradient(0, 2.2F, 2F, this.getHeight() - 2.2F, 0xffaaaaaa, 0x00e6e6e6, 0);
 			glShadeModel(GL_FLAT);
+
+			glEnable(GL_POINT_SMOOTH);
+
+			glPointSize(1.25F * (scaledresolution.getScaleFactor() - 1));
+
+			glBegin(GL_POINTS);
+
+			glVertex3f(0.5F, 1, 0.0f);
+
+			glEnd();
+			glDisable(GL_POINT_SMOOTH);
+
+			glEnable(GL_POINT_SMOOTH);
+
+			glPointSize(1.25F * (scaledresolution.getScaleFactor() - 1));
+
+			glBegin(GL_POINTS);
+
+			glVertex3f(0.5F, this.getHeight() - 1, 0.0f);
+
+			glEnd();
+			glDisable(GL_POINT_SMOOTH);
+
 			glDisable(GL_BLEND);
 			glEnable(GL_TEXTURE_2D);
-			drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffbebebe, true, null, false);	
-			glEndList();
-			compiled = true;
-			glCallList(this.bgDPLList);
+
+			drawRect(0, 1, 1, this.getHeight() - 1, 0xffe6e6e6, true, null, false);
+
+			glPopMatrix();
+
+			postRender(1, false);
 		}
+		glPushMatrix();
+		glTranslatef(-this.menu.offs, 0, 0);
+		drawTexture(1);
 		glPopMatrix();
 	}
 }

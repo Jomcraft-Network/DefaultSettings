@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
 public class FramebufferObject {
-    public int framebufferTextureWidth;
-    public int framebufferTextureHeight;
     public int framebufferWidth;
     public int framebufferHeight;
     public int framebufferObject;
@@ -20,7 +18,6 @@ public class FramebufferObject {
     }
 
 	public void createBindFramebuffer(int width, int height) {
-
 		if (this.framebufferObject >= 0) 
 			this.deleteFramebuffer();
 
@@ -30,18 +27,13 @@ public class FramebufferObject {
 
 	public void deleteFramebuffer() {
 		this.unbindFramebuffer();
-		if (this.framebufferObject > -1) {
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glDeleteFramebuffers(this.framebufferObject);
-			this.framebufferObject = -1;
-		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDeleteFramebuffers(this.framebufferObject);
 	}
 
 	public void createFramebuffer(int width, int height) {
 		this.framebufferWidth = width;
 		this.framebufferHeight = height;
-		this.framebufferTextureWidth = width;
-		this.framebufferTextureHeight = height;
 		this.createFrameBuffer();
 		this.createColorAttachment();
 		this.framebufferClear();
@@ -78,4 +70,10 @@ public class FramebufferObject {
         glClear(GL_COLOR_BUFFER_BIT);
         this.unbindFramebuffer();
     }
+    
+    public void resize(int width, int height) {
+		glDeleteFramebuffers(this.framebufferObject);
+		glDeleteRenderbuffers(this.colorBuffer);
+        this.createBindFramebuffer(width, height);
+	}
 }

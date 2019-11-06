@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -17,13 +16,21 @@ public class LeftMenu extends Segment {
 	private float extend = 0;
 	public float offs = 0;
 	public final float maxOffTick = (float) (2 * Math.PI);
+	private final Function<GuiConfig, Integer> heightF;
 
-	public LeftMenu(GuiScreen gui, float posX, float posY, float width, float height) {
-		super(gui, posX, posY, width, height, false);
+	public LeftMenu(GuiScreen gui, float posX, float posY, float width, Function<GuiConfig, Integer> height) {
+		super(gui, posX, posY, width, height.apply((GuiConfig) gui), false);
+		this.heightF = height;
 	}
 	
 	@Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(final int mouseX, final int mouseY, final float partialTicks) {
+		
+		if(resized != this.resized_mark) {
+			height = heightF.apply((GuiConfig) this.gui);
+			this.resized_mark = resized;
+		}
+		
 		this.selected = !this.isSelected(mouseX, mouseY);
 		if (!this.selected)
 			this.extend = 25;
@@ -42,13 +49,15 @@ public class LeftMenu extends Segment {
 	
 		offs = (float) func * 5;
         synchronized (this.children) {
-        	for(Segment child : children)
-        		child.render(mouseX, mouseY, partialTicks);
+        	for(Segment segment : this.children) {
+        		segment.render(mouseX, mouseY, partialTicks);
+        	}
 
-            if(((GuiConfig) this.gui).popupField == null)
-            	for(Segment child : children)
-            		child.hoverCheck(mouseX, mouseY);
-
+            if(((GuiConfig) this.gui).popupField == null) {
+            	for(Segment segment : this.children) {
+            		segment.hoverCheck(mouseX, mouseY);
+            	}
+            }
         }
 
 	}
@@ -62,9 +71,8 @@ public class LeftMenu extends Segment {
 	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		synchronized (this.children) {
 			for (Segment segment : children) {
-				if (segment.mouseClicked(mouseX, mouseY, mouseButton)) {
+				if (segment.mouseClicked(mouseX, mouseY, mouseButton))
 					return true;
-				}
 			}
 		}
 		return false;
@@ -74,10 +82,9 @@ public class LeftMenu extends Segment {
 	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
-				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_)) {
+				if (segment.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_))
 					break;
-				}
-
+				
 			}
 		}
 		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
@@ -87,9 +94,8 @@ public class LeftMenu extends Segment {
 	public boolean handleMouseInput() {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
-				if (segment.handleMouseInput()) {
+				if (segment.handleMouseInput())
 					return true;
-				}
 
 			}
 		}
@@ -100,9 +106,8 @@ public class LeftMenu extends Segment {
 	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.children) {
 			for (Segment segment : this.children) {
-				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_)) {
+				if (segment.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_))
 					return true;
-				}
 
 			}
 		}
@@ -120,5 +125,4 @@ public class LeftMenu extends Segment {
 	public List<Segment> getChildren() {
 		return this.children;
 	}
-
 }

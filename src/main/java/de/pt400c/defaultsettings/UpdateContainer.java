@@ -16,12 +16,7 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.versions.mcp.MCPVersion;
-import static net.minecraftforge.fml.VersionChecker.Status.AHEAD;
-import static net.minecraftforge.fml.VersionChecker.Status.BETA;
-import static net.minecraftforge.fml.VersionChecker.Status.BETA_OUTDATED;
-import static net.minecraftforge.fml.VersionChecker.Status.OUTDATED;
-import static net.minecraftforge.fml.VersionChecker.Status.PENDING;
-import static net.minecraftforge.fml.VersionChecker.Status.UP_TO_DATE;
+import static net.minecraftforge.fml.VersionChecker.Status.*;
 
 public class UpdateContainer {
 

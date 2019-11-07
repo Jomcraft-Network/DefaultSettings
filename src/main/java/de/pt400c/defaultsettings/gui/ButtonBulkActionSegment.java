@@ -1,17 +1,16 @@
 package de.pt400c.defaultsettings.gui;
 
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
-import static de.pt400c.neptunefx.NEX.*;
-import static org.lwjgl.opengl.GL11.*;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import static de.pt400c.neptunefx.NEX.*;
+import static org.lwjgl.opengl.GL11.*;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 
 @OnlyIn(Dist.CLIENT)
 public class ButtonBulkActionSegment extends Segment {
@@ -20,7 +19,6 @@ public class ButtonBulkActionSegment extends Segment {
 	//0 : Nothing selected, select all
 	//1 : Particially select, deselect all
 	//2 : All selected, deselect all
-	
 	protected boolean grabbed;
 	public float timer = 0;
 	private final ScrollableSegment parent;
@@ -44,12 +42,11 @@ public class ButtonBulkActionSegment extends Segment {
 
 			if (this.timer > 0)
 				this.timer -= 0.05;
-
 		}
 
 		final float alphaRate = (float) ((Math.sin(3 * timer - 3 * (Math.PI / 2)) + 1) / 2);
 
-		int color = 0xff000000;
+		int color = 0xffe6e6e6;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -58,103 +55,64 @@ public class ButtonBulkActionSegment extends Segment {
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glColor4f(f, f1, f2, f3);
-
-		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
-
-		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() + this.height + 2, 3, 90, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() + this.height + 2, 3, 0, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() - 2, 3, 270, 75);
-
-		drawRect(this.getPosX() - 5, this.getPosY() - 2, this.getPosX() + this.width + 5, this.getPosY() + this.height + 2, null, false, null, false);
-
-		drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + width + 2, this.getPosY() + this.height + 5, null, false, null, false);
-
+		
+		float outRad = 4.5F;
+	       
+        float inRad = 1F;
+       
+        drawRectRoundedCorners(this.getPosX() - 2 - 3, this.getPosY() - 2 - 3, (float) this.getPosX() + this.width + 2 + 3, (float) this.getPosY() + this.height + 2 + 3, color, outRad);
+       
+        float factor = 1F - ((outRad - inRad) / outRad);
+       
+        float innerRadius = outRad - (factor * outRad);
+		
 		if (this.timer <= (Math.PI / 3)) {
-			color = 0xffffffff;
+			color = 0xff282828;
 
-			f3 = (float) (color >> 24 & 255) / 255.0F;
-			f = (float) (color >> 16 & 255) / 255.0F;
-			f1 = (float) (color >> 8 & 255) / 255.0F;
-			f2 = (float) (color & 255) / 255.0F;
-
-			glColor4f(f, f1, f2, f3);
-
-			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
-
-			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
-
-			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
-
-			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
-
-			drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
-
-			drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
-
+			drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
 
 		color = 0xfffe8518;
-		f3 = (float) (color >> 24 & 255) / 255.0F;
-		f = (float) (color >> 16 & 255) / 255.0F;
-		f1 = (float) (color >> 8 & 255) / 255.0F;
-		f2 = (float) (color & 255) / 255.0F;
+		
+		int value = (int) ((((color >> 24 & 255) / 255.0F) - alphaRate) * 255F) ;
+	       
+        color = ((value & 0x0ff) << 24) | (((color >> 16 & 255) & 0x0ff) << 16) | (((color >> 8 & 255) & 0x0ff) << 8) | ((color & 255) & 0x0ff);
+		
+        drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 
-		glColor4f(f, f1, f2, f3 - alphaRate);
-
-		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
-
-		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
-
-		drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
-
-		drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
-
-		drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
-
+        int scaleFactor = (int) scaledFactor;
+        
 		if (this.parent.cache_activity == 1) {
-			color = 0xffffffff;
+			color = 0xff2c2c2c;
 
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
-
-			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX(), (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 5.5F, (float) this.getPosY() + 3.5F));
+			drawLine2D_2(f, f1, f2, f3, scaleFactor, 4, new Vec2f((float) this.getPosX(), (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 5.5F, (float) this.getPosY() + 3.5F));
 
 		}
 
 		if (this.parent.cache_activity == 2) {
-			color = 0xffffffff;
+			color = 0xff2c2c2c;
 
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
-
-			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
+			drawLine2D_2(f, f1, f2, f3, scaleFactor, 4, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7, (float) this.getPosY() - 5 + 3.5F));
 
 		}
 
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
-
 	}
 	
 	@Override
 	public boolean isSelected(int mouseX, int mouseY) {
-		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() - 4 && mouseY >= this.getPosY() - 4 && mouseX < this.getPosX() + this.getWidth() + 4&& mouseY < this.getPosY() + this.getHeight() + 4;
+		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= this.getPosX() + this.hitX - 4 && mouseY >= this.getPosY() + this.hitY - 4 && mouseX < this.getPosX() + this.hitX + this.getWidth() + 4 && mouseY < this.getPosY() + this.hitY + this.getHeight() + 4;
 	}
 
 	@Override
@@ -198,8 +156,9 @@ public class ButtonBulkActionSegment extends Segment {
 
 							if (!file.getName().equals("defaultsettings")
 									&& !file.getName().equals("defaultsettings.json")
-									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("ds_dont_export.json")
-									/*&& !file.getName().equals("optionsof.txt")*/ && !file.getName().equals("servers.dat")
+									&& !file.getName().equals("ds_dont_export.json")
+									&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
+									&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
 									&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 								return true;
 
@@ -235,7 +194,7 @@ public class ButtonBulkActionSegment extends Segment {
 							if (checkbox.active) {
 								checkbox.active = false;
 
-								int yOffTemp = 18 + 20 * i + this.parent.add;
+								float yOffTemp = 18 + 20 * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)
 									invalid = true;
@@ -272,7 +231,7 @@ public class ButtonBulkActionSegment extends Segment {
 							if (!checkbox.active) {
 								checkbox.active = true;
 
-								int yOffTemp = 18 + 20 * i + this.parent.add;
+								float yOffTemp = 18 + 20 * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)
 									invalid = true;
@@ -305,8 +264,8 @@ public class ButtonBulkActionSegment extends Segment {
 							ButtonCheckboxSegment checkbox = (ButtonCheckboxSegment) child;
 							if (checkbox.active) {
 								checkbox.active = false;
-
-								int yOffTemp = 18 + 20 * i + this.parent.add;
+	
+								float yOffTemp = 18 + 20 * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)
 									invalid = true;
@@ -323,7 +282,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 							}
 
-						} else if (child instanceof SettingsButtonSegment) {
+						}else if (child instanceof SettingsButtonSegment) {
 							SettingsButtonSegment set = (SettingsButtonSegment) child;
 							set.mark = false;
 						}

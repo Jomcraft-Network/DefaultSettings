@@ -402,11 +402,15 @@ public static void switchState(Byte state, String query) {
 			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilterModular);
 			for (File f : fileDir.listFiles(fileFilterModular)) {
 				
-				if(f.isDirectory())
-					FileUtils.deleteDirectory(f);
-				else
-					//f.delete() calls updates, not appropriate
-					Files.delete(f.toPath());
+				try {
+					if (f.isDirectory())
+						FileUtils.deleteDirectory(f);
+					else
+						// f.delete() calls updates, not appropriate
+						Files.delete(f.toPath());
+				} catch (IOException e) {
+					DefaultSettings.log.log(Level.ERROR, "Couldn't move config files: ", e);
+				}
 
 			}
 		} catch (IOException e) {
@@ -727,8 +731,10 @@ public static void switchState(Byte state, String query) {
 						Screen gui = MC.currentScreen;
 						
 						if(gui instanceof GuiConfig && ((GuiConfig) gui).menu != null) {
-							for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) 
-								variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+							synchronized (((GuiConfig) gui).menu) {
+								for(MenuArea variant : ((GuiConfig) gui).menu.getVariants()) 
+									variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+							}
 						}
 			
 						try {

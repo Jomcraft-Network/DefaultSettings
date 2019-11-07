@@ -33,6 +33,12 @@ public class MenuScreen extends Segment {
 	@Override
     public void render(int mouseX, int mouseY, float partialTicks) {
 
+		if(resized != this.resized_mark) {
+			width = gui.width - posX;
+			height = gui.height - posY;
+			this.resized_mark = resized;
+		}
+		
         synchronized (this.variants) {
         	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
         }

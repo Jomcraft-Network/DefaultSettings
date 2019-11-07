@@ -1,13 +1,15 @@
 package de.pt400c.defaultsettings;
 
 import java.nio.ByteBuffer;
-import static org.lwjgl.opengl.GL11.*;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.opengl.GL30.*;
 
+@OnlyIn(Dist.CLIENT)
 public class FramebufferPopup {
 	
-	public final int width;
-	public final int height;
+	public int width;
+	public int height;
 	public int msColorRenderBuffer;
 	public int msFbo;
     public int texture;
@@ -18,7 +20,24 @@ public class FramebufferPopup {
 		this.height = height;
 		setupFBO();
 	}
+	
+	public void resize(int width, int height) {
+		
+		BakeryRegistry.fbos.remove(new Integer(msFbo));
+        BakeryRegistry.fbos.remove(new Integer(fbo));
+        BakeryRegistry.renderbs.remove(new Integer(msColorRenderBuffer));
+        BakeryRegistry.textures.remove(new Integer(texture));
+		
+		glDeleteFramebuffers(this.fbo);
+		glDeleteRenderbuffers(this.msFbo);
+		glDeleteRenderbuffers(this.msColorRenderBuffer);
+		glDeleteTextures(this.texture);
 
+		this.width = width;
+		this.height = height;
+		setupFBO();
+	}
+	
 	public void setupFBO() {
         msColorRenderBuffer = glGenRenderbuffers();
         msFbo = glGenFramebuffers();
@@ -42,5 +61,10 @@ public class FramebufferPopup {
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        BakeryRegistry.fbos.add(new Integer(msFbo));
+        BakeryRegistry.fbos.add(new Integer(fbo));
+        BakeryRegistry.renderbs.add(new Integer(msColorRenderBuffer));
+        BakeryRegistry.textures.add(new Integer(texture));
 	}
 }

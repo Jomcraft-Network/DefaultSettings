@@ -1,30 +1,30 @@
 package de.pt400c.defaultsettings.gui;
 
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.List;
-import static de.pt400c.neptunefx.DrawString.*;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import java.util.function.Function;
 import static de.pt400c.neptunefx.NEX.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.neptunefx.NEX;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)
 public class ScrollableSegment extends Segment {
 
 	protected boolean grabbed;
-	protected int add = 0;
+	protected float add = 0;
 	//0 : Nothing selected
 	//1 : Something is selected
 	//2 : All is selected
@@ -35,19 +35,23 @@ public class ScrollableSegment extends Segment {
 	private final ButtonBulkActionSegment bulkAction;
 	public final SearchbarSegment searchbar;
 	private float distanceY = 0;
-	private int maxSize = 0;
+	private float maxSize = 0;
 	private final byte id;
 	private float velocity = 0;
-	private int bgDPLList = -1;
-    private boolean compiled;
+	private final Function<GuiConfig, Integer> widthF;
+	private final Function<GuiConfig, Integer> heightF;
+	static final int row = 15;
+	private String prevTerm = "";
 
-	public ScrollableSegment(Screen gui, float posX, float posY, int width, int height, byte id) {
-		super(gui, posX, posY, width, height, false);
-		this.scrollBar = new ScrollbarSegment(this.gui, (float) (posX + width), (float) posY, 10, 20, this);
+	public ScrollableSegment(Screen gui, float posX, float posY, Function<GuiConfig, Integer> width, Function<GuiConfig, Integer> height, byte id) {	
+		super(gui, posX, posY, width.apply((GuiConfig) gui), height.apply((GuiConfig) gui), false);
+		this.scrollBar = new ScrollbarSegment(this.gui, (float) (this.posX + this.width), (float) posY, 6, 20, this);
 		this.id = id;
 		this.list = getRowList(null);
 		this.bulkAction = new ButtonBulkActionSegment(this.gui, posX + 82, posY + 5, 6, 6, this);
-		this.searchbar = new SearchbarSegment(gui, posX + 112, posY - 1, 45, 18, false, this);
+		this.searchbar = new SearchbarSegment(gui, posX + 122, posY - 1, 40, 18, false, this);
+		this.widthF = width;
+		this.heightF = height;
 	}
 	
 	@Override
@@ -58,7 +62,7 @@ public class ScrollableSegment extends Segment {
 	public List<RowItem> getRowList(String[] arg) {
 		this.add = 0;
 		switch (id) {
-
+		
 		case 0: {
 
 			List<RowItem> rows = new ArrayList<RowItem>();
@@ -70,7 +74,7 @@ public class ScrollableSegment extends Segment {
 					@Override
 					public boolean accept(File file) {
 
-						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")/* && !file.getName().equals("optionsof.txt")*/ && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(arg[0].toLowerCase()))
+						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(arg[0].toLowerCase()))
 							return true;
 
 						return false;
@@ -83,11 +87,11 @@ public class ScrollableSegment extends Segment {
 			int activeCount = 0;
 			for (int i = 0; i < files.length; i++) {
 
-				int yOffTemp = 18 + 20 * i + add;
+				float yOffTemp = row - 0.5F + row * i + add;
 				boolean active = FileUtil.getActives().contains(files[i].getName());
 				if (active)
 					activeCount++;
-				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 102, yOffTemp + 43, 6, 6, files[i].getName(), false, this, i, active), new SettingsButtonSegment(gui, i, (float) (this.getWidth() + this.posX - 12), yOffTemp + 43, files[i].getName(), this, FileUtil.getOverrides().containsKey(files[i].getName()))));
+				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, files[i].getName(), false, this, i, active), new SettingsButtonSegment(gui, i, i2 -> {return i2.getWidth() + i2.posX - 12;}, yOffTemp + 44.5F, files[i].getName(), this, FileUtil.getOverrides().containsKey(files[i].getName()))));
 			}
 
 			if (rows.size() != 0 && activeCount == files.length)
@@ -111,39 +115,6 @@ public class ScrollableSegment extends Segment {
 	}
 	
 	@Override
-	public boolean hoverCheck(int mouseX, int mouseY) {
-		
-		final float offX = (float) (this.getWidth() + 58);
-		final float offY = 53;
-		final float tempHeight = this.getHeight() + 2;
-		final float tempWidth = 35;
-		
-		if(mouseX >= offX && mouseY >= offY && mouseX < offX + tempWidth && mouseY < offY + tempHeight) {
-			for (int i = 0; i < this.list.size(); i++) {
-				int yOffTemp = 18 + 20 * i + add;
-
-				if (yOffTemp < -3)
-					continue;
-				if (yOffTemp > this.height + 18)
-					break;
-
-				for (Segment segment : this.list.get(i).childs) {
-					if(segment.hoverCheck(mouseX, mouseY))
-						return true;
-				}
-
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	public void initSegment() {
-		compiled = false;
-		super.initSegment();
-	}
-	
-	@Override
 	public boolean mouseScrolled(float p_mouseScrolled_1_) {
 		this.maxSize = 18 + 20 * (this.list.size() - 1);
 		if(!this.invisible)
@@ -154,8 +125,15 @@ public class ScrollableSegment extends Segment {
 	@Override
 	public void guiContentUpdate(String... arg){
 		FileFilter ff = null;
+
 		File fileDir = new File(FileUtil.mcDataDir, "config");
 		if (arg != null && arg.length != 0) {
+			
+			if(!this.searchbar.activated && !arg[0].equals("")) 
+				arg[0] = this.prevTerm;
+			else if(this.searchbar.activated || arg[0].equals(""))
+				this.prevTerm = arg[0];
+
 			ff = new FileFilter() {
 
 				@Override
@@ -171,16 +149,47 @@ public class ScrollableSegment extends Segment {
 			ff = FileUtil.fileFilter;
 		}
 		File[] files = fileDir.listFiles(ff);
-		if(files.length != this.list.size()) {
+		if(files.length != this.list.size()) 
 			this.list = getRowList(arg);
-			this.compiled = false;
+	}
+	
+	@Override
+	public boolean hoverCheck(int mouseX, int mouseY) {
+		
+		final float offX = (float) (this.getWidth() + 58);
+		final float offY = 53;
+		final float tempHeight = this.getHeight() + 2;
+		final float tempWidth = 35;
+		
+		if(mouseX >= offX && mouseY >= offY && mouseX < offX + tempWidth && mouseY < offY + tempHeight) {
+			for (int i = 0; i < this.list.size(); i++) {
+				float yOffTemp = row - 0.5F + row * i + add;
+
+				if (yOffTemp < -3)
+					continue;
+				if (yOffTemp > this.height + row - 0.5F)
+					break;
+
+				for (Segment segment : this.list.get(i).childs) {
+					if(segment.hoverCheck(mouseX, mouseY))
+						return true;
+				}
+
+			}
 		}
+		return false;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-
-		this.add += (int) (this.velocity);
+		
+		if(resized != this.resized_mark) {
+			width = widthF.apply((GuiConfig) this.gui);
+			height = heightF.apply((GuiConfig) this.gui);
+			this.resized_mark = resized;
+		}
+		
+		this.add += this.velocity;
 		
 		if (this.add > 0) {
 			this.add = 0;
@@ -188,13 +197,13 @@ public class ScrollableSegment extends Segment {
 		}
 
 		if (this.add < 0) {
-			final int yOff = maxSize + this.add;
-			final int movable = (int) (this.getPosY() + yOff);
-			final int fix = (int) (this.getPosY() + height - 1);
+			final float yOff = maxSize + this.add;
+			final float movable = this.getPosY() + yOff;
+			final float fix = this.getPosY() + height - 1;
 
 			if (movable < fix) {
 
-				int tempAdd = (int) (this.getPosY() + height - 1 - 20 * (this.list.size() - 1) - this.getPosY() - 18);
+				float tempAdd = this.getPosY() + height - 1 - row * (this.list.size() - 1) - this.getPosY() - row - 0.5F;
 				this.velocity = 0;
 				this.add = tempAdd;
 
@@ -212,92 +221,41 @@ public class ScrollableSegment extends Segment {
 				this.velocity += 1;
 		}
 
-		this.maxSize = 18 + 20 * (this.list.size() - 1);
-		final int color = 0xff818181;
+		this.maxSize = row - 0.5F + row * (this.list.size() - 1);
+		final int color = 0xffe6e6e6;
 
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		final float f3 = (float) (color >> 24 & 255) / 255.0F;
-		final float f = (float) (color >> 16 & 255) / 255.0F;
-		final float f1 = (float) (color >> 8 & 255) / 255.0F;
-		final float f2 = (float) (color & 255) / 255.0F;
-		
-		glColor4f(f, f1, f2, f3);
-		
 		if (maxSize <= height)
 			this.invisible = true;
 		else
 			this.invisible = false;
-		
-		if (compiled)
-			glCallList(this.bgDPLList);
-		else {
-			
-			this.bgDPLList = GLAllocation.generateDisplayLists(1);
-			glNewList(this.bgDPLList, GL_COMPILE);
 
-			drawCircle((float) this.getPosX(), (float) this.getPosY(), 5, 180, 75);
-
-			drawCircle((float) this.getPosX(), (float) this.getPosY() + this.height, 5, 90, 75);
-
-			drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY() + this.height, 5, 0, 75);
-
-			drawCircle((float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth()), (float) this.getPosY(), 5, 270, 75);	
-		
-			drawRect(this.getPosX(), this.getPosY() - 5, this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height + 5, null, false, null, false);
-		
-			drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, 0xff5B5B5B, false, null, false);
-		
-			glColor4f(f, f1, f2, f3);	
-
-			drawRect(this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY(), this.getPosX() + this.width + 5 + (!this.invisible ? this.scrollBar.getWidth() : 0), this.getPosY() + this.height, null, false, null, false);
-
-			drawRect(this.getPosX() - 5, this.getPosY(), this.getPosX(), this.getPosY() + this.height, null, false, null, false);
-
-			glEndList();
-			compiled = true;
-			glCallList(this.bgDPLList);
-		}
-		
+		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() + 2 : 0), this.getPosY() + this.height, 0xff3c3c3c, false, null, false);
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
-		
-		if (!this.invisible) {
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-			glShadeModel(GL_SMOOTH);
 
-			drawGradient(this.getPosX() + this.width, this.getPosY(), this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + 6, 0xff393939, 0x00373737, 1);
-
-			drawGradient(this.getPosX() + this.width, this.getPosY() + this.height, this.getPosX() + this.width + this.scrollBar.getWidth(), this.getPosY() + this.height - 6, 0xff393939, 0x00373737, (byte) 3);
-
-			glShadeModel(GL_FLAT);
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
-		}
-
-		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xffe0e0e0, true, null, false);
+		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xff3c3c3c, true, null, false);
 
 		if (this.grabbed) {
 			if (this.invisible)
 				distanceY = 0;
 			else {
-				int factor = (int) (mouseY - distanceY);
+				float factor = mouseY - distanceY;
 
 				if (factor > 0)
 					factor = 0;
 
 				if (factor < 0) {
-					final int yOff = maxSize + factor;
-					final int movable = (int) (this.getPosY() + yOff);
-					final int fix = (int) (this.getPosY() + height - 1);
+					final float yOff = maxSize + factor;
+					final float movable = this.getPosY() + yOff;
+					final float fix = this.getPosY() + height - 1;
 
 					if (movable < fix) {
 
-						int tempAdd = (int) (this.getPosY() + height - 1 - 20 * (this.list.size() - 1) - this.getPosY() - 18);
+						float tempAdd = this.getPosY() + height - 1 - row * (this.list.size() - 1) - this.getPosY() - row - 0.5F;
 
 						factor = tempAdd;
 
@@ -310,59 +268,48 @@ public class ScrollableSegment extends Segment {
 			distanceY = 0;
 		}
 
-		if (maxSize <= height)
-			this.invisible = true;
-		else
-			this.invisible = false;
-		
-
-		final float scaleFactor = (float) MC.mainWindow.getGuiScaleFactor();
+		final int scaleFactor = (int) scaledFactor;
 
 		glPushMatrix();
 		glEnable(GL_SCISSOR_TEST);
-		glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight() + 0.5F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() - 1F) * scaleFactor));
+		glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
-			final int yOffTemp = 18 + 20 * i + add;
+			final float yOffTemp = row - 0.5F + row * i + add;
 
 			if (yOffTemp < -3)
 				continue;
-			if (yOffTemp > this.height + 18)
+			if (yOffTemp > this.height + row - 0.5F)
 				break;
 			
 			final String text = this.list.get(i).displayString;
-			final int dots = MC.fontRenderer.getStringWidth("...");
+			final float dots = fontRenderer.getStringWidth("...", 1, false);
 
-			final int widthString = MC.fontRenderer.getStringWidth(text);
-
+			final float widthString = fontRenderer.getStringWidth(text, 1, false);
 			final SettingsButtonSegment button = (SettingsButtonSegment) this.list.get(i).childs[1];
 			if (widthString >= (width - (button.mark ? 55 : 40))) {
-
-				drawString(MC.fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots)) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0);
-
+				fontRenderer.drawString(fontRenderer.trimStringToWidth(text, (int) ((width - (button.mark ? 55 : 40)) - 1 - dots), false) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
 			} else {
-				drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 13, 0x0);
+				fontRenderer.drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
 			}
 
 			for (Segment segment : this.list.get(i).childs) 
 				segment.customRender(mouseX, mouseY, 0, this.add, partialTicks);
 
 			if (!(i == this.list.size() - 1))
-				drawRect(this.getPosX(), this.getPosY() + yOffTemp, this.getPosX() + this.getWidth(), this.getPosY() + yOffTemp + 2, 0xff373737, true, null, false);
-			else
-				drawRect(this.getPosX(), this.getPosY() + (maxSize + this.add), this.getPosX() + this.getWidth(), this.getPosY() + (maxSize + this.add) + 1, 0xff373737, true, null, false);
+				drawRect(this.getPosX(), this.getPosY() + yOffTemp, this.getPosX() + this.getWidth() - 3, this.getPosY() + yOffTemp + 0.5F, 0xffa0a0a0, true, null, false);
 
 		}
-
+	
 		glDisable(GL_SCISSOR_TEST);
 		glPopMatrix();
 
 		final float percentHeight = height / this.maxSize;
 
-		this.scrollBar.height = clamp(height * percentHeight, 5, Integer.MAX_VALUE);
+		this.scrollBar.height = MathUtil.clamp(height * percentHeight, 20, Integer.MAX_VALUE);
 
-		final int first = (int) (this.maxSize - height + 1);
-		final int second = -this.add;
+		final float first = this.maxSize - height + 1;
+		final float second = -this.add;
 		boolean active = true;
 
 		if (first > second)
@@ -371,7 +318,17 @@ public class ScrollableSegment extends Segment {
 		final float posPercentage = -(float) (this.add) / (float) (this.maxSize - height + (active ? 1 : -1));
 		this.scrollBar.setPos((float) (posX + width), (float) posY + (height - this.scrollBar.height) * posPercentage);
 
-		drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width, this.getPosY() + this.getHeight(), 0xff818181, true, null, false);
+		if(!this.invisible)
+			drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width - 2, this.getPosY() + this.getHeight(), 0xffe6e6e6, true, null, false);
+
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		drawRectRoundedCornersHollow(this.getPosX() - 4, this.getPosY() - 4, (float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth() + 2) + 4, this.getPosY() + this.height + 4, color, 10, 6);
+
+		glDisable(GL_BLEND);
+		glEnable(GL_TEXTURE_2D);
 
 		if (!this.invisible)
 			this.scrollBar.render(mouseX, mouseY, partialTicks);
@@ -379,31 +336,18 @@ public class ScrollableSegment extends Segment {
 		this.bulkAction.render(mouseX, mouseY, partialTicks);
 
 		this.searchbar.render(mouseX, mouseY, partialTicks);
-
 	}
-	
-	public static float clamp(float num, float min, float max)
-    {
-        if (num < min)
-        {
-            return min;
-        }
-        else
-        {
-            return num > max ? max : num;
-        }
-    }
 	
 	@Override
 	public boolean mouseClicked(int mouseX, int mouseY, int button) {
 		if (this.isSelected(mouseX, mouseY)) {
 			((DefaultSettingsGUI) this.gui).resetSelected();
 			for (int i = 0; i < this.list.size(); i++) {
-				int yOffTemp = 18 + 20 * i + add;
+				float yOffTemp = row - 0.5F + row * i + add;
 
 				if (yOffTemp < -3)
 					continue;
-				if (yOffTemp > this.height + 18)
+				if (yOffTemp > this.height + row - 0.5F)
 					break;
 
 				for (Segment segment : this.list.get(i).childs) {
@@ -415,7 +359,7 @@ public class ScrollableSegment extends Segment {
 			}
 
 			this.grabbed = true;
-			this.distanceY += (int) (mouseY - this.add);
+			this.distanceY += mouseY - this.add;
 
 			return true;
 		} else {
@@ -428,16 +372,16 @@ public class ScrollableSegment extends Segment {
 		this.grabbed = false;
 
 		for (int i = 0; i < this.list.size(); i++) {
-			int yOffTemp = 18 + 20 * i + add;
+			float yOffTemp = row - 0.5F + row * i + add;
 
 			if (yOffTemp < -3)
 				continue;
-			if (yOffTemp > this.height + 18)
+			if (yOffTemp > this.height + row - 0.5F)
 				break;
 			
 			if(this.scrollBar.mouseReleased(mouseX, mouseY, button))
 				return true;
-
+			
 			for (Segment segment : this.list.get(i).childs) {
 				if (segment.mouseReleased(mouseX, mouseY, button))
 					return true;
@@ -452,11 +396,11 @@ public class ScrollableSegment extends Segment {
 	public boolean mouseDragged(int mouseX, int mouseY, int button) {
 
 		for (int i = 0; i < this.list.size(); i++) {
-			int yOffTemp = 18 + 20 * i + add;
+			float yOffTemp = row - 0.5F + row * i + add;
 
 			if (yOffTemp < -3)
 				continue;
-			if (yOffTemp > this.height + 18)
+			if (yOffTemp > this.height + row - 0.5F)
 				break;
 
 			for (Segment segment : this.list.get(i).childs) {
@@ -496,15 +440,17 @@ class SettingsButtonSegment extends Segment {
 	private final ScrollableSegment parent;
 	private boolean active;
 	public float timer = 0;
+	private final Function<ScrollableSegment, Float> posXF;
 	private static final float BRIGHT_SCALE = 0.85f;
 	public boolean mark;
 		
-	public SettingsButtonSegment(Screen gui, int id, float posX, float posY, String name, ScrollableSegment parent, boolean mark) {
-		super(gui, posX, posY, 6, 6, false);
+	public SettingsButtonSegment(Screen gui, int id, Function<ScrollableSegment, Float> posX, float posY, String name, ScrollableSegment parent, boolean mark) {
+		super(gui, posX.apply(parent), posY, 6, 6, false);
 		this.id = id;
 		this.name = name;
 		this.parent = parent;
 		this.mark = mark;
+		this.posXF = posX;
 	}
 	
 	@Override
@@ -513,22 +459,21 @@ class SettingsButtonSegment extends Segment {
 		if(this.isSelectedMark(mouseX, mouseY) && this.mark) {
 			ArrayList<String> lines = new ArrayList<String>();
 			
-			int textWidth = 0;
-			lines.addAll(MC.fontRenderer.listFormattedStringToWidth("Only replaced once on update", (int) (this.gui.width - mouseX - 12)));
+			float textWidth = 0;
+			lines.addAll(fontRenderer.listFormattedStringToWidth("Only replaced once on update", (int) (this.gui.width - mouseX - 12), true));
 			for(String line : lines) {
 				
-				if(MC.fontRenderer.getStringWidth(line) > textWidth)
-					textWidth = MC.fontRenderer.getStringWidth(line);
+				if(fontRenderer.getStringWidth(line, 0.8F, true) > textWidth)
+					textWidth = fontRenderer.getStringWidth(line, 0.8F, true);
 			}
 			
-			drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
+			drawButton(mouseX + 5, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			Collections.reverse(lines);
 			
 			for(String line : lines) {
-			
-				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a);
+				fontRenderer.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, 0.8F, true);
 				offset += 10;
 			}
 			
@@ -543,6 +488,12 @@ class SettingsButtonSegment extends Segment {
 	
 	@Override
 	public void customRender(int mouseX, int mouseY, float customPosX, float customPosY, float partialTicks) {
+		
+		if(resized != this.resized_mark) {
+			posX = posXF.apply(this.parent);
+			this.resized_mark = resized;
+		}
+		
 		if(this.active && this.timer <= Math.PI)
 			timer += 0.3;
 		else if(!this.active && this.timer > 0)
@@ -550,7 +501,7 @@ class SettingsButtonSegment extends Segment {
 
 		final float darken = (float) ((Math.sin(timer + Math.PI / 2) + 1) / 6 + 0.67);
 
-		int color = NEX.darkenColor(0xffe0e0e0, darken).getRGB();
+		int color = NEX.darkenColor(0xff3c3c3c, darken).getRGB();
 		this.offX = customPosX;
 		this.offY = customPosY;
 		customPosX += this.getPosX();
@@ -565,26 +516,25 @@ class SettingsButtonSegment extends Segment {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glColor4f(f, f1, f2, f3);
 
-		drawCircle((float) customPosX, (float) customPosY + 3.3F, 7, 0, 0);
-		color = 0xff202020;
+		drawCircle((float) customPosX, (float) customPosY + 3.3F, 6.5F, 0, 0);
+		color = 0xffe6e6e6;
 
 		f3 = (float) (color >> 24 & 255) / 255.0F;
 		f = (float) (color >> 16 & 255) / 255.0F;
 		f1 = (float) (color >> 8 & 255) / 255.0F;
 		f2 = (float) (color & 255) / 255.0F;
-
-		final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
+		final int scaleFactor = (int) scaledFactor;
 		drawDots(f, f1, f2, f3, scaleFactor, new Vec2f((float) customPosX, (float) customPosY + 3.3F), new Vec2f((float) customPosX, (float) customPosY + 4 + 3.5F), new Vec2f((float) customPosX, (float) customPosY - 5 + 4F));
 
 		if (this.mark) {
-			color = 0xff3d9d20;
+			color = 0xff2675b6;
 
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 			glColor4f(f, f1, f2, f3);
-			drawCircle((float) customPosX - 15, (float) customPosY + 3.3F, 7, 0, 0);
+			drawCircle((float) customPosX - 15, (float) customPosY + 3.3F, 6.5F, 0, 0);
 
 			color = 0xffffffff;
 
@@ -608,14 +558,14 @@ class SettingsButtonSegment extends Segment {
 	
 	@Override
 	public boolean isSelected(int mouseX, int mouseY) {
-		final float tempX = this.getPosX() + this.offX; 
-		final float tempY = this.getPosY() + this.offY; 
+		final float tempX = this.getPosX() + this.offX + this.hitX; 
+		final float tempY = this.getPosY() + this.offY + this.hitY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 8 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 2 && mouseY < tempY + this.getHeight() + 4;
 	}
 	
 	public boolean isSelectedMark(int mouseX, int mouseY) {
-		final float tempX = this.getPosX() + this.offX; 
-		final float tempY = this.getPosY() + this.offY; 
+		final float tempX = this.getPosX() + this.offX + this.hitX; 
+		final float tempY = this.getPosY() + this.offY + this.hitY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 24 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() - 14 && mouseY < tempY + this.getHeight() + 4;
 	}
 
@@ -624,7 +574,6 @@ class SettingsButtonSegment extends Segment {
 
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
-			
 			return true;
 		} else {
 			return false;
@@ -642,7 +591,7 @@ class SettingsButtonSegment extends Segment {
 	
 	@Override
 	public boolean mouseReleased(int mouseX, int mouseY, int button) {
-
+		
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
@@ -657,7 +606,7 @@ class SettingsButtonSegment extends Segment {
 			config.popup.getWindow().setPos(config.width / 2 - 210 / 2, config.height / 2 - 100 / 2);
 			config.popupField = config.popup;
 			config.popupField.getWindow().clearChildren();
-			config.popupField.getWindow().addChild(new TextSegment(config, 5, 30, 0, 0, "Should local configs be persistent?", 0, true));
+			config.popupField.getWindow().addChild(new TextSegment(config, 5, 29, 0, 0, "Should local configs be persistent?", 0xffffffff, true));
 			config.popupField.getWindow().addChild(new QuitButtonSegment(config, 190, 5, 14, 14, quitButton -> {
 
 				config.popupField.setOpening(false);
@@ -668,16 +617,18 @@ class SettingsButtonSegment extends Segment {
 			List<String> actives = FileUtil.getActives();
 			boolean active = actives.contains(this.name);
 			
-			config.popupField.getWindow().addChild(new TextSegment(config, 35, 45, 0, 0, "Always", 0, true));
-			config.popupField.getWindow().addChild(new TextSegment(config, 35, 65, 0, 0, "Replaced once", 0, true));
-			config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0, true));
+			config.popupField.getWindow().addChild(new TextSegment(config, 35, 45, 0, 0, "Always", 0xffffffff, true));
+			config.popupField.getWindow().addChild(new TextSegment(config, 35, 65, 0, 0, "Replaced once", 0xffffffff, true));
+			config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0xffffffff, true));
 			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 45, this.name, this.parent, config.popupField, (byte) 0, active && !FileUtil.getOverrides().containsKey(this.name)));
 			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 65, this.name, this.parent, config.popupField, (byte) 1, active && FileUtil.getOverrides().containsKey(this.name)));
 			config.popupField.getWindow().addChild(new PopupCheckboxSegment(config, this.id, 15, 85, this.name, this.parent, config.popupField, (byte) 2, !active));
-			config.popup.isVisible = true;
+
+			config.popup.setVisible(true);
 
 		}
 		return super.mouseReleased(mouseX, mouseY, button);
+		
 	}
 
 	@Override
@@ -711,8 +662,8 @@ class PopupCheckboxSegment extends Segment {
 	
 	@Override
 	public boolean isSelected(int mouseX, int mouseY) {
-		float tempX = this.getPosX(); 
-		float tempY = this.getPosY(); 
+		float tempX = this.getPosX() + this.hitX; 
+		float tempY = this.getPosY() + this.hitY; 
 		return (((GuiConfig) this.gui).popupField == null || this.getIsPopupSegment()) && mouseX >= tempX - 4 && mouseY >= tempY - 4 && mouseX < tempX + this.getWidth() + 4&& mouseY < tempY + this.getHeight() + 4;
 	}
 
@@ -775,7 +726,7 @@ class PopupCheckboxSegment extends Segment {
 										&& !file.getName().equals("defaultsettings.json")
 										&& !file.getName().equals("ds_dont_export.json")
 										&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-								/* && !file.getName().equals("optionsof.txt") */
+										&& !file.getName().equals("optionsof.txt")
 										&& !file.getName().equals("servers.dat")
 										&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 									return true;
@@ -786,6 +737,7 @@ class PopupCheckboxSegment extends Segment {
 					} else {
 						ff = FileUtil.fileFilter;
 					}
+					
 					File[] files = fileDir.listFiles(ff);
 					List<RowItem> rows = this.segment.list;
 					int activeCount = 0;
@@ -825,7 +777,7 @@ class PopupCheckboxSegment extends Segment {
 										&& !file.getName().equals("defaultsettings.json")
 										&& !file.getName().equals("ds_dont_export.json")
 										&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-								/* && !file.getName().equals("optionsof.txt") */
+										&& !file.getName().equals("optionsof.txt")
 										&& !file.getName().equals("servers.dat")
 										&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 									return true;
@@ -879,7 +831,7 @@ class PopupCheckboxSegment extends Segment {
 										&& !file.getName().equals("defaultsettings.json")
 										&& !file.getName().equals("ds_dont_export.json")
 										&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
-								/* && !file.getName().equals("optionsof.txt") */
+										&& !file.getName().equals("optionsof.txt")
 										&& !file.getName().equals("servers.dat")
 										&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 									return true;
@@ -920,7 +872,7 @@ class PopupCheckboxSegment extends Segment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-
+	
 		if (active) {
 
 			if (this.timer <= (Math.PI / 3))
@@ -940,7 +892,7 @@ class PopupCheckboxSegment extends Segment {
 
 		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
 
-		int color = 0xff000000;
+		int color = 0xffe6e6e6;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -950,86 +902,43 @@ class PopupCheckboxSegment extends Segment {
 		glDisable(GL_TEXTURE_2D);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 
-		glColor4f(f, f1, f2, f3);
+		float outRad = 4.5F;
+	       
+        float inRad = 1F;
 
-		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() - 2, 3, 180, 75);
+        drawRectRoundedCorners(this.getPosX() - 2 - 3, this.getPosY() - 2 - 3, (float) this.getPosX() + this.width + 2 + 3, (float) this.getPosY() + this.height + 2 + 3, color, outRad);
 
-		drawCircle((float) this.getPosX() - 2, (float) this.getPosY() + this.height + 2, 3, 90, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() + this.height + 2, 3, 0, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 2, (float) this.getPosY() - 2, 3, 270, 75);
-
-		drawRect(this.getPosX() - 5, this.getPosY() - 2, this.getPosX() + this.width + 5, this.getPosY() + this.height + 2, null, false, null, false);
-		
-		drawRect(this.getPosX() - 2, this.getPosY() + this.height + 2, this.getPosX() + this.width + 2, this.getPosY() + this.height + 5, null, false, null, false);
-		
-		drawRect(this.getPosX() - 2, this.getPosY() - 5, this.getPosX() + this.width + 2, this.getPosY() - 2, null, false, null, false);
-
+        float factor = 1F - ((outRad - inRad) / outRad);
+        
+        float innerRadius = outRad - (factor * outRad);
+        
 		if (this.timer <= (Math.PI / 3)) {
-			color = 0xffffffff;
-			f3 = (float) (color >> 24 & 255) / 255.0F;
-			f = (float) (color >> 16 & 255) / 255.0F;
-			f1 = (float) (color >> 8 & 255) / 255.0F;
-			f2 = (float) (color & 255) / 255.0F;
-
-			glColor4f(f, f1, f2, f3);
-
-			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
-
-			drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
-
-			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
-
-			drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
-
-			drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
-			
-			drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
-			
-			drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
-
+			color = 0xff282828;
+			drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
 		
 		color = 0xfffe8518;
 
-		f3 = (float) (color >> 24 & 255) / 255.0F;
-		f = (float) (color >> 16 & 255) / 255.0F;
-		f1 = (float) (color >> 8 & 255) / 255.0F;
-		f2 = (float) (color & 255) / 255.0F;
-
-		glColor4f(f, f1, f2, f3 - alphaRate);
-
-		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() - 1, 3, 180, 75);
-
-		drawCircle((float) this.getPosX() - 1, (float) this.getPosY() + this.height + 1, 3, 90, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() + this.height + 1, 3, 0, 75);
-
-		drawCircle((float) this.getPosX() + this.width + 1, (float) this.getPosY() - 1, 3, 270, 75);
-
-		drawRect(this.getPosX() - 1, this.getPosY() - 4, this.getPosX() + width + 1, this.getPosY() - 1, null, false, null, false);
-
-		drawRect(this.getPosX() - 1, this.getPosY() + this.height + 1, this.getPosX() + width + 1, this.getPosY() + this.height + 4, null, false, null, false);
-
-		drawRect(this.getPosX() - 4, this.getPosY() - 1, this.getPosX() + width + 4, this.getPosY() + this.height + 1, null, false, null, false);
-
+		int value = (int) ((((color >> 24 & 255) / 255.0F) - alphaRate) * 255F) ;
+	       
+        color = ((value & 0x0ff) << 24) | (((color >> 16 & 255) & 0x0ff) << 16) | (((color >> 8 & 255) & 0x0ff) << 8) | ((color & 255) & 0x0ff);
+		
+        drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
+        
 		if (this.timer > 0) {
-			color = 0xffffffff;
+			color = 0xff2c2c2c;
 
 			f3 = (float) (color >> 24 & 255) / 255.0F;
 			f = (float) (color >> 16 & 255) / 255.0F;
 			f1 = (float) (color >> 8 & 255) / 255.0F;
 			f2 = (float) (color & 255) / 255.0F;
 
-			final int scaleFactor = (int) MC.mainWindow.getGuiScaleFactor();
+			final int scaleFactor = (int) scaledFactor;
 
-			drawLine2D(f, f1, f2, f3, scaleFactor, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7 - 1, (float) this.getPosY() - 5 + 3.5F));
+			drawLine2D_2(f, f1, f2, f3, scaleFactor, 4, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7, (float) this.getPosY() - 5 + 3.5F));
 		}
 
 		glDisable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
-		
 	}
-
 }

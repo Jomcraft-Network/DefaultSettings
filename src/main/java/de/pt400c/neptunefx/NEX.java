@@ -6,17 +6,15 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.mojang.blaze3d.platform.GlStateManager;
-import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.gui.MathUtil;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.util.math.Vec2f;
 
 /**
  * @author Jomcraft Network (PT400C)
  * @category NeptuneFX
  */
 public class NEX {
-	
 	private static int[] buffer = new int[0x10000];
     private static int bufferIndex = 0;
     private static ByteBuffer byteBuffer = GLAllocation.createDirectByteBuffer(0x200000 * 4);
@@ -56,7 +54,7 @@ public class NEX {
     }
 	
 	public static Color calcAlpha(int color, float alpha) {
-		return new Color(getRed(color), getGreen(color), getBlue(color), GuiConfig.clamp((int) ((1 - alpha) * 255F), 4, 255));
+		return new Color(getRed(color), getGreen(color), getBlue(color), MathUtil.clamp((int) ((1 - alpha) * 255F), 4, 255));
 	}
 	
 	/**
@@ -71,21 +69,6 @@ public class NEX {
 	 * @param multiply Alpha multiplying or subtracting
 	 */
 	public static void drawRect(float x1, float y1, float x2, float y2, Integer color, boolean blending, Float alpha, boolean multiply) {
-		float j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
         
         if(blending) {
         	glEnable(GL_BLEND);
@@ -100,17 +83,17 @@ public class NEX {
         	final float f1 = (float)(color >> 8 & 255) / 255.0F;
             final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
-            	GlStateManager.color4f(f, f1, f2, f3);
+            	glColor4f(f, f1, f2, f3);
             else if(multiply)
-            	GlStateManager.color4f(f, f1, f2, f3 * alpha);
+            	glColor4f(f, f1, f2, f3 * alpha);
             else
-            	GlStateManager.color4f(f, f1, f2, f3 - alpha);
+            	glColor4f(f, f1, f2, f3 - alpha);
         }
 
-        addVertex((float) x1, (float) y2, 0);
-        addVertex((float) x2, (float) y2, 0);
         addVertex((float) x2, (float) y1, 0);
         addVertex((float) x1, (float) y1, 0);
+        addVertex((float) x1, (float) y2, 0);
+        addVertex((float) x2, (float) y2, 0);
 
 		draw(false);
 
@@ -119,6 +102,105 @@ public class NEX {
         	glDisable(GL_BLEND);
         	glEnable(GL_ALPHA_TEST);
 		}
+    }
+	
+	public static void drawRectRoundedCornersHollow(float x1, float y1, float x2, float y2, Integer color, float radius, float innerRad) {
+        
+        float dist1 = Math.abs(y2 - y1) / 2;
+        float dist2 = Math.abs(x2 - x1) / 2;
+        
+        if(radius > dist1 && radius > dist2)
+        	radius = Math.min(dist1, dist2);
+
+        if(color != null) {
+        	final float f3 = (float)(color >> 24 & 255) / 255.0F;
+        	final float f = (float)(color >> 16 & 255) / 255.0F;
+        	final float f1 = (float)(color >> 8 & 255) / 255.0F;
+            final float f2 = (float)(color & 255) / 255.0F;
+            glColor4f(f, f1, f2, f3);
+        }
+        
+        addVertex((float) x1 + radius - innerRad, (float) y1 + radius, 0);
+        addVertex((float) x1, (float) y1 + radius, 0);
+        addVertex((float) x1, (float) y2 - radius, 0);
+        addVertex((float) x1 + radius - innerRad, (float) y2 - radius, 0);
+
+		draw(false);
+        
+        addVertex((float) x2 - radius, (float) y1, 0);
+        addVertex((float) x1 + radius, (float) y1, 0);
+        addVertex((float) x1 + radius, (float) y1 + radius - innerRad, 0);
+        addVertex((float) x2 - radius, (float) y1 + radius - innerRad, 0);
+
+		draw(false);
+		
+		addVertex((float) x2 - radius, (float) y2 - radius + innerRad, 0);
+        addVertex((float) x1 + radius, (float) y2 - radius + innerRad, 0);
+        addVertex((float) x1 + radius, (float) y2, 0);
+        addVertex((float) x2 - radius, (float) y2, 0);
+
+		draw(false);
+		
+		addVertex((float) x2, (float) y1 + radius, 0);
+        addVertex((float) x2 - radius + innerRad, (float) y1 + radius, 0);
+        addVertex((float) x2 - radius + innerRad, (float) y2 - radius, 0);
+        addVertex((float) x2, (float) y2 - radius, 0);
+
+		draw(false);
+		
+		drawCircleHollow(x1 + radius, y2 - radius, radius, innerRad, 90, 75);
+		
+		drawCircleHollow(x1 + radius, y1 + radius, radius, innerRad, 180, 75);
+		
+		drawCircleHollow(x2 - radius, y2 - radius, radius, innerRad, 0, 75);
+		
+		drawCircleHollow(x2 - radius, y1 + radius, radius, innerRad, 270, 75);
+    }
+	
+	public static void drawRectRoundedCorners(float x1, float y1, float x2, float y2, Integer color, float radius) {
+        
+        float dist1 = Math.abs(y2 - y1) / 2;
+        float dist2 = Math.abs(x2 - x1) / 2;
+        
+        if(radius > dist1 && radius > dist2)
+        	radius = Math.min(dist1, dist2);
+
+        if(color != null) {
+        	final float f3 = (float)(color >> 24 & 255) / 255.0F;
+        	final float f = (float)(color >> 16 & 255) / 255.0F;
+        	final float f1 = (float)(color >> 8 & 255) / 255.0F;
+            final float f2 = (float)(color & 255) / 255.0F;
+            glColor4f(f, f1, f2, f3);
+        }
+
+        addVertex((float) x1 + radius, (float) y1 + radius, 0);
+        addVertex((float) x1, (float) y1 + radius, 0);
+        addVertex((float) x1, (float) y2 - radius, 0);
+        addVertex((float) x1 + radius, (float) y2 - radius, 0);
+
+		draw(false);
+        
+        addVertex((float) x2 - radius, (float) y1, 0);
+        addVertex((float) x1 + radius, (float) y1, 0);
+        addVertex((float) x1 + radius, (float) y2, 0);
+        addVertex((float) x2 - radius, (float) y2, 0);
+
+		draw(false);
+		
+		addVertex((float) x2, (float) y1 + radius, 0);
+        addVertex((float) x2 - radius, (float) y1 + radius, 0);
+        addVertex((float) x2 - radius, (float) y2 - radius, 0);
+        addVertex((float) x2, (float) y2 - radius, 0);
+
+		draw(false);
+		
+		drawCircle(x1 + radius, y2 - radius, radius, 90, 75);
+		
+		drawCircle(x1 + radius, y1 + radius, radius, 180, 75);
+		
+		drawCircle(x2 - radius, y2 - radius, radius, 0, 75);
+		
+		drawCircle(x2 - radius, y1 + radius, radius, 270, 75);
     }
 	
 	/**
@@ -131,23 +213,7 @@ public class NEX {
 	 * @param color2 End color of the gradient
 	 * @param rotation 0 = left-right, 1 = top-down, 2 = right-left, 3 = down-top
 	 */
-	public static void drawGradient(float x1, float y1, float x2, float y2, int color1, int color2, final int rotation) {
-		float j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-        
+	public static void drawGradient(float x1, float y1, float x2, float y2, int color1, int color2, final int rotation) {     
         int f3 = (int)(color1 >> 24 & 255);
         int f = (int)(color1 >> 16 & 255);
         int f1 = (int)(color1 >> 8 & 255);
@@ -156,17 +222,17 @@ public class NEX {
         setColor(f, f1, f2, f3);
 
         if(rotation == 1) {
-			addVertex((float) x1, (float) y2, 0);
-	        addVertex((float) x2, (float) y2, 0);
-        }else if(rotation == 2) {
-			addVertex((float) x1, (float) y1, 0);
-			addVertex((float) x1, (float) y2, 0);
-		}else if(rotation == 3) {
 			addVertex((float) x2, (float) y1, 0);
 	        addVertex((float) x1, (float) y1, 0);
-		}else if(rotation == 0) {
+        }else if(rotation == 2) {
 			addVertex((float) x2, (float) y2, 0);
 			addVertex((float) x2, (float) y1, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x1, (float) y2, 0);
+	        addVertex((float) x2, (float) y2, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x1, (float) y1, 0);
+			addVertex((float) x1, (float) y2, 0);
 		}
         
         f3 = (int)(color2 >> 24 & 255);
@@ -177,17 +243,17 @@ public class NEX {
         setColor(f, f1, f2, f3);
         
         if(rotation == 1) {
-			addVertex((float) x2, (float) y1, 0);
-	        addVertex((float) x1, (float) y1, 0);
-        }else if(rotation == 2) {
-			addVertex((float) x2, (float) y2, 0);
-			addVertex((float) x2, (float) y1, 0);
-		}else if(rotation == 3) {
 			addVertex((float) x1, (float) y2, 0);
 	        addVertex((float) x2, (float) y2, 0);
-		}else if(rotation == 0) {
+        }else if(rotation == 2) {
 			addVertex((float) x1, (float) y1, 0);
 			addVertex((float) x1, (float) y2, 0);
+		}else if(rotation == 3) {
+			addVertex((float) x2, (float) y1, 0);
+	        addVertex((float) x1, (float) y1, 0);
+		}else if(rotation == 0) {
+			addVertex((float) x2, (float) y2, 0);
+			addVertex((float) x2, (float) y1, 0);
 		}
 
 		draw(false);
@@ -301,45 +367,6 @@ public class NEX {
 	 * @param par4 Alpha value
 	 */
 	public static void setColor(int par1, int par2, int par3, int par4) {
-        if (par1 > 255)
-        {
-            par1 = 255;
-        }
-
-        if (par2 > 255)
-        {
-            par2 = 255;
-        }
-
-        if (par3 > 255)
-        {
-            par3 = 255;
-        }
-
-        if (par4 > 255)
-        {
-            par4 = 255;
-        }
-
-        if (par1 < 0)
-        {
-            par1 = 0;
-        }
-
-        if (par2 < 0)
-        {
-            par2 = 0;
-        }
-
-        if (par3 < 0)
-        {
-            par3 = 0;
-        }
-
-        if (par4 < 0)
-        {
-            par4 = 0;
-        }
 
         hasColor = true;
 
@@ -365,7 +392,7 @@ public class NEX {
 
 		glEnable(GL_POINT_SMOOTH);
 
-		glPointSize(6.5F * (factor / 2F));
+		glPointSize(5.5F * (factor / 2F));
 
 		glBegin(GL_POINTS);
 		
@@ -574,6 +601,62 @@ public class NEX {
 		}
 	}
 
+	public static void drawCircleHollow(float cx, float cy, float r, float r2, float rotation, float percentage) {
+
+		float x = r;
+
+		float y = 0;
+
+		float posX1 = 0;
+		float posY1 = 0;
+
+		for (int l = 0; l < Math.round(100F / 360F * rotation); l++) {
+
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
+		}
+
+		float posX2 = cx;
+		float posY2 = cy;
+
+		for (int i = 0; i < (100 + 1 - percentage); i++) {
+			posX1 = posX2;
+			posY1 = posY2;
+
+			posX2 = x + cx;
+			posY2 = y + cy;
+
+			addVertex((float) posX2, (float) posY2, 0);
+			
+			addVertex((float) posX1, (float) posY1, 0);
+			
+	
+			float lel = 1 - (r - r2) / r;
+			
+			
+			addVertex((float) cx + (posX1 - cx) * lel, (float) cy + (posY1 - cy) * lel, 0);
+			
+			addVertex((float) cx + (posX2 - cx) * lel, (float) cy + (posY2 - cy) * lel, 0);
+
+			draw(false);
+
+			float tx = -y;
+			float ty = x;
+
+			x += tx * tangetialFactor;
+			y += ty * tangetialFactor;
+
+			x *= radialFactor;
+			y *= radialFactor;
+		}
+	}
+
 	/**
 	 * @category Main renderer
 	 * @param x X pos
@@ -674,9 +757,9 @@ public class NEX {
 	 */
 	public static void drawScaledTex(float x, float y, int width, int height) {
 		glBegin(GL_QUADS);
-		glTexCoord2f(0, 1); glVertex3d(x, 19 + y, 0);
-		glTexCoord2f(1, 1); glVertex3d(19 + x, 19 + y, 0);
-		glTexCoord2f(1, 0); glVertex3d(19 + x, y, 0);
+		glTexCoord2f(0, 1); glVertex3d(x, height + y, 0);
+		glTexCoord2f(1, 1); glVertex3d(width + x, height + y, 0);
+		glTexCoord2f(1, 0); glVertex3d(width + x, y, 0);
 		glTexCoord2f(0, 0); glVertex3d(x, y, 0);
 		glEnd();
     }

@@ -19,6 +19,7 @@ import org.apache.maven.artifact.versioning.ComparableVersion;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
+import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -41,11 +42,13 @@ public class DefaultSettings {
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
-	public static String BUILD_ID = "<UNKNOWN>";
-	public static String BUILD_TIME = "<UNKNOWN>";
+	public static String BUILD_ID = "Unknown";
+	public static String BUILD_TIME = "Unknown";
+	public static FontRendererClass fontRenderer;
 	public static final String VERSION = getModVersion();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static DefaultSettings instance;
+	public static final boolean debug = false;
 	
 	@SuppressWarnings("unchecked")
 	public DefaultSettings() {
@@ -126,6 +129,10 @@ public class DefaultSettings {
 
 	public void postInit(FMLLoadCompleteEvent event) {
 		if (FMLLoader.getDist() == Dist.CLIENT) {
+			
+			fontRenderer = new FontRendererClass();
+			fontRenderer.readFontTexture();
+
 			try {
 				getBuildID();
 				getBuildTime();

@@ -18,7 +18,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 public class CommandDefaultSettings {
 	
 	private static ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new StringTextComponent(TextFormatting.RED + "Please wait until the last request has been processed!"));
+	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new StringTextComponent(TextFormatting.RED + "Please wait until the last request has finished"));
 
 	protected static void register(FMLServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSource> literalargumentbuilder = Commands.literal("defaultsettings");
@@ -49,7 +49,7 @@ public class CommandDefaultSettings {
 				try {
 					if (exportMode) {
 						FileUtil.restoreConfigs();
-						source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "The export-mode has been disabled successfully"), true);
+						source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Successfully deactivated the export-mode"), true);
 					} else {
 						FileUtil.moveAllConfigs(true);
 						source.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Successfully activated the export-mode"), true);
@@ -70,8 +70,8 @@ public class CommandDefaultSettings {
 			throw FAILED_EXCEPTION.create();
 		
 		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || !argument.equals("-o"))) {
-			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "The intended files already exist! If you want to"), true);
-			source.sendFeedback(new StringTextComponent(TextFormatting.RED + "overwrite them, add the '-o' argument"), true);
+			source.sendFeedback(new StringTextComponent(TextFormatting.GOLD + "These files already exist! If you want to overwrite"), true);
+			source.sendFeedback(new StringTextComponent(TextFormatting.GOLD + "them, add the '-o' argument"), true);
 			return 0;
 		}
 

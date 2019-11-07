@@ -265,7 +265,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 	}
     
 	public void copyConfigs() {
-		
 		tpe.execute(new Runnable() {
 			@SuppressWarnings("static-access")
 			@Override
@@ -278,6 +277,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 						return;
 					DefaultSettings.getInstance().log.log(Level.SEVERE, "An exception occurred while trying to move the configs:", e);
 				}
+				GuiConfig.this.menu.exportActive.setByte((byte) 1);
 				for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
 					for(Segment segment : variant.getChildren()) {
 						if(segment instanceof ScrollableSegment)

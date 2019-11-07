@@ -1,27 +1,35 @@
 package de.pt400c.defaultsettings.gui;
 
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.function.Function;
 import de.pt400c.defaultsettings.DefaultSettings;
+import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.UpdateContainer;
+import de.pt400c.defaultsettings.UpdateContainer.Status;
 import de.pt400c.neptunefx.NEX;
-import static de.pt400c.neptunefx.DrawString.*;
 import net.minecraft.client.gui.GuiScreen;
-import static de.pt400c.neptunefx.NEX.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import static de.pt400c.neptunefx.NEX.*;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glScissor;
 
 @OnlyIn(Dist.CLIENT)
 public class ButtonUpdateChecker extends ButtonSegment {
 
 	public float timer = 0;
 	private final LeftMenu menu;
+	private final Function<GuiConfig, Float> posYF;
 
-	public ButtonUpdateChecker(GuiScreen gui, float posY, LeftMenu menu) {
-		super(gui, 0, posY, null, null, 20, 20, 2);
+	public ButtonUpdateChecker(GuiScreen gui, Function<GuiConfig, Float> posY, LeftMenu menu) {
+		super(gui, 0, posY.apply((GuiConfig) gui), null, null, 60, 24, 2);
+		this.posYF = posY;
 		this.menu = menu;
-		
 		if(DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.ERROR || DefaultSettings.getUpdater().getStatus() == UpdateContainer.Status.UNKNOWN)
 			DefaultSettings.getUpdater().update();
 		
@@ -29,12 +37,53 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
+		if(resized != this.resized_mark) {
+			posY = posYF.apply((GuiConfig) this.gui);
+			this.resized_mark = resized;
+		}
+		
 		this.timer += 0.05;
-		final float right = this.menu.width - this.menu.offs + this.width + 6;
+		
+		this.width = 60 - this.menu.offs;
+		final float right = this.menu.width - this.menu.offs + this.width - 35 + this.menu.offs;
 		this.posX = right / 2 - this.width / 2;
-		final float darken = (float) ((Math.sin(timer - Math.PI / 2) + 1) / 4 + 0.5);
-		drawButton(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? darkenColor(this.color).getRGB() : this.color, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), this.border);
+				
+		final float darken = (float) ((Math.sin(this.timer - Math.PI / 2) + 1) / 4 + 0.5);
+
+		float inRad = 1.5F;
+
+		glEnable(GL_BLEND);
+    	glDisable(GL_ALPHA_TEST);
+    	glDisable(GL_TEXTURE_2D);
+    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		drawRectRoundedCorners(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), NEX.darkenColor(statusToColor(DefaultSettings.getUpdater().getStatus(), darken), 0.5F).getRGB(), 5);
 	
+		float factor = 1F - ((5 - inRad) / 5);
+	       
+	    float innerRadius = 5 - (factor * 5);
+
+		drawRectRoundedCorners(this.getPosX() + inRad, this.getPosY() + inRad, (float) this.getPosX() + this.width - inRad, (float) this.getPosY() + this.height - inRad, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), innerRadius < 0 ? 0 : innerRadius);
+
+    	glDisable(GL_BLEND);
+    	glEnable(GL_ALPHA_TEST);
+
+    	glEnable(GL_BLEND);
+ 
+    	glDisable(GL_TEXTURE_2D);
+    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ 
+    	glEnable(GL_SCISSOR_TEST);
+
+		glScissor((6 + (int) (this.menu.offs / 2.8F)) * (int) scaledFactor, (int) 5 * (int) scaledFactor, (int)((54 - this.menu.offs / 0.6F) * (int) scaledFactor), 25 * (int) scaledFactor);
+
+		final float percent = MathUtil.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
+		glEnable(GL_TEXTURE_2D);
+		fontRenderer.drawString(statusToStr(DefaultSettings.getUpdater().getStatus()), posX + width / 2F - fontRenderer.getStringWidth(statusToStr(DefaultSettings.getUpdater().getStatus()), 0.8F, false) / 2 - 3, this.getPosY() + 9, calcAlpha(DefaultSettings.getUpdater().getStatus() != Status.OUTDATED ? 0xffffffff : 0xff6e6e6e, percent).getRGB(), 0.8F, true);
+	
+	    glDisable(GL_SCISSOR_TEST);
+	    	
+	    glDisable(GL_BLEND);
 	}
 
 	@Override
@@ -42,24 +91,24 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		final String text = statusToIdentifier(DefaultSettings.getUpdater().getStatus());
 		if(this.isSelected(mouseX, mouseY) && text != null) {
 			
-			final ArrayList<String> lines = new ArrayList<String>();
+			ArrayList<String> lines = new ArrayList<String>();
 			
-			int textWidth = 0;
-			lines.addAll(MC.fontRenderer.listFormattedStringToWidth(text, (int) (this.gui.width - mouseX - 12)));
+			float textWidth = 0;
+			lines.addAll(fontRenderer.listFormattedStringToWidth(text, (int) (this.gui.width - mouseX - 12), true));
 			for(String line : lines) {
 				
-				if(MC.fontRenderer.getStringWidth(line) > textWidth)
-					textWidth = MC.fontRenderer.getStringWidth(line);
+				if(fontRenderer.getStringWidth(line, 0.8F, true) > textWidth)
+					textWidth = fontRenderer.getStringWidth(line, 0.8F, true);
 			}
 			
-			drawButton(mouseX + 6, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
+			drawButton(mouseX + 5, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			Collections.reverse(lines);
 			
 			for(String line : lines) {
 			
-				drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a);
+				fontRenderer.drawString(line, (float)(mouseX + 9), (float)(mouseY - 14 - offset), 0xff3a3a3a, 0.8F, true);
 				offset += 10;
 			}
 			return true;
@@ -72,7 +121,6 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		if (this.isSelected(mouseX, mouseY)) {
 			this.grabbed = true;
 			((DefaultSettingsGUI) this.gui).resetSelected();
-
 			return true;
 		} else {
 			return false;
@@ -102,20 +150,36 @@ public class ButtonUpdateChecker extends ButtonSegment {
 	
 	public static String statusToIdentifier(UpdateContainer.Status status) {
 		switch (status) {
-		case CHECKING: 
+		case CHECKING:
 			return "Checking ...";
-		case OUTDATED: 
-			return String.format("Your mod's version is outdated\nPlease update to %s", DefaultSettings.getUpdater().getOnlineVersion());
-		case UP_TO_DATE: 
-			return "Up to date";
-		case AHEAD_OF_TIME: 
+		case OUTDATED:
+			return String.format("Your mod version is outdated\nPlease update to %s", DefaultSettings.getUpdater().getOnlineVersion());
+		case AHEAD_OF_TIME:
 			return "Heck, you're ahead of reality?!";
-		case ERROR: 
+		case UP_TO_DATE:
+			return "Up to date";
+		case ERROR:
 
-		default: 
+		default:
 			return "Something went wrong :(\nWe couldn't check if your\ninstallation is up-to-date";
 		}
-		
+	}
+	
+	public static String statusToStr(UpdateContainer.Status status) {
+		switch (status) {
+		case CHECKING:
+			return "Checking";
+		case OUTDATED:
+			return "Outdated";
+		case AHEAD_OF_TIME:
+			return "Beta";
+		case UP_TO_DATE:
+			return "Up to date";
+		case ERROR:
+
+		default:
+			return "Error";
+		}
 	}
 	
 	public static int statusToColor(UpdateContainer.Status status, float darken) {
@@ -125,16 +189,13 @@ public class ButtonUpdateChecker extends ButtonSegment {
 			return NEX.darkenColor(0xffcfcfcf, darken).getRGB();
 		case OUTDATED: 
 			return 0xfff5ac21;
-		case UP_TO_DATE: 
-			return 0xff68f521;
 		case AHEAD_OF_TIME: 
 			return 0xff0884b6;
+		case UP_TO_DATE: 
+			return 0xff2ca220;
 		case ERROR: 
-
 		default: 
 			return 0xfff42310;
 		}
-		
 	}
-
 }

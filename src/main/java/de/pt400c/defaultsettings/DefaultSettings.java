@@ -12,9 +12,12 @@ import java.util.jar.JarInputStream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
+import de.pt400c.defaultsettings.font.FontRendererClass;
+import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -32,10 +35,12 @@ public class DefaultSettings {
 	public static final String VERSION = getModVersion();
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
-	public static String BUILD_ID = "<UNKNOWN>";
-	public static String BUILD_TIME = "<UNKNOWN>";
+	public static String BUILD_ID = "Unknown";
+	public static String BUILD_TIME = "Unknown";
+	public static FontRendererClass fontRenderer;
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static DefaultSettings instance;
+	public static final boolean debug = false;
 	
 	public DefaultSettings() {
 		instance = this;
@@ -84,6 +89,10 @@ public class DefaultSettings {
 
 	public void postInit(FMLLoadCompleteEvent event) {
 		if(FMLLoader.getDist() == Dist.CLIENT) {
+			
+			fontRenderer = new FontRendererClass();
+			((IReloadableResourceManager) MC.getResourceManager()).addReloadListener(fontRenderer);
+			
 			try {
 				getBuildID();
 				getBuildTime();

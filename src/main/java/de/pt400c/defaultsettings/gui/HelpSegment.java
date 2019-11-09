@@ -1,26 +1,17 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import static de.pt400c.neptunefx.NEX.*;
-import java.awt.Color;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Function;
 import de.pt400c.defaultsettings.DefaultSettings;
-import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.GuiConfig.HeaderPart;
-import de.pt400c.neptunefx.NEX;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 @SideOnly(Side.CLIENT)
 public class HelpSegment extends BakedSegment {

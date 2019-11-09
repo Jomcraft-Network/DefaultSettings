@@ -11,6 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
+import de.pt400c.defaultsettings.gui.MenuScreen.MutableByte;
 
 @SideOnly(Side.CLIENT)
 public class ButtonBulkActionSegment extends Segment {
@@ -21,6 +22,7 @@ public class ButtonBulkActionSegment extends Segment {
 	//2 : All selected, deselect all
 	protected boolean grabbed;
 	public float timer = 0;
+	private boolean prevActive = false;
 	private final ScrollableSegment parent;
 
 	public ButtonBulkActionSegment(GuiScreen gui, float posX, float posY, int width, int height, ScrollableSegment parent) {
@@ -32,14 +34,26 @@ public class ButtonBulkActionSegment extends Segment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-
+		if(!((parent.cache_activity == 1 || parent.cache_activity == 2) == prevActive)) {
+			new Thread(new ThreadRunnable(((GuiConfig) gui).menu.exportActive) {
+				
+				@Override
+				public void run() {
+					if(FileUtil.exportMode())
+						this.supply.setByte((byte) 2);
+					else
+						this.supply.setByte((byte) 1);
+				}
+			}).start();
+		}
+		
 		if (parent.cache_activity == 1 || parent.cache_activity == 2) {
-
+			prevActive = true;
 			if (this.timer <= (Math.PI / 3))
 				this.timer += 0.05;
 
 		} else {
-
+			prevActive = false;
 			if (this.timer > 0)
 				this.timer -= 0.05;
 		}
@@ -191,11 +205,11 @@ public class ButtonBulkActionSegment extends Segment {
 							if (checkbox.active) {
 								checkbox.active = false;
 
-								float yOffTemp = 18 + 20 * i + this.parent.add;
+								float yOffTemp = ScrollableSegment.row - 0.5F + ScrollableSegment.row * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)
 									invalid = true;
-								if (yOffTemp > this.parent.height + 18)
+								if (yOffTemp > this.parent.height + ScrollableSegment.row - 0.5F)
 									invalid = true;
 
 								if (invalid)
@@ -228,11 +242,11 @@ public class ButtonBulkActionSegment extends Segment {
 							if (!checkbox.active) {
 								checkbox.active = true;
 
-								float yOffTemp = 18 + 20 * i + this.parent.add;
+								float yOffTemp = ScrollableSegment.row - 0.5F + ScrollableSegment.row * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)
 									invalid = true;
-								if (yOffTemp > this.parent.height + 18)
+								if (yOffTemp > this.parent.height + ScrollableSegment.row - 0.5F)
 									invalid = true;
 
 								if (invalid)
@@ -262,11 +276,11 @@ public class ButtonBulkActionSegment extends Segment {
 							if (checkbox.active) {
 								checkbox.active = false;
 	
-								float yOffTemp = 18 + 20 * i + this.parent.add;
+								float yOffTemp = ScrollableSegment.row - 0.5F + ScrollableSegment.row/*18 + 20*/ * i + this.parent.add;
 								boolean invalid = false;
 								if (yOffTemp < -3)
 									invalid = true;
-								if (yOffTemp > this.parent.height + 18)
+								if (yOffTemp > this.parent.height + ScrollableSegment.row - 0.5F/*+ 18*/)
 									invalid = true;
 
 								if (invalid) {
@@ -295,4 +309,12 @@ public class ButtonBulkActionSegment extends Segment {
 		return false;
 	}
 
+	abstract private class ThreadRunnable implements Runnable {
+	 	   
+        final MutableByte supply;
+        ThreadRunnable(MutableByte supply) {
+            this.supply = supply;
+        }
+    }
+	
 }

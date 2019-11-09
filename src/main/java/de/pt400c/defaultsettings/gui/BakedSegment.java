@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class BakedSegment extends Segment {
 	
 	protected boolean updateForced = false;
-	protected boolean compiled = false;
+	public boolean compiled = false;
 	protected FramebufferPopup mapFrameBuffer;
 	protected int bufferWidth;
 	protected int bufferHeight;

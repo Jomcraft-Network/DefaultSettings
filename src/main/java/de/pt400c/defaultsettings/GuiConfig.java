@@ -74,6 +74,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     		
         		GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
         		return true;}, 5F, false));
+        	
+        	this.addSegment(new HelpSegment(this, i -> {return i.width - 55;}, 30));
     	
     		this.menu = new MenuScreen(this, 74, 25);
 

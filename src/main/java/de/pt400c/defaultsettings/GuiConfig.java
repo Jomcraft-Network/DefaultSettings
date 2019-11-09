@@ -543,6 +543,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public static class HeaderPart extends BakedSegment {
 		
 			private final Function<GuiConfig, Integer> widthF;
+			
+			public static  String tabName;
 
 			public HeaderPart(GuiScreen gui, int id, float posX, float posY, Function<GuiConfig, Integer> width, float height, boolean stat, boolean popupSegment) {
 				super(gui, id, posX, posY, width.apply((GuiConfig) gui), height, 0, 0, 0, stat, popupSegment);
@@ -564,17 +566,16 @@ public class GuiConfig extends DefaultSettingsGUI {
 					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 					final int index = ((GuiConfig) gui).menu.index;
-					
-					String msg = "";
+
 					int offs = 0;
 					if(index == 0) {	
-						msg = "Save";
+						tabName = "Save";
 						offs = 0;
 					}else if(index == 1) {		
-						msg = "Configs";
+						tabName = "Configs";
 						offs = 20;
 					}else if(index == 2) {
-						msg = "About";
+						tabName = "About";
 						offs = 5;
 					}
 					
@@ -599,7 +600,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 					DefaultSettings.fontRenderer.drawString("- DefaultSettings -", 100 + (this.gui.width - 100) / 2 - DefaultSettings.fontRenderer.getStringWidth("- DefaultSettings -", 1.2F, true) / 2, 8, 0xffffffff, 1.2F, true);
 					
-					DefaultSettings.fontRenderer.drawString(msg, 80, 8, 0xffffffff, 1.2F, true);
+					DefaultSettings.fontRenderer.drawString(tabName, 80, 8, 0xffffffff, 1.2F, true);
 
 					glDisable(GL_BLEND);
 					postRender(1, false);

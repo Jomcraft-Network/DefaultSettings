@@ -17,6 +17,7 @@ import java.util.function.Function;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.GuiConfig.HeaderPart;
 import de.pt400c.neptunefx.NEX;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -43,24 +44,26 @@ public class HelpSegment extends BakedSegment {
 		MenuScreen menu = config.menu;
 		menu.getVariants().get(menu.index).selected = null;
 		
-		config.popup.setOpening(true);
-		config.popup.getWindow().title = "Config Options";
-		config.popup.getWindow().setPos(config.width / 2 - 210 / 2, config.height / 2 - 100 / 2);
+		config.popup.setOpening(true, 320, 210);
+		config.popup.getWindow().title = "Help: " + HeaderPart.tabName;
+		config.popup.getWindow().setPos(config.width / 2 - 310 / 2, config.height / 2 - 200 / 2);
 		config.popupField = config.popup;
 		config.popupField.getWindow().clearChildren();
-		config.popupField.getWindow().addChild(new TextSegment(config, 5, 29, 0, 0, "Should local configs be persistent?", 0xffffffff, true));
-		config.popupField.getWindow().addChild(new QuitButtonSegment(config, 190, 5, 14, 14, quitButton -> {
+		final String end = "\n\n\u00a7cIMPORTANT\u00a7r: Do \u00a74NOT\u00a7r forget to \u00a7aactivate\u00a7r the\n'export mode' before exporting your modpack with the\nTwitch Launcher (or any other launcher).\n\n\u00a76Still facing problems? Contact PT400C#8363 on Discord\u00a7r";
+		if(((GuiConfig) gui).menu.index == 0) {
+			config.popupField.getWindow().addChild(new TextSegment(config, 5, 29, 0, 0, "DefaultSettings can ship \u00a7bdefault options \u00a7r(options.txt\nminus keybindings + optionsof.txt), \u00a7bdefault keybindings\u00a7r\n(options.txt) and \u00a7bdefault servers \u00a7r(servers.dat).\n\nThese three different types of configuration will then\nonly be overridden once on the first time your players\nstart up the modpack.\n In case the respective configuration you want to\nupdate already exists, DS will also prompt you to\nproceed and override the existing configuration." + end, 0xffffffff, true));
+		}else if(((GuiConfig) gui).menu.index == 1) {
+			config.popupField.getWindow().addChild(new TextSegment(config, 5, 29, 0, 0, "In addition DefaultSettings can also deal with config\n\u00a7bfiles\u00a7r and \u00a7bfolders\u00a7r used by your modpack.\n Just like the configurations from the 'Save' tab,\neverything which has been ticked will be shipped to the\nmodpack's user \u00a7conly once\u00a7r.\n\nIf you want to update specific configs, there is a\ncontextual menu accessible for every config entry. This\nallows you to force the config to get overridden on the\nclient's side once when they update the modpack." + end, 0xffffffff, true));
+		}else {
+			config.popupField.getWindow().addChild(new TextSegment(config, 5, 29, 0, 0, "Nothing here, I guess? See ya." + end, 0xffffffff, true));
+		}
+		
+		config.popupField.getWindow().addChild(new QuitButtonSegment(config, 290, 5, 14, 14, quitButton -> {
 
 			config.popupField.setOpening(false);
 
 			return true;
 		}, 3F, true));
-		
-		List<String> actives = FileUtil.getActives();
-		
-		config.popupField.getWindow().addChild(new TextSegment(config, 35, 45, 0, 0, "Always", 0xffffffff, true));
-		config.popupField.getWindow().addChild(new TextSegment(config, 35, 65, 0, 0, "Replaced once", 0xffffffff, true));
-		config.popupField.getWindow().addChild(new TextSegment(config, 35, 85, 0, 0, "Never", 0xffffffff, true));
 		config.popup.setVisible(true);
 	}
 

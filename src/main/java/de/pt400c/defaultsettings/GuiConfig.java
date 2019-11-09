@@ -45,6 +45,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonControlSegment buttonS;
     public ButtonControlSegment buttonK;
     public ButtonControlSegment buttonO;
+    public ButtonMenuSegment[] menuButtons = new ButtonMenuSegment[3];
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
@@ -61,9 +62,32 @@ public class GuiConfig extends DefaultSettingsGUI {
     protected void keyTyped(char typedChar, int keyCode) {
     	if(keyCode == 1 && this.popupField != null)
     		this.popupField.setOpening(false);
+    	else if (keyCode == 59 && this.popupField == null) {
+			HelpSegment.openPopup(this);
+		} else if (keyCode == 200 && this.popupField == null) {
+			this.headerPart.compiled = false;
+			if (this.selectedSegment.id > 0)
+				this.setActive(this.selectedSegment.id - 1);
+			else
+				this.setActive(2);
+		} else if (keyCode == 208 && this.popupField == null) {
+			this.headerPart.compiled = false;
+			if (this.selectedSegment.id < 2)
+				this.setActive(this.selectedSegment.id + 1);
+			else
+				this.setActive(0);
+		}
     	else
     		super.keyTyped(typedChar, keyCode);
     }
+    
+    public void setActive(int id) {
+		if(this.selectedSegment != null)
+    		this.selectedSegment.setActive(false, true);
+    	this.menuButtons[id].activated = true;
+    	this.selectedSegment = this.menuButtons[id];
+    	this.menu.setIndex(id);
+	}
 
     @Override
     public void initGui() {
@@ -80,7 +104,6 @@ public class GuiConfig extends DefaultSettingsGUI {
         
         if(!init) {
         	
-
         this.framebufferMc = new FramebufferObject(MC.displayWidth, MC.displayHeight);
         this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
@@ -119,9 +142,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     						 addChild(new AboutSegment(this, 10, 20, 20, 20, false))));
 
 		this.addSegment(this.leftMenu
-				.addChild(new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false))
-				.addChild(new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png"))
-				.addChild(new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png"))
+				.addChild(this.menuButtons[0] = new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false))
+				.addChild(this.menuButtons[1] = new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png"))
+				.addChild(this.menuButtons[2] = new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png"))
 				.addChild(new ExportSegment(this, 0, i -> {return i.height - 80;}, 72, 43, this.leftMenu))
 				.addChild(new SplitterSegment(this, 72, 3, i -> {return i.height - 30;}, this.leftMenu))
 				.addChild(new ButtonUpdateChecker(this, i -> {return i.height - 30 - 25 + this.leftMenu.getPosY();}, this.leftMenu)));

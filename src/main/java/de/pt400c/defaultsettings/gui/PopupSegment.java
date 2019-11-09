@@ -22,8 +22,8 @@ public class PopupSegment extends Segment {
 	public boolean open;
 	public FramebufferPopup mapFrameBuffer;
 	public FramebufferPopup mapFrameBufferContents;
-	private int bufferWidth = 220;
-	private int bufferHeight = 110;
+	private int bufferWidth, testWidth = 220;
+	private int bufferHeight, testHeight = 110;
 	private float distanceX = 0;
 	private float distanceY = 0;
 	public float popX = 0;
@@ -38,8 +38,8 @@ public class PopupSegment extends Segment {
 		
 		bufferWidth = bufferWidth * scaledresolution.getScaleFactor();
 		bufferHeight = bufferHeight * scaledresolution.getScaleFactor();
-		this.popX = this.gui.width / 2 - 210 / 2;
-		this.popY = this.gui.height / 2 - 100 / 2;
+		this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+		this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 		this.mapFrameBufferContents = new FramebufferPopup(bufferWidth, bufferHeight);
 		this.mapFrameBuffer = new FramebufferPopup(bufferWidth, bufferHeight);
 	}
@@ -50,10 +50,10 @@ public class PopupSegment extends Segment {
 		if(resized != this.resized_mark) {
 			width = this.gui.width;
 			height = this.gui.height;
-			bufferWidth = 220 * scaledresolution.getScaleFactor();
-			bufferHeight = 110 * scaledresolution.getScaleFactor();
-			this.popX = this.gui.width / 2 - 210 / 2;
-			this.popY = this.gui.height / 2 - 100 / 2;
+			bufferWidth = testWidth * scaledresolution.getScaleFactor();
+			bufferHeight = testHeight * scaledresolution.getScaleFactor();
+			this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+			this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 			this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
 			this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
 			this.resized_mark = resized;
@@ -192,7 +192,7 @@ public class PopupSegment extends Segment {
 	}
 	
 	public boolean isSelectedUpper(int mouseX, int mouseY) {
-		return (mouseX >= popX + 5 && mouseY >= popY + 15 && mouseX <= popX + 215 && mouseY <= popY + 29) || (mouseX >= popX + 15 && mouseY >= popY + 5 && mouseX < popX + 205 && mouseY < popY + 15) || (distanceBetweenPoints(popX + 15F, popY + 15F, mouseX, mouseY) <= 10) || (distanceBetweenPoints(popX + 210 - 5F, popY + 15F, mouseX, mouseY) <= 10);
+		return (mouseX >= popX + 5 && mouseY >= popY + 15 && mouseX <= popX + (testWidth - 10) + 5 && mouseY <= popY + 29) || (mouseX >= popX + 15 && mouseY >= popY + 5 && mouseX < popX + (testWidth - 20) + 5 && mouseY < popY + 15) || (distanceBetweenPoints(popX + 15F, popY + 15F, mouseX, mouseY) <= 10) || (distanceBetweenPoints(popX + (testWidth - 10) - 5F, popY + 15F, mouseX, mouseY) <= 10);
 	}
 	
 	public void renderContents(int mouseX, int mouseY, float partialTicks) {
@@ -276,7 +276,7 @@ public class PopupSegment extends Segment {
 	}
 	
 	public boolean isSelectedLower(int mouseX, int mouseY) {
-		return (mouseX >= popX + 5 && mouseY >= popY + 29 && mouseX <= popX + 215 && mouseY <= popY + 105);
+		return (mouseX >= popX + 5 && mouseY >= popY + 29 && mouseX <= popX + (testWidth - 10) + 5 && mouseY <= popY + (testHeight - 10) + 5);
 	}
 	
 	@Override
@@ -305,8 +305,8 @@ public class PopupSegment extends Segment {
 	}
 	
 	public void reset() {
-		this.popX = this.gui.width / 2 - 210 / 2;
-		this.popY = this.gui.height / 2 - 100 / 2;
+		this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+		this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 		this.compiled = false;
 	}
 	
@@ -324,8 +324,41 @@ public class PopupSegment extends Segment {
 		return super.mouseReleased(p_mouseReleased_1_, p_mouseReleased_3_, p_mouseReleased_5_);
 	}
 	
+	public PopupSegment setOpening(boolean open, int width, int height) {
+		this.open = open;
+		this.bufferWidth = width;
+		this.testWidth = width;
+		this.bufferHeight = height;
+		this.testHeight = height;
+		bufferWidth = testWidth * scaledresolution.getScaleFactor();
+		bufferHeight = testHeight * scaledresolution.getScaleFactor();
+		this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+		this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
+		this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
+		this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
+		this.compiled = false;
+		window.width = width - 10;
+		window.height = height - 10;
+		return this;
+	}
+	
 	public PopupSegment setOpening(boolean open) {
 		this.open = open;
+		if(open) {
+			this.bufferWidth = 220;
+			this.testWidth = 220;
+			this.bufferHeight = 110;
+			this.testHeight = 110;
+			bufferWidth = testWidth * scaledresolution.getScaleFactor();
+			bufferHeight = testHeight * scaledresolution.getScaleFactor();
+			this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+			this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
+			this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
+			this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
+			this.compiled = false;
+			window.width = 220 - 10;
+			window.height = 110 - 10;
+		}
 		return this;
 	}
 

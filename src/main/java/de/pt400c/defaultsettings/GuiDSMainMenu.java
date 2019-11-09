@@ -22,7 +22,7 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     public final Screen parentScreen;
 
     public GuiDSMainMenu(Screen parentScreen) {
-    	super(new TranslationTextComponent("options.title"));
+    	super(new TranslationTextComponent("defaultsettings.popup.title"));
         this.minecraft = MC;
         this.parentScreen = parentScreen;
     }

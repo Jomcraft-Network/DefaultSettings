@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class ButtonMenuSegment extends ButtonSegment {
 	
 	public final int id;
-	private boolean activated;
+	public boolean activated;
 	private float offsetX = 0;
 	private float offsetTick = 0;
 	private float timer;

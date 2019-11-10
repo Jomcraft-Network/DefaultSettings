@@ -42,22 +42,6 @@ public class FontRendererClass implements IResourceManagerReloadListener {
     private int textColor;
 
     public FontRendererClass() {
-
-       // ITextureObject itextureobject = new SimpleTexture(tex);
-      //  MC.getTextureManager().loadTexture(tex, itextureobject);
-       // GL30.glGenerateMipmap(GL_TEXTURE_2D);
-
-       // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-       // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-       // this.texture = itextureobject.getGlTextureId();
-        
-       // itextureobject = new SimpleTexture(bold_tex);
-      //  MC.getTextureManager().loadTexture(bold_tex, itextureobject);
-      //  GL30.glGenerateMipmap(GL_TEXTURE_2D);
-
-       // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-       // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //this.texture_bold = itextureobject.getGlTextureId();
         
         bindTexture(false);
         GL30.glGenerateMipmap(GL_TEXTURE_2D);
@@ -180,6 +164,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
         enableAlpha();
         glEnable(GL_BLEND);
         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        MC.getTextureManager().bindTexture(!bold ? bold_tex : tex);
         return this.renderString(text, x, y, color, factor, bold);
     }
 
@@ -496,7 +481,6 @@ public class FontRendererClass implements IResourceManagerReloadListener {
     }
 
     protected void bindTexture(boolean bold) {
-    	//glBindTexture(GL_TEXTURE_2D, bold ? this.texture_bold : this.texture);
     	MC.getTextureManager().bindTexture(bold ? bold_tex : tex);
     	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

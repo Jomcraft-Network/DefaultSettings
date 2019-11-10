@@ -1,8 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.util.ResourceLocation;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import static de.pt400c.neptunefx.NEX.*;
@@ -40,7 +38,6 @@ public class ButtonControlSegment extends BakedSegment {
 	public int color;
 	public final String title;
 	public int color_prev;
-	public static int texture;
 	
 	public ButtonControlSegment(GuiScreen gui, Function<Segment, Float> posX, Function<Segment, Float> posY, float width, float height, Segment parent, int id, String title, String hoverMsg, Function<ButtonControlSegment, Boolean> function) {
 		super(gui, 0, posX.apply(parent), posY.apply(parent), width, height, 44, 44, 44, true, false);
@@ -51,9 +48,6 @@ public class ButtonControlSegment extends BakedSegment {
 		this.hoverMsg = hoverMsg;
 		this.title = title;
 		this.parent = parent;
-		ITextureObject itextureobject = new SimpleTexture(icon);
-        MC.getTextureManager().loadTexture(icon, itextureobject);
-        texture = itextureobject.getGlTextureId();
 	}
 	
 	@Override
@@ -268,7 +262,7 @@ public class ButtonControlSegment extends BakedSegment {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
 			glColor4f(1, 1, 1, 1 -alpha);
-			glBindTexture(GL_TEXTURE_2D, texture);
+			MC.getTextureManager().bindTexture(icon);
 			drawScaledTex((float) this.width - 20, (float) 6, (int) (18 - alpha), (int) (18 - alpha));
 			
 			glDisable(GL_BLEND);

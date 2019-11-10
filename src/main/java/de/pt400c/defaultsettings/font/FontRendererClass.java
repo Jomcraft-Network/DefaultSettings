@@ -168,6 +168,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
         enableAlpha();
         glEnable(GL_BLEND);
         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        MC.getTextureManager().bindTexture(!bold ? bold_tex : tex);
         return this.renderString(text, x, y, color, factor, bold);
     }
 
@@ -485,7 +486,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
 
     protected void bindTexture(boolean bold) {
     	MC.getTextureManager().bindTexture(bold ? bold_tex : tex);
-    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 

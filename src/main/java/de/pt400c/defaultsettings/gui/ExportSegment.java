@@ -27,7 +27,7 @@ public class ExportSegment extends BakedSegment {
     private float processFactor;
     public float flickerTimer = 0;
 	private float prevOff;
-	private final ResourceLocation icon = new ResourceLocation(DefaultSettings.MODID, "textures/gui/export_mode.png");
+	private static final ResourceLocation icon = new ResourceLocation(DefaultSettings.MODID, "textures/gui/export_mode.png");
 	private boolean doIt;
 	
 	public ExportSegment(GuiScreen gui, float posX, Function<GuiConfig, Integer> posY, float width, float height, LeftMenu menu) {

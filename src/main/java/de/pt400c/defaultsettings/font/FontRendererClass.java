@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
-import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.client.renderer.texture.TextureObject;
 import net.minecraft.client.resources.Resource;
 import net.minecraft.client.resources.ResourceManager;
 import net.minecraft.client.resources.ResourceManagerReloadListener;
@@ -43,28 +40,18 @@ public class FontRendererClass implements ResourceManagerReloadListener {
     private float green;
     private float alpha;
     private int textColor;
-    private int texture_bold;
-    private int texture;
 
     public FontRendererClass() {
 
-        TextureObject itextureobject = new SimpleTexture(tex);
-        MC.getTextureManager().loadTexture(tex, itextureobject);
+    	bindTexture(false);
         GL30.glGenerateMipmap(GL_TEXTURE_2D);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        this.texture = itextureobject.getGlTextureId();
         
-        itextureobject = new SimpleTexture(bold_tex);
-        MC.getTextureManager().loadTexture(bold_tex, itextureobject);
+        bindTexture(true);
         GL30.glGenerateMipmap(GL_TEXTURE_2D);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        this.texture_bold = itextureobject.getGlTextureId();
-        
-        bindTexture(false);
 
         for (int i = 0; i < 32; ++i) {
             int j = (i >> 3 & 1) * 85;
@@ -495,7 +482,7 @@ public class FontRendererClass implements ResourceManagerReloadListener {
     }
 
     protected void bindTexture(boolean bold) {
-    	glBindTexture(GL_TEXTURE_2D, bold ? this.texture_bold : this.texture);
+    	MC.getTextureManager().bindTexture(bold ? bold_tex : tex);
     	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }

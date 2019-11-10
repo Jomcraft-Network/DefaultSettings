@@ -166,6 +166,7 @@ public class FontRendererClass implements ResourceManagerReloadListener {
         enableAlpha();
         glEnable(GL_BLEND);
         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        MC.getTextureManager().bindTexture(!bold ? bold_tex : tex);
         return this.renderString(text, x, y, color, factor, bold);
     }
 

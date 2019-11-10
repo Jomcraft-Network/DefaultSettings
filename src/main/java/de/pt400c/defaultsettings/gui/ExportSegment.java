@@ -1,8 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,17 +28,13 @@ public class ExportSegment extends BakedSegment {
     private float processFactor;
     public float flickerTimer = 0;
 	private float prevOff;
-	private final ResourceLocation icon = new ResourceLocation(DefaultSettings.MODID, "textures/gui/export_mode.png");
-	private static int texture;
+	private static final ResourceLocation icon = new ResourceLocation(DefaultSettings.MODID, "textures/gui/export_mode.png");
 	private boolean doIt;
 	
 	public ExportSegment(Screen gui, float posX, Function<GuiConfig, Integer> posY, float width, float height, LeftMenu menu) {
 		super(gui, 0, posX, posY.apply((GuiConfig) gui), width, height, 44, 44, 44, true, false);
 		this.posYF = posY;
 		this.menu = menu;
-		ITextureObject itextureobject = new SimpleTexture(this.icon);
-	    MC.getTextureManager().loadTexture(this.icon, itextureobject);
-	    texture = itextureobject.getGlTextureId();
 	}
 
 	@Override
@@ -173,7 +167,7 @@ public class ExportSegment extends BakedSegment {
     	glPushMatrix();
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(770, 771, 1, 0);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		MC.getTextureManager().bindTexture(icon);
 		glColor4f(1, 1, 1, percent);
 		glTranslatef(5 + 7 * percent, 2, 0);
 		drawScaledTex(0, 0, 19, 19);

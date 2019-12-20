@@ -83,12 +83,12 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	Segment.resized++;
 
-		Segment.scaledFactor = MC.mainWindow.getGuiScaleFactor();
+		Segment.scaledFactor = MC.func_228018_at_().getGuiScaleFactor();
     	
     	new FileUtil.RegistryChecker();
     	
     	if(this.framebufferMc != null) 
-    		this.framebufferMc.resize(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
+    		this.framebufferMc.resize(MC.func_228018_at_().getWidth(), MC.func_228018_at_().getHeight());
 			
     	this.minecraft.keyboardListener.enableRepeatEvents(true);    	
     	
@@ -101,7 +101,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	if(!init) {
     		this.clearSegments();
-        	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
+        	this.framebufferMc = new FramebufferObject(MC.func_228018_at_().getWidth(), MC.func_228018_at_().getHeight());
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
@@ -506,9 +506,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
     	
-    	if(MC.mainWindow.getWidth() != this.storeWidth || MC.mainWindow.getHeight() != this.storeHeight) {
-    		this.storeWidth = MC.mainWindow.getWidth();
-    		this.storeHeight = MC.mainWindow.getHeight();
+    	if(MC.func_228018_at_().getWidth() != this.storeWidth || MC.func_228018_at_().getHeight() != this.storeHeight) {
+    		this.storeWidth = MC.func_228018_at_().getWidth();
+    		this.storeHeight = MC.func_228018_at_().getHeight();
     		testInit();
     	}
     	
@@ -522,7 +522,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glClear(256);
 		glMatrixMode(5889);
 		glLoadIdentity();
-		glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
+		glOrtho(0.0D, MC.func_228018_at_().getScaledWidth(), MC.func_228018_at_().getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
 		glMatrixMode(5888);
 		glLoadIdentity();
 		glTranslatef(0.0F, 0.0F, -2000.0F);
@@ -556,7 +556,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glPushMatrix();
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, MC.func_228018_at_().getWidth(), MC.func_228018_at_().getHeight(), 0, 0, MC.func_228018_at_().getWidth(), MC.func_228018_at_().getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 		glPopMatrix();
 

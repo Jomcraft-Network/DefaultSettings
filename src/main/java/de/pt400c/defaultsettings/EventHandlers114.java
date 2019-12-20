@@ -6,7 +6,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.gui.GuiModList;
+import net.minecraftforge.fml.client.gui.ModListScreen;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
@@ -17,7 +17,7 @@ public class EventHandlers114 {
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		
-		if ((MC.currentScreen instanceof GuiModList && MC.world == null) && InputMappings.isKeyDown(MC.mainWindow.getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(MC.mainWindow.getHandle(), GLFW_KEY_G))
+		if ((MC.currentScreen instanceof ModListScreen && MC.world == null) && InputMappings.isKeyDown(MC.func_228018_at_().getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(MC.func_228018_at_().getHandle(), GLFW_KEY_G))
 			
 			MC.displayGuiScreen(new GuiConfig(MC.currentScreen));
 	}

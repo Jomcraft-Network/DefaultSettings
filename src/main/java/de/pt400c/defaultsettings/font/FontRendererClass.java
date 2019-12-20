@@ -18,7 +18,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL30;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 
@@ -465,7 +466,7 @@ public class FontRendererClass {
     }
 
     protected void enableAlpha() {
-        GlStateManager.enableAlphaTest();
+    	RenderSystem.enableAlphaTest();
     }
 
     protected void bindTexture(boolean bold) {

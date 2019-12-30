@@ -12,14 +12,14 @@ public class MainJSON {
 	
 	public static transient final long serialVersionUID = 32371L;
 	private String version;
-	private String identifier;
+	//private String identifier;
 	private String prevVersion;
 	protected boolean initPopup = false;
 	private boolean exportMode = false;
+	public String generatedBy = "<default>";
 	public List<String> activeConfigs = new ArrayList<String>();
-	public HashMap<String, String> overrides = new HashMap<String, String>();
-	public HashMap<String, String> check = new HashMap<String, String>();
-	public String created_for;
+	public HashMap<String, String> hashes = new HashMap<String, String>();
+	public String mainProfile = "!NEW!";
 	
 	@SuppressWarnings("unused")
 	private String initially_created;
@@ -42,11 +42,11 @@ public class MainJSON {
 		this.prevVersion = prevVersion;
 		return this;
 	}
-	
+	/*
 	public MainJSON setIdentifier(String identifier) {
 		this.identifier = identifier;
 		return this;
-	}
+	}*/
 	
 	public String getVersion() {
 		return this.version;
@@ -55,11 +55,11 @@ public class MainJSON {
 	public boolean getExportMode() {
 		return this.exportMode;
 	}
-	
+/*	
 	public String getIdentifier() {
 		return this.identifier;
 	}
-	
+	*/
 	public String getPrevVersion() {
 		return this.prevVersion;
 	}

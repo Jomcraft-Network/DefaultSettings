@@ -63,6 +63,18 @@ public class PopupWindow extends Segment {
 	}
 	
 	@Override
+	protected boolean keyTyped(char typedChar, int keyCode) {
+		synchronized (this.children) {
+			for (Segment segment : this.children) {
+				if (segment.keyTyped(typedChar, keyCode))
+					break;
+
+			}
+		}
+		return false;
+	}
+	
+	@Override
 	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
 			synchronized (this.children) {
 				for (Segment segment : this.children) {

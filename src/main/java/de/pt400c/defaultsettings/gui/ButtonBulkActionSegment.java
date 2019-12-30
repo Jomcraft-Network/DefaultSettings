@@ -24,16 +24,20 @@ public class ButtonBulkActionSegment extends Segment {
 	public float timer = 0;
 	private boolean prevActive = false;
 	private final ScrollableSegment parent;
+	static boolean locked;
 
 	public ButtonBulkActionSegment(GuiScreen gui, float posX, float posY, int width, int height, ScrollableSegment parent) {
 		super(gui, posX, posY, width, height, false);
 		this.parent = parent;
 		if(parent.cache_activity == 1 || parent.cache_activity == 2)
-			this.timer = (float) (Math.PI / 3);
+			this.timer = MathUtil.PI / 3;
 	}
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
+		
+		locked = FileUtil.exportMode() && FileUtil.getActives().size() != 0;
+		
 		if(!((parent.cache_activity == 1 || parent.cache_activity == 2) == prevActive)) {
 			new Thread(new ThreadRunnable(((GuiConfig) gui).menu.exportActive) {
 				
@@ -49,7 +53,7 @@ public class ButtonBulkActionSegment extends Segment {
 		
 		if (parent.cache_activity == 1 || parent.cache_activity == 2) {
 			prevActive = true;
-			if (this.timer <= (Math.PI / 3))
+			if (this.timer <= MathUtil.PI / 3)
 				this.timer += 0.05;
 
 		} else {
@@ -58,9 +62,9 @@ public class ButtonBulkActionSegment extends Segment {
 				this.timer -= 0.05;
 		}
 
-		final float alphaRate = (float) ((Math.sin(3 * timer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * timer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 
-		int color = 0xffe6e6e6;
+		int color = locked ? 0xff878787 : 0xffe6e6e6;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -80,7 +84,7 @@ public class ButtonBulkActionSegment extends Segment {
        
         float innerRadius = outRad - (factor * outRad);
 		
-		if (this.timer <= (Math.PI / 3)) {
+		if (this.timer <= MathUtil.PI / 3) {
 			color = 0xff282828;
 			drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
@@ -153,6 +157,9 @@ public class ButtonBulkActionSegment extends Segment {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
 
+			if(locked)
+				return false;
+
 			FileUtil.switchState(this.parent.cache_activity, this.parent.searchbar.query);
 
 			if (this.parent.cache_activity == 1) {
@@ -215,16 +222,12 @@ public class ButtonBulkActionSegment extends Segment {
 								if (invalid)
 									checkbox.timer = 0;
 								else {
-									if (checkbox.timer >= (float) (Math.PI / 3))
-										checkbox.timer = (float) (Math.PI / 3) + timer;
+									if (checkbox.timer >= MathUtil.PI/ 3)
+										checkbox.timer = MathUtil.PI / 3 + timer;
 									timer += 0.2F;
 								}
 
 							}
-
-						} else if (child instanceof SettingsButtonSegment) {
-							SettingsButtonSegment set = (SettingsButtonSegment) child;
-							set.mark = false;
 						}
 					}
 
@@ -250,7 +253,7 @@ public class ButtonBulkActionSegment extends Segment {
 									invalid = true;
 
 								if (invalid)
-									checkbox.timer = (float) (Math.PI / 3);
+									checkbox.timer = MathUtil.PI / 3;
 								else {
 									if (checkbox.timer <= 0)
 										checkbox.timer = 0 - timer;
@@ -286,16 +289,12 @@ public class ButtonBulkActionSegment extends Segment {
 								if (invalid) {
 									checkbox.timer = 0;
 								} else {
-									if (checkbox.timer >= (float) (Math.PI / 3))
-										checkbox.timer = (float) (Math.PI / 3) + timer;
+									if (checkbox.timer >= MathUtil.PI / 3)
+										checkbox.timer = MathUtil.PI / 3 + timer;
 									timer += 0.2F;
 								}
 
 							}
-
-						}else if (child instanceof SettingsButtonSegment) {
-							SettingsButtonSegment set = (SettingsButtonSegment) child;
-							set.mark = false;
 						}
 					}
 
@@ -315,6 +314,5 @@ public class ButtonBulkActionSegment extends Segment {
         ThreadRunnable(MutableByte supply) {
             this.supply = supply;
         }
-    }
-	
+    }	
 }

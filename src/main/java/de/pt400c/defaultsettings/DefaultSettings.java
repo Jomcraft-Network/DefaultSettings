@@ -28,6 +28,7 @@ import net.minecraftforge.fml.relauncher.FMLInjectionData;
 @Mod(modid = DefaultSettings.MODID, acceptedMinecraftVersions = "[1.8,1.12.2]", name = DefaultSettings.NAME, version = DefaultSettings.VERSION, guiFactory = DefaultSettings.modGuiFactory, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@", clientSideOnly = true, updateJSON = "https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/")
 public class DefaultSettings {
 
+	//-Dfml.coreMods.load=de.pt400c.defaultsettings.core.DefaultSettingsPlugin
 	public static final String MODID = "defaultsettings";
 	public static final String NAME = "DefaultSettings";
 	public static final String VERSION = "DS-Version";

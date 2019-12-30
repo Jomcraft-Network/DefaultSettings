@@ -42,6 +42,7 @@ public class TextSegment extends Segment {
      		fontRenderer.drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, this.color, this.size, true);
      		offsetY += this.offset;
      	}
+     	
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}

@@ -22,15 +22,13 @@ public class ButtonCheckboxSegment extends Segment {
 	private float offX;
 	private float offY;
 	private final ScrollableSegment parent;
-	private final int id;
 
-	public ButtonCheckboxSegment(GuiScreen gui, float posX, float posY, float width, float height, String name, boolean popupSegment, ScrollableSegment parent, int id, boolean active) {
+	public ButtonCheckboxSegment(GuiScreen gui, float posX, float posY, float width, float height, String name, boolean popupSegment, ScrollableSegment parent, boolean active) {
 		super(gui, posX, posY, width, height, popupSegment);
 		this.name = name;
 		this.active = active;
 		this.parent = parent;
-		this.id = id;
-		timer = active ? (float) (Math.PI / 3) : 0;
+		timer = active ? MathUtil.PI / 3 : 0;
 	}
 	
 	@Override
@@ -38,7 +36,7 @@ public class ButtonCheckboxSegment extends Segment {
 
 		if (active) {
 
-			if (this.timer <= (Math.PI / 3))
+			if (this.timer <= MathUtil.PI / 3)
 				this.timer += 0.05;
 
 		} else {
@@ -48,14 +46,14 @@ public class ButtonCheckboxSegment extends Segment {
 		}
 		
 		float tempTimer = this.timer;
-		if (this.timer > (Math.PI / 3))
-			tempTimer = (float) (Math.PI / 3);
+		if (this.timer > MathUtil.PI / 3)
+			tempTimer = MathUtil.PI / 3;
 		else if (this.timer < 0)
 			tempTimer = 0;
 
-		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 
-		int color = 0xffe6e6e6;
+		int color = ButtonBulkActionSegment.locked ? 0xff878787 : 0xffe6e6e6;
 		this.offX = customPosX;
 		this.offY = customPosY;
 		customPosX += this.getPosX();
@@ -75,7 +73,7 @@ public class ButtonCheckboxSegment extends Segment {
 		
 		float innerRadius = outRad - (factor * outRad);
 
-		if (this.timer <= (Math.PI / 3)) {
+		if (this.timer <= MathUtil.PI / 3) {
 			color = 0xff282828;
 			drawRectRoundedCorners(customPosX - 2 - 3 + inRad, customPosY - 2 - 3 + inRad, (float) customPosX + this.width + 2 + 3 - inRad, (float) customPosY + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
@@ -136,15 +134,12 @@ public class ButtonCheckboxSegment extends Segment {
 		if (this.grabbed) {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
+			
+			if(ButtonBulkActionSegment.locked)
+				return false;
 
 			this.active = Boolean.logicalXor(this.active, true);
 			FileUtil.switchActive(this.name);
-			
-			if(!this.active) {
-				RowItem item = this.parent.list.get(this.id);
-				SettingsButtonSegment set = (SettingsButtonSegment) item.childs[1];
-				set.mark = false;
-			}
 
 			File fileDir = new File(FileUtil.mcDataDir, "config");
 			FileFilter ff = null;
@@ -199,5 +194,4 @@ public class ButtonCheckboxSegment extends Segment {
 	public void render(int mouseX, int mouseY, float partialTicks) {
 
 	}
-
 }

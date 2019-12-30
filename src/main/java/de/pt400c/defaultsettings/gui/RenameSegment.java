@@ -213,7 +213,7 @@ public class RenameSegment extends Segment {
 
 		if (widthString >= this.gui.width - 190) 
 			text = fontRenderer.trimStringToWidth(text, (int) (this.gui.width - 190 - 1 - dots), false) + "...";
-		
+
 		MenuScreen menu = ((GuiConfig) this.gui).menu;
 
 		if (menu.getVariants().get(menu.index).selected == this)

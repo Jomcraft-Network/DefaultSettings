@@ -20,7 +20,7 @@ public class EventHandlers {
 	}
 	
 	public static int getLimitFramerate() {
-		return MC.currentScreen instanceof GuiConfig ? 60 : 30;
+		return MC.currentScreen instanceof GuiConfig ? 60 : MC.theWorld == null && MC.currentScreen != null ? 30 : MC.gameSettings.limitFramerate;
 	}
 	
 	@SubscribeEvent

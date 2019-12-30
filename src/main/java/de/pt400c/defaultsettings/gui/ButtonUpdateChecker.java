@@ -48,7 +48,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		final float right = this.menu.width - this.menu.offs + this.width - 35 + this.menu.offs;
 		this.posX = right / 2 - this.width / 2;
 				
-		final float darken = (float) ((Math.sin(this.timer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(this.timer - MathUtil.PI / 2) + 1) / 4 + 0.5);
 
 		float inRad = 1.5F;
 

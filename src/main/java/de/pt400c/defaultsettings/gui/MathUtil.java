@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class MathUtil {
+	
+	public static final float PI = (float) Math.PI;
 
 	public static float clamp(float num, float min, float max) {
         if (num < min)

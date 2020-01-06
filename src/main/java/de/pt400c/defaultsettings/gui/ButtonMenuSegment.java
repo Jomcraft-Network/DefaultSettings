@@ -39,7 +39,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 		if (this.activated) {
 			
-			if (this.timer <= (Math.PI / 3)) 
+			if (this.timer <= MathUtil.PI / 3) 
 				this.timer += 0.05;
 
 		} else {
@@ -48,11 +48,11 @@ public class ButtonMenuSegment extends ButtonSegment {
 				this.timer -= 0.05;
 		}
 		
-		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (Math.PI / 2)) + 1) / 2);
+		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 		
 		if(!(width < 3.5F)) {
 		
-			if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < (2 * Math.PI))
+			if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < 2 * MathUtil.PI)
 				offsetTick += 0.4;
 	
 			else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated))

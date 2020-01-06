@@ -62,10 +62,10 @@ public class PopupSegment extends Segment {
 		if (this.isVisible) {
 
 			if (this.open) {
-				if (this.backgroundTimer <= (Math.PI / 3))
+				if (this.backgroundTimer <= MathUtil.PI / 3)
 					this.backgroundTimer += 0.05;
 
-				if (this.windowTimer <= (Math.PI / 3))
+				if (this.windowTimer <= MathUtil.PI / 3)
 					this.windowTimer += 0.05;
 
 			} else {
@@ -81,7 +81,7 @@ public class PopupSegment extends Segment {
 
 			}
 			
-			float alpha = (float) ((Math.sin(3 * this.backgroundTimer - (Math.PI / 2)) + 1) / 2);
+			float alpha = (float) ((Math.sin(3 * this.backgroundTimer - (MathUtil.PI / 2)) + 1) / 2);
 			glDisable(GL_ALPHA_TEST);
 			drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			glEnable(GL_ALPHA_TEST);
@@ -155,7 +155,7 @@ public class PopupSegment extends Segment {
 			glPushMatrix();
 			glTranslated(this.popX, this.popY, 0);
 			
-			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
+			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 			
 			glColor4f(1, 1, 1, 1 - alphaRate);
 
@@ -189,6 +189,11 @@ public class PopupSegment extends Segment {
 			this.window.hoverChecks(mouseX, mouseY);
 
 		}
+	}
+	
+	@Override
+	protected boolean keyTyped(char typedChar, int keyCode) {
+		return ((DefaultSettingsGUI) this.gui).menu.getVariants().get(((DefaultSettingsGUI) this.gui).menu.index).selected != null ? ((DefaultSettingsGUI) this.gui).menu.getVariants().get(((DefaultSettingsGUI) this.gui).menu.index).selected.keyTyped(typedChar, keyCode) : false;
 	}
 	
 	public boolean isSelectedUpper(int mouseX, int mouseY) {
@@ -246,7 +251,7 @@ public class PopupSegment extends Segment {
 		glPushMatrix();
 		glTranslated(this.popX, this.popY, 0);
 		
-		float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (Math.PI / 2)) + 1) / 2);
+		float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 		
 		glColor4f(1, 1, 1, 1 - alphaRate);
 

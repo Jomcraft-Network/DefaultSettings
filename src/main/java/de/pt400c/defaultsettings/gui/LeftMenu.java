@@ -11,11 +11,11 @@ import net.minecraft.client.gui.GuiScreen;
 public class LeftMenu extends Segment {
 	
 	private List<Segment> children = new ArrayList<>();
-	public float offsetTick = (float) (2 * Math.PI);
+	public float offsetTick = 2 * MathUtil.PI;
 	private boolean selected;
 	private float extend = 0;
 	public float offs = 0;
-	public final float maxOffTick = (float) (2 * Math.PI);
+	public final float maxOffTick = 2 * MathUtil.PI;
 	private final Function<GuiConfig, Integer> heightF;
 
 	public LeftMenu(GuiScreen gui, float posX, float posY, float width, Function<GuiConfig, Integer> height) {
@@ -24,7 +24,7 @@ public class LeftMenu extends Segment {
 	}
 	
 	@Override
-    public void render(final int mouseX, final int mouseY, final float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		if(resized != this.resized_mark) {
 			height = heightF.apply((GuiConfig) this.gui);
@@ -40,7 +40,7 @@ public class LeftMenu extends Segment {
 		final float triple = (float) Math.sin(0.25 * offsetTick);
 		final float func = triple * triple * triple * 6;
 		
-		if(this.selected && offsetTick < (2 * Math.PI))
+		if(this.selected && offsetTick < 2 * MathUtil.PI)
 			offsetTick += 0.4;
 	
 		else if(offsetTick > 0 && !this.selected){
@@ -49,15 +49,12 @@ public class LeftMenu extends Segment {
 	
 		offs = (float) func * 5;
         synchronized (this.children) {
-        	for(Segment segment : this.children) {
-        		segment.render(mouseX, mouseY, partialTicks);
-        	}
+            for(Segment segment : this.children)
+            	segment.render(mouseX, mouseY, partialTicks);
 
-            if(((GuiConfig) this.gui).popupField == null) {
-            	for(Segment segment : this.children) {
+            if(((GuiConfig) this.gui).popupField == null)
+            	for(Segment segment : this.children)
             		segment.hoverCheck(mouseX, mouseY);
-            	}
-            }
         }
 
 	}

@@ -22,6 +22,7 @@ public class SearchbarSegment extends Segment {
 	protected boolean focused = false;
 	private int cursorTimer = 0;
 	boolean activated;
+	int cursorPosition;
 	private float flashingTimer = 0;
 	private final ResourceLocation icon;
 	protected final ScrollableSegment parent;
@@ -45,16 +46,42 @@ public class SearchbarSegment extends Segment {
 			if (this.query.isEmpty() && s1.equals(" "))
 				return true;
 
-			this.query += s1;
+			if(this.query.length() > 30)
+				return false;
+			
+			String left = this.query.substring(0, cursorPosition);
+			String right = this.query.substring(cursorPosition);
+			
+			++this.cursorPosition;
+			
+			this.query = left + s1 + right;
+
 			this.activated = false;
 			return true;
 
 		} else if (keyCode == Keyboard.KEY_BACK) {
-			if (this.query.length() > 0)
-				this.query = this.query.substring(0, this.query.length() - 1);
+			if(this.query.length() < 1 || this.cursorPosition < 1)
+				return false;
+			
+			String left = this.query.substring(0, cursorPosition);
+			String right = this.query.substring(cursorPosition);
+			
+			left = left.substring(0, left.length() - 1);
+			
+			if(this.cursorPosition > 0)
+				this.cursorPosition -= 1;
+			
+			this.query = left + right;
+
 			this.activated = false;
 			return true;
-		} else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
+		} else if (keyCode == Keyboard.KEY_LEFT) {
+			this.cursorPosition = MathUtil.clamp(this.cursorPosition - 1, 0, this.query.length());
+			return true;
+		} else if (keyCode == Keyboard.KEY_RIGHT) {
+			this.cursorPosition = MathUtil.clamp(this.cursorPosition + 1, 0, this.query.length());
+			return true;
+		}  else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
 			if (!this.query.isEmpty()) {
 				this.activated = true;
 
@@ -79,7 +106,7 @@ public class SearchbarSegment extends Segment {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
-		final float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(flashingTimer - MathUtil.PI / 2) + 1) / 4 + 0.5);
 
 		int color = 0;
 
@@ -129,7 +156,7 @@ public class SearchbarSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text, 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text, 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
+			drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 		
 		glDisable(GL_BLEND);
@@ -153,6 +180,11 @@ public class SearchbarSegment extends Segment {
 			MenuScreen menu = ((GuiConfig) this.gui).menu;
 			menu.getVariants().get(menu.index).selected = this;
 			this.grabbed = true;
+			
+			if(this.query.isEmpty())
+				return true;
+			
+			this.cursorPosition = fontRenderer.trimStringToWidth(this.query, (int)(mouseX - (this.getPosX() + this.hitX + 5)), false).length();
 
 			return true;
 		} else {

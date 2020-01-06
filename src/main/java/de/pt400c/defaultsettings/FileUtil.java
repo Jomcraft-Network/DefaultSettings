@@ -3,34 +3,40 @@ package de.pt400c.defaultsettings;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.NetworkInterface;
-import java.net.ProtocolException;
 import java.net.SocketException;
-import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -51,19 +57,19 @@ public class FileUtil {
 	
 	public static final Minecraft MC = Minecraft.getMinecraft();
 	public static final File mcDataDir = MC.mcDataDir;
-	public static final boolean devEnv = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+	public static final boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"); 
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	public static MainJSON mainJson;
-	public static PersistentJSON persistentJson;
-	public static final String persistentLocation = "config/ds_dont_export.json";
+	public static PrivateJSON privateJson;
+	public static final String privateLocation = "ds_private_storage.json";
 	public static final String mainLocation = "config/defaultsettings.json";
-	public HashMap<String, String> check = new HashMap<String, String>();
-	public static String PLAYER_UUID;
+	public static final boolean devEnv = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static Thread registryChecker;
 	public volatile static boolean options_exists = false;
 	public volatile static boolean keys_exists = false;
 	public volatile static boolean servers_exists = false;
-	private static HashMap<String, String> cacheUUID = new HashMap<String, String>();
+	public static String activeProfile = "Default";
+	public static boolean otherCreator = false;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -74,7 +80,38 @@ public class FileUtil {
 			return false;
 		}
 	};
+	
+	public static void setExportMode() throws IOException {
+		for(File f : new File(mcDataDir, "config").listFiles(fileFilterModular)) {
+			if(f.isDirectory())
+				FileUtils.deleteDirectory(f);
+			else
+				//f.delete() calls updates, not appropriate
+				Files.delete(f.toPath());
 
+		}
+		
+		final File main = new File(mcDataDir, mainLocation);
+		
+		getMainJSON().setExportMode(true);
+		mainJson.save(main);
+	}
+	
+	public static boolean exportMode() {
+		return new File(mcDataDir, "config").listFiles(fileFilterModular).length == 0;
+	}
+	
+	public static final FileFilter fileFilterAnti = new FileFilter() {
+
+		@Override
+		public boolean accept(File file) {
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getActives().contains(file.getName()))
+				return true;
+
+			return false;
+		}
+	};
+	
 	public static final FileFilter fileFilter = new FileFilter() {
 
 		@Override
@@ -95,10 +132,6 @@ public class FileUtil {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
 		storeFolder.mkdir();
 		return storeFolder;
-	}
-	
-	public static HashMap<String, String> getOverrides()  {
-		return getMainJSON().overrides;
 	}
 	
 	public static List<String> getActives()  {
@@ -142,51 +175,17 @@ public class FileUtil {
 
 		mainJson.save(main);
 	}
-
+	
 	private static void removeFromLists(List<String> list, String file) {
 		list.remove(file);
-		mainJson.overrides.remove(file);
-	}
-
-	public static PersistentJSON getPersistent() {
-		if(persistentJson != null)
-			return persistentJson;
-		
-		final File main = new File(mcDataDir, persistentLocation);
-		
-		if(main.exists()) {
-			
-			try (Reader reader = new FileReader(main)) {
-				persistentJson = gson.fromJson(reader, PersistentJSON.class);
-				
-			 } catch (Exception e) {
-				 
-			 }
-			
-		}
-		
-		return persistentJson;
-	}
-	
-	public static void setOverride(String name, boolean actual) {
-		final File main = new File(mcDataDir, mainLocation);
-		String random = UUID.randomUUID().toString();
-		mainJson = getMainJSON();
-		if (!actual) {
-			mainJson.overrides.remove(name);
-		} else if (!mainJson.overrides.containsKey(name))
-			mainJson.overrides.put(name, random);
-
-		mainJson.save(main);
 	}
 	
 	public static void setActive(String name, boolean active) {
 		final File main = new File(mcDataDir, mainLocation);
 		mainJson = getMainJSON();
-		if (!active) {
+		if (!active) 
 			mainJson.activeConfigs.remove(name);
-			mainJson.overrides.remove(name);
-		} else if (!mainJson.activeConfigs.contains(name))
+		else if (!mainJson.activeConfigs.contains(name))
 			mainJson.activeConfigs.add(name);
 
 		mainJson.save(main);
@@ -194,96 +193,57 @@ public class FileUtil {
 	
 	public static void switchActive(String name) {
 		final File main = new File(mcDataDir, mainLocation);
-		if (getMainJSON().activeConfigs.contains(name)) {
+		if (getMainJSON().activeConfigs.contains(name)) 
 			mainJson.activeConfigs.remove(name);
-			mainJson.overrides.remove(name);
-		} else
+		else
 			mainJson.activeConfigs.add(name);
 
 		mainJson.save(main);
 	}
 	
-	public static String getPlayerUUID(String playername) {
-        if (cacheUUID.containsKey(playername)) 
-            return cacheUUID.get(playername);
-        
-        try {
-        	String output = readURL("https://api.mojang.com/users/profiles/minecraft/" + playername);
-        	
-        	Gson gson = new Gson();
-        	synchronized (output){
-        		PUUID uuid = gson.fromJson(output, PUUID.class);
-                cacheUUID.put(playername, uuid.id);
-                return uuid.id;
-        	}
-        	
-        }catch (Exception e) {   
-        	e.printStackTrace();
-            cacheUUID.put(playername, null);
-            return playername;
-        }
-    }
-	
-	class PUUID {
-		public String id;
-		public String name;
-	}
-	
-	protected static String readURL(String urlStr) throws MalformedURLException, ProtocolException, IOException, InterruptedException {
-        String ret = "";
-        HttpURLConnection con = null;
-        try {
-            String inputLine;
-            URL url = new URL(urlStr);
-            con = (HttpURLConnection)url.openConnection();
-            con.setRequestMethod("GET");
-            con.connect();
-            StringBuffer response = new StringBuffer();
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-                response.append('\n');
-            }
-            ret = response.toString();
-        }
-        finally {
-            if (con != null) {
-                con.disconnect();
-            }
-        }
-        return ret;
-    }
-	
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
-		PLAYER_UUID = getPlayerUUID(MC.getSession().getUsername());
+		
+		getPrivateJSON();
 		final File main = new File(mcDataDir, mainLocation);
 		final String version = getMainJSON().getVersion();
 		
 		if(!DefaultSettings.VERSION.equals(version)) 
 			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
-		
-		final String identifier = mainJson.getIdentifier();
-		
-		if(!getIdentifier().equals(identifier))
-			mainJson.setIdentifier(getIdentifier());
-		
-		File persFile = new File(mcDataDir, persistentLocation);
-		if(persFile.exists()) {
-			for(String key : getPersistent().check.keySet()) {
-				mainJson.check.put(key, persistentJson.check.get(key));
-			}
-			persFile.delete();
-		}
-		
-		final String created_for = mainJson.created_for;
-		
-		if(!getUUID(PLAYER_UUID).equals(created_for)) {
-			mainJson.created_for = getUUID(PLAYER_UUID);
-			mainJson.check.clear();
-			
+
+		if(!privateJson.privateIdentifier.equals(mainJson.generatedBy) && !mainJson.generatedBy.equals("<default>")) {
+			otherCreator = true;
 		}
 		
 		mainJson.save(main);
+	}
+	
+	public static PrivateJSON getPrivateJSON() {
+
+		if(privateJson != null)
+			return privateJson;
+		
+		final File main = new File(mcDataDir, privateLocation);
+		
+		if(main.exists()) {
+			try (Reader reader = new FileReader(main)) {
+				privateJson = gson.fromJson(reader, PrivateJSON.class);
+				
+				if(privateJson.privateIdentifier == null || privateJson.privateIdentifier.isEmpty())
+					privateJson.privateIdentifier = UUID.randomUUID().toString();
+				
+				privateJson.save(main);
+				
+			 } catch (Exception e) {
+				DefaultSettings.log.log(Level.SEVERE, "Exception at processing startup: ", e);  	
+		     }
+			
+		}else {
+			
+			privateJson = new PrivateJSON();
+			privateJson.privateIdentifier = UUID.randomUUID().toString();
+			privateJson.save(main);
+		}
+		return privateJson;
 	}
 	
 	/**
@@ -313,20 +273,9 @@ public class FileUtil {
 		}else {
 			Date date = new Date();
 			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-			String identifier = "<UNKNOWN>";
-			try {
-				identifier = getIdentifier();
-			} catch (UnknownHostException | SocketException | NoSuchAlgorithmException e) {
-				DefaultSettings.log.log(Level.SEVERE, "Exception at processing configs: ", e);
-			}
 			
-			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION).setIdentifier(identifier).setCreated(formatter.format(date));
+			mainJson = new MainJSON().setVersion(DefaultSettings.VERSION)/*.setIdentifier(identifier)*/.setCreated(formatter.format(date));
 			
-			try {
-				mainJson.created_for = getUUID(PLAYER_UUID);
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
 			mainJson.initPopup = true;
 			File fileDir = new File(mcDataDir, "config");
 			for (File file : fileDir.listFiles(fileFilter)) 
@@ -341,36 +290,74 @@ public class FileUtil {
 		getMainJSON().initPopup = active;
 		mainJson.save(new File(mainLocation));
 	}
-
+	
 	public static void restoreContents() throws NullPointerException, IOException, NoSuchAlgorithmException {
 		
 		initialSetupJSON();
 
+		initialToDefaultProfile();
+		
+		String firstFolder = "<ERROR>";
+		
+		for(File file : getMainFolder().listFiles()) {
+			if(file.isDirectory()) {
+				firstFolder = file.getName();
+				break;
+			}
+		}
+		
+		if(!new File(getMainFolder(), mainJson.mainProfile).exists()) 
+			mainJson.mainProfile = firstFolder;
+		
+		if(getPrivateJSON().targetProfile.equals("!NEW!"))
+			privateJson.targetProfile = mainJson.mainProfile;
+		
+		if(privateJson.currentProfile.equals("!NEW!"))
+			privateJson.currentProfile = mainJson.mainProfile;
+		
+		if(!new File(getMainFolder(), privateJson.targetProfile).exists()) 
+			privateJson.targetProfile = firstFolder;
+		
+		if(!new File(getMainFolder(), privateJson.currentProfile).exists()) 
+			privateJson.currentProfile = firstFolder;
+
+		
+		File main = new File(mcDataDir, privateLocation);
+		
+		privateJson.save(main);
+		
+		main = new File(mcDataDir, mainLocation);
+		
+		mainJson.save(main);
+		
+		boolean switchProf = switchProfile();
+		
+		activeProfile = privateJson.currentProfile;
+		
 		final File options = new File(mcDataDir, "options.txt");
 		boolean firstBoot = !options.exists();
 		if (firstBoot) {
 			restoreOptions();
 			if(!exportMode())
-				moveAllConfigs(false);
+				moveAllConfigs();
 
 			restoreConfigs();
-		}else if(mainJson.getExportMode()){
+		}else if((mainJson.getExportMode() && !otherCreator) || switchProf){
 			restoreConfigs();
-			final File main = new File(mcDataDir, mainLocation);
+
+			getMainJSON().setExportMode(false);
+
+			main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
-
-			
 		}else {
-			for(String name : getOverrides().keySet()) 
-				if(getActives().contains(name) && (!getMainJSON().check.containsKey(name) || !getMainJSON().check.get(name).equals(mainJson.overrides.get(name)))) 
-					restoreSingleConfig(name);
 
-			final File main = new File(mcDataDir, mainLocation);
+			copyAndHash();
+			
+			main = new File(mcDataDir, mainLocation);
 			getMainJSON().setExportMode(false);
 			mainJson.save(main);
 			
 		}
-
 		final File optionsOF = new File(mcDataDir, "optionsof.txt");
 		if (!optionsOF.exists()) 
 			restoreOptionsOF();
@@ -378,7 +365,9 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
+		
 		if (firstBoot) {
+			
 			GameSettings gameSettings = MC.gameSettings;
 			gameSettings.loadOptions();
 			ResourcePackRepository resourceRepository = MC.getResourcePackRepository();
@@ -400,38 +389,199 @@ public class FileUtil {
 		
 		if(!options.exists())
 			options.createNewFile();
+			
+	}
+	
+	private static boolean switchProfile() throws IOException {
+		if(!getPrivateJSON().currentProfile.equals(privateJson.targetProfile)) {
+
+			Date date = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss");
+			
+			String profileName = formatter.format(date);
+
+			File fileDir = new File(FileUtil.getMainFolder(), profileName);
+			fileDir.mkdir();
+
+			activeProfile = profileName;
+
+			FileUtil.moveAllConfigs();
+			FileUtil.checkMD5();
+
+			Path pf = new File(FileUtil.getMainFolder(), profileName + ".zip").toPath();
+			Files.createFile(pf);
+
+	        try {
+				zipFolder(Paths.get(fileDir.getPath()), pf);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+	        
+			try {
+				FileUtils.deleteDirectory(fileDir);
+			} catch (IOException e) {
+				try {
+					FileUtils.forceDeleteOnExit(fileDir);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
+			
+			activeProfile = privateJson.targetProfile;
+			privateJson.currentProfile = activeProfile;
+			final File main = new File(mcDataDir, privateLocation);
+			privateJson.save(main);
+			
+			return true;
+			
+		}
+		return false;
 		
 	}
 	
+	private static void zipFolder(final Path sourceFolderPath, Path zipPath) throws Exception {
+        final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipPath.toFile()));
+        Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<Path>() {
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
+                Files.copy(file, zos);
+                zos.closeEntry();
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        zos.close();
+    }
+
+	private static void initialToDefaultProfile() {
+		if(getMainJSON().mainProfile.equals("!NEW!")) {
+			
+			new File(getMainFolder(), "Default").mkdir();
+			
+			FileFilter ffm = new FileFilter() {
+
+				@Override
+				public boolean accept(File file) {
+					if (!file.getName().equals("Default"))
+						return true;
+
+					return false;
+				}
+			};
+			
+			try {
+				FileUtils.copyDirectory(getMainFolder(), new File(getMainFolder(), "Default"), ffm);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			for (File f : getMainFolder().listFiles(ffm)) {
+				try {
+				if(f.isDirectory())
+					FileUtils.deleteDirectory(f);
+				else
+					Files.delete(f.toPath());
+				}catch(IOException e) {
+					DefaultSettings.log.log(Level.SEVERE, "Couldn't move config files: ", e);
+				}
+			}
+			
+
+			privateJson.targetProfile = "Default";
+			File main = new File(mcDataDir, privateLocation);
+
+			privateJson.save(main);
+			
+			getMainJSON().mainProfile = "Default";
+			main = new File(mcDataDir, mainLocation);
+
+			mainJson.save(main);
+			
+		}
+		
+	}
+
+	private static void copyAndHash() {
+		for(String name : mainJson.activeConfigs) {
+			File file = new File(mcDataDir, "config");
+			File fileInner = new File(file, name);
+			try {
+				
+				File locInDir = new File(getMainFolder(), activeProfile + "/" + name);
+
+				if(locInDir.isDirectory()) {
+					
+					Collection<File> files = FileUtils.listFilesAndDirs(locInDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+					for(File filePers : files) {
+						
+						if(filePers.isDirectory())
+							continue;
+
+						String loc = filePers.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1);
+						
+						File configLoc = new File(file, loc);
+						
+						File newF = new File(getMainFolder(), activeProfile + "/" + loc);
+						if(!getPrivateJSON().currentHash.containsKey(activeProfile + "/" + loc) || !getPrivateJSON().currentHash.get(activeProfile + "/" + loc).equals(mainJson.hashes.get(activeProfile + "/" + loc)) && newF.exists()) {
+							FileUtils.copyFile(newF, configLoc);
+							
+							getPrivateJSON().currentHash.put(activeProfile + "/" + loc, mainJson.hashes.get(activeProfile + "/" + loc));
+							
+							final File main2 = new File(mcDataDir, privateLocation);
+
+							privateJson.save(main2);
+						}
+					}
+					
+				}else {
+	
+					if(!getPrivateJSON().currentHash.containsKey(activeProfile + "/" + name) || !getPrivateJSON().currentHash.get(activeProfile + "/" + name).equals(mainJson.hashes.get(activeProfile + "/" + name)) && locInDir.exists()) {
+
+						FileUtils.copyFile(locInDir, fileInner);
+					
+						getPrivateJSON().currentHash.put(activeProfile + "/" + name, mainJson.hashes.get(activeProfile + "/" + name));
+						
+						final File main2 = new File(mcDataDir, privateLocation);
+
+						privateJson.save(main2);
+					}
+				}
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
 	public static boolean optionsFilesExist() {
-		final File optionsFile = new File(getMainFolder(), "options.txt");
-		final File optionsofFile = new File(getMainFolder(), "optionsof.txt");
+		final File optionsFile = new File(getMainFolder(), activeProfile + "/options.txt");
+		final File optionsofFile = new File(getMainFolder(), activeProfile + "/optionsof.txt");
 		return optionsFile.exists() || optionsofFile.exists();
 	}
 	
 	public static boolean keysFileExist() {
-		final File keysFile = new File(getMainFolder(), "keys.txt");
+		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		return keysFile.exists();
 	}
 	
 	public static void deleteKeys() {
-		new File(getMainFolder(), "keys.txt").delete();
+		new File(getMainFolder(), activeProfile + "/keys.txt").delete();
 		FileUtil.keys_exists = false;
 	}
 	
 	public static void deleteServers() {
-		new File(getMainFolder(), "servers.dat").delete();
+		new File(getMainFolder(), activeProfile + "/servers.dat").delete();
 		FileUtil.servers_exists = false;
 	}
 	
 	public static void deleteOptions() {
-		new File(getMainFolder(), "options.txt").delete();
-		new File(getMainFolder(), "optionsof.txt").delete();
+		new File(getMainFolder(), activeProfile + "/options.txt").delete();
+		new File(getMainFolder(), activeProfile + "/optionsof.txt").delete();
 		FileUtil.options_exists = false;
 	}
 	
 	public static void restoreOptions() throws NullPointerException, IOException {
-		final File optionsFile = new File(getMainFolder(), "options.txt");
+		final File optionsFile = new File(getMainFolder(), activeProfile + "/options.txt");
 		if (optionsFile.exists()) {
 			BufferedReader reader = null;
 			PrintWriter writer = null;
@@ -456,10 +606,10 @@ public class FileUtil {
 			}
 		}
 	}
-
+	
 	public static void restoreKeys() throws NullPointerException, IOException, NumberFormatException {
 		DefaultSettings.keyRebinds.clear();
-		final File keysFile = new File(getMainFolder(), "keys.txt");
+		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		if (keysFile.exists()) {
 			BufferedReader reader = null;
 			try {
@@ -495,7 +645,7 @@ public class FileUtil {
 	}
 	
 	public static void restoreOptionsOF() throws IOException {
-		final File optionsOFFile = new File(getMainFolder(), "optionsof.txt");
+		final File optionsOFFile = new File(getMainFolder(), activeProfile + "/optionsof.txt");
 		if (optionsOFFile.exists()) {
 			BufferedReader reader = null;
 			PrintWriter writer = null;
@@ -522,65 +672,63 @@ public class FileUtil {
 			}
 		}
 	}
-	
-	public static void restoreSingleConfig(String name) throws IOException {
-		try {
-			File file = new File(getMainFolder(), name);
-			if (file.exists()) {
-				if (file.isDirectory())
-					FileUtils.copyDirectory(file, new File(mcDataDir, "config/" + name));
-
-				else
-					FileUtils.copyFile(file, new File(mcDataDir, "config/" + name));
-			}else {
-				DefaultSettings.log.log(Level.WARNING, "Couldn't restore a config file as it's missing: " + name);
-				return;
-			}
-			
-			String random = getOverrides().get(name);
-			
-			getMainJSON().check.put(name, random);
-			mainJson.save(new File(mcDataDir, mainLocation));
-
-		} catch (IOException e) {
-			throw e;
-		}
-	}
 
 	public static void restoreConfigs() throws IOException {
 		try {	
-			FileUtils.copyDirectory(getMainFolder(), new File(mcDataDir, "config"), fileFilterModular);
+			FileUtils.copyDirectory(new File(getMainFolder(), activeProfile), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
 		}
+		
+		Collection<File> list = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		for (File file : list) {
+			if (!file.isDirectory()) {
+				getPrivateJSON().currentHash.put(activeProfile + "/" + file.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1), fileToHash(new FileInputStream(file)));
+			}
+		}
+		
 		
 		final File main = new File(mcDataDir, mainLocation);
 		getMainJSON().setExportMode(false);
 
 		mainJson.save(main);
+
+		final File main2 = new File(mcDataDir, privateLocation);
+
+		privateJson.save(main2);
 	}
 
-	public static void moveAllConfigs(boolean deletePersistent) throws IOException {
+	public static void moveAllConfigs() throws IOException {
+		mainJson.generatedBy = privateJson.privateIdentifier;
+		
 		try {
 			
 			File fileDir = new File(mcDataDir, "config");
-			if(deletePersistent)
-				new File(mcDataDir, persistentLocation).delete();
 			
-			FileUtils.copyDirectory(fileDir, getMainFolder(), fileFilterModular);
+			FileUtils.copyDirectory(fileDir, new File(getMainFolder(), activeProfile), fileFilterModular);
 			for (File f : fileDir.listFiles(fileFilterModular)) {
-				
 				try {
-					if(f.isDirectory())
-						FileUtils.deleteDirectory(f);
-					else
-						//f.delete() calls updates, not appropriate
-						Files.delete(f.toPath());
-
+				if(f.isDirectory())
+					FileUtils.deleteDirectory(f);
+				else
+					//f.delete() calls updates, not appropriate
+					Files.delete(f.toPath());
 				}catch(IOException e) {
 					DefaultSettings.log.log(Level.SEVERE, "Couldn't move config files: ", e);
 				}
-
+			}
+			
+			FileUtils.copyDirectory(new File(getMainFolder(), activeProfile), fileDir, fileFilterAnti);
+			for (File f : new File(getMainFolder(), activeProfile).listFiles(fileFilterAnti)) {
+				try {
+				if(f.isDirectory())
+					FileUtils.deleteDirectory(f);
+				else
+					//f.delete() calls updates, not appropriate
+					Files.delete(f.toPath());
+				}catch(IOException e) {
+					DefaultSettings.log.log(Level.SEVERE, "Couldn't move config files: ", e);
+				}
 			}
 			
 		} catch (IOException e) {
@@ -591,30 +739,10 @@ public class FileUtil {
 		getMainJSON().setExportMode(true);
 		mainJson.save(main);
 	}
-	
-	public static void setExportMode() throws IOException {
-		for(File f : new File(mcDataDir, "config").listFiles(fileFilterModular)) {
-			if(f.isDirectory())
-				FileUtils.deleteDirectory(f);
-			else
-				//f.delete() calls updates, not appropriate
-				Files.delete(f.toPath());
 
-		}
-		
-		final File main = new File(mcDataDir, mainLocation);
-		
-		getMainJSON().setExportMode(true);
-		mainJson.save(main);
-	}
-	
-	public static boolean exportMode() {
-		return new File(mcDataDir, "config").listFiles(fileFilterModular).length == 0;
-	}
-	
 	public static void restoreServers() throws IOException {
 		try {
-			File file = new File(getMainFolder(), "servers.dat");
+			File file = new File(getMainFolder(), activeProfile + "/servers.dat");
 			if(file.exists())
 				FileUtils.copyFile(file, new File(mcDataDir, "servers.dat"));
 			else
@@ -630,7 +758,7 @@ public class FileUtil {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
 				writer.print(keyBinding.keyDescription + ":" + keyBinding.keyCode + "\n");
-			
+
 		} catch (IOException e) {
 			throw e;
 		} catch (NullPointerException e) {
@@ -645,7 +773,7 @@ public class FileUtil {
 		PrintWriter writer = null;
 		BufferedReader reader = null;
 		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "options.txt")));
+			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/options.txt")));
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -673,7 +801,7 @@ public class FileUtil {
 			return;
 
 		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "optionsof.txt")));
+			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/optionsof.txt")));
 			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsof.txt")));
 			String line;
 			while ((line = reader.readLine()) != null)
@@ -699,7 +827,7 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (serversFile.exists()) {
 			try {
-				FileUtils.copyFile(serversFile, new File(getMainFolder(), "servers.dat"));
+				FileUtils.copyFile(serversFile, new File(getMainFolder(), activeProfile + "/servers.dat"));
 			} catch (IOException e) {
 				throw e;
 			}
@@ -707,52 +835,23 @@ public class FileUtil {
 	}
 	
 	public static boolean serversFileExists() {
-		final File serversFile = new File(getMainFolder(), "servers.dat");
+		final File serversFile = new File(getMainFolder(), activeProfile + "/servers.dat");
 		return serversFile.exists();
 	}
 	
 	public static String getUUID(String uuid) throws NoSuchAlgorithmException {
-
+		return stringToHash(uuid);
+	}
+	
+	public static String stringToHash(String string) throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(uuid.getBytes());
+		md.update(string.getBytes());
 		byte[] digest = md.digest();
 		return DatatypeConverter.printHexBinary(digest).toUpperCase();
-
 	}
 	
-	public static String getIdentifier() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
-		InetAddress l = InetAddress.getLocalHost();
-		NetworkInterface inter = NetworkInterface.getByInetAddress(l);
-		byte[] mac = inter.getHardwareAddress();
-		if (mac != null) {
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < mac.length; i++) 
-				sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
-			
-			String address = sb.toString();
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(address.getBytes());
-			byte[] digest = md.digest();
-			return DatatypeConverter.printHexBinary(digest).toUpperCase();
-		}
-		return "0";
-	}
-	
-	@SuppressWarnings("rawtypes")
-	private static void setField(String name, Class clazz, Object obj, Object value) {
-		try {
-			Field field = clazz.getDeclaredField(name);
-			field.setAccessible(true);
-			field.set(obj, value);
-		} catch (IllegalAccessException e) {
-			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
-		} catch (IllegalArgumentException e) {
-			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
-		} catch (NoSuchFieldException e) {
-			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
-		} catch (SecurityException e) {
-			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
-		}
+	public static String fileToHash(InputStream is) throws IOException {
+		return DigestUtils.md5Hex(is).toUpperCase();
 	}
 	
 	public static class RegistryChecker {
@@ -783,7 +882,7 @@ public class FileUtil {
 							FileUtil.servers_exists = true;
 						else
 							FileUtil.servers_exists = false;
-						
+			
 						GuiScreen gui = MC.currentScreen;
 						
 						if(gui instanceof GuiConfig && ((GuiConfig) gui).menu != null) {
@@ -796,7 +895,7 @@ public class FileUtil {
 								}
 							}
 						}
-			
+						
 						try {
 							Thread.sleep(10000);
 						} catch (InterruptedException e) {
@@ -808,4 +907,36 @@ public class FileUtil {
 			FileUtil.registryChecker.start();
 		}
 	}
+	
+	@SuppressWarnings("rawtypes")
+	private static void setField(String name, Class clazz, Object obj, Object value) {
+		try {
+			Field field = clazz.getDeclaredField(name);
+			field.setAccessible(true);
+			field.set(obj, value);
+		} catch (IllegalAccessException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		} catch (IllegalArgumentException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		} catch (NoSuchFieldException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		} catch (SecurityException e) {
+			DefaultSettings.log.log(Level.SEVERE, "Reflection exception: ", e);
+		}
+	}
+	
+	public static void checkMD5() throws FileNotFoundException, IOException {
+
+		Collection<File> lel = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		for (File fef : lel) {
+			if (!fef.isDirectory()) {
+				getMainJSON().hashes.put(activeProfile + "/" + fef.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1), fileToHash(new FileInputStream(fef)));
+			}
+		}
+
+		final File main = new File(mcDataDir, mainLocation);
+		mainJson.save(main);
+		
+	}
+
 }

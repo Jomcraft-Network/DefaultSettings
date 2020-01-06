@@ -29,6 +29,7 @@ import net.minecraftforge.common.MinecraftForge;
 @Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@")
 public class DefaultSettings {
 
+	//-Dfml.coreMods.load=de.pt400c.defaultsettings.core.DefaultSettingsPlugin
 	public static final String MODID = "defaultsettings";
 	public static final String NAME = "DefaultSettings";
 	public static final String VERSION = "DS-Version";

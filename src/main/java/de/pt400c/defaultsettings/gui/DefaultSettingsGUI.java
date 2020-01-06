@@ -138,6 +138,12 @@ public class DefaultSettingsGUI extends GuiScreen {
 		super.mouseClickMove(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_, p_mouseDragged_8_);
 	}
 	
+	public void setSelected(Segment segment) {
+		final MenuScreen menu = this.menu;
+		if(menu != null)
+			menu.getVariants().get(menu.index).selected = segment;
+	}
+	
 	@Override
 	public void mouseMovedOrUp(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		this.dragging = false;

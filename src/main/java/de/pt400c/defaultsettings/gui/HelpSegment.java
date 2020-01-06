@@ -47,7 +47,7 @@ public class HelpSegment extends BakedSegment {
 			gui.popupField.getWindow().addChild(new TextSegment(gui, 5, 29, 0, 0, "Nothing here, I guess? See ya." + end, 0xffffffff, true));
 		}
 		
-		gui.popupField.getWindow().addChild(new QuitButtonSegment(gui, 290, 5, 14, 14, new de.pt400c.defaultsettings.gui.Function<ButtonSegment, Boolean>() {
+		gui.popupField.getWindow().addChild(new QuitButtonSegment(gui, 290, 5, 14, 14, new Function<ButtonSegment, Boolean>() {
 			@Override
 			public Boolean apply(ButtonSegment quitButton) {
 
@@ -71,7 +71,7 @@ public class HelpSegment extends BakedSegment {
 
 		if (this.selected) {
 			
-			if (this.timer <= (Math.PI / 3)) {
+			if (this.timer <= MathUtil.PI / 3) {
 				this.timer += 0.05;
 				doIt = true;
 			}
@@ -91,7 +91,7 @@ public class HelpSegment extends BakedSegment {
 		
 		if(!compiled) {
 			
-			this.processFactor = (float) ((Math.sin(3 * this.timer - 3 * (Math.PI / 2)) + 1) / 2);
+			this.processFactor = (float) ((Math.sin(3 * this.timer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 			
 			preRender();
 

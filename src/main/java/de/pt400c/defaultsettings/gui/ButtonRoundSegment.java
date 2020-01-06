@@ -79,7 +79,7 @@ public class ButtonRoundSegment extends BakedSegment {
 		
 		if(selected) {
 			
-			if(this.animTimer <= Math.PI / 2) {
+			if(this.animTimer <= MathUtil.PI / 2) {
 				this.animTimer += 0.15;
 				doIt = true;
 			}
@@ -110,7 +110,7 @@ public class ButtonRoundSegment extends BakedSegment {
 
 			final int off = 0xff3c3c3c;
 
-			this.processFactor = (float) Math.sin(this.animTimer * 2 - (Math.PI / 2)) / 2 + 0.5F;
+			this.processFactor = (float) Math.sin(this.animTimer * 2 - (MathUtil.PI / 2)) / 2 + 0.5F;
 
 			int red = (int) ((getRed(off)) + 35 * (processFactor));
 

@@ -45,7 +45,7 @@ public class SplitterSegment extends BakedSegment {
 
 			glEnable(GL_POINT_SMOOTH);
 
-			glPointSize(1.25F * (scaledresolution.getScaleFactor() - 1));
+			glPointSize(1.25F * (scaledresolution.getScaleFactor() / 2F));
 
 			glBegin(GL_POINTS);
 
@@ -56,7 +56,7 @@ public class SplitterSegment extends BakedSegment {
 
 			glEnable(GL_POINT_SMOOTH);
 
-			glPointSize(1.25F * (scaledresolution.getScaleFactor() - 1));
+			glPointSize(1.25F * (scaledresolution.getScaleFactor() / 2F));
 
 			glBegin(GL_POINTS);
 
@@ -73,7 +73,9 @@ public class SplitterSegment extends BakedSegment {
 			glPopMatrix();
 
 			postRender(1, false);
+			
 		}
+		
 		glPushMatrix();
 		glTranslatef(-this.menu.offs, 0, 0);
 		drawTexture(1);

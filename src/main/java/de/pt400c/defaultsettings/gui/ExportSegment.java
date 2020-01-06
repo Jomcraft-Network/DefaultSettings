@@ -12,6 +12,7 @@ import java.util.function.Function;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.DefaultSettings;
+import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.neptunefx.NEX;
 import static org.lwjgl.opengl.GL11.*;
@@ -28,6 +29,7 @@ public class ExportSegment extends BakedSegment {
     private float processFactor;
     public float flickerTimer = 0;
 	private float prevOff;
+	static boolean locked;
 	private static final ResourceLocation icon = new ResourceLocation(DefaultSettings.MODID, "textures/gui/export_mode.png");
 	private boolean doIt;
 	
@@ -40,6 +42,8 @@ public class ExportSegment extends BakedSegment {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 
+		locked = ((GuiConfig) this.gui).menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0;
+		
 		if (resized != this.resized_mark)
 			posY = posYF.apply((GuiConfig) this.gui);
 

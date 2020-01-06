@@ -24,7 +24,6 @@ public class ButtonBulkActionSegment extends Segment {
 	public float timer = 0;
 	private boolean prevActive = false;
 	private final ScrollableSegment parent;
-	static boolean locked;
 
 	public ButtonBulkActionSegment(GuiScreen gui, float posX, float posY, int width, int height, ScrollableSegment parent) {
 		super(gui, posX, posY, width, height, false);
@@ -35,9 +34,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		
-		locked = FileUtil.exportMode() && FileUtil.getActives().size() != 0;
-		
+
 		if(!((parent.cache_activity == 1 || parent.cache_activity == 2) == prevActive)) {
 			new Thread(new ThreadRunnable(((GuiConfig) gui).menu.exportActive) {
 				
@@ -64,7 +61,7 @@ public class ButtonBulkActionSegment extends Segment {
 
 		final float alphaRate = (float) ((Math.sin(3 * timer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 
-		int color = locked ? 0xff878787 : 0xffe6e6e6;
+		int color = ExportSegment.locked ? 0xff878787 : 0xffe6e6e6;
 		float f3 = (float) (color >> 24 & 255) / 255.0F;
 		float f = (float) (color >> 16 & 255) / 255.0F;
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -157,7 +154,7 @@ public class ButtonBulkActionSegment extends Segment {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
 
-			if(locked)
+			if(ExportSegment.locked)
 				return false;
 
 			FileUtil.switchState(this.parent.cache_activity, this.parent.searchbar.query);

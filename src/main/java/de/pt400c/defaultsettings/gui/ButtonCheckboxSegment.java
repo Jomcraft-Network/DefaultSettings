@@ -53,7 +53,7 @@ public class ButtonCheckboxSegment extends Segment {
 
 		final float alphaRate = (float) ((Math.sin(3 * tempTimer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 
-		int color = ButtonBulkActionSegment.locked ? 0xff878787 : 0xffe6e6e6;
+		int color = ExportSegment.locked ? 0xff878787 : 0xffe6e6e6;
 		this.offX = customPosX;
 		this.offY = customPosY;
 		customPosX += this.getPosX();
@@ -135,7 +135,7 @@ public class ButtonCheckboxSegment extends Segment {
 			if (this.isSelected(mouseX, mouseY))
 				this.grabbed = false;
 			
-			if(ButtonBulkActionSegment.locked)
+			if(ExportSegment.locked)
 				return false;
 
 			this.active = this.active ^ true;

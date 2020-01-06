@@ -39,160 +39,162 @@ public class ExportSegment extends BakedSegment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		
-		if(resized != this.resized_mark) 
+
+		if (resized != this.resized_mark)
 			posY = posYF.apply((GuiConfig) this.gui);
-		
+
 		setup();
 
 		boolean inactive = false;
 		final byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();
 		float darken = 0;
-		if(exportActive == 2) {
-			
-			if(this.animTimer <= (Math.PI / 3)) {
+		if (exportActive == 2) {
+
+			if (this.animTimer <= MathUtil.PI / 3) {
 				this.animTimer += 0.05;
 				doIt = true;
 			}
-			
-		}else if(exportActive == 1){
 
-			if(this.animTimer > 0) {
+		} else if (exportActive == 1) {
+
+			if (this.animTimer > 0) {
 				this.animTimer -= 0.05;
 				doIt = true;
 			}
-		}else {
+		} else {
 			inactive = true;
 			flickerTimer += 0.05;
-			darken = (float) ((Math.sin(flickerTimer - Math.PI / 2) + 1) / 4 + 0.5);
+			darken = (float) ((Math.sin(flickerTimer - MathUtil.PI / 2) + 1) / 4 + 0.5);
 			doIt = true;
-			
+
 		}
-		
-		if(this.menu.offs != this.prevOff || doIt) {
+
+		if (this.menu.offs != this.prevOff || doIt) {
 			compiled = false;
 			doIt = false;
 		}
-		
-		if(!compiled) {
+
+		if (!compiled) {
 			preRender();
 
-		glEnable(GL_BLEND);
-    	glDisable(GL_ALPHA_TEST);
-    	glDisable(GL_TEXTURE_2D);
-    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
+			glDisable(GL_ALPHA_TEST);
+			glDisable(GL_TEXTURE_2D);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    	glShadeModel(GL_SMOOTH);
+			glShadeModel(GL_SMOOTH);
 
-     	drawGradient(0, 1, 72 - this.menu.offs, 2, 0xffaaaaaa, 0x00e6e6e6, 1);
-     	
-     	drawGradient(0, 41, 72 - this.menu.offs, 42, 0xffaaaaaa, 0x00e6e6e6, 1);
-		glShadeModel(GL_FLAT);
-    	
-		NEX.drawRect(0, 0, 72 - this.menu.offs, 1, 0xffe6e6e6, false, null, false);
-		
-		NEX.drawRect(0, 40, 72 - this.menu.offs, 41, 0xffe6e6e6, false, null, false);
-		
-		int on = 0xff08b306;
-		
-		final int off = 0xffd85755;
+			drawGradient(0, 1, 72 - this.menu.offs, 2, 0xffaaaaaa, 0x00e6e6e6, 1);
 
-		float offset = this.menu.offs / 20;
+			drawGradient(0, 41, 72 - this.menu.offs, 42, 0xffaaaaaa, 0x00e6e6e6, 1);
+			glShadeModel(GL_FLAT);
 
-		final int getRed = getRed(on);
-		final int getGreen = getGreen(on);
-		final int getBlue = getBlue(on);
-		
-		this.processFactor = (float) ((Math.sin(3 * this.animTimer - (Math.PI / 2)) + 1) / 2);
+			NEX.drawRect(0, 0, 72 - this.menu.offs, 1, 0xffe6e6e6, false, null, false);
 
-		final float red = (getRed(off) - getRed) * (1 - processFactor);
-		
-		final float green = (getGreen(off) - getGreen) * (1 - processFactor);
-		
-		final float blue = (getBlue(off) - getBlue) * (1 - processFactor);
-		
-		on = new Color((int)(getRed + red), (int)(getGreen + green), (int) (getBlue + blue)).getRGB();
-		
-		if(inactive) 
-			on = darkenColor(0xff5b5b5b, darken).getRGB();
-		
-		float xPos = (72 - this.menu.offs) / 2 - 29F / 2F;
+			NEX.drawRect(0, 40, 72 - this.menu.offs, 41, 0xffe6e6e6, false, null, false);
 
-		drawRectRoundedCorners(xPos + offset * 2 - 0.5F, 20 + offset - 1, xPos + 29 - offset * 2 + 0.5F, 14 + 20 - offset - 1F, darkenColor(on, 0.5F).getRGB(), 7 - offset);
-		
-		drawRectRoundedCorners(xPos + offset * 2, 20 + offset, xPos + 29 - offset * 2, 14 + 20 - offset, on, 7 - offset);
-		
-		glEnable(GL_TEXTURE_2D);
-    	glDisable(GL_BLEND);
-    	glEnable(GL_ALPHA_TEST);
-    	
-    	fontRenderer.drawString("I", xPos + offset * -1F + 11, 23.5F, new Color(255, 255, 255, (int) (MathUtil.clamp(255 * processFactor, 4, 255))).getRGB(), 0.8F, true);
-    	
-    	fontRenderer.drawString("0", xPos + 29 + offset * 0.7F - 14, 23.5F, new Color(255, 255, 255, (int) (MathUtil.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), 0.8F, true);
+			int on = 0xff08b306;
 
-		glEnable(GL_BLEND);
-    	glDisable(GL_ALPHA_TEST);
-    	glDisable(GL_TEXTURE_2D);
-    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    	
-		float radius = 9.4F;
-		
-		int color = 0xffe6e6e6;
-		
-		float f = (float) (color >> 16 & 255) / 255.0F;
-		float f1 = (float) (color >> 8 & 255) / 255.0F;
-		float f2 = (float) (color & 255) / 255.0F;
-		
-		glColor3f(f, f1, f2);
+			final int off = 0xffd85755;
 
-		drawCircle((float) ((28F - offset * 4) * processFactor) + xPos + offset * 2, (float) 7 + 20, radius - offset, 0, 0);
-		radius = 8.5F;
-		
-		color = 0xff3c3c3c;
-		
-		f = (float) (color >> 16 & 255) / 255.0F;
-		f1 = (float) (color >> 8 & 255) / 255.0F;
-		f2 = (float) (color & 255) / 255.0F;
-		
-		glColor3f(f, f1, f2);
+			float offset = this.menu.offs / 20;
 
-		drawCircle((float) ((28F - offset * 4) * processFactor) + xPos + offset * 2, (float) 7 + 20, radius - offset, 0, 0);
-		
-		final int scaleFactor = (int) scaledFactor;
-		
-		glEnable(GL_TEXTURE_2D);
-    	glDisable(GL_BLEND);
-    	glEnable(GL_ALPHA_TEST);
-    	final float percent = MathUtil.clamp(menu.offsetTick / menu.maxOffTick, 0, 0.95F);
-    	glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(770, 771, 1, 0);
-		MC.getTextureManager().bindTexture(icon);
-		glColor4f(1, 1, 1, percent);
-		glTranslatef(5 + 7 * percent, 2, 0);
-		drawScaledTex(0, 0, 19, 19);
-		glDisable(GL_BLEND);
-		glPopMatrix();
-    	
-    	glEnable(GL_SCISSOR_TEST);
-    	
-    	glEnable(GL_BLEND);
-    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			final int getRed = getRed(on);
+			final int getGreen = getGreen(on);
+			final int getBlue = getBlue(on);
 
-    	glScissor((int) (this.menu.offs * 1.2F), (int) (5 * scaleFactor), (int) ((72 - this.menu.offs * 1.6F) * scaleFactor) - (int) (this.menu.offs * 1.2F), (int) (35 * scaleFactor));
-    	glDisable(GL_BLEND);
-    	if(!(percent >= 0.8F))
-    		fontRenderer.drawString("Export Mode:", 2F + (72 - this.menu.offs) / 2 - fontRenderer.getStringWidth("Export Mode:", 0.9F, true) / 2, 6, calcAlpha(0xffffffff, percent).getRGB()/*0xffffffff*/, 0.9F, true);
-    	
-    	glDisable(GL_SCISSOR_TEST);
-    	
-		postRender(1, false);
+			this.processFactor = (float) ((Math.sin(3 * this.animTimer - (MathUtil.PI / 2)) + 1) / 2);
+
+			final float red = (getRed(off) - getRed) * (1 - processFactor);
+
+			final float green = (getGreen(off) - getGreen) * (1 - processFactor);
+
+			final float blue = (getBlue(off) - getBlue) * (1 - processFactor);
+
+			on = new Color((int) (getRed + red), (int) (getGreen + green), (int) (getBlue + blue)).getRGB();
+
+			if (inactive)
+				on = darkenColor(0xff5b5b5b, darken).getRGB();
+
+			float xPos = (72 - this.menu.offs) / 2 - 29F / 2F;
+
+			drawRectRoundedCorners(xPos + offset * 2 - 0.5F, 20 + offset - 1, xPos + 29 - offset * 2 + 0.5F, 14 + 20 - offset - 1F, darkenColor(on, 0.5F).getRGB(), 7 - offset);
+
+			drawRectRoundedCorners(xPos + offset * 2, 20 + offset, xPos + 29 - offset * 2, 14 + 20 - offset, on, 7 - offset);
+
+			glEnable(GL_TEXTURE_2D);
+			glDisable(GL_BLEND);
+			glEnable(GL_ALPHA_TEST);
+
+			fontRenderer.drawString("I", xPos + offset * -1F + 11, 23.5F, new Color(255, 255, 255, (int) (MathUtil.clamp(255 * processFactor, 4, 255))).getRGB(), 0.8F, true);
+
+			fontRenderer.drawString("0", xPos + 29 + offset * 0.7F - 14, 23.5F, new Color(255, 255, 255, (int) (MathUtil.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), 0.8F, true);
+
+			glEnable(GL_BLEND);
+			glDisable(GL_ALPHA_TEST);
+			glDisable(GL_TEXTURE_2D);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			float radius = 9.4F;
+
+			int color = 0xffe6e6e6;
+
+			float f = (float) (color >> 16 & 255) / 255.0F;
+			float f1 = (float) (color >> 8 & 255) / 255.0F;
+			float f2 = (float) (color & 255) / 255.0F;
+
+			glColor3f(f, f1, f2);
+
+			drawCircle((float) ((28F - offset * 4) * processFactor) + xPos + offset * 2, (float) 7 + 20, radius - offset, 0, 0);
+			radius = 8.5F;
+
+			color = 0xff3c3c3c;
+
+			f = (float) (color >> 16 & 255) / 255.0F;
+			f1 = (float) (color >> 8 & 255) / 255.0F;
+			f2 = (float) (color & 255) / 255.0F;
+
+			glColor3f(f, f1, f2);
+
+			drawCircle((float) ((28F - offset * 4) * processFactor) + xPos + offset * 2, (float) 7 + 20, radius - offset, 0, 0);
+
+			final int scaleFactor = (int) scaledFactor;
+
+			glEnable(GL_TEXTURE_2D);
+			glDisable(GL_BLEND);
+			glEnable(GL_ALPHA_TEST);
+			final float percent = MathUtil.clamp(menu.offsetTick / menu.maxOffTick, 0, 0.95F);
+			glPushMatrix();
+			glEnable(GL_BLEND);
+			glBlendFuncSeparate(770, 771, 1, 0);
+			MC.getTextureManager().bindTexture(icon);
+			glColor4f(1, 1, 1, percent);
+			glTranslatef(5 + 7 * percent, 2, 0);
+			drawScaledTex(0, 0, 19, 19);
+			glDisable(GL_BLEND);
+			glPopMatrix();
+
+			glEnable(GL_SCISSOR_TEST);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			glScissor((int) ((this.menu.offs * 1.2F) / 2 * (scaleFactor)), (int) (5 * (scaleFactor)), (int) ((72 - this.menu.offs * 1.6F) * (scaleFactor)) - (int) ((this.menu.offs * 1.2F) / 2 * (scaleFactor)), (int) (35 * (scaleFactor)));
+
+			glDisable(GL_BLEND);
+
+			if (!(percent >= 0.8F))
+				fontRenderer.drawString("Export Mode:", 2F + (72 - this.menu.offs) / 2 - fontRenderer.getStringWidth("Export Mode:", 0.9F, true) / 2, 6, calcAlpha(0xffffffff, percent).getRGB(), 0.9F, true);
+
+			glDisable(GL_SCISSOR_TEST);
+
+			postRender(1, false);
 		}
 		glPushMatrix();
 
 		drawTexture(1);
 		glPopMatrix();
-		
+
 		this.prevOff = this.menu.offs;
 	}
 	
@@ -200,7 +202,7 @@ public class ExportSegment extends BakedSegment {
 	public boolean isSelected(int mouseX, int mouseY) {
 		float offset = this.menu.offs / 20;
 		float xPos = (72 - this.menu.offs) / 2 - 29F / 2F;
-		return (mouseX >= this.getPosX() + xPos + offset * 2 && mouseY >= this.getPosY() + 20 + offset && mouseX < this.getPosX() + xPos + 29 - offset * 2 && mouseY < this.getPosY() + 14 + 20 - offset) || (distanceBetweenPoints((float) ((28F - offset * 4) * (1 - processFactor)) + xPos + offset * 2, this.posY + 7 + 20, (float) mouseX, (float) mouseY) <= 9.4F - offset);
+		return (mouseX >= this.getPosX() + xPos + offset * 2 && mouseY >= this.getPosY() + 20 + offset && mouseX < this.getPosX() + xPos + 29 - offset * 2 && mouseY < this.getPosY() + 14 + 20 - offset) || (distanceBetweenPoints((float) ((28F - offset * 4) * processFactor) + xPos + offset * 2, this.posY + 7 + 20, (float) mouseX, (float) mouseY) <= 9.4F - offset);
 	}
 	
 	@Override

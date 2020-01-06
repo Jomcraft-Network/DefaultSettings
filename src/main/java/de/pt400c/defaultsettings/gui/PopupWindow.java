@@ -37,6 +37,30 @@ public class PopupWindow extends Segment {
 		}
 	}
 	
+	@Override
+	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+		synchronized (this.children) {
+			for (Segment segment : this.children) {
+				if (segment.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_))
+					break;
+
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean charTyped(char p_charTyped_1_, int p_charTyped_2_) {
+		synchronized (this.children) {
+			for (Segment segment : this.children) {
+				if (segment.charTyped(p_charTyped_1_, p_charTyped_2_))
+					break;
+
+			}
+		}
+		return false;
+	}
+	
 	public void hoverChecks(int mouseX, int mouseY) {
 		synchronized (this.children) {
 			this.children.forEach(segment -> segment.hoverCheck(mouseX, mouseY));

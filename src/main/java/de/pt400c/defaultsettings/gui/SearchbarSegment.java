@@ -4,12 +4,13 @@ import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import static org.lwjgl.glfw.GLFW.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import net.minecraftforge.api.distmarker.Dist;
+import static org.lwjgl.glfw.GLFW.*;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
@@ -24,8 +25,9 @@ public class SearchbarSegment extends Segment {
 	boolean activated;
 	private float flashingTimer = 0;
 	private final ResourceLocation icon;
+	int cursorPosition;
 	protected final ScrollableSegment parent;
-	private static final String chars = "@^\"$%&/()=?`\\#+*'-}][{-_~";
+	private static final String chars = "@^°\"§$%&/()=?`´\\#+*'-}][{-_~";
 
 	public SearchbarSegment(GuiScreen gui, float posX, float posY, int width, int height, boolean popupSegment, ScrollableSegment parent) {
 		super(gui, posX, posY, width, height, popupSegment);
@@ -41,9 +43,26 @@ public class SearchbarSegment extends Segment {
 	@Override
 	public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
 		if (p_keyPressed_1_ == GLFW_KEY_BACKSPACE) {
-			if (this.query.length() > 0)
-				this.query = this.query.substring(0, this.query.length() - 1);
+			if(this.query.length() < 1 || this.cursorPosition < 1)
+				return false;
+			
+			String left = this.query.substring(0, cursorPosition);
+			String right = this.query.substring(cursorPosition);
+			
+			left = left.substring(0, left.length() - 1);
+			
+			if(this.cursorPosition > 0)
+				this.cursorPosition -= 1;
+			
+			this.query = left + right;
+			
 			this.activated = false;
+			return true;
+		} else if (p_keyPressed_1_ == GLFW_KEY_LEFT) {
+			this.cursorPosition = MathUtil.clamp(this.cursorPosition - 1, 0, this.query.length());
+			return true;
+		} else if (p_keyPressed_1_ == GLFW_KEY_RIGHT) {
+			this.cursorPosition = MathUtil.clamp(this.cursorPosition + 1, 0, this.query.length());
 			return true;
 		} else if (p_keyPressed_1_ == GLFW_KEY_ENTER || p_keyPressed_1_ == GLFW_KEY_KP_ENTER) {
 			if (!this.query.isEmpty()) {
@@ -65,7 +84,16 @@ public class SearchbarSegment extends Segment {
 			if (this.query.isEmpty() && s1.equals(" "))
 				return true;
 
-			this.query += s1;
+			if(this.query.length() > 30)
+				return false;
+			
+			String left = this.query.substring(0, cursorPosition);
+			String right = this.query.substring(cursorPosition);
+			
+			++this.cursorPosition;
+			
+			this.query = left + s1 + right;
+	
 			this.activated = false;
 			return true;
 
@@ -73,7 +101,6 @@ public class SearchbarSegment extends Segment {
 			return false;
 		}
 	}
-
 
 	private void sendQuery() {
 		parent.add = 0;
@@ -87,7 +114,7 @@ public class SearchbarSegment extends Segment {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
-		final float darken = (float) ((Math.sin(flashingTimer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(flashingTimer - MathUtil.PI / 2) + 1) / 4 + 0.5);
 
 		int color = 0;
 
@@ -137,7 +164,7 @@ public class SearchbarSegment extends Segment {
 
 			glColor4f(f, f1, f2, f3);
 
-			drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text, 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text, 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
+			drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 		
 		glDisable(GL_BLEND);
@@ -161,6 +188,11 @@ public class SearchbarSegment extends Segment {
 			MenuScreen menu = ((GuiConfig) this.gui).menu;
 			menu.getVariants().get(menu.index).selected = this;
 			this.grabbed = true;
+			
+			if(this.query.isEmpty())
+				return true;
+			
+			this.cursorPosition = fontRenderer.trimStringToWidth(this.query, (int)(mouseX - (this.getPosX() + this.hitX + 5)), false).length();
 
 			return true;
 		} else {

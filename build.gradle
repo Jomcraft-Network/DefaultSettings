@@ -20,10 +20,10 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.13.2-2.0.3"
+version = "1.13.2-2.1.0"
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.0.3"
+def fileVersion = "2.1.0"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 

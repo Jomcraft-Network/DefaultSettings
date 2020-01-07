@@ -4,6 +4,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MathUtil {
+	
+	public static final float PI = (float) Math.PI;
 
 	public static float clamp(float num, float min, float max) {
         if (num < min)

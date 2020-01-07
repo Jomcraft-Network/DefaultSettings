@@ -20,11 +20,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.14.x-2.0.3"
+version = "1.15.1-2.1.0"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.0.3"
+def fileVersion = "2.1.0"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 
@@ -53,10 +53,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.15'
+    minecraft 'net.minecraftforge:forge:1.15.1-30.0.30'
 }
 
-def forge_version = "26.0.63"
+def forge_version = "30.0.30"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -159,9 +159,7 @@ curseforge {
     changelog = file("changelog.html")
     changelogType = 'html'
     releaseType = 'release'
-    addGameVersion '1.14.2'
-    addGameVersion '1.14.3'
-    addGameVersion '1.14.4'
+    addGameVersion '1.15.1'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }
@@ -190,7 +188,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
         	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.14.x'
+            artifactId = 'DefaultSettings-1.15.1'
             version = "$fileVersion"
             artifact jar
             artifact deobfJar

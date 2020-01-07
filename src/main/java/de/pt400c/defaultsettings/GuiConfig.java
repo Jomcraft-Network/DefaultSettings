@@ -9,15 +9,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import org.apache.logging.log4j.Level;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
-import static org.lwjgl.opengl.GL30.*;
 import de.pt400c.defaultsettings.gui.*;
 import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL30.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiConfig extends DefaultSettingsGUI {
@@ -28,18 +29,19 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonControlSegment buttonS;
     public ButtonControlSegment buttonK;
     public ButtonControlSegment buttonO;
-    public ButtonMenuSegment[] menuButtons = new ButtonMenuSegment[3];
+    public ButtonMenuSegment[] menuButtons = new ButtonMenuSegment[4];
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
     public FramebufferObject framebufferMc;
-    private int storeWidth;
-	private int storeHeight;
-    private int gcAmount;
     public boolean init = false;
 	public HeaderPart headerPart = null;
+	private int gcAmount;
+	public ProfilesSegment scrollableProfiles;
+	private int storeWidth;
+	private int storeHeight;
     
-    public GuiConfig(Screen parentScreen) {
+	public GuiConfig(Screen parentScreen) {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
     	this.minecraft = MC;
         this.parentScreen = parentScreen;
@@ -58,39 +60,45 @@ public class GuiConfig extends DefaultSettingsGUI {
     		if(this.selectedSegment.id > 0)
     			this.setActive(this.selectedSegment.id - 1);
     		else
-    			this.setActive(2);
+    			this.setActive(3);
     		return true;
     	}else if(p_keyPressed_1_ == 264 && this.popupField == null) {
     		this.headerPart.compiled = false;
-    		if(this.selectedSegment.id < 2)
+    		if(this.selectedSegment.id < 3)
     			this.setActive(this.selectedSegment.id + 1);
     		else
     			this.setActive(0);
     		return true;
-    	}
+    	}else if (p_keyPressed_1_ == 256 && this.shouldCloseOnEsc()) {
+			if(FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+				exportModeInfo();
+			}else {
+			    this.onClose();
+			}
+        }
 		return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
-	
-	public void setActive(int id) {
+    
+    public void setActive(int id) {
 		if(this.selectedSegment != null)
     		this.selectedSegment.setActive(false, true);
     	this.menuButtons[id].activated = true;
     	this.selectedSegment = this.menuButtons[id];
     	this.menu.setIndex(id);
 	}
-
+    
     public void testInit() {
     	
     	Segment.resized++;
 
-		Segment.scaledFactor = MC.func_228018_at_().getGuiScaleFactor();
+    	Segment.scaledFactor = MC.func_228018_at_().getGuiScaleFactor();
     	
     	new FileUtil.RegistryChecker();
     	
     	if(this.framebufferMc != null) 
     		this.framebufferMc.resize(MC.func_228018_at_().getWidth(), MC.func_228018_at_().getHeight());
 			
-    	this.minecraft.keyboardListener.enableRepeatEvents(true);    	
+    	MC.keyboardListener.enableRepeatEvents(true);
     	
     	if(this.gcAmount == 9) {
     		System.gc();
@@ -105,7 +113,13 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
-        		GuiConfig.this.minecraft.displayGuiScreen(GuiConfig.this.parentScreen);
+        		if(FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+        			GuiConfig.this.exportModeInfo();
+    			}else {
+        		
+    				GuiConfig.this.minecraft.displayGuiScreen(GuiConfig.this.parentScreen);
+        		
+    			}
         		return true;}, 5F, false));
         	
         	this.addSegment(new HelpSegment(this, i -> {return i.width - 55;}, 30));
@@ -136,22 +150,28 @@ public class GuiConfig extends DefaultSettingsGUI {
 
         					addChild(new ScrollableSegment(this, 20, 30, i -> {return i.width - 74 - 90;}, i -> {return i.height - 25 - 10 - 30;}, (byte) 0)))
         				 
+        		.addVariant(new MenuArea(this, 74, 25)
+						
+        				.addChild(this.scrollableProfiles = new ProfilesSegment(this, 20, 30, i -> {return i.width - 74 - 90;}, i -> {return i.height - 25 - 10 - 30;}))
+        		
+        		
+        		.addChild(new ProfilesSegment.AddSegment(this, i -> {return i.width - 102;}, 5, 18, 18, false)))
+
+        		
         				 .addVariant(new MenuArea(this, 74, 25).
         						 addChild(new AboutSegment(this, 10, 20, 20, 20, false))));
     
     		this.addSegment(this.leftMenu
     				.addChild(this.menuButtons[0] = new ButtonMenuSegment(0, this, 10, 9, "Save", button -> {return true;}, this.leftMenu, "textures/gui/save.png").setActive(true, false))
     				.addChild(this.menuButtons[1] = new ButtonMenuSegment(1, this, 10, 35, "Configs", button -> {return true;}, this.leftMenu, "textures/gui/config.png"))
-    				.addChild(this.menuButtons[2] = new ButtonMenuSegment(2, this, 10, 61, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png"))
+    				.addChild(this.menuButtons[2] = new ButtonMenuSegment(2, this, 10, 61, "Profiles", button -> {return true;}, this.leftMenu, "textures/gui/profiles.png"))
+    				.addChild(this.menuButtons[3] = new ButtonMenuSegment(3, this, 10, 87, "About", button -> {return true;}, this.leftMenu, "textures/gui/about.png"))
     				.addChild(new ExportSegment(this, 0, i -> {return i.height - 80;}, 72, 43, this.leftMenu))
     				.addChild(new SplitterSegment(this, 72, 3, i -> {return i.height - 30;}, this.leftMenu))
     				.addChild(new ButtonUpdateChecker(this, i -> {return i.height - 30 - 25 + this.leftMenu.getPosY();}, this.leftMenu)));
 
     		this.addSegment(this.popup = new PopupSegment(this, 0, 0, this.width, this.height).setWindow(new PopupWindow(this, this.width / 2 - 210 / 2, this.height / 2 - 100 / 2, 210, 100, "").addChild(new QuitButtonSegment(this, 190, 5, 14, 14, button -> {
 
-    			
-    		
-    		
     		return true;}, 3F, true))));
     		init = true;
     		
@@ -169,6 +189,78 @@ public class GuiConfig extends DefaultSettingsGUI {
     	this.popupField = null;
     	
     	super.init();
+    	
+    	if(init)
+    		openDisclaimer();
+    }
+    
+    private void openDisclaimer() {
+		if(FileUtil.otherCreator) {
+			this.popup.setOpening(true);
+			this.popup.getWindow().title = "Warning";
+			this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
+			this.popupField = this.popup;
+			this.popupField.getWindow().clearChildren();
+			this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "You probably aren't the modpack's\ncreator. Being here might break stuff.\nIf you want to change the profile, use\nthe \u00a7bswitchprofile\u00a7r command, not this.", 0xffffffff, true));
+			this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, button -> {
+
+				GuiConfig.this.popupField.setOpening(false);
+
+				return true;
+			}, 3F, true));
+
+			this.popupField.getWindow().addChild(new ButtonRoundSegment(this, 105 - 30, 75, 60, 20, "Okay", null, button -> {
+
+				GuiConfig.this.popupField.setOpening(false);
+
+				return true;
+			}, 0.8F, true));
+
+			this.popup.setVisible(true);
+		}
+		
+		return;
+	}
+    
+    public void exportModeInfo() {
+		this.popup.setOpening(true);
+		this.popup.getWindow().title = "Export Mode";
+		this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
+		this.popupField = this.popup;
+		this.popupField.getWindow().clearChildren();
+		this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "The Export Mode has to be disabled\nin order to close this GUI", 0xffffffff, true));
+		this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, button -> {
+
+			GuiConfig.this.popupField.setOpening(false);
+
+			return true;
+		}, 3F, true));
+
+		this.popupField.getWindow().addChild(new ButtonRoundSegment(this, 105 - 30, 75, 60, 20, "Okay", null, button -> {
+
+			GuiConfig.this.popupField.setOpening(false);
+
+			return true;
+		}, 0.8F, true));
+
+		this.popup.setVisible(true);
+    }
+    
+    public void changeSelected(ButtonMenuSegment segment) {
+    	if(this.selectedSegment != null && this.selectedSegment != segment)
+    		this.selectedSegment.setActive(false, true);
+    	this.selectedSegment = segment;
+    	this.menu.setIndex(segment.id);
+    }
+
+    @Override
+    public void onClose() {
+    	MC.keyboardListener.enableRepeatEvents(false);
+    	tpe.shutdownNow();
+    	BakeryRegistry.clearAll();
+    	if(framebufferMc != null)
+    		framebufferMc.deleteFramebuffer();
+    	super.onClose();
     }
     
     public void saveServers() {
@@ -260,92 +352,27 @@ public class GuiConfig extends DefaultSettingsGUI {
 	
 	public void deleteConfigs() {
 		
-		if(!FileUtil.exportMode()) {
-			this.popup.setOpening(true);
-			this.popup.getWindow().title = "Delete Config Folder";
-			this.popup.getWindow().setPos(this.width / 2 - 210 / 2, this.height / 2 - 100 / 2);
-			this.popupField = this.popup;
-			this.popupField.getWindow().clearChildren();
-			this.popupField.getWindow().addChild(new TextSegment(this, 5, 30, 20, 20, "Do you want to delete every file\nfrom the config folder?\n\n(The defaultsettings folder will stay)", 0xffffffff, true));
-			this.popupField.getWindow().addChild(new QuitButtonSegment(this, 190, 5, 14, 14, button -> {
-
-				GuiConfig.this.popupField.setOpening(false);
-
-				return true;
-			}, 3F, true));
-
-			this.popupField.getWindow().addChild(new ButtonRoundSegment(this, 105 - 80, 75, 60, 20, "Proceed", null, button -> {
-
-				GuiConfig.this.popupField.setOpening(false);
-				tpe.execute(new Runnable() {
-					@SuppressWarnings("static-access")
-					@Override
-					public void run() {
-						GuiConfig.this.menu.exportActive.setByte((byte) 0);
-						try {
-							FileUtil.setExportMode();
-							
-						} catch (IOException e) {
-							if(e instanceof ClosedByInterruptException)
-								return;
-							DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
-						}
-						for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
-							variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
-						}
-						GuiConfig.this.menu.exportActive.setByte((byte) 2);
-					}
-				});
-
-				return true;
-			}, 0.8F, true));
-			
-			this.popupField.getWindow().addChild(new ButtonRoundSegment(this, 105 + 20, 75, 60, 20, "Move", "Move all contents from the config folder to DS's config management", button -> {
-
-				GuiConfig.this.popupField.setOpening(false);
-				tpe.execute(new Runnable() {
-					@SuppressWarnings("static-access")
-					@Override
-					public void run() {
-						GuiConfig.this.menu.exportActive.setByte((byte) 0);
-						try {
-							FileUtil.moveAllConfigs(true);
-						} catch (IOException e) {
-							if(e instanceof ClosedByInterruptException)
-								return;
-							DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
-						}
-						GuiConfig.this.menu.exportActive.setByte((byte) (FileUtil.exportMode() ? 2 : 1));
-						for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
-							variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
-						}
-					}
-				});
-
-				return true;
-			}, 0.8F, true));
-			
-			this.popup.setVisible(true);
-			
-		}else {
-			tpe.execute(new Runnable() {
-				@SuppressWarnings("static-access")
-				@Override
-				public void run() {
-					try {
-						FileUtil.setExportMode();
-					} catch (IOException e) {
-						if(e instanceof ClosedByInterruptException)
-							return;
-						DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
-					}
-					GuiConfig.this.menu.exportActive.setByte((byte) 2);
-					for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
-						variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
-					}
+		tpe.execute(new Runnable() {
+			@SuppressWarnings("static-access")
+			@Override
+			public void run() {
+				GuiConfig.this.menu.exportActive.setByte((byte) 0);
+				try {
+		
+					FileUtil.moveAllConfigs();
+					FileUtil.checkMD5();
+					
+				} catch (IOException e) {
+					if(e instanceof ClosedByInterruptException)
+						return;
+					DefaultSettings.getInstance().log.log(Level.ERROR, "An exception occurred while trying to move the configs:", e);
 				}
-			});
-		}
+				GuiConfig.this.menu.exportActive.setByte((byte) (FileUtil.exportMode() ? 2 : 1));
+				for(MenuArea variant : GuiConfig.this.menu.getVariants()) {
+					variant.getChildren().stream().filter(segment -> segment instanceof ScrollableSegment).forEach(segment -> segment.guiContentUpdate(((ScrollableSegment) segment).searchbar.query));
+				}
+			}
+		});
 	}
 	
 	public void saveOptions() {
@@ -474,26 +501,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 			});		
 		}
 	}
-
-    public void changeSelected(ButtonMenuSegment segment) {
-    	if(this.selectedSegment != null && this.selectedSegment != segment)
-    		this.selectedSegment.setActive(false, true);
-    	this.selectedSegment = segment;
-    	this.menu.setIndex(segment.id);
-    }
-
+ 
     @Override
-    public void onClose() {
-    	this.minecraft.keyboardListener.enableRepeatEvents(false);
-    	tpe.shutdownNow();
-    	BakeryRegistry.clearAll();
-    	if(framebufferMc != null)
-    		framebufferMc.deleteFramebuffer();
-    	super.onClose();
-    }
-
-    @Override
-    public void tick() {
+    public void tick()
+    {
     	super.tick();
         for(int id = 0; id < cooldowns.length; id++) {
         	if(cooldowns[id].renderCooldown > 0)
@@ -512,7 +523,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     		testInit();
     	}
     	
-    	this.minecraft.getFramebuffer().unbindFramebuffer();
+    	MC.getFramebuffer().unbindFramebuffer();
 		glPushMatrix();
 		glClear(16640);
 		this.framebufferMc.bindFramebuffer(true);
@@ -543,7 +554,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		this.buttonO.color = cooldowns[0].getProgress() ? 0xffccab14 : cooldowns[0].renderCooldown < 0 ? 0xffcc1414 : cooldowns[0].renderCooldown > 0 ? 0xff5dcc14 : 0xffe6e6e6;
 
 		headerPart.render(mouseX, mouseY, partialTicks);
-
+		
 		super.render(mouseX, mouseY, partialTicks);
 
 		glPushMatrix();
@@ -552,7 +563,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		this.framebufferMc.unbindFramebuffer();
 		glPopMatrix();
 
-		this.minecraft.getFramebuffer().bindFramebuffer(true);
+		MC.getFramebuffer().bindFramebuffer(true);
 		glPushMatrix();
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
@@ -582,7 +593,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 	}
 	
-public static class HeaderPart extends BakedSegment {
+	public static class HeaderPart extends BakedSegment {
 		
 		private final Function<GuiConfig, Integer> widthF;
 		
@@ -617,6 +628,9 @@ public static class HeaderPart extends BakedSegment {
 					tabName = "Configs";
 					offs = 20;
 				}else if(index == 2) {
+					tabName = "Profiles";
+					offs = 22;
+				} else if(index == 3) {
 					tabName = "About";
 					offs = 5;
 				}

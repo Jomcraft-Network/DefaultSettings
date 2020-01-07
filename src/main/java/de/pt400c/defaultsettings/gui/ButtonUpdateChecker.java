@@ -8,9 +8,6 @@ import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.UpdateContainer;
 import de.pt400c.defaultsettings.UpdateContainer.Status;
 import de.pt400c.neptunefx.NEX;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.neptunefx.NEX.*;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static org.lwjgl.opengl.GL11.*;
@@ -18,6 +15,10 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glScissor;
+
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ButtonUpdateChecker extends ButtonSegment {
@@ -48,7 +49,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		final float right = this.menu.width - this.menu.offs + this.width - 35 + this.menu.offs;
 		this.posX = right / 2 - this.width / 2;
 				
-		final float darken = (float) ((Math.sin(this.timer - Math.PI / 2) + 1) / 4 + 0.5);
+		final float darken = (float) ((Math.sin(this.timer - MathUtil.PI / 2) + 1) / 4 + 0.5);
 
 		float inRad = 1.5F;
 
@@ -75,7 +76,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
  
     	glEnable(GL_SCISSOR_TEST);
 
-		glScissor((6 + (int) (this.menu.offs / 2.8F)) * (int) scaledFactor, (int) 5 * (int) scaledFactor, (int)((54 - this.menu.offs / 0.6F) * (int) scaledFactor), 25 * (int) scaledFactor);
+		glScissor((6 + (int) (this.menu.offs / 2.8F)) * (int) scaledFactor, (int) (5) * (int) scaledFactor, (int)((54 - this.menu.offs / 0.6F) * (int) scaledFactor), 25 * (int) scaledFactor);
 
 		final float percent = MathUtil.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
 		glEnable(GL_TEXTURE_2D);

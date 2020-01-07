@@ -2,8 +2,9 @@ package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.util.SoundEvents;
+
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,10 +30,6 @@ public abstract class Segment {
 		this.width = width;
 		this.height = height;
 		this.isPopupSegment = popupSegment;
-	}
-	
-	public void initSegment() {
-
 	}
 	
 	public void init() {};
@@ -95,12 +92,17 @@ public abstract class Segment {
         return this.height;
 	}
 	
+	public void initSegment() {
+
+	}
+	
 	public Segment setPos(float x, float y) {
 		this.posX = x;
 		this.posY = y;
 		return this;
 	}
 	
+
 	public Segment setPosHit(float x, float y, float x2, float y2) {
 		this.posX = x;
 		this.posY = y;

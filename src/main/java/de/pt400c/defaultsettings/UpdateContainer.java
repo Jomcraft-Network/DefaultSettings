@@ -149,5 +149,4 @@ public class UpdateContainer {
 	public static enum Status {
 		UNKNOWN, CHECKING, UP_TO_DATE, OUTDATED, ERROR, AHEAD_OF_TIME;
 	}
-
 }

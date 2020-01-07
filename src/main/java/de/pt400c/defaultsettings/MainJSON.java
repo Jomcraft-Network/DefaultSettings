@@ -6,21 +6,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.apache.logging.log4j.Level;
 
 public class MainJSON {
 	
 	public static transient final long serialVersionUID = 32371L;
 	private String version;
-	private String identifier;
 	private String prevVersion;
 	protected boolean initPopup = false;
 	private boolean exportMode = false;
+	public String generatedBy = "<default>";
 	public List<String> activeConfigs = new ArrayList<String>();
-	public HashMap<String, String> check = new HashMap<String, String>();
-	public String created_for;
-	public HashMap<String, String> overrides = new HashMap<String, String>();
+	public HashMap<String, String> hashes = new HashMap<String, String>();
+	public String mainProfile = "!NEW!";
 	
 	@SuppressWarnings("unused")
 	private String initially_created;
@@ -44,11 +42,6 @@ public class MainJSON {
 		return this;
 	}
 	
-	public MainJSON setIdentifier(String identifier) {
-		this.identifier = identifier;
-		return this;
-	}
-	
 	public String getVersion() {
 		return this.version;
 	}
@@ -56,15 +49,11 @@ public class MainJSON {
 	public boolean getExportMode() {
 		return this.exportMode;
 	}
-	
-	public String getIdentifier() {
-		return this.identifier;
-	}
-	
+
 	public String getPrevVersion() {
 		return this.prevVersion;
 	}
-
+	
 	public void save(File persistentLocation) {
 		try (FileWriter writer = new FileWriter(persistentLocation)) {
             FileUtil.gson.toJson(this, writer);
@@ -72,5 +61,4 @@ public class MainJSON {
         	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);
         }
 	}
-	
 }

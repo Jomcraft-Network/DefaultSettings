@@ -2,7 +2,6 @@ package de.pt400c.defaultsettings.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import de.pt400c.defaultsettings.FileUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -10,8 +9,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class MenuScreen extends Segment {
-
-	private List<MenuArea> variants = new ArrayList<>();	
+	
+	private List<MenuArea> variants = new ArrayList<>();
 	public int index = 0;
 	public volatile MutableByte exportActive = new MutableByte((byte) 0); //0 : Not clear, 1 : false : 2 : true
 
@@ -28,38 +27,6 @@ public class MenuScreen extends Segment {
 			}
 		}).start();
 
-	}
-	
-	@Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-
-		if(resized != this.resized_mark) {
-			width = gui.width - posX;
-			height = gui.height - posY;
-			this.resized_mark = resized;
-		}
-		
-        synchronized (this.variants) {
-        	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
-        }
-
-	}
-	
-	@Override
-	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		synchronized (this.variants) {
-			this.variants.get(this.index).mouseClicked(mouseX, mouseY, mouseButton);
-		}
-		return super.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-	
-	@Override
-	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
-		synchronized (this.variants) {
-			this.variants.get(this.index).mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
-
-		}
-		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
 	}
 	
 	@Override
@@ -85,6 +52,37 @@ public class MenuScreen extends Segment {
 	}
 	
 	@Override
+    public void render(int mouseX, int mouseY, float partialTicks) {
+
+		if(resized != this.resized_mark) {
+			width = gui.width - posX;
+			height = gui.height - posY;
+			this.resized_mark = resized;
+		}
+		
+        synchronized (this.variants) {
+        	this.variants.get(this.index).render(mouseX, mouseY, partialTicks);
+        }
+	}
+	
+	@Override
+	public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+		synchronized (this.variants) {
+			this.variants.get(this.index).mouseClicked(mouseX, mouseY, mouseButton);
+		}
+		return super.mouseClicked(mouseX, mouseY, mouseButton);
+	}
+	
+	@Override
+	public boolean mouseDragged(int p_mouseDragged_1_, int p_mouseDragged_3_, int p_mouseDragged_5_) {
+		synchronized (this.variants) {
+			this.variants.get(this.index).mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
+
+		}
+		return super.mouseDragged(p_mouseDragged_1_, p_mouseDragged_3_, p_mouseDragged_5_);
+	}
+	
+	@Override
 	public boolean mouseReleased(int p_mouseReleased_1_, int p_mouseReleased_3_, int p_mouseReleased_5_) {
 		synchronized (this.variants) {
 
@@ -100,15 +98,15 @@ public class MenuScreen extends Segment {
 		}
 		return this;
 	}
-
+	
 	public List<MenuArea> getVariants(){
 		return this.variants;
 	}
-	
+
 	public void setIndex(int id) {
 		this.index = id;
 	}
-	
+
 	abstract private class ThreadRunnable implements Runnable {
 	 	   
         final MutableByte supply;
@@ -134,4 +132,5 @@ public class MenuScreen extends Segment {
     		this.supply = supply;
     	}
     }
+	
 }

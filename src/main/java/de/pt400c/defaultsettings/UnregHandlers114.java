@@ -17,11 +17,9 @@ public class UnregHandlers114 {
 			if(MC.currentScreen instanceof MainMenuScreen) {
 				bootedUp = true;
 
-				if(FileUtil.getMainJSON().initPopup) {
-			
-				MC.displayGuiScreen(new GuiDSMainMenu(new MainMenuScreen()));
-		
-				}
+				if(FileUtil.getMainJSON().initPopup)
+					MC.displayGuiScreen(new GuiDSMainMenu(new MainMenuScreen()));
+
 				MinecraftForge.EVENT_BUS.unregister(this);
 			}
 		}

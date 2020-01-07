@@ -134,7 +134,7 @@ public class ButtonControlSegment extends BakedSegment {
 		
 		if(selected && this.left) {
 			
-			if(this.animTimer <= Math.PI / 2) {
+			if(this.animTimer <= MathUtil.PI / 2) {
 				this.animTimer += 0.15;
 				doIt = true;
 			}
@@ -150,7 +150,7 @@ public class ButtonControlSegment extends BakedSegment {
 
 		if(selected && !this.left) {
 			
-			if(this.animTimerRight <= Math.PI / 2) {
+			if(this.animTimerRight <= MathUtil.PI / 2) {
 				this.animTimerRight += 0.15;
 				doIt = true;
 			}
@@ -166,7 +166,7 @@ public class ButtonControlSegment extends BakedSegment {
 		
 		if (this.deleting) {
 			
-			if (this.timer <= (Math.PI / 3)) {
+			if (this.timer <= MathUtil.PI / 3) {
 				this.timer += 0.05;
 				doIt = true;
 			}
@@ -179,7 +179,7 @@ public class ButtonControlSegment extends BakedSegment {
 			}
 		}
 		
-		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (Math.PI / 2)) + 1) / 2);
+		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 
 		if(this.selected_prev != selected || this.grabbed != this.grabbed_prev || this.color != this.color_prev || doIt) {
 			this.compiled = false;
@@ -200,7 +200,7 @@ public class ButtonControlSegment extends BakedSegment {
 
 			final int off = 0xff3c3c3c;
 
-			this.processFactor = (float) Math.sin(this.animTimer * 2 - (Math.PI / 2)) / 2 + 0.5F;
+			this.processFactor = (float) Math.sin(this.animTimer * 2 - (MathUtil.PI / 2)) / 2 + 0.5F;
 			
 			int red = (int) ((getRed(off)) + 35 * (processFactor));
 			
@@ -220,7 +220,7 @@ public class ButtonControlSegment extends BakedSegment {
 			
 			fontRenderer.drawString(txt, 1 + (this.getWidth() - 19 * (1 - alpha)) / 2 - fontRenderer.getStringWidth(txt, 1 - 0.2F * (1 - alpha), true) / 2, 11 + 1 * (1 - alpha), 0xffffffff, 1 - 0.2F * (1 - alpha), true);
 	    	
-	    	glScissor((int) ((this.width - 20 * (1 - alpha)) * (int) scaledFactor), (int) (0 * (int) scaledFactor), (int) 20/*((this.getWidth() - 8)*/ * (int) scaledFactor, (int) (30 * (int) scaledFactor));
+	    	glScissor((int) ((this.width - 20 * (1 - alpha)) * (int) scaledFactor), (int) (0 * (int) scaledFactor), (int) 20 * (int) scaledFactor, (int) (30 * (int) scaledFactor));
 	    		
 	    	glEnable(GL_BLEND);
 	    	glDisable(GL_ALPHA_TEST);
@@ -229,7 +229,7 @@ public class ButtonControlSegment extends BakedSegment {
 	    	
 	    	int color = 0xffbf3f3a;
 
-	    	float testFactor = (float) Math.sin(this.animTimerRight * 2 - (Math.PI / 2)) / 2 + 0.5F;
+	    	float testFactor = (float) Math.sin(this.animTimerRight * 2 - (MathUtil.PI / 2)) / 2 + 0.5F;
 			
 			red = (int) ((getRed(color)) + 30 * (testFactor));
 			

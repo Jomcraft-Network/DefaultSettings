@@ -2,6 +2,7 @@ package de.pt400c.defaultsettings.gui;
 
 import java.awt.Color;
 import java.util.function.Function;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

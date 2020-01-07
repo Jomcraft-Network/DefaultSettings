@@ -6,8 +6,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.neptunefx.NEX.*;
-import static de.pt400c.defaultsettings.FileUtil.MC;
 import de.pt400c.defaultsettings.GuiConfig;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
@@ -42,7 +42,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 
 		if (this.activated) {
 			
-			if (this.timer <= (Math.PI / 3)) 
+			if (this.timer <= MathUtil.PI / 3) 
 				this.timer += 0.05;
 
 		} else {
@@ -51,11 +51,11 @@ public class ButtonMenuSegment extends ButtonSegment {
 				this.timer -= 0.05;
 		}
 		
-		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (Math.PI / 2)) + 1) / 2);
+		float alpha = (float) ((Math.sin(3 * this.timer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 		
 		if(!(width < 3.5F)) {
 		
-			if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < (2 * Math.PI))
+			if((this.isSelected(mouseX, mouseY) || this.activated) && offsetTick < 2 * MathUtil.PI)
 				offsetTick += 0.4;
 	
 			else if(offsetTick > 0 && !(this.isSelected(mouseX, mouseY) || this.activated))
@@ -68,7 +68,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			glBlendFuncSeparate(770, 771, 1, 0);
 
 			final int scaleFactor = (int) scaledFactor;
-			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledWidth() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
+			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 
 			glDisable(GL_BLEND);
 			glDisable(GL_SCISSOR_TEST);

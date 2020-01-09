@@ -14,15 +14,12 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL30;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 
-@OnlyIn(Dist.CLIENT)
 public class FontRendererClass {
     protected final float[] charWidthBold = new float[256];
     protected final float[] charYOffBold = new float[256];

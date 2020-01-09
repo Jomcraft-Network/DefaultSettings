@@ -21,6 +21,7 @@ import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
 import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -51,11 +52,12 @@ public class DefaultSettings {
 	public DefaultSettings() {
 		instance = this;
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
-
-		if (FMLLoader.getDist() == Dist.CLIENT) {
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			if (setUp)
 				return;
+			
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+			
 			try {
 				Field sortedList = ModList.class.getDeclaredField("sortedList");
 				sortedList.setAccessible(true);
@@ -84,12 +86,14 @@ public class DefaultSettings {
 			MinecraftForge.EVENT_BUS.register(new EventHandlers114());
 			MinecraftForge.EVENT_BUS.register(new UnregHandlers114());
 
-			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (mc, screen) -> new GuiConfig(screen));
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> GuiConfig::new);
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> "ANY", (remote, isServer) -> true));
 
-		} else {
+		});
+		
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-		}
+		});
 	}
 	
 	@SuppressWarnings("unchecked")

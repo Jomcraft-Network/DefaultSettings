@@ -17,15 +17,12 @@ import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL30;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 
 @SuppressWarnings("deprecation")
-@OnlyIn(Dist.CLIENT)
 public class FontRendererClass implements IResourceManagerReloadListener {
     protected final float[] charWidthBold = new float[256];
     protected final float[] charYOffBold = new float[256];

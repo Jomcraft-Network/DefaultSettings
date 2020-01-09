@@ -20,6 +20,7 @@ import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -45,12 +46,13 @@ public class DefaultSettings {
 	public DefaultSettings() {
 		instance = this;
 		
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
-		
-		if(FMLLoader.getDist() == Dist.CLIENT) {
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			
 			if (setUp)
 				return;
+			
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+			
 			try {
 				FileUtil.restoreContents();
 			} catch (Exception e) {
@@ -60,11 +62,13 @@ public class DefaultSettings {
 			setUp = true;
 			MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
 			MinecraftForge.EVENT_BUS.register(new EventHandlers());
-			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, ()-> (mc, screen) -> new GuiConfig(screen));
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> GuiConfig::new);
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(()-> "ANY", (remote, isServer) -> true));
-		}else {
+		});
+		
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-		}
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -88,7 +92,7 @@ public class DefaultSettings {
     }*/
 
 	public void postInit(FMLLoadCompleteEvent event) {
-		if(FMLLoader.getDist() == Dist.CLIENT) {
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			
 			fontRenderer = new FontRendererClass();
 			((IReloadableResourceManager) MC.getResourceManager()).addReloadListener(fontRenderer);
@@ -106,9 +110,11 @@ public class DefaultSettings {
 			} catch (NullPointerException e) {
 				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 			}
-		}else {
+		});
+		
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-		}
+		});
 	}
 	
 	private static void getBuildID() throws FileNotFoundException, IOException {

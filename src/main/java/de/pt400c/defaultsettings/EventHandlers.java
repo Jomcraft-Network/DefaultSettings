@@ -25,7 +25,7 @@ public class EventHandlers {
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		if ((MC.currentScreen instanceof GuiModList && MC.world == null) && InputMappings.isKeyDown(GLFW_KEY_F7) && InputMappings.isKeyDown(GLFW_KEY_G))
 			
-			MC.displayGuiScreen(new GuiConfig(MC.currentScreen));
+			MC.displayGuiScreen(new GuiConfig(MC, MC.currentScreen));
 	}
 
 	@SubscribeEvent

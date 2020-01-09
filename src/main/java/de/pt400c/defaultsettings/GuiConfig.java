@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.apache.logging.log4j.Level;
 import de.pt400c.defaultsettings.gui.*;
 import de.pt400c.neptunefx.NEX;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -39,8 +40,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 	private int storeWidth;
 	private int storeHeight;
     
-    public GuiConfig(GuiScreen parentScreen) {
-        this.mc = MC;
+    public GuiConfig(Minecraft minecraft, GuiScreen parentScreen) {
+        this.mc = minecraft;
         this.parentScreen = parentScreen;
     }
     

@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.apache.logging.log4j.Level;
 import de.pt400c.defaultsettings.gui.*;
 import de.pt400c.neptunefx.NEX;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -41,9 +42,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 	private int storeWidth;
 	private int storeHeight;
     
-	public GuiConfig(Screen parentScreen) {
+	public GuiConfig(Minecraft minecraft, Screen parentScreen) {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
-    	this.minecraft = MC;
+    	this.minecraft = minecraft;
         this.parentScreen = parentScreen;
 	}
     

@@ -77,6 +77,7 @@ public class DefaultSettings {
 	public static void preInit(FMLPreInitializationEvent event) {
 		if (isServer)
 			return;
+		ClientCommandHandler.instance.registerCommand(new CommandSwitchProfiles());
 		ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings());
 		MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
 	}

@@ -58,7 +58,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 				this.setActive(0);
 		}else if (keyCode == 1) {
 			
-			if(FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+			if(this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
 				exportModeInfo();
 			}else {
 			
@@ -104,7 +104,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 			@Override
 			public Boolean apply(ButtonSegment button) {
 				
-				if(FileUtil.exportMode() && FileUtil.getActives().size() != 0)
+				if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0)
 	    			GuiConfig.this.exportModeInfo();
 				else 
 					GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);

@@ -81,7 +81,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		}else if (keyCode == 1)
         {
 			
-			if(FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+			if(this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
 				exportModeInfo();
 			}else {
 			
@@ -123,7 +123,7 @@ public class GuiConfig extends DefaultSettingsGUI {
         this.framebufferMc = new FramebufferObject(MC.displayWidth, MC.displayHeight);
         this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
-        	if(FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+        	if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
     			GuiConfig.this.exportModeInfo();
 			}else {
     		

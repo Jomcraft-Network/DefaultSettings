@@ -75,6 +75,7 @@ public class DefaultSettings {
 		if (isServer)
 			return;
 		
+		ClientCommandHandler.instance.registerCommand(new CommandSwitchProfile());
 		ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings());
 		MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
 		MinecraftForge.EVENT_BUS.register(new EventHandlers());

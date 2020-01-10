@@ -15,12 +15,12 @@ public class EventHandlers114 {
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		
 		if ((MC.currentScreen instanceof ModListScreen && MC.world == null) && InputMappings.isKeyDown(MC.func_228018_at_().getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(MC.func_228018_at_().getHandle(), GLFW_KEY_G))
-			
 			MC.displayGuiScreen(new GuiConfig(MC, MC.currentScreen));
 	}
 
 	@SubscribeEvent
 	public void serverStarting(FMLServerStartingEvent event) {
+		CommandSwitchProfile.register(event);
 		CommandDefaultSettings.register(event);
 	}
 	

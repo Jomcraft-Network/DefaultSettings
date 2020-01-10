@@ -115,6 +115,7 @@ public class DefaultSettings {
     }*/
 
 	public void postInit(FMLLoadCompleteEvent event) {
+		
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			
 			fontRenderer = new FontRendererClass();

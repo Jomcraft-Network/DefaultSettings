@@ -30,6 +30,7 @@ public class EventHandlers {
 
 	@SubscribeEvent
 	public void serverStarting(FMLServerStartingEvent event) {
+		CommandSwitchProfile.register(event);
 		CommandDefaultSettings.register(event);
 	}
 	

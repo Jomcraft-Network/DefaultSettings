@@ -45,7 +45,7 @@ public class HelpSegment extends BakedSegment {
 		}else if(gui.menu.index == 1) {
 			gui.popupField.getWindow().addChild(new TextSegment(gui, 5, 29, 0, 0, "In addition DefaultSettings can also deal with config\n\u00a7bfiles\u00a7r and \u00a7bfolders\u00a7r used by your modpack.\n Just like the configurations from the 'Save' tab,\neverything which has been ticked will be shipped to the\nmodpack's user \u00a7aas you command\u00a7r.\n\nIf you want to update specific configs, just change\nthem locally and export the modpack again. This\nallows you to force the config to get overridden on the\nclient's side once when they update the modpack." + end, 0xffffffff, true));
 		}else if(gui.menu.index == 2) {
-			gui.popupField.getWindow().addChild(new TextSegment(gui, 5, 29, 0, 0, "Coming soon, not added yet." + end, 0xffffffff, true));
+			gui.popupField.getWindow().addChild(new TextSegment(gui, 5, 29, 0, 0, "Here you can create and modify certain \u00a7bprofiles\u00a7r or\n\u00a7binstances\u00a7r of DefaultSettings's configs. The profile\nmarked as main (blue dot) will be used by your users by\ndefault, eventhough they may switch their local profile." + end, 0xffffffff, true));
 		}else {
 			gui.popupField.getWindow().addChild(new TextSegment(gui, 5, 29, 0, 0, "Nothing here, I guess? See ya." + end, 0xffffffff, true));
 		}

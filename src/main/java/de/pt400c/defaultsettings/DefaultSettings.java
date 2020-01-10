@@ -77,8 +77,10 @@ public class DefaultSettings {
 	public static void preInit(FMLPreInitializationEvent event) {
 		
 		if(DefaultSettings.mcVersion.startsWith("1.8")) {
+			ClientCommandHandler.instance.registerCommand(new CommandSwitchProfile_18());
 			ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_18());
 		}else {
+			ClientCommandHandler.instance.registerCommand(new CommandSwitchProfile_19());
 			ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_19());
 		}
 		

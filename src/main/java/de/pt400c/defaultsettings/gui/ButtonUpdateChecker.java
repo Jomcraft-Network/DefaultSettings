@@ -101,7 +101,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 					textWidth = fontRenderer.getStringWidth(line, 0.8F, true);
 			}
 			
-			drawButton(mouseX + 5, mouseY - 7 - 10 * lines.size(), mouseX + 12 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
+			drawButton(mouseX + 5, mouseY - 7 - 10 * lines.size(), mouseX + 15 + textWidth, mouseY - 3, 0xff3a3a3a, 0xffdcdcdc, 2);
 			int offset = 0;
 			
 			Collections.reverse(lines);

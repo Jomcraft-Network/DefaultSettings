@@ -39,10 +39,8 @@ import com.google.gson.JsonSyntaxException;
 import cpw.mods.modlauncher.api.INameMappingService;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
-import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -64,6 +62,7 @@ public class FileUtil {
 	public volatile static boolean servers_exists = false;
 	public static String activeProfile = "Default";
 	public static boolean otherCreator = false;
+	public static boolean firstBootUp = false;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -333,8 +332,8 @@ public class FileUtil {
 		activeProfile = privateJson.currentProfile;
 		
 		final File options = new File(mcDataDir, "options.txt");
-		boolean firstBoot = !options.exists();
-		if (firstBoot) {
+		firstBootUp = !options.exists();
+		if (firstBootUp) {
 			restoreOptions();
 			if(!exportMode())
 				moveAllConfigs();
@@ -363,22 +362,7 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
-		
-		if (firstBoot) {
 
-			GameSettings gameSettings = MC.gameSettings;
-			gameSettings.loadOptions();
-			MC.getResourcePackList().reloadPacksFromFinders();
-			List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
-			for (String resourcePack : gameSettings.resourcePacks) 
-				for (ClientResourcePackInfo entry : MC.getResourcePackList().getAllPacks()) 
-					if (entry.getName().equals(resourcePack)) 
-						repositoryEntries.add(entry);
-					
-			MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
-
-		}
-		
 		if(!options.exists())
 			options.createNewFile();
 			

@@ -745,7 +745,7 @@ public class FileUtil {
 	public static void saveKeys() throws IOException, NullPointerException {
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
+			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
 				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
 

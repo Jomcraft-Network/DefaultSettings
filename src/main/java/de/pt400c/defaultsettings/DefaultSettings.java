@@ -19,6 +19,8 @@ import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
 import de.pt400c.defaultsettings.font.FontRendererClass;
+import net.minecraft.client.GameSettings;
+import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -72,7 +74,6 @@ public class DefaultSettings {
 				modInfoField.set(modContainer, (IModInfo) modInfo);
 
 			} catch (NullPointerException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-
 				e.printStackTrace();
 			}
 
@@ -124,6 +125,21 @@ public class DefaultSettings {
 			try {
 				getBuildID();
 				getBuildTime();
+				
+				if (FileUtil.firstBootUp) {
+
+					GameSettings gameSettings = FileUtil.MC.gameSettings;
+					gameSettings.loadOptions();
+					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
+					List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
+					for (String resourcePack : gameSettings.resourcePacks) 
+						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks()) 
+							if (entry.getName().equals(resourcePack)) 
+								repositoryEntries.add(entry);
+							
+					FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
+
+				}
 			} catch (NullPointerException | IOException  e) {
 
 			}

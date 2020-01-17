@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,6 +18,9 @@ import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.font.FontRendererClass;
+import net.minecraft.client.GameSettings;
+import net.minecraft.client.resources.LanguageManager;
+import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -100,6 +104,23 @@ public class DefaultSettings {
 			try {
 				getBuildID();
 				getBuildTime();
+				
+				if (FileUtil.firstBootUp) {
+
+					GameSettings gameSettings = MC.gameSettings;
+					gameSettings.loadOptions();
+					MC.getResourcePackList().reloadPacksFromFinders();
+					List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
+					for (String resourcePack : gameSettings.resourcePacks) 
+						for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b()) 
+							if (entry.getName().equals(resourcePack)) 
+								repositoryEntries.add(entry);
+							
+					MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
+					FileUtil.setField(FileUtil.devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
+
+				}
+				
 			} catch (NullPointerException | IOException e) {
 				
 			}

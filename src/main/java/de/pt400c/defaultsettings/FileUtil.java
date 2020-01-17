@@ -36,15 +36,11 @@ import org.apache.logging.log4j.Level;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-
 import cpw.mods.modlauncher.api.INameMappingService;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
-import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.LanguageManager;
-import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -66,6 +62,7 @@ public class FileUtil {
 	public volatile static boolean servers_exists = false;
 	public static String activeProfile = "Default";
 	public static boolean otherCreator = false;
+	public static boolean firstBootUp = false;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -335,8 +332,8 @@ public class FileUtil {
 		activeProfile = privateJson.currentProfile;
 		
 		final File options = new File(mcDataDir, "options.txt");
-		boolean firstBoot = !options.exists();
-		if (firstBoot) {
+		firstBootUp = !options.exists();
+		if (firstBootUp) {
 			restoreOptions();
 			if(!exportMode())
 				moveAllConfigs();
@@ -365,22 +362,6 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
-		
-		if (firstBoot) {
-
-			GameSettings gameSettings = MC.gameSettings;
-			gameSettings.loadOptions();
-			MC.getResourcePackList().reloadPacksFromFinders();
-			List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
-			for (String resourcePack : gameSettings.resourcePacks) 
-				for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b()) 
-					if (entry.getName().equals(resourcePack)) 
-						repositoryEntries.add(entry);
-					
-			MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
-			setField(devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
-
-		}
 		
 		if(!options.exists())
 			options.createNewFile();
@@ -750,7 +731,7 @@ public class FileUtil {
 	public static void saveKeys() throws IOException, NullPointerException {
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), "keys.txt")));
+			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
 				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
 
@@ -847,7 +828,7 @@ public class FileUtil {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private static void setField(String name, Class clazz, Object obj, Object value) {
+	static void setField(String name, Class clazz, Object obj, Object value) {
 		try {
 			Field field = clazz.getDeclaredField(name);
 			field.setAccessible(true);

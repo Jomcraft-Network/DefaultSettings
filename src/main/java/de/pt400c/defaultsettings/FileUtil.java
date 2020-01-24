@@ -56,7 +56,7 @@ public class FileUtil {
 	public static PrivateJSON privateJson;
 	public static final String privateLocation = "ds_private_storage.json";
 	public static final String mainLocation = "config/defaultsettings.json";
-	public static Thread registryChecker;
+	public volatile static Thread registryChecker;
 	public volatile static boolean options_exists = false;
 	public volatile static boolean keys_exists = false;
 	public volatile static boolean servers_exists = false;

@@ -159,7 +159,7 @@ curseforge {
     changelog = file("changelog.html")
     changelogType = 'html'
     releaseType = 'release'
-    addGameVersion '1.15.1'
+    addGameVersion '1.15.2'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }
@@ -188,7 +188,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
         	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.15.1'
+            artifactId = 'DefaultSettings-1.15.2'
             version = "$fileVersion"
             artifact jar
             artifact deobfJar

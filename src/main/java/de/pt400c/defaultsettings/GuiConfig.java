@@ -41,11 +41,14 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public ProfilesSegment scrollableProfiles;
 	private int storeWidth;
 	private int storeHeight;
+	private final int framerateLimit;
     
 	public GuiConfig(Minecraft minecraft, Screen parentScreen) {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
     	this.minecraft = minecraft;
         this.parentScreen = parentScreen;
+        this.framerateLimit = Minecraft.getInstance().func_228018_at_().getLimitFramerate();
+        Minecraft.getInstance().func_228018_at_().setFramerateLimit(60);
 	}
     
     @Override
@@ -261,6 +264,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	BakeryRegistry.clearAll();
     	if(framebufferMc != null)
     		framebufferMc.deleteFramebuffer();
+    	Minecraft.getInstance().func_228018_at_().setFramerateLimit(this.framerateLimit);
     	super.onClose();
     }
     

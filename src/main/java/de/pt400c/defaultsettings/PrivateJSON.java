@@ -13,6 +13,7 @@ public class PrivateJSON {
 	public String targetProfile = "!NEW!";
 	public String currentProfile = "!NEW!";
 	public String privateIdentifier = null;
+	private boolean framerateTransformAllowed = true;
 	
 	public void save(File persistentLocation) {
 		try (FileWriter writer = new FileWriter(persistentLocation)) {
@@ -20,5 +21,9 @@ public class PrivateJSON {
         } catch (IOException e) {
         	DefaultSettings.log.log(Level.SEVERE, "Exception at processing startup: ", e);
         }
+	}
+	
+	public boolean framerateASM() {
+		return this.framerateTransformAllowed;
 	}
 }

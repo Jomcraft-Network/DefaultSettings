@@ -4,7 +4,12 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
+import com.google.gson.GsonBuilder;
+import de.pt400c.defaultsettings.PrivateJSON;
 import static org.objectweb.asm.Opcodes.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.Arrays;
 
 public class DefaultSettingsClassTransformer implements IClassTransformer {
@@ -53,6 +58,25 @@ public class DefaultSettingsClassTransformer implements IClassTransformer {
 		final String CLASS_NAME = isObfuscated ? "func_71411_J" : "runGameLoop";
 		final String CLASS_DESC_OBF = "()V";
 
+		final File main = new File(DefaultSettingsPlugin.dataDir, "ds_private_storage.json");
+		
+		if(main.exists()) {
+			try (Reader reader = new FileReader(main)) {
+				PrivateJSON privateJson = new GsonBuilder().setPrettyPrinting().create().fromJson(reader, PrivateJSON.class);
+				
+				if(!privateJson.framerateASM()) {
+					System.out.println("ASM not allowed!");
+					return;
+				}
+				
+			 } catch (Exception e) {
+
+		     }
+			
+		}
+
+		System.out.println("ASM of frame rate method allowed!");
+		
 		for (MethodNode method : mainClass.methods) {
 
 			if (method.name.equals(CLASS_NAME) && method.desc.equals(CLASS_DESC_OBF)) {

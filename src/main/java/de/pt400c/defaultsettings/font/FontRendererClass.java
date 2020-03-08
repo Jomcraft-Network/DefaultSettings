@@ -40,16 +40,28 @@ public class FontRendererClass implements IResourceManagerReloadListener {
     private float green;
     private float alpha;
     private int textColor;
+    private static boolean oldOpenGL = false;
 
     public FontRendererClass() {
         
         bindTexture(false);
-        GL30.glGenerateMipmap(GL_TEXTURE_2D);
+        oldOpenGL = true;
+		if(!oldOpenGL) {
+		
+			try {
+				GL30.glGenerateMipmap(GL_TEXTURE_2D);
+			}catch (IllegalStateException e) {
+				oldOpenGL = true;
+			}
+				
+		}
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         bindTexture(true);
-        GL30.glGenerateMipmap(GL_TEXTURE_2D);
+        if(!oldOpenGL) 
+			GL30.glGenerateMipmap(GL_TEXTURE_2D);
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

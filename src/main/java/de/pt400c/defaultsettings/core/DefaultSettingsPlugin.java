@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings.core;
 
+import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -12,7 +13,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 @IFMLLoadingPlugin.TransformerExclusions({ "de.pt400c.defaultsettings.core" })
 public class DefaultSettingsPlugin implements IFMLLoadingPlugin {
 
-
+	public static File dataDir;
+	
 	@Override
 	public String getAccessTransformerClass() {
 		return null;
@@ -37,7 +39,7 @@ public class DefaultSettingsPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public void injectData(Map<String, Object> data) {
-
+		dataDir = ((File) data.get("mcLocation"));
 	}
 
 }

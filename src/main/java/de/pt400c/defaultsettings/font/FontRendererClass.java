@@ -37,6 +37,7 @@ public class FontRendererClass {
     private float alpha;
     private int textColor;
     private static boolean init = true;
+    private static boolean oldOpenGL = false;
 
     public FontRendererClass() {
 
@@ -471,13 +472,25 @@ public class FontRendererClass {
     		
     		MC.getTextureManager().bindTexture(tex);
     		
-            GL30.glGenerateMipmap(GL_TEXTURE_2D);
+    		oldOpenGL = true;
+    		if(!oldOpenGL) {
+    		
+    			try {
+    				GL30.glGenerateMipmap(GL_TEXTURE_2D);
+    			}catch (IllegalStateException e) {
+    				oldOpenGL = true;
+    			}
+    				
+    		}
+
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             
             MC.getTextureManager().bindTexture(bold_tex);
             
-            GL30.glGenerateMipmap(GL_TEXTURE_2D);
+            if(!oldOpenGL) 
+    			GL30.glGenerateMipmap(GL_TEXTURE_2D);
+
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

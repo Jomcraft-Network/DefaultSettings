@@ -486,6 +486,27 @@ public class FileUtil {
 			mainJson.save(main);
 			
 		}
+		String firstFolder = "<ERROR>";
+		for(File file : getMainFolder().listFiles()) {
+			if(file.isDirectory()) {
+				firstFolder = file.getName();
+				break;
+			}
+		}
+		
+		if(firstFolder.equals("<ERROR>")) {
+			new File(getMainFolder(), "Default").mkdir();
+			
+			privateJson.targetProfile = "Default";
+			File main = new File(mcDataDir, privateLocation);
+
+			privateJson.save(main);
+			
+			getMainJSON().mainProfile = "Default";
+			main = new File(mcDataDir, mainLocation);
+
+			mainJson.save(main);
+		}
 		
 	}
 

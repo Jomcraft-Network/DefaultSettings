@@ -1,5 +1,6 @@
 package de.pt400c.defaultsettings.core;
 
+import java.io.File;
 import java.util.Map;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.DependsOn;
@@ -10,7 +11,8 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 @IFMLLoadingPlugin.TransformerExclusions({ "de.pt400c.defaultsettings.core" })
 public class DefaultSettingsPlugin implements IFMLLoadingPlugin {
 
-
+	public static File dataDir;
+	
 	@Override
 	public String getAccessTransformerClass() {
 		return null;
@@ -35,7 +37,7 @@ public class DefaultSettingsPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public void injectData(Map<String, Object> data) {
-
+		dataDir = ((File) data.get("mcLocation"));
 	}
 
 }

@@ -183,8 +183,8 @@ publishing {
         		username project.property("maven.username")
         		password project.property("maven.password")
     		}
-    	url "https://maven.jomcraft.net/repository/release"
-    }
+    		url "https://maven.jomcraft.net/repository/release"
+    	}
     
-}
+	}
 }

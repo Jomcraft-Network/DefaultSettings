@@ -47,7 +47,7 @@ public class ExportSegment extends BakedSegment {
 
 		setup();
 		
-		locked = ((GuiConfig) this.gui).menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0;
+		locked = ((GuiConfig) this.gui).menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0;
 
 		boolean inactive = false;
 		final byte exportActive = ((GuiConfig) this.gui).menu.exportActive.getByte();

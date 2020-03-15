@@ -83,7 +83,7 @@ public class ScrollableSegment extends Segment {
 			for (int i = 0; i < files.length; i++) {
 
 				float yOffTemp = row - 0.5F + row * i + add;
-				boolean active = FileUtil.getActives().contains(files[i].getName());
+				boolean active = FileUtil.mainJson.activeConfigs.contains(files[i].getName());
 				if (active)
 					activeCount++;
 				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, files[i].getName(), false, this, active)));

@@ -23,13 +23,13 @@ apply plugin: 'forge'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-version = "1.7.10-2.1.4"
+version = "1.7.10-2.1.5"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
 sourceCompatibility = targetCompatibility = '1.8'
 
-def fileVersion = "2.1.4"
+def fileVersion = "2.1.5"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 

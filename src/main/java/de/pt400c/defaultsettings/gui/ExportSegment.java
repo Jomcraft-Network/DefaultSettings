@@ -42,7 +42,7 @@ public class ExportSegment extends BakedSegment {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 
-		locked = ((GuiConfig) this.gui).menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0;
+		locked = ((GuiConfig) this.gui).menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0;
 		
 		if (resized != this.resized_mark)
 			posY = posYF.apply((GuiConfig) this.gui);

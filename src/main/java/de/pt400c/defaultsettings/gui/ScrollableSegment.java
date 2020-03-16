@@ -83,7 +83,7 @@ public class ScrollableSegment extends Segment {
 			for (int i = 0; i < files.length; i++) {
 
 				float yOffTemp = row - 0.5F + row * i + add;
-				boolean active = FileUtil.getActives().contains(files[i].getName());
+				boolean active = FileUtil.mainJson.activeConfigs.contains(files[i].getName());
 				if (active)
 					activeCount++;
 				rows.add(new RowItem(files[i].getName(), new ButtonCheckboxSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, files[i].getName(), false, this, active)));
@@ -268,7 +268,7 @@ public class ScrollableSegment extends Segment {
 
 		glPushMatrix();
 		glEnable(GL_SCISSOR_TEST);
-		glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (MC.func_228018_at_().getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
+		glScissor((int) (this.getPosX() * scaleFactor), (int) ( (float) (MC.getMainWindow().getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
 
 		for (int i = 0; i < this.list.size(); i++) {
 			final float yOffTemp = row - 0.5F + row * i + add;

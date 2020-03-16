@@ -43,8 +43,8 @@ public abstract class Segment {
 	}
 	
 	public boolean mouseScrolled(float p_mouseScrolled_1_) {
-		int mouseX = (int) (MC.mouseHelper.getMouseX() * MC.func_228018_at_().getScaledWidth() / (double) MC.func_228018_at_().getWidth());
-        int mouseY = (int) (MC.mouseHelper.getMouseY() * MC.func_228018_at_().getScaledHeight() / (double) MC.func_228018_at_().getHeight());
+		int mouseX = (int) (MC.mouseHelper.getMouseX() * MC.getMainWindow().getScaledWidth() / (double) MC.getMainWindow().getWidth());
+        int mouseY = (int) (MC.mouseHelper.getMouseY() * MC.getMainWindow().getScaledHeight() / (double) MC.getMainWindow().getHeight());
         return this.isSelected(mouseX, mouseY);
     }
     

@@ -14,7 +14,7 @@ public class EventHandlers114 {
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {
 		
-		if ((MC.currentScreen instanceof ModListScreen && MC.world == null) && InputMappings.isKeyDown(MC.func_228018_at_().getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(MC.func_228018_at_().getHandle(), GLFW_KEY_G))
+		if ((MC.currentScreen instanceof ModListScreen && MC.world == null) && InputMappings.isKeyDown(MC.getMainWindow().getHandle(), GLFW_KEY_F7) && InputMappings.isKeyDown(MC.getMainWindow().getHandle(), GLFW_KEY_G))
 			MC.displayGuiScreen(new GuiConfig(MC, MC.currentScreen));
 	}
 

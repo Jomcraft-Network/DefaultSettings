@@ -211,7 +211,7 @@ public class ProfilesSegment extends Segment {
 
 		glPushMatrix();
 		glEnable(GL_SCISSOR_TEST);
-		glScissor((int) (this.getPosX() * scaleFactor), (int) ((float) (MC.func_228018_at_().getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
+		glScissor((int) (this.getPosX() * scaleFactor), (int) ((float) (MC.getMainWindow().getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
 		boolean hover = false;
 		for (int i = 0; i < this.list.size(); i++) {
 			final float yOffTemp = row - 0.5F + row * i + add;

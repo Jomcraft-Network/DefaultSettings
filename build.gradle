@@ -20,11 +20,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.15.2-2.1.4"
+version = "1.15.2-2.1.5"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.4"
+def fileVersion = "2.1.5"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "de.pt400c.defaultsettings"
 
@@ -33,7 +33,7 @@ archivesBaseName = "DefaultSettings"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: 'snapshot', version: '20200225-1.15.1'
 
 	runs {
         client {
@@ -53,10 +53,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.18'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.1.24'
 }
 
-def forge_version = "31.1.18"
+def forge_version = "31.1.24"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {

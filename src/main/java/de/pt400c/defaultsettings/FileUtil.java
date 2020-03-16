@@ -67,7 +67,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getActives().contains(file.getName())))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getMainJSON().activeConfigs.contains(file.getName())))
 				return true;
 
 			return false;
@@ -103,7 +103,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getActives().contains(file.getName()))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getMainJSON().activeConfigs.contains(file.getName()))
 				return true;
 
 			return false;
@@ -131,11 +131,7 @@ public class FileUtil {
 		storeFolder.mkdir();
 		return storeFolder;
 	}
-	
-	public static List<String> getActives()  {
-		return getMainJSON().activeConfigs;
-	}
-	
+
 	public static void switchState(Byte state, String query) {
 		
 		FileFilter ff = null;
@@ -494,6 +490,7 @@ public class FileUtil {
 	}
 
 	private static void copyAndHash() {
+		ArrayList<String> toRemove = new ArrayList<String>();
 		for(String name : mainJson.activeConfigs) {
 			File file = new File(mcDataDir, "config");
 			File fileInner = new File(file, name);
@@ -539,8 +536,21 @@ public class FileUtil {
 					}
 				}
 			}catch (IOException e) {
-				e.printStackTrace();
+				if(e instanceof FileNotFoundException) {
+					DefaultSettings.log.log(Level.DEBUG, "The file no longer exists: ", e);
+					toRemove.add(name);
+				}else {
+					DefaultSettings.log.log(Level.WARN, "Error while creating hash: ", e);
+				}
 			}
+		}
+		
+		for(String remove : toRemove) {
+			mainJson.activeConfigs.remove(remove);
+		}
+		if(toRemove.size() > 0) {
+			final File main = new File(mcDataDir, mainLocation);
+			mainJson.save(main);
 		}
 		
 	}

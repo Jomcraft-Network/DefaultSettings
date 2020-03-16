@@ -189,7 +189,7 @@ public class ButtonBulkActionSegment extends Segment {
 				int activeCount = 0;
 				for (int i = 0; i < rows.size(); i++) {
 
-					boolean active = FileUtil.getActives().contains(files[i].getName());
+					boolean active = FileUtil.mainJson.activeConfigs.contains(files[i].getName());
 					if (active)
 						activeCount++;
 

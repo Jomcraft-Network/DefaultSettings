@@ -64,13 +64,13 @@ public class ProfilesSegment extends Segment {
 
 		int i = 0;
 		this.lel.clear();
-		for (File leli : fileDir.listFiles()) {
-			if (!leli.isDirectory() || (arg != null && arg.length != 0 && !leli.getName().toLowerCase().startsWith(arg[0].toLowerCase())))
+		for (File file : fileDir.listFiles()) {
+			if (!file.isDirectory() || (arg != null && arg.length != 0 && !file.getName().toLowerCase().startsWith(arg[0].toLowerCase())) || file.getName().equals("sharedConfigs"))
 				continue;
 			float yOffTemp = row - 0.5F + row * i;
 			i++;
-			this.lel.add(leli.getName());
-			rows.add(new RowItem(leli.getName(), new RadioButtonSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, leli.getName(), false, this)));
+			this.lel.add(file.getName());
+			rows.add(new RowItem(file.getName(), new RadioButtonSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, file.getName(), false, this)));
 		}
 
 		return rows;

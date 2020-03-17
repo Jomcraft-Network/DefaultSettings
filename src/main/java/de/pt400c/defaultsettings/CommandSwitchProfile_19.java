@@ -53,11 +53,11 @@ public class CommandSwitchProfile_19 extends CommandBase {
 
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
     	ArrayList<String> arg = new ArrayList<String>();
-    	for(File leli : FileUtil.getMainFolder().listFiles()) {
-			if(!leli.isDirectory())
+    	for(File file : FileUtil.getMainFolder().listFiles()) {
+			if(!file.isDirectory() || file.getName().equals("sharedConfigs"))
 				continue;
 
-			arg.add(leli.getName());
+			arg.add(file.getName());
 
 		}
 

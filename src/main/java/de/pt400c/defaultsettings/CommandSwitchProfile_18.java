@@ -30,11 +30,11 @@ public class CommandSwitchProfile_18 extends CommandBase {
     
     public List<String> func_180525_a(ICommandSender sender, String[] args, BlockPos pos) {
     	ArrayList<String> arg = new ArrayList<String>();
-    	for(File leli : FileUtil.getMainFolder().listFiles()) {
-			if(!leli.isDirectory())
+    	for(File file : FileUtil.getMainFolder().listFiles()) {
+			if(!file.isDirectory() || file.getName().equals("sharedConfigs"))
 				continue;
 
-			arg.add(leli.getName());
+			arg.add(file.getName());
 
 		}
 

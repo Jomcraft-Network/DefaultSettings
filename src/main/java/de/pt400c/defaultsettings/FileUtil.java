@@ -56,6 +56,7 @@ public class FileUtil {
 	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	public static MainJSON mainJson;
 	public static PrivateJSON privateJson;
+	public static IgnoreJSON ignoreJson;
 	public static final String privateLocation = "ds_private_storage.json";
 	public static final String mainLocation = "config/defaultsettings.json";
 	public volatile static Thread registryChecker;
@@ -204,6 +205,32 @@ public class FileUtil {
 		}
 		
 		mainJson.save(main);
+		File shared = new File(getMainFolder(), "sharedConfigs");
+		shared.mkdir();
+		getSharedIgnore(new File(shared, "ignore.json"));
+		
+	}
+	
+	public static IgnoreJSON getSharedIgnore(File location) {
+
+		if(ignoreJson != null)
+			return ignoreJson;
+		
+		if(location.exists()) {
+			try (Reader reader = new FileReader(location)) {
+				ignoreJson = gson.fromJson(reader, IgnoreJSON.class);
+				ignoreJson.location = location;
+				
+			 } catch (Exception e) {
+				DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);  	
+		     }
+			
+		}else {
+			
+			ignoreJson = new IgnoreJSON(location);
+			ignoreJson.save();
+		}
+		return ignoreJson;
 	}
 	
 	public static PrivateJSON getPrivateJSON() {
@@ -289,7 +316,7 @@ public class FileUtil {
 		String firstFolder = "<ERROR>";
 		
 		for(File file : getMainFolder().listFiles()) {
-			if(file.isDirectory()) {
+			if(file.isDirectory() && !file.getName().equals("sharedConfigs")) {
 				firstFolder = file.getName();
 				break;
 			}
@@ -482,7 +509,7 @@ public class FileUtil {
 		}
 		String firstFolder = "<ERROR>";
 		for(File file : getMainFolder().listFiles()) {
-			if(file.isDirectory()) {
+			if(file.isDirectory() && !file.getName().equals("sharedConfigs")) {
 				firstFolder = file.getName();
 				break;
 			}
@@ -972,6 +999,25 @@ public class FileUtil {
 		final File main = new File(mcDataDir, mainLocation);
 		mainJson.save(main);
 		
+	}
+	
+	public static class IgnoreJSON {
+		
+		public static transient final long serialVersionUID = 2349872L;
+		private transient File location;
+		public ArrayList<String> ignore = new ArrayList<String>();
+		
+		public IgnoreJSON(File location) {
+			this.location = location;
+		}
+		
+		public void save() {
+			try (FileWriter writer = new FileWriter(this.location)) {
+	            FileUtil.gson.toJson(this, writer);
+	        } catch (IOException e) {
+	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
+	        }
+		}
 	}
 
 }

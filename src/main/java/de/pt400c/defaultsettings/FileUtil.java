@@ -63,13 +63,21 @@ public class FileUtil {
 	public volatile static boolean options_exists = false;
 	public volatile static boolean keys_exists = false;
 	public volatile static boolean servers_exists = false;
+	public static final ArrayList<String> optUse = new ArrayList<String>() {
+		private static final long serialVersionUID = -6765486158086901202L;
+	{
+	    add("options.txt");
+	    add("servers.dat");
+	    add("optionsof.txt");
+	    add("keys.txt");
+	}};
 	public static String activeProfile = "Default";
 	public static boolean otherCreator = false;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getMainJSON().activeConfigs.contains(file.getName())))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getMainJSON().activeConfigs.contains(file.getName())))
 				return true;
 
 			return false;
@@ -100,7 +108,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getMainJSON().activeConfigs.contains(file.getName()))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getMainJSON().activeConfigs.contains(file.getName()))
 				return true;
 
 			return false;
@@ -205,10 +213,6 @@ public class FileUtil {
 		}
 		
 		mainJson.save(main);
-		File shared = new File(getMainFolder(), "sharedConfigs");
-		shared.mkdir();
-		getSharedIgnore(new File(shared, "ignore.json"));
-		
 	}
 	
 	public static IgnoreJSON getSharedIgnore(File location) {
@@ -529,10 +533,37 @@ public class FileUtil {
 			mainJson.save(main);
 		}
 		
+		File shared = new File(getMainFolder(), activeProfile + "/" + "sharedConfigs");
+		shared.mkdir();
+		getSharedIgnore(new File(shared, "ignore.json"));
 	}
 
-	private static void copyAndHash() {
+	private static void copyAndHash() throws NullPointerException, IOException {
 		ArrayList<String> toRemove = new ArrayList<String>();
+		for(String opt : optUse) {
+			File optFile = new File(getMainFolder(), activeProfile + "/" + opt);
+			if(optFile.exists()) {
+				if(!getPrivateJSON().currentHash.containsKey(activeProfile + "/" + opt) || !getPrivateJSON().currentHash.get(activeProfile + "/" + opt).equals(mainJson.hashes.get(activeProfile + "/" + opt))) {
+
+					
+					if(opt.equals("options.txt")) {
+						restoreOptions();
+					}else if(opt.equals("keys.txt")) {
+						restoreKeys();
+					}else if(opt.equals("optionsof.txt")) {
+						restoreOptionsOF();
+					}else if(opt.equals("servers.dat")) {
+						restoreServers();
+					}
+				
+					getPrivateJSON().currentHash.put(activeProfile + "/" + opt, mainJson.hashes.get(activeProfile + "/" + opt));
+					
+					
+				}
+			}
+				
+		}
+		
 		for(String name : mainJson.activeConfigs) {
 			File file = new File(mcDataDir, "config");
 			File fileInner = new File(file, name);
@@ -557,10 +588,7 @@ public class FileUtil {
 							FileUtils.copyFile(newF, configLoc);
 							
 							getPrivateJSON().currentHash.put(activeProfile + "/" + loc, mainJson.hashes.get(activeProfile + "/" + loc));
-							
-							final File main2 = new File(mcDataDir, privateLocation);
 
-							privateJson.save(main2);
 						}
 					}
 					
@@ -572,9 +600,7 @@ public class FileUtil {
 					
 						getPrivateJSON().currentHash.put(activeProfile + "/" + name, mainJson.hashes.get(activeProfile + "/" + name));
 						
-						final File main2 = new File(mcDataDir, privateLocation);
-
-						privateJson.save(main2);
+						
 					}
 				}
 			}catch (IOException e) {
@@ -590,6 +616,11 @@ public class FileUtil {
 		for(String remove : toRemove) {
 			mainJson.activeConfigs.remove(remove);
 		}
+		
+		final File main2 = new File(mcDataDir, privateLocation);
+
+		privateJson.save(main2);
+		
 		if(toRemove.size() > 0) {
 			final File main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
@@ -627,14 +658,27 @@ public class FileUtil {
 	public static void restoreOptions() throws NullPointerException, IOException {
 		final File optionsFile = new File(getMainFolder(), activeProfile + "/options.txt");
 		if (optionsFile.exists()) {
+			BufferedReader readerOptions = null;
 			BufferedReader reader = null;
 			PrintWriter writer = null;
+			ArrayList<String> list = new ArrayList<String>();
 			try {
 				reader = new BufferedReader(new FileReader(optionsFile));	
+				readerOptions = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
+				
+				String lineOptions;
+				while ((lineOptions = readerOptions.readLine()) != null) {
+					if (lineOptions.startsWith("key_"))
+						list.add(lineOptions);
+				}
+				
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "options.txt")));
 				String line;
 				while ((line = reader.readLine()) != null) 
 					writer.print(line + "\n");
+				
+				for(String entry : list)
+					writer.print(entry + "\n");
 				
 			} catch (IOException e) {
 				throw e;
@@ -642,6 +686,7 @@ public class FileUtil {
 				try {
 					reader.close();
 					writer.close();
+					readerOptions.close();
 				} catch (IOException e) {
 					throw e;
 				} catch (NullPointerException e) {
@@ -652,6 +697,7 @@ public class FileUtil {
 	}
 	
 	public static void restoreKeys() throws NullPointerException, IOException, NumberFormatException {
+
 		if(DefaultSettings.mcVersion.startsWith("1.8"))
 			DefaultSettings.keyRebinds_18.clear();
 		else
@@ -660,10 +706,15 @@ public class FileUtil {
 		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		if (keysFile.exists()) {
 			BufferedReader reader = null;
+			PrintWriter writer = null;
 			try {
 				reader = new BufferedReader(new FileReader(keysFile));
+				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "keys.txt")));
 				String line;
 				while ((line = reader.readLine()) != null) {
+					
+					writer.print(line + "\n");
+					
 					if (line.isEmpty()) 
 						continue;
 
@@ -680,6 +731,7 @@ public class FileUtil {
 			} finally {
 				try {
 					reader.close();
+					writer.close();
 				} catch (IOException e) {
 					throw e;
 				} catch (NullPointerException e) {

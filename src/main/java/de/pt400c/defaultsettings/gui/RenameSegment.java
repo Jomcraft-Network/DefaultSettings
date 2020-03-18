@@ -104,7 +104,7 @@ public class RenameSegment extends Segment {
 			if(this.type == 0) {
 				GuiConfig gui = ((GuiConfig) this.gui);
 				
-				if(!gui.scrollableProfiles.lel.contains(this.query.toLowerCase())) {
+				if(!gui.scrollableProfiles.profiles.contains(this.query.toLowerCase())) {
 				
 				ProfilesSegment parent2 = gui.scrollableProfiles;
 				ContextMenuSegment parent = parent2.context;
@@ -147,7 +147,7 @@ public class RenameSegment extends Segment {
 			}else if(this.type == 1) {
 
 				GuiConfig gui = ((GuiConfig) this.gui);
-				if(!gui.scrollableProfiles.lel.contains(this.query.toLowerCase())) {
+				if(!gui.scrollableProfiles.profiles.contains(this.query.toLowerCase())) {
 					gui.popupField.setOpening(false);
 					gui.scrollableProfiles.context.backgroundTimer = 2.5F * (MathUtil.PI / 3);
 					gui.scrollableProfiles.context.setPos(-100, -100);
@@ -163,7 +163,7 @@ public class RenameSegment extends Segment {
 			} else if(this.type == 2) {
 				GuiConfig gui = ((GuiConfig) this.gui);
 				
-				if(!gui.scrollableProfiles.lel.contains(this.query.toLowerCase())) {
+				if(!gui.scrollableProfiles.profiles.contains(this.query.toLowerCase())) {
 				
 				ProfilesSegment parent2 = gui.scrollableProfiles;
 				ContextMenuSegment parent = parent2.context;

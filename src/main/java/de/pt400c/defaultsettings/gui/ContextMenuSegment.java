@@ -113,7 +113,7 @@ public class ContextMenuSegment extends Segment {
 		this.nameField.cursorPosition = text.length();
 		gui.popupField.getWindow().addChild(new ButtonRoundSegment(gui, 105 - 30, 75, 60, 20, "Okay", null, button -> {
 
-			if(!gui.scrollableProfiles.lel.contains(this.nameField.query.toLowerCase())) {
+			if(!gui.scrollableProfiles.profiles.contains(this.nameField.query.toLowerCase())) {
 
 			File fileDir = new File(FileUtil.getMainFolder(), this.nameField.tex);
 			File fileDir2 = new File(FileUtil.getMainFolder(), this.nameField.query);
@@ -162,7 +162,7 @@ public class ContextMenuSegment extends Segment {
 		
 		gui.popupField.getWindow().addChild(new ButtonRoundSegment(gui, 105 - 30, 75, 60, 20, "Okay", null, button -> {
 
-			if(!gui.scrollableProfiles.lel.contains(this.nameField.query.toLowerCase())) {
+			if(!gui.scrollableProfiles.profiles.contains(this.nameField.query.toLowerCase())) {
 			
 			if(ContextMenuSegment.this.parent.selectedName.equals(ContextMenuSegment.this.id)) 
 				ContextMenuSegment.this.parent.selectedName = ContextMenuSegment.this.nameField.query;

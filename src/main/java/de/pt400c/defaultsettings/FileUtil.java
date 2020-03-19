@@ -77,7 +77,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getMainJSON().activeConfigs.contains(file.getName())))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && (file.getPath().split("config")[1].split(Pattern.quote("\\")).length > 2 ? true : getMainJSON().activeConfigs.contains(file.getName())))
 				return true;
 
 			return false;
@@ -108,7 +108,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getMainJSON().activeConfigs.contains(file.getName()))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !getMainJSON().activeConfigs.contains(file.getName()))
 				return true;
 
 			return false;
@@ -364,14 +364,14 @@ public class FileUtil {
 			restoreConfigs();
 		}else if((mainJson.getExportMode() && !otherCreator) || switchProf){
 			restoreConfigs();
-
+			//restoreShared();
 			getMainJSON().setExportMode(false);
 
 			main = new File(mcDataDir, mainLocation);
 			mainJson.save(main);
 		}else {
 
-			copyAndHash();
+			copyAndHashPrivate();
 			
 			main = new File(mcDataDir, mainLocation);
 			getMainJSON().setExportMode(false);
@@ -538,13 +538,12 @@ public class FileUtil {
 		getSharedIgnore(new File(shared, "ignore.json"));
 	}
 
-	private static void copyAndHash() throws NullPointerException, IOException {
+	private static void copyAndHashPrivate() throws NullPointerException, IOException {
 		ArrayList<String> toRemove = new ArrayList<String>();
 		for(String opt : optUse) {
 			File optFile = new File(getMainFolder(), activeProfile + "/" + opt);
 			if(optFile.exists()) {
 				if(!getPrivateJSON().currentHash.containsKey(activeProfile + "/" + opt) || !getPrivateJSON().currentHash.get(activeProfile + "/" + opt).equals(mainJson.hashes.get(activeProfile + "/" + opt))) {
-
 					
 					if(opt.equals("options.txt")) {
 						restoreOptions();
@@ -563,6 +562,59 @@ public class FileUtil {
 			}
 				
 		}
+		
+		
+		Collection<File> lel = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile + "/sharedConfigs/"), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		for (File fef : lel) {
+			if(fef.getName().equals("ignore.json"))
+				continue;
+			File file = new File(mcDataDir, "config");
+			String name = fef.getName();
+			File fileInner = new File(file, fef.getName());
+			try {
+				
+				File locInDir = new File(getMainFolder(), activeProfile + "/sharedConfigs/" + name);
+System.out.println("LOL: " + activeProfile + "/sharedConfigs/" + name);
+				if(locInDir.isDirectory()) {
+					
+					Collection<File> files = FileUtils.listFilesAndDirs(locInDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+					for(File filePers : files) {
+						
+						if(filePers.isDirectory())
+							continue;
+
+						String loc = filePers.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1).split("sharedConfigs")[1].substring(1);
+					
+						File configLoc = new File(file, loc);
+						
+						File newF = new File(getMainFolder(), activeProfile + "/sharedConfigs/" + loc);
+						if(!configLoc.exists() || !getPrivateJSON().currentHash.containsKey(activeProfile + "/sharedConfigs\\" + loc) || !getPrivateJSON().currentHash.get(activeProfile + "/sharedConfigs\\" + loc).equals(mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + loc)) && newF.exists()) {
+							FileUtils.copyFile(newF, configLoc);
+							System.out.println("ADD: " + loc + "    "  + mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + loc));
+							getPrivateJSON().currentHash.put(activeProfile + "/sharedConfigs\\" + loc, mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + loc));
+
+						}
+					}
+					
+				}else {
+					System.out.println("ALTA2: " + activeProfile + "/sharedConfigs/" + name);
+					if(!fileInner.exists() || !getPrivateJSON().currentHash.containsKey(activeProfile + "/sharedConfigs\\" + name) || !getPrivateJSON().currentHash.get(activeProfile + "/sharedConfigs\\" + name).equals(mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + name)) && locInDir.exists()) {
+					
+						FileUtils.copyFile(locInDir, fileInner);
+					
+						getPrivateJSON().currentHash.put(activeProfile + "/sharedConfigs\\" + name, mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + name));
+
+					}
+				}
+			}catch (IOException e) {
+				if(e instanceof FileNotFoundException) {
+					DefaultSettings.log.log(Level.DEBUG, "The file no longer exists: ", e);
+				}else {
+					DefaultSettings.log.log(Level.WARN, "Error while creating hash: ", e);
+				}
+			}
+		}
+		
 		
 		for(String name : mainJson.activeConfigs) {
 			File file = new File(mcDataDir, "config");
@@ -584,7 +636,7 @@ public class FileUtil {
 						File configLoc = new File(file, loc);
 						
 						File newF = new File(getMainFolder(), activeProfile + "/" + loc);
-						if(!getPrivateJSON().currentHash.containsKey(activeProfile + "/" + loc) || !getPrivateJSON().currentHash.get(activeProfile + "/" + loc).equals(mainJson.hashes.get(activeProfile + "/" + loc)) && newF.exists()) {
+						if(!configLoc.exists() || !getPrivateJSON().currentHash.containsKey(activeProfile + "/" + loc) || !getPrivateJSON().currentHash.get(activeProfile + "/" + loc).equals(mainJson.hashes.get(activeProfile + "/" + loc)) && newF.exists()) {
 							FileUtils.copyFile(newF, configLoc);
 							
 							getPrivateJSON().currentHash.put(activeProfile + "/" + loc, mainJson.hashes.get(activeProfile + "/" + loc));
@@ -594,7 +646,7 @@ public class FileUtil {
 					
 				}else {
 	
-					if(!getPrivateJSON().currentHash.containsKey(activeProfile + "/" + name) || !getPrivateJSON().currentHash.get(activeProfile + "/" + name).equals(mainJson.hashes.get(activeProfile + "/" + name)) && locInDir.exists()) {
+					if(!fileInner.exists() || !getPrivateJSON().currentHash.containsKey(activeProfile + "/" + name) || !getPrivateJSON().currentHash.get(activeProfile + "/" + name).equals(mainJson.hashes.get(activeProfile + "/" + name)) && locInDir.exists()) {
 
 						FileUtils.copyFile(locInDir, fileInner);
 					
@@ -791,6 +843,12 @@ public class FileUtil {
 	public static void restoreConfigs() throws IOException {
 		try {	
 			FileUtils.copyDirectory(new File(getMainFolder(), activeProfile), new File(mcDataDir, "config"), fileFilterModular);
+		} catch (IOException e) {
+			throw e;
+		}
+		
+		try {	
+			FileUtils.copyDirectory(new File(getMainFolder(), activeProfile + "/sharedConfigs/"), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
 		}
@@ -1040,10 +1098,9 @@ public class FileUtil {
 	}
 	
 	public static void checkMD5() throws FileNotFoundException, IOException {
-
 		Collection<File> lel = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File fef : lel) {
-			if (!fef.isDirectory()) {
+			if (!fef.isDirectory() && !fef.getName().equals("ignore.json")) {
 				getMainJSON().hashes.put(activeProfile + "/" + fef.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1), fileToHash(new FileInputStream(fef)));
 			}
 		}

@@ -42,7 +42,6 @@ public class DefaultSettings {
 	public static String BUILD_TIME = "Unknown";
 	public static FontRendererClass fontRenderer;
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
-	public static final boolean is18 = DefaultSettings.mcVersion.startsWith("1.8");
 	public static final boolean debug = false;
 	
 	@Instance

@@ -219,7 +219,10 @@ public class ProfilesSegment extends Segment {
 			if (yOffTemp > this.height + row - 0.5F)
 				break;
 
-			final String text = this.list.get(i).displayString;
+			String text = this.list.get(i).displayString;
+			if(FileUtil.deleted.contains(text))
+				text = "\u00A7c"+text;
+			
 			final float dots = fontRenderer.getStringWidth("...", 1, false);
 
 			final float widthString = fontRenderer.getStringWidth(text, 1, false);

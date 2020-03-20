@@ -69,7 +69,7 @@ public class ScrollableSegment extends Segment {
 					@Override
 					public boolean accept(File file) {
 
-						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), FileUtil.activeProfile + "/sharedConfigs/" + file.getName()).exists() && ((arg != null && arg.length != 0) ? file.getName().toLowerCase().startsWith(arg[0].toLowerCase()): true))
+						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists() && ((arg != null && arg.length != 0) ? file.getName().toLowerCase().startsWith(arg[0].toLowerCase()): true))
 							return true;
 
 						return false;
@@ -135,7 +135,7 @@ public class ScrollableSegment extends Segment {
 				@Override
 				public boolean accept(File file) {
 
-					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), FileUtil.activeProfile + "/sharedConfigs/" + file.getName()).exists() && ((arg != null && arg.length != 0) ? file.getName().toLowerCase().startsWith(arg[0].toLowerCase()) : true))
+					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists() && ((arg != null && arg.length != 0) ? file.getName().toLowerCase().startsWith(arg[0].toLowerCase()) : true))
 						return true;
 
 					return false;

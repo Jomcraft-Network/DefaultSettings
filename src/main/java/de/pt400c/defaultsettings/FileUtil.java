@@ -22,10 +22,14 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.bind.DatatypeConverter;
@@ -62,6 +66,7 @@ public class FileUtil {
 	public volatile static Thread registryChecker;
 	public volatile static boolean options_exists = false;
 	public volatile static boolean keys_exists = false;
+	public static ArrayList<String> deleted = new ArrayList<String>();
 	public volatile static boolean servers_exists = false;
 	public static final ArrayList<String> optUse = new ArrayList<String>() {
 		private static final long serialVersionUID = -6765486158086901202L;
@@ -426,6 +431,27 @@ public class FileUtil {
 
 			FileUtil.moveAllConfigs();
 			FileUtil.checkMD5();
+			String[] extensions = new String[] { "zip"};
+			List<Path> oldestFiles = Collections.emptyList();
+
+			Collection<File> files = FileUtils.listFiles(getMainFolder(), extensions, false);
+			
+			if (files.size() >= 10) {
+
+				final List<Path> list2 = files.stream().map(File::toPath).collect(Collectors.toList());
+				Comparator<? super Path> lastModifiedComparator = (p1, p2) -> Long.compare(p1.toFile().lastModified(), p2.toFile().lastModified());
+				try (Stream<Path> paths = list2.stream()) {
+					oldestFiles = paths.filter(Files::isRegularFile).sorted(lastModifiedComparator).limit(files.size() - 8).collect(Collectors.toList());
+					oldestFiles.stream().forEach(t -> {
+						try {
+							Files.delete(t);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					});
+				}
+
+			}
 
 			Path pf = new File(FileUtil.getMainFolder(), profileName + ".zip").toPath();
 			Files.createFile(pf);
@@ -444,8 +470,23 @@ public class FileUtil {
 			}
 
 			try {
+				deleted.add(fileDir.getName());
+				
 				FileUtils.deleteDirectory(fileDir);
+				
 			} catch (IOException e) {
+				Thread thread = new Thread("File deletion thread") {
+				      public void run(){
+				    	  try {
+							Thread.sleep(10000);
+							FileUtils.deleteDirectory(fileDir);
+						} catch (InterruptedException | IOException e) {
+
+						}
+				    	 
+				      }
+				   };
+				   thread.start();
 				try {
 					FileUtils.forceDeleteOnExit(fileDir);
 				} catch (IOException e1) {
@@ -533,7 +574,7 @@ public class FileUtil {
 			mainJson.save(main);
 		}
 		
-		File shared = new File(getMainFolder(), activeProfile + "/" + "sharedConfigs");
+		File shared = new File(getMainFolder(), "sharedConfigs");
 		shared.mkdir();
 		getSharedIgnore(new File(shared, "ignore.json"));
 	}
@@ -564,8 +605,9 @@ public class FileUtil {
 		}
 		
 		
-		Collection<File> lel = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile + "/sharedConfigs/"), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		Collection<File> lel = FileUtils.listFilesAndDirs(new File(getMainFolder(), "sharedConfigs/"), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File fef : lel) {
+			
 			if(fef.getName().equals("ignore.json"))
 				continue;
 			File file = new File(mcDataDir, "config");
@@ -573,8 +615,7 @@ public class FileUtil {
 			File fileInner = new File(file, fef.getName());
 			try {
 				
-				File locInDir = new File(getMainFolder(), activeProfile + "/sharedConfigs/" + name);
-System.out.println("LOL: " + activeProfile + "/sharedConfigs/" + name);
+				File locInDir = new File(getMainFolder(), "sharedConfigs/" + name);
 				if(locInDir.isDirectory()) {
 					
 					Collection<File> files = FileUtils.listFilesAndDirs(locInDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
@@ -583,26 +624,24 @@ System.out.println("LOL: " + activeProfile + "/sharedConfigs/" + name);
 						if(filePers.isDirectory())
 							continue;
 
-						String loc = filePers.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1).split("sharedConfigs")[1].substring(1);
+						String loc = filePers.getPath().split("defaultsettings")[1].substring(1).split("sharedConfigs")[1].substring(1);
 					
 						File configLoc = new File(file, loc);
 						
-						File newF = new File(getMainFolder(), activeProfile + "/sharedConfigs/" + loc);
-						if(!configLoc.exists() || !getPrivateJSON().currentHash.containsKey(activeProfile + "/sharedConfigs\\" + loc) || !getPrivateJSON().currentHash.get(activeProfile + "/sharedConfigs\\" + loc).equals(mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + loc)) && newF.exists()) {
+						File newF = new File(getMainFolder(), "sharedConfigs/" + loc);
+						if(!configLoc.exists() || !getPrivateJSON().currentHash.containsKey("sharedConfigs\\" + loc) || !getPrivateJSON().currentHash.get("sharedConfigs\\" + loc).equals(mainJson.hashes.get("sharedConfigs\\" + loc)) && newF.exists()) {
 							FileUtils.copyFile(newF, configLoc);
-							System.out.println("ADD: " + loc + "    "  + mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + loc));
-							getPrivateJSON().currentHash.put(activeProfile + "/sharedConfigs\\" + loc, mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + loc));
+							getPrivateJSON().currentHash.put("sharedConfigs\\" + loc, mainJson.hashes.get("sharedConfigs\\" + loc));
 
 						}
 					}
 					
 				}else {
-					System.out.println("ALTA2: " + activeProfile + "/sharedConfigs/" + name);
-					if(!fileInner.exists() || !getPrivateJSON().currentHash.containsKey(activeProfile + "/sharedConfigs\\" + name) || !getPrivateJSON().currentHash.get(activeProfile + "/sharedConfigs\\" + name).equals(mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + name)) && locInDir.exists()) {
+					if(!fileInner.exists() || !getPrivateJSON().currentHash.containsKey("sharedConfigs\\" + name) || !getPrivateJSON().currentHash.get("sharedConfigs\\" + name).equals(mainJson.hashes.get("sharedConfigs\\" + name)) && locInDir.exists()) {
 					
 						FileUtils.copyFile(locInDir, fileInner);
 					
-						getPrivateJSON().currentHash.put(activeProfile + "/sharedConfigs\\" + name, mainJson.hashes.get(activeProfile + "/sharedConfigs\\" + name));
+						getPrivateJSON().currentHash.put("sharedConfigs\\" + name, mainJson.hashes.get("sharedConfigs\\" + name));
 
 					}
 				}
@@ -848,7 +887,7 @@ System.out.println("LOL: " + activeProfile + "/sharedConfigs/" + name);
 		}
 		
 		try {	
-			FileUtils.copyDirectory(new File(getMainFolder(), activeProfile + "/sharedConfigs/"), new File(mcDataDir, "config"), fileFilterModular);
+			FileUtils.copyDirectory(new File(getMainFolder(), "sharedConfigs/"), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
 		}
@@ -889,6 +928,16 @@ System.out.println("LOL: " + activeProfile + "/sharedConfigs/" + name);
 				}catch(IOException e) {
 					DefaultSettings.log.log(Level.ERROR, "Couldn't move config files: ", e);
 				}
+			}
+			for(File file : new File(getMainFolder(), "sharedConfigs").listFiles()) {
+				
+				if(!new File(fileDir, file.getName()).exists())
+					continue;
+				if(new File(fileDir, file.getName()).isDirectory())
+					FileUtils.deleteDirectory(new File(fileDir, file.getName()));
+				else
+					//f.delete() calls updates, not appropriate
+					Files.delete(new File(fileDir, file.getName()).toPath());
 			}
 			
 			FileUtils.copyDirectory(new File(getMainFolder(), activeProfile), fileDir, fileFilterAnti);
@@ -1102,6 +1151,13 @@ System.out.println("LOL: " + activeProfile + "/sharedConfigs/" + name);
 		for (File fef : lel) {
 			if (!fef.isDirectory() && !fef.getName().equals("ignore.json")) {
 				getMainJSON().hashes.put(activeProfile + "/" + fef.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1), fileToHash(new FileInputStream(fef)));
+			}
+		}
+		
+		Collection<File> lel2 = FileUtils.listFilesAndDirs(new File(getMainFolder(), "sharedConfigs"), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		for (File fef : lel2) {
+			if (!fef.isDirectory() && !fef.getName().equals("ignore.json")) {
+				getMainJSON().hashes.put(fef.getPath().split("defaultsettings")[1].substring(1), fileToHash(new FileInputStream(fef)));
 			}
 		}
 

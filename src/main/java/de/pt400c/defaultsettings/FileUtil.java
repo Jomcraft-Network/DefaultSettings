@@ -697,7 +697,8 @@ public class FileUtil {
 			}catch (IOException e) {
 				if(e instanceof FileNotFoundException) {
 					DefaultSettings.log.log(Level.DEBUG, "The file no longer exists: ", e);
-					toRemove.add(name);
+					if(!otherCreator)
+						toRemove.add(name);
 				}else {
 					DefaultSettings.log.log(Level.WARN, "Error while creating hash: ", e);
 				}

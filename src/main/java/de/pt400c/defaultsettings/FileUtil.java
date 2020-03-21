@@ -725,18 +725,23 @@ public class FileUtil {
 			BufferedReader readerOptions = null;
 			BufferedReader reader = null;
 			PrintWriter writer = null;
+			File opFile = new File(mcDataDir, "options.txt");
 			ArrayList<String> list = new ArrayList<String>();
 			try {
 				reader = new BufferedReader(new FileReader(optionsFile));	
-				readerOptions = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
 				
-				String lineOptions;
-				while ((lineOptions = readerOptions.readLine()) != null) {
-					if (lineOptions.startsWith("key_"))
+				if(opFile.exists()) {
+					readerOptions = new BufferedReader(new FileReader(opFile));
+				
+					String lineOptions;
+					while ((lineOptions = readerOptions.readLine()) != null) {
+						if (lineOptions.startsWith("key_"))
 						list.add(lineOptions);
+					}
 				}
 				
 				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "options.txt")));
+				
 				String line;
 				while ((line = reader.readLine()) != null) 
 					writer.print(line + "\n");
@@ -750,7 +755,8 @@ public class FileUtil {
 				try {
 					reader.close();
 					writer.close();
-					readerOptions.close();
+					if(opFile.exists())
+						readerOptions.close();
 				} catch (IOException e) {
 					throw e;
 				} catch (NullPointerException e) {

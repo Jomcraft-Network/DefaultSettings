@@ -89,6 +89,17 @@ public class FileUtil {
 		}
 	};
 	
+	public static final FileFilter fileFilterModular2 = new FileFilter() {
+
+		@Override
+		public boolean accept(File file) {
+			if (file.getName().equals("keys.txt") || file.getName().equals("options.txt") || file.getName().equals("optionsof.txt") || file.getName().equals("servers.dat"))
+				return true;
+
+			return false;
+		}
+	};
+	
 	public static void setExportMode() throws IOException {
 		for(File f : new File(mcDataDir, "config").listFiles(fileFilterModular)) {
 			if(f.isDirectory())
@@ -369,7 +380,6 @@ public class FileUtil {
 			restoreConfigs();
 		}else if((mainJson.getExportMode() && !otherCreator) || switchProf){
 			restoreConfigs();
-			//restoreShared();
 			getMainJSON().setExportMode(false);
 
 			main = new File(mcDataDir, mainLocation);
@@ -887,19 +897,27 @@ public class FileUtil {
 			throw e;
 		}
 		
+		optUse.stream().map(file -> new File(getMainFolder(), activeProfile + "/" + file)).filter(file -> file.exists()).forEach(file -> {
+			try {
+				FileUtils.copyFile(file, new File(mcDataDir, file.getName()));
+			} catch (IOException e) {
+				DefaultSettings.log.log(Level.ERROR, "Process the files: ", e);
+			}
+		});
+		
 		try {	
 			FileUtils.copyDirectory(new File(getMainFolder(), "sharedConfigs/"), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
 		}
 		
-		Collection<File> list = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-		for (File file : list) {
-			if (!file.isDirectory()) {
+		FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE).stream().filter(file -> !file.isDirectory()).forEach(file -> {
+			try {
 				getPrivateJSON().currentHash.put(activeProfile + "/" + file.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1), fileToHash(new FileInputStream(file)));
+			} catch (IOException e) {
+				DefaultSettings.log.log(Level.ERROR, "Process the files: ", e);
 			}
-		}
-		
+		});
 		
 		final File main = new File(mcDataDir, mainLocation);
 		getMainJSON().setExportMode(false);

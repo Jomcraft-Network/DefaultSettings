@@ -80,8 +80,7 @@ public class ContextMenuSegment extends Segment {
 			}else if(selected == 3) {
 				
 				FileUtil.mainJson.mainProfile = this.id;
-				final File main = new File(FileUtil.mcDataDir, FileUtil.mainLocation);
-				FileUtil.mainJson.save(main);
+				FileUtil.mainJson.save();
 				
 			}
 			this.openContext = false;
@@ -170,20 +169,17 @@ public class ContextMenuSegment extends Segment {
 			if(FileUtil.privateJson.currentProfile.equals(ContextMenuSegment.this.id)) {
 				FileUtil.activeProfile = ContextMenuSegment.this.nameField.query;
 				FileUtil.privateJson.currentProfile = ContextMenuSegment.this.nameField.query;
-				final File main = new File(FileUtil.mcDataDir, FileUtil.privateLocation);
-				FileUtil.privateJson.save(main);
+				FileUtil.privateJson.save();
 			}
 			
 			if(FileUtil.mainJson.mainProfile.equals(ContextMenuSegment.this.id)) {
 				FileUtil.mainJson.mainProfile = ContextMenuSegment.this.nameField.query;
-				final File main = new File(FileUtil.mcDataDir, FileUtil.mainLocation);
-				FileUtil.mainJson.save(main);
+				FileUtil.mainJson.save();
 			}
 			
 			if(FileUtil.privateJson.targetProfile.equals(ContextMenuSegment.this.id)) {
 				FileUtil.privateJson.targetProfile = ContextMenuSegment.this.nameField.query;
-				final File main = new File(FileUtil.mcDataDir, FileUtil.privateLocation);
-				FileUtil.privateJson.save(main);
+				FileUtil.privateJson.save();
 			}
 
 			File fileDir = new File(FileUtil.getMainFolder(), ContextMenuSegment.this.id);

@@ -12,7 +12,6 @@ public class MainJSON {
 	
 	public static transient final long serialVersionUID = 32371L;
 	private String version;
-	//private String identifier;
 	private String prevVersion;
 	protected boolean initPopup = false;
 	private boolean exportMode = false;
@@ -42,11 +41,6 @@ public class MainJSON {
 		this.prevVersion = prevVersion;
 		return this;
 	}
-	/*
-	public MainJSON setIdentifier(String identifier) {
-		this.identifier = identifier;
-		return this;
-	}*/
 	
 	public String getVersion() {
 		return this.version;
@@ -55,17 +49,13 @@ public class MainJSON {
 	public boolean getExportMode() {
 		return this.exportMode;
 	}
-/*	
-	public String getIdentifier() {
-		return this.identifier;
-	}
-	*/
+
 	public String getPrevVersion() {
 		return this.prevVersion;
 	}
 	
-	public void save(File persistentLocation) {
-		try (FileWriter writer = new FileWriter(persistentLocation)) {
+	public void save() {
+		try (FileWriter writer = new FileWriter(new File(FileUtil.mcDataDir, "config/defaultsettings.json"))) {
             FileUtil.gson.toJson(this, writer);
         } catch (IOException e) {
         	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);

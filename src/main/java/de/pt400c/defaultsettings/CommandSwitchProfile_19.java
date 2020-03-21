@@ -41,7 +41,7 @@ public class CommandSwitchProfile_19 extends CommandBase {
 				
 				sender.sendMessage(new TextComponentString("\u00a76to restart your game."));
 				
-				FileUtil.privateJson.save(new File(FileUtil.privateLocation));
+				FileUtil.privateJson.save();
 				
 			}else {
 				sender.sendMessage(new TextComponentString("\u00a7cThis profile is already active!"));

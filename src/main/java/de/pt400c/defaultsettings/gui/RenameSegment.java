@@ -115,20 +115,17 @@ public class RenameSegment extends Segment {
 				if(FileUtil.privateJson.currentProfile.equals(parent.id)) {
 					FileUtil.activeProfile = this.query;
 					FileUtil.privateJson.currentProfile = this.query;
-					final File main = new File(FileUtil.mcDataDir, FileUtil.privateLocation);
-					FileUtil.privateJson.save(main);
+					FileUtil.privateJson.save();
 				}
 				
 				if(FileUtil.mainJson.mainProfile.equals(parent.id)) {
 					FileUtil.mainJson.mainProfile = this.query;
-					final File main = new File(FileUtil.mcDataDir, FileUtil.mainLocation);
-					FileUtil.mainJson.save(main);
+					FileUtil.mainJson.save();
 				}
 				
 				if(FileUtil.privateJson.targetProfile.equals(parent.id)) {
 					FileUtil.privateJson.targetProfile = this.query;
-					final File main = new File(FileUtil.mcDataDir, FileUtil.privateLocation);
-					FileUtil.privateJson.save(main);
+					FileUtil.privateJson.save();
 				}
 
 				File fileDir = new File(FileUtil.getMainFolder(), parent.id);

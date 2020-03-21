@@ -27,13 +27,13 @@ public class EventHandlers {
 	public void onGuiOpened(GuiOpenEvent event) {
 		if (!bootedUp) {
 			if(DefaultSettings.mcVersion.startsWith("1.8")) {
-				if(event.gui instanceof GuiMainMenu && FileUtil.getMainJSON().initPopup) {
+				if(event.gui instanceof GuiMainMenu && FileUtil.mainJson.initPopup) {
 					bootedUp = true;
 					event.setCanceled(true);
 					MC.displayGuiScreen(new GuiDSMainMenu(new GuiMainMenu()));
 				}
 			}else {
-				if(event.getGui() instanceof GuiMainMenu && FileUtil.getMainJSON().initPopup) {
+				if(event.getGui() instanceof GuiMainMenu && FileUtil.mainJson.initPopup) {
 					bootedUp = true;
 					event.setGui(new GuiDSMainMenu(new GuiMainMenu()));
 				}

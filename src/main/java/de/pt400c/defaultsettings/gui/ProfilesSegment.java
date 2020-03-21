@@ -880,7 +880,7 @@ public class ProfilesSegment extends Segment {
 
 					gui.popup.setVisible(true);
 					
-					FileUtil.privateJson.save(new File(FileUtil.privateLocation));
+					FileUtil.privateJson.save();
 					
 				}
 				

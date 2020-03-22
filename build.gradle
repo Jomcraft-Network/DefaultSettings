@@ -160,6 +160,8 @@ curseforge {
     changelogType = 'html'
     releaseType = 'release'
     addGameVersion '1.15.2'
+    addGameVersion '1.15.1'
+    addGameVersion '1.15'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }

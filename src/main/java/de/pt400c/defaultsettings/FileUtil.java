@@ -591,7 +591,7 @@ public class FileUtil {
 						File configLoc = new File(file, loc);
 						
 						File newF = new File(getMainFolder(), "sharedConfigs/" + loc);
-						if(!configLoc.exists() || !privateJson.currentHash.containsKey("sharedConfigs\\" + loc) || !privateJson.currentHash.get("sharedConfigs\\" + loc).equals(mainJson.hashes.get("sharedConfigs\\" + loc)) && newF.exists()) {
+						if((!configLoc.exists() || !privateJson.currentHash.containsKey("sharedConfigs\\" + loc) || !privateJson.currentHash.get("sharedConfigs\\" + loc).equals(mainJson.hashes.get("sharedConfigs\\" + loc))) && newF.exists()) {
 							FileUtils.copyFile(newF, configLoc);
 							privateJson.currentHash.put("sharedConfigs\\" + loc, mainJson.hashes.get("sharedConfigs\\" + loc));
 
@@ -599,7 +599,7 @@ public class FileUtil {
 					}
 					
 				}else {
-					if(!fileInner.exists() || !privateJson.currentHash.containsKey("sharedConfigs\\" + name) || !privateJson.currentHash.get("sharedConfigs\\" + name).equals(mainJson.hashes.get("sharedConfigs\\" + name)) && locInDir.exists()) {
+					if((!fileInner.exists() || !privateJson.currentHash.containsKey("sharedConfigs\\" + name) || !privateJson.currentHash.get("sharedConfigs\\" + name).equals(mainJson.hashes.get("sharedConfigs\\" + name))) && locInDir.exists()) {
 					
 						FileUtils.copyFile(locInDir, fileInner);
 					
@@ -637,7 +637,7 @@ public class FileUtil {
 						File configLoc = new File(file, loc);
 						
 						File newF = new File(getMainFolder(), activeProfile + "/" + loc);
-						if(!configLoc.exists() || !privateJson.currentHash.containsKey(activeProfile + "/" + loc) || !privateJson.currentHash.get(activeProfile + "/" + loc).equals(mainJson.hashes.get(activeProfile + "/" + loc)) && newF.exists()) {
+						if((!configLoc.exists() || !privateJson.currentHash.containsKey(activeProfile + "/" + loc) || !privateJson.currentHash.get(activeProfile + "/" + loc).equals(mainJson.hashes.get(activeProfile + "/" + loc))) && newF.exists()) {
 							FileUtils.copyFile(newF, configLoc);
 							
 							privateJson.currentHash.put(activeProfile + "/" + loc, mainJson.hashes.get(activeProfile + "/" + loc));
@@ -647,7 +647,7 @@ public class FileUtil {
 					
 				}else {
 	
-					if(!fileInner.exists() || !privateJson.currentHash.containsKey(activeProfile + "/" + name) || !privateJson.currentHash.get(activeProfile + "/" + name).equals(mainJson.hashes.get(activeProfile + "/" + name)) && locInDir.exists()) {
+					if((!fileInner.exists() || !privateJson.currentHash.containsKey(activeProfile + "/" + name) || !privateJson.currentHash.get(activeProfile + "/" + name).equals(mainJson.hashes.get(activeProfile + "/" + name))) && locInDir.exists()) {
 
 						FileUtils.copyFile(locInDir, fileInner);
 					

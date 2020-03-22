@@ -70,7 +70,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	}else if (p_keyPressed_1_ == 256 && this.allowCloseWithEscape()) {
         
 			
-			if(this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+			if(this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0) {
 				exportModeInfo();
 			}else {
 			
@@ -115,7 +115,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
-        		if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.getActives().size() != 0) {
+        		if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0) {
         			GuiConfig.this.exportModeInfo();
     			}else {
         		
@@ -262,6 +262,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	BakeryRegistry.clearAll();
     	if(framebufferMc != null)
     		framebufferMc.deleteFramebuffer();
+    	super.onGuiClosed();
     }
     
     public void saveServers() {

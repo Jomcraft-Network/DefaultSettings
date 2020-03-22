@@ -104,23 +104,19 @@ public class DefaultSettings {
 			try {
 				getBuildID();
 				getBuildTime();
-				
-				if (FileUtil.firstBootUp) {
 
-					GameSettings gameSettings = MC.gameSettings;
-					gameSettings.loadOptions();
-					MC.getResourcePackList().reloadPacksFromFinders();
-					List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
-					for (String resourcePack : gameSettings.resourcePacks) 
-						for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b()) 
-							if (entry.getName().equals(resourcePack)) 
-								repositoryEntries.add(entry);
-							
-					MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
-					FileUtil.setField(FileUtil.devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
+				GameSettings gameSettings = MC.gameSettings;
+				gameSettings.loadOptions();
+				MC.getResourcePackList().reloadPacksFromFinders();
+				List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
+				for (String resourcePack : gameSettings.resourcePacks)
+					for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b())
+						if (entry.getName().equals(resourcePack))
+							repositoryEntries.add(entry);
 
-				}
-				
+				MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
+				FileUtil.setField(FileUtil.devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
+
 			} catch (NullPointerException | IOException e) {
 				
 			}

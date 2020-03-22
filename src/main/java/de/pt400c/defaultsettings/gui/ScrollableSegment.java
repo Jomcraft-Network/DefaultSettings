@@ -63,21 +63,21 @@ public class ScrollableSegment extends Segment {
 			List<RowItem> rows = new ArrayList<RowItem>();
 			File fileDir = new File(FileUtil.mcDataDir, "config");
 			FileFilter ff = null;
-			if (arg != null && arg.length != 0) {
+			//if (arg != null && arg.length != 0) {
 				ff = new FileFilter() {
 
 					@Override
 					public boolean accept(File file) {
 
-						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(arg[0].toLowerCase()))
+						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists() && ((arg != null && arg.length != 0) ? file.getName().toLowerCase().startsWith(arg[0].toLowerCase()): true))
 							return true;
 
 						return false;
 					}
 				};
-			} else {
-				ff = FileUtil.fileFilter;
-			}
+		//	} else {
+		//		ff = FileUtil.fileFilter;
+		//	}
 			File[] files = fileDir.listFiles(ff);
 			int activeCount = 0;
 			for (int i = 0; i < files.length; i++) {
@@ -129,21 +129,23 @@ public class ScrollableSegment extends Segment {
 				arg[0] = this.prevTerm;
 			else if(this.searchbar.activated || arg[0].equals(""))
 				this.prevTerm = arg[0];
-
-			ff = new FileFilter() {
-
-				@Override
-				public boolean accept(File file) {
-
-					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(arg[0].toLowerCase()))
-						return true;
-
-					return false;
-				}
-			};
-		} else {
-			ff = FileUtil.fileFilter;
 		}
+		
+		ff = new FileFilter() {
+
+			@Override
+			public boolean accept(File file) {
+
+				if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists() && ((arg != null && arg.length != 0) ? file.getName().toLowerCase().startsWith(arg[0].toLowerCase()) : true))
+					return true;
+
+				return false;
+			}
+		};
+		
+	//	} else {
+		//	ff = FileUtil.fileFilter;
+	//	}
 		File[] files = fileDir.listFiles(ff);
 		if(files.length != this.list.size()) 
 			this.list = getRowList(arg);

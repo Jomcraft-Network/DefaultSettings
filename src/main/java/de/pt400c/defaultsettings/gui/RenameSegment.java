@@ -101,7 +101,7 @@ public class RenameSegment extends Segment {
 			if(this.type == 0) {
 				GuiConfig gui = ((GuiConfig) this.gui);
 				
-				if(!gui.scrollableProfiles.lel.contains(this.query.toLowerCase())) {
+				if(!gui.scrollableProfiles.profiles.contains(this.query.toLowerCase())) {
 				
 				ProfilesSegment parent2 = gui.scrollableProfiles;
 				ContextMenuSegment parent = parent2.context;
@@ -112,20 +112,17 @@ public class RenameSegment extends Segment {
 				if(FileUtil.privateJson.currentProfile.equals(parent.id)) {
 					FileUtil.activeProfile = this.query;
 					FileUtil.privateJson.currentProfile = this.query;
-					final File main = new File(FileUtil.mcDataDir, FileUtil.privateLocation);
-					FileUtil.privateJson.save(main);
+					FileUtil.privateJson.save();
 				}
 				
 				if(FileUtil.mainJson.mainProfile.equals(parent.id)) {
 					FileUtil.mainJson.mainProfile = this.query;
-					final File main = new File(FileUtil.mcDataDir, FileUtil.mainLocation);
-					FileUtil.mainJson.save(main);
+					FileUtil.mainJson.save();
 				}
 				
 				if(FileUtil.privateJson.targetProfile.equals(parent.id)) {
 					FileUtil.privateJson.targetProfile = this.query;
-					final File main = new File(FileUtil.mcDataDir, FileUtil.privateLocation);
-					FileUtil.privateJson.save(main);
+					FileUtil.privateJson.save();
 				}
 
 				File fileDir = new File(FileUtil.getMainFolder(), parent.id);
@@ -144,7 +141,7 @@ public class RenameSegment extends Segment {
 			}else if(this.type == 1) {
 
 				GuiConfig gui = ((GuiConfig) this.gui);
-				if(!gui.scrollableProfiles.lel.contains(this.query.toLowerCase())) {
+				if(!gui.scrollableProfiles.profiles.contains(this.query.toLowerCase())) {
 					gui.popupField.setOpening(false);
 					gui.scrollableProfiles.context.backgroundTimer = 2.5F * (MathUtil.PI / 3);
 					gui.scrollableProfiles.context.setPos(-100, -100);
@@ -160,7 +157,7 @@ public class RenameSegment extends Segment {
 			} else if(this.type == 2) {
 				GuiConfig gui = ((GuiConfig) this.gui);
 				
-				if(!gui.scrollableProfiles.lel.contains(this.query.toLowerCase())) {
+				if(!gui.scrollableProfiles.profiles.contains(this.query.toLowerCase())) {
 				
 				ProfilesSegment parent2 = gui.scrollableProfiles;
 				ContextMenuSegment parent = parent2.context;

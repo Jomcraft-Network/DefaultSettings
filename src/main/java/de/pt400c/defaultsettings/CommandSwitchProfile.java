@@ -47,7 +47,7 @@ public class CommandSwitchProfile extends CommandBase {
 				
 				sender.addChatMessage(new ChatComponentText("\u00a76to restart your game."));
 				
-				FileUtil.privateJson.save(new File(FileUtil.privateLocation));
+				FileUtil.privateJson.save();
 				
 			}else {
 				sender.addChatMessage(new ChatComponentText("\u00a7cThis profile is already active!"));
@@ -62,11 +62,11 @@ public class CommandSwitchProfile extends CommandBase {
 	@Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
     	ArrayList<String> arg = new ArrayList<String>();
-    	for(File leli : FileUtil.getMainFolder().listFiles()) {
-			if(!leli.isDirectory())
+    	for(File file : FileUtil.getMainFolder().listFiles()) {
+			if(!file.isDirectory() || file.getName().equals("sharedConfigs"))
 				continue;
 
-			arg.add(leli.getName());
+			arg.add(file.getName());
 
 		}
 

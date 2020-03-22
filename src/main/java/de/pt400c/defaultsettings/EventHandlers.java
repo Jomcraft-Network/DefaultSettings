@@ -26,7 +26,7 @@ public class EventHandlers {
 	@SubscribeEvent
 	public void onGuiOpened(GuiOpenEvent event) {
 		if (!bootedUp) {
-			if(event.gui instanceof GuiMainMenu && FileUtil.getMainJSON().initPopup) {
+			if(event.gui instanceof GuiMainMenu && FileUtil.mainJson.initPopup) {
 				bootedUp = true;
 				event.gui = new GuiDSMainMenu(new GuiMainMenu());
 			}

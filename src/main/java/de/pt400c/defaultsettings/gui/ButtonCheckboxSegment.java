@@ -153,6 +153,7 @@ public class ButtonCheckboxSegment extends Segment {
 						if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json")
 								&& !file.getName().equals("keys.txt") && !file.getName().equals("options.txt")
 								&& !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat")
+								&& !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists()
 								&& file.getName().toLowerCase().startsWith(arg.toLowerCase()))
 							return true;
 

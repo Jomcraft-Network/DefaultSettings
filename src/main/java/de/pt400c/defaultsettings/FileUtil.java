@@ -79,17 +79,6 @@ public class FileUtil {
 		}
 	};
 	
-	public static final FileFilter fileFilterModular2 = new FileFilter() {
-
-		@Override
-		public boolean accept(File file) {
-			if (file.getName().equals("keys.txt") || file.getName().equals("options.txt") || file.getName().equals("optionsof.txt") || file.getName().equals("servers.dat"))
-				return true;
-
-			return false;
-		}
-	};
-	
 	public static void setExportMode() throws IOException {
 		for(File f : new File(mcDataDir, "config").listFiles(fileFilterModular)) {
 			if(f.isDirectory())
@@ -124,7 +113,7 @@ public class FileUtil {
 		@Override
 		public boolean accept(File file) {
 
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat"))
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists())
 				return true;
 
 			return false;
@@ -150,7 +139,7 @@ public class FileUtil {
 				@Override
 				public boolean accept(File file) {
 
-					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && file.getName().toLowerCase().startsWith(query.toLowerCase()))
+					if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists() && file.getName().toLowerCase().startsWith(query.toLowerCase()))
 						return true;
 
 					return false;
@@ -372,26 +361,22 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists()) 
 			restoreServers();
-		
-		if (firstBoot) {
 			
-			GameSettings gameSettings = MC.gameSettings;
-			gameSettings.loadOptions();
-			
-			ResourcePackRepository resourceRepository = MC.getResourcePackRepository();
-			resourceRepository.updateRepositoryEntriesAll();
-			List<Entry> repositoryEntries = new ArrayList<Entry>();
-			
-			for (String resourcePack : gameSettings.resourcePacks) 
-				for (Entry entry : resourceRepository.getRepositoryEntriesAll()) 
-					if (entry.getResourcePackName().equals(resourcePack)) 
-						repositoryEntries.add(entry);
+		GameSettings gameSettings = MC.gameSettings;
+		gameSettings.loadOptions();
 
-			resourceRepository.setRepositories(repositoryEntries);
+		ResourcePackRepository resourceRepository = MC.getResourcePackRepository();
+		resourceRepository.updateRepositoryEntriesAll();
+		List<Entry> repositoryEntries = new ArrayList<Entry>();
 
-			MC.getLanguageManager().currentLanguage = gameSettings.language;
+		for (String resourcePack : gameSettings.resourcePacks)
+			for (Entry entry : resourceRepository.getRepositoryEntriesAll())
+				if (entry.getResourcePackName().equals(resourcePack))
+					repositoryEntries.add(entry);
 
-		}
+		resourceRepository.setRepositories(repositoryEntries);
+
+		MC.getLanguageManager().currentLanguage = gameSettings.language;
 		
 		if(!options.exists())
 			options.createNewFile();

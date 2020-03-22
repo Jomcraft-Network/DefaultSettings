@@ -127,7 +127,7 @@ public class DefaultSettings {
 				getBuildTime();
 				
 				if (FileUtil.firstBootUp) {
-
+//IMPORTANT!! REMOVE IF!
 					GameSettings gameSettings = FileUtil.MC.gameSettings;
 					gameSettings.loadOptions();
 					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();

@@ -47,8 +47,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
     	this.minecraft = minecraft;
         this.parentScreen = parentScreen;
-        this.framerateLimit = Minecraft.getInstance().mainWindow.getLimitFramerate();
-        Minecraft.getInstance().mainWindow.setFramerateLimit(60);
+        this.framerateLimit = MC.mainWindow.getLimitFramerate();
+        MC.mainWindow.setFramerateLimit(60);
 	}
     
     @Override
@@ -264,7 +264,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	BakeryRegistry.clearAll();
     	if(framebufferMc != null)
     		framebufferMc.deleteFramebuffer();
-    	Minecraft.getInstance().mainWindow.setFramerateLimit(this.framerateLimit);
+    	MC.mainWindow.setFramerateLimit(this.framerateLimit);
     	super.onClose();
     }
     

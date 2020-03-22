@@ -15,8 +15,8 @@ public class CommandSwitchProfile {
 	protected static void register(FMLServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSource> literalargumentbuilder = Commands.literal("switchprofile");
 		
-    	for(File leli : FileUtil.getMainFolder().listFiles()) {
-			if(!leli.isDirectory())
+    	for(File file : FileUtil.getMainFolder().listFiles()) {
+    		if(!file.isDirectory() || file.getName().equals("sharedConfigs"))
 				continue;
 			
 			literalargumentbuilder.then(Commands.argument("profile", ProfileArgument.profileArgument()).executes((command) -> {
@@ -39,7 +39,7 @@ public class CommandSwitchProfile {
 				
 				source.sendFeedback(new StringTextComponent("\u00a76to restart your game."), true);
 				
-				FileUtil.privateJson.save(new File(FileUtil.privateLocation));
+				FileUtil.privateJson.save();
 				
 			}else {
 				source.sendFeedback(new StringTextComponent("\u00a7cThis profile is already active!"), true);

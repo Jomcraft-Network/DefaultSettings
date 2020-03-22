@@ -40,7 +40,7 @@ public class ProfilesSegment extends Segment {
 	private final Function<GuiConfig, Integer> widthF;
 	private final Function<GuiConfig, Integer> heightF;
 	static final int row = 15;
-	public ArrayListCaseless lel = new ArrayListCaseless();
+	public ArrayListCaseless profiles = new ArrayListCaseless();
 	public final ContextMenuSegment context;
 	public String selectedName = FileUtil.privateJson.currentProfile;
 
@@ -66,14 +66,14 @@ public class ProfilesSegment extends Segment {
 		File fileDir = FileUtil.getMainFolder();
 
 		int i = 0;
-		this.lel.clear();
-		for (File leli : fileDir.listFiles()) {
-			if (!leli.isDirectory() || (arg != null && arg.length != 0 && !leli.getName().toLowerCase().startsWith(arg[0].toLowerCase())))
+		this.profiles.clear();
+		for (File file : fileDir.listFiles()) {
+			if (!file.isDirectory() || (arg != null && arg.length != 0 && !file.getName().toLowerCase().startsWith(arg[0].toLowerCase())) || file.getName().equals("sharedConfigs"))
 				continue;
 			float yOffTemp = row - 0.5F + row * i;
 			i++;
-			this.lel.add(leli.getName());
-			rows.add(new RowItem(leli.getName(), new RadioButtonSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, leli.getName(), false, this)));
+			this.profiles.add(file.getName());
+			rows.add(new RowItem(file.getName(), new RadioButtonSegment(gui, 104, yOffTemp + 46.5F, 2.5F, 2.5F, file.getName(), false, this)));
 		}
 
 		return rows;
@@ -221,7 +221,10 @@ public class ProfilesSegment extends Segment {
 			if (yOffTemp > this.height + row - 0.5F)
 				break;
 
-			final String text = this.list.get(i).displayString;
+			String text = this.list.get(i).displayString;
+			if(FileUtil.deleted.contains(text))
+				text = "\u00A7c"+text;
+
 			final float dots = fontRenderer.getStringWidth("...", 1, false);
 
 			final float widthString = fontRenderer.getStringWidth(text, 1, false);
@@ -230,10 +233,10 @@ public class ProfilesSegment extends Segment {
 			glDisable(GL_TEXTURE_2D);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			if (this.lel.get(i).equals(this.context.id)) 
+			if (this.profiles.get(i).equals(this.context.id)) 
 				drawRectRoundedCorners(this.getPosX() + 19, this.getPosY() + yOffTemp - 13.5F, this.getPosX() + this.getWidth() - 5, this.getPosY() + yOffTemp - 1F, calcAlpha(0xff8b8b8b, 1 - this.context.alpha).getRGB(), 2);
 
-			if (this.lel.get(i).equals(FileUtil.mainJson.mainProfile)) {
+			if (this.profiles.get(i).equals(FileUtil.mainJson.mainProfile)) {
 
 				color = 0xff2185d7;
 
@@ -389,8 +392,8 @@ public class ProfilesSegment extends Segment {
 			int posX = mouseX <= this.posX + this.getWidth() - 80 ? mouseX : mouseX - 85;
 			int posY = mouseY <= 21 + this.posY + this.getHeight() - 85 ? mouseY : mouseY - 60;
 			
-			if(this.lel.size() - 1 >= clickedID)
-				this.openContext(posX, posY, this.lel.get(clickedID));
+			if(this.profiles.size() - 1 >= clickedID)
+				this.openContext(posX, posY, this.profiles.get(clickedID));
 		}
 		
 		if(this.context.mouseReleased(mouseX, mouseY, button))
@@ -886,7 +889,7 @@ public class ProfilesSegment extends Segment {
 
 					gui.popup.setVisible(true);
 					
-					FileUtil.privateJson.save(new File(FileUtil.privateLocation));
+					FileUtil.privateJson.save();
 					
 				}
 				
@@ -975,7 +978,7 @@ public class ProfilesSegment extends Segment {
 					menu.getVariants().get(menu.index).selected = this.nameField;
 
 					gui.popupField.getWindow().addChild(new ButtonRoundSegment(gui, 105 - 30, 75, 60, 20, "Okay", null, button2-> {
-							if (!gui.scrollableProfiles.lel.contains(this.nameField.query.toLowerCase())) {
+							if (!gui.scrollableProfiles.profiles.contains(this.nameField.query.toLowerCase())) {
 
 								gui.scrollableProfiles.context.backgroundTimer = 2.5F * (MathUtil.PI / 3);
 								gui.scrollableProfiles.context.setPos(-100, -100);

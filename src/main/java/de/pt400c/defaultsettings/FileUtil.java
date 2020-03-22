@@ -66,7 +66,6 @@ public class FileUtil {
 	public volatile static boolean servers_exists = false;
 	public static String activeProfile = "Default";
 	public static boolean otherCreator = false;
-	public static boolean firstBootUp = false;
 	public static final FileFilter fileFilterModular = new FileFilter() {
 
 		@Override
@@ -338,7 +337,7 @@ public class FileUtil {
 		activeProfile = privateJson.currentProfile;
 		
 		final File options = new File(mcDataDir, "options.txt");
-		firstBootUp = !options.exists();
+		boolean firstBootUp = !options.exists();
 		if (firstBootUp) {
 			restoreOptions();
 			if(!exportMode())

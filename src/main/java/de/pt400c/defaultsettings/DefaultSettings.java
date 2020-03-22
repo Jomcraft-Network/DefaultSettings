@@ -125,21 +125,18 @@ public class DefaultSettings {
 			try {
 				getBuildID();
 				getBuildTime();
-				
-				if (FileUtil.firstBootUp) {
-//IMPORTANT!! REMOVE IF!
-					GameSettings gameSettings = FileUtil.MC.gameSettings;
-					gameSettings.loadOptions();
-					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
-					List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
-					for (String resourcePack : gameSettings.resourcePacks) 
-						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks()) 
-							if (entry.getName().equals(resourcePack)) 
-								repositoryEntries.add(entry);
-							
-					FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
 
-				}
+				GameSettings gameSettings = FileUtil.MC.gameSettings;
+				gameSettings.loadOptions();
+				FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
+				List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
+				for (String resourcePack : gameSettings.resourcePacks)
+					for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
+						if (entry.getName().equals(resourcePack))
+							repositoryEntries.add(entry);
+
+				FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
+
 			} catch (NullPointerException | IOException  e) {
 
 			}

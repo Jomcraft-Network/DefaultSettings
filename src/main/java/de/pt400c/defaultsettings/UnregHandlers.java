@@ -6,7 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class UnregHandlers114 {
+public class UnregHandlers {
 
 	private static boolean bootedUp;
 

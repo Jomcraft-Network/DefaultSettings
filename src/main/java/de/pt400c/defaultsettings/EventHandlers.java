@@ -9,7 +9,7 @@ import net.minecraftforge.fml.client.gui.GuiModList;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
-public class EventHandlers114 {
+public class EventHandlers {
 
 	@SubscribeEvent
 	public void tickEvent(TickEvent.ClientTickEvent event) {

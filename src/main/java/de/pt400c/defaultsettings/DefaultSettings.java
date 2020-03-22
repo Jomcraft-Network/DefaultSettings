@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
-import de.pt400c.defaultsettings.EventHandlers114.NewModInfo;
+import de.pt400c.defaultsettings.EventHandlers.NewModInfo;
 import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.resources.ClientResourcePackInfo;
@@ -85,8 +85,8 @@ public class DefaultSettings {
 			setUp = true;
 			MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
 
-			MinecraftForge.EVENT_BUS.register(new EventHandlers114());
-			MinecraftForge.EVENT_BUS.register(new UnregHandlers114());
+			MinecraftForge.EVENT_BUS.register(new EventHandlers());
+			MinecraftForge.EVENT_BUS.register(new UnregHandlers());
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> GuiConfig::new);
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> "ANY", (remote, isServer) -> true));
 		});

@@ -54,8 +54,8 @@ public class MainJSON {
 		return this.prevVersion;
 	}
 	
-	public void save(File persistentLocation) {
-		try (FileWriter writer = new FileWriter(persistentLocation)) {
+	public void save() {
+		try (FileWriter writer = new FileWriter(new File(FileUtil.mcDataDir, "config/defaultsettings.json"))) {
             FileUtil.gson.toJson(this, writer);
         } catch (IOException e) {
         	DefaultSettings.log.log(Level.ERROR, "Exception at processing configs: ", e);

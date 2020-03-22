@@ -119,34 +119,27 @@ public class DefaultSettings {
     }*/
 
 	public void postInit(FMLLoadCompleteEvent event) {
-		if (FMLLoader.getDist() == Dist.CLIENT) {
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			
 			fontRenderer = new FontRendererClass();
 			fontRenderer.readFontTexture();
 			
-
-			if (FileUtil.firstBootUp) {
-
-				GameSettings gameSettings = FileUtil.MC.gameSettings;
-				gameSettings.loadOptions();
-				FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
-				List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
-				for (String resourcePack : gameSettings.resourcePacks) 
-					for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks()) 
-						if (entry.getName().equals(resourcePack)) 
-							repositoryEntries.add(entry);
-						
-				FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
-
-			}
-
 			try {
 				getBuildID();
 				getBuildTime();
 			} catch (NullPointerException | IOException  e) {
+				GameSettings gameSettings = FileUtil.MC.gameSettings;
+				gameSettings.loadOptions();
+				FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
+				List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
+				for (String resourcePack : gameSettings.resourcePacks)
+					for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
+						if (entry.getName().equals(resourcePack))
+							repositoryEntries.add(entry);
 
+				FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
 			}
-
+			
 			try {
 				FileUtil.restoreKeys();
 			} catch (IOException e) {
@@ -155,9 +148,11 @@ public class DefaultSettings {
 				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 			}
 
-		} else {
+		});
+		
+		DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-		}
+		});
 
 	}
 	

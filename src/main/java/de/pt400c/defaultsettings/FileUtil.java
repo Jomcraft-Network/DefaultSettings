@@ -971,6 +971,9 @@ public class FileUtil {
 				throw e;
 			}
 		}
+		
+		if(!new File(mcDataDir, "optionsof.txt").exists())
+			return;
 
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/optionsof.txt")));

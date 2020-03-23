@@ -711,11 +711,13 @@ public class FileUtil {
 			BufferedReader reader = null;
 			PrintWriter writer = null;
 			File opFile = new File(mcDataDir, "options.txt");
+			boolean existed = false;
 			ArrayList<String> list = new ArrayList<String>();
 			try {
 				reader = new BufferedReader(new FileReader(optionsFile));	
 				
 				if(opFile.exists()) {
+					existed = true;
 					readerOptions = new BufferedReader(new FileReader(opFile));
 				
 					String lineOptions;
@@ -740,7 +742,7 @@ public class FileUtil {
 				try {
 					reader.close();
 					writer.close();
-					if(opFile.exists())
+					if(existed)
 						readerOptions.close();
 				} catch (IOException e) {
 					throw e;

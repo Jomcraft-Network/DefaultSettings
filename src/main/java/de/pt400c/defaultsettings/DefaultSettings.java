@@ -146,7 +146,7 @@ public class DefaultSettings {
 					// VanillaResourceType.SOUNDS, VanillaResourceType.TEXTURES);
 
 				} catch (NullPointerException e) {
-					e.printStackTrace();
+					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
 				}
 
 			});
@@ -172,7 +172,7 @@ public class DefaultSettings {
 				getBuildTime();
 
 			} catch (NullPointerException | IOException  e) {
-				e.printStackTrace();
+				DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
 			}
 
 			try {

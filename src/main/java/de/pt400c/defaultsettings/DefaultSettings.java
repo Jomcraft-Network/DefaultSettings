@@ -23,6 +23,7 @@ import net.minecraft.client.GameSettings;
 import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
@@ -49,6 +50,7 @@ public class DefaultSettings {
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static DefaultSettings instance;
 	public static final boolean debug = false;
+	public static boolean init = false;
 	
 	@SuppressWarnings("unchecked")
 	public DefaultSettings() {
@@ -59,6 +61,7 @@ public class DefaultSettings {
 				return;
 			
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::regInit);
 			
 			try {
 				Field sortedList = ModList.class.getDeclaredField("sortedList");
@@ -128,16 +131,7 @@ public class DefaultSettings {
 				getBuildID();
 				getBuildTime();
 			} catch (NullPointerException | IOException  e) {
-				GameSettings gameSettings = FileUtil.MC.gameSettings;
-				gameSettings.loadOptions();
-				FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
-				List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
-				for (String resourcePack : gameSettings.resourcePacks)
-					for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
-						if (entry.getName().equals(resourcePack))
-							repositoryEntries.add(entry);
-
-				FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
+				DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
 			}
 			
 			try {
@@ -154,6 +148,46 @@ public class DefaultSettings {
 			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 		});
 
+	}
+	
+	public void regInit(RegistryEvent.NewRegistry event) {
+		
+		if (!init) {
+
+			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+
+				try {
+
+					GameSettings gameSettings = FileUtil.MC.gameSettings;
+					gameSettings.loadOptions();
+					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
+					List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
+					for (String resourcePack : gameSettings.resourcePacks) {
+						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
+							if (entry.getName().equals(resourcePack))
+								repositoryEntries.add(entry);
+					}
+
+					FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
+
+					FileUtil.MC.gameSettings.saveOptions();
+
+					// ForgeHooksClient.refreshResources(FileUtil.MC, VanillaResourceType.LANGUAGES,
+					// VanillaResourceType.MODELS, VanillaResourceType.SHADERS,
+					// VanillaResourceType.SOUNDS, VanillaResourceType.TEXTURES);
+
+				} catch (NullPointerException e) {
+					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
+				}
+
+			});
+			DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
+				DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
+			});
+
+			init = true;
+
+		}
 	}
 	
 	private static void getBuildID() throws FileNotFoundException, IOException {

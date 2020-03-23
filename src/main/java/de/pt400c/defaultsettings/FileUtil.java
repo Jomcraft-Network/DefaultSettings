@@ -638,7 +638,6 @@ public class FileUtil {
 					
 						privateJson.currentHash.put(activeProfile + "/" + name, mainJson.hashes.get(activeProfile + "/" + name));
 						
-						
 					}
 				}
 			}catch (IOException e) {

@@ -786,8 +786,10 @@ public class FileUtil {
 			}
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
-				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) 
+				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
 					keyBinding.keyCodeDefault = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
+					keyBinding.setKeyCode(keyBinding.keyCodeDefault);
+				}
 			
 			KeyBinding.resetKeyBindingArrayAndHash();
 		}

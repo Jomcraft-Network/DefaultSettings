@@ -763,14 +763,11 @@ public class FileUtil {
 		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		if (keysFile.exists()) {
 			BufferedReader reader = null;
-			PrintWriter writer = null;
 			try {
 				reader = new BufferedReader(new FileReader(keysFile));
-				writer = new PrintWriter(new FileWriter(new File(mcDataDir, "keys.txt")));
+
 				String line;
 				while ((line = reader.readLine()) != null) {
-					
-					writer.print(line + "\n");
 					
 					if (line.isEmpty()) 
 						continue;
@@ -788,7 +785,6 @@ public class FileUtil {
 			} finally {
 				try {
 					reader.close();
-					writer.close();
 				} catch (IOException e) {
 					throw e;
 				} catch (NullPointerException e) {
@@ -798,8 +794,10 @@ public class FileUtil {
 
 			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) {
 				if(DefaultSettings.mcVersion.startsWith("1.8")) {
-					if (DefaultSettings.keyRebinds_18.containsKey(keyBinding.getKeyDescription())) 
+					if (DefaultSettings.keyRebinds_18.containsKey(keyBinding.getKeyDescription())) {
 						keyBinding.keyCodeDefault = DefaultSettings.keyRebinds_18.get(keyBinding.getKeyDescription());
+						keyBinding.setKeyCode(keyBinding.keyCodeDefault);
+					}
 					
 				}else {
 					

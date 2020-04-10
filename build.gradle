@@ -226,7 +226,7 @@ uploadArchives {
       pom.project {
         name 'DefaultSettings'
         packaging 'jar'
-
+        artifactId 'DefaultSettings-1.14.x'
         description 'DefaultSettings Minecraft Mod API'
         url 'https://gitlab.com/jomcraft-sources/defaultsettings'
 

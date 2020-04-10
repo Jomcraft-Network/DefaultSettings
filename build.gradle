@@ -141,18 +141,18 @@ task deobfJar(type: Jar) {
 	classifier = 'deobf'
 }
 
-artifacts {
-	archives sourcesJar
-	archives deobfJar
-	if(isReleaseVersion)
-		archives javadocJar
-}
-
 task javadocJar(type: Jar) {
 
 	exclude('net/**')
     classifier = 'javadoc'
     from javadoc
+}
+
+artifacts {
+	archives sourcesJar
+	archives deobfJar
+	if(isReleaseVersion)
+		archives javadocJar
 }
 
 task zipVerification {

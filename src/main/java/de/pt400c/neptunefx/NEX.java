@@ -10,10 +10,6 @@ import de.pt400c.defaultsettings.gui.MathUtil;
 import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import net.minecraft.client.renderer.GLAllocation;
 
-/**
- * @author Jomcraft Network (PT400C)
- * @category NeptuneFX
- */
 public class NEX {
 	private static int[] buffer = new int[0x10000];
     private static int bufferIndex = 0;
@@ -57,17 +53,6 @@ public class NEX {
 		return new Color(getRed(color), getGreen(color), getBlue(color), MathUtil.clamp((int) ((1 - alpha) * 255F), 4, 255));
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param x1 Min-X
-	 * @param y1 Min-Y
-	 * @param x2 Max-X
-	 * @param y2 Max-Y
-	 * @param color Color
-	 * @param blending Do blending?
-	 * @param alpha Alpha value, no if null
-	 * @param multiply Alpha multiplying or subtracting
-	 */
 	public static void drawRect(float x1, float y1, float x2, float y2, Integer color, boolean blending, Float alpha, boolean multiply) {
         
         if(blending) {
@@ -202,17 +187,7 @@ public class NEX {
 		
 		drawCircle(x2 - radius, y1 + radius, radius, 270, 75);
     }
-	
-	/**
-	 * @category GUI Elements
-	 * @param x1 First x coord
-	 * @param y1 First y coord
-	 * @param x2 Second x coord
-	 * @param y2 Second y coord
-	 * @param color1 Start color of the gradient
-	 * @param color2 End color of the gradient
-	 * @param rotation 0 = left-right, 1 = top-down, 2 = right-left, 3 = down-top
-	 */
+
 	public static void drawGradient(float x1, float y1, float x2, float y2, int color1, int color2, final int rotation) {     
         int f3 = (int)(color1 >> 24 & 255);
         int f = (int)(color1 >> 16 & 255);
@@ -259,16 +234,6 @@ public class NEX {
 		draw(false);
     }
 
-	/**
-	 * @category GUI Elements
-	 * @param cx Pos-X
-	 * @param cy Pos-Y
-	 * @param r Radius
-	 * @param rotation Rotation
-	 * @param percentage Fullness
-	 * @param color1 Start color
-	 * @param color2 End color
-	 */
 	public static void drawGradientCircle(float cx, float cy, float r, float rotation, int percentage, int color1, int color2) {
 
 		float x = r;
@@ -334,16 +299,6 @@ public class NEX {
 		}
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param red Red value
-	 * @param green Green value
-	 * @param blue Blue value
-	 * @param alpha Alpha value
-	 * @param factor Game's scale factor
-	 * @param size Dot's size
-	 * @param vector Vector
-	 */
 	public static void drawDot(float red, float green, float blue, float alpha, float factor, float size, Vec2f vector) {
 		glColor4f(red, green, blue, alpha);
 
@@ -359,13 +314,6 @@ public class NEX {
 		glDisable(GL_POINT_SMOOTH);
 	}
 	
-	/**
-	 * @category Main renderer
-	 * @param par1 Red value
-	 * @param par2 Green value
-	 * @param par3 Blue value
-	 * @param par4 Alpha value
-	 */
 	public static void setColor(int par1, int par2, int par3, int par4) {
 
         hasColor = true;
@@ -378,15 +326,6 @@ public class NEX {
 
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param red Red value
-	 * @param green Green value
-	 * @param blue Blue value
-	 * @param alpha Alpha value
-	 * @param factor Game's scale factor
-	 * @param vertices Vertices
-	 */
 	public static void drawDots(float red, float green, float blue, float alpha, float factor, Vec2f... vertices) {
 		glColor4f(red, green, blue, alpha);
 
@@ -403,15 +342,6 @@ public class NEX {
 		glDisable(GL_POINT_SMOOTH);
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param red Red value
-	 * @param green Green value
-	 * @param blue Blue value
-	 * @param alpha Alpha value
-	 * @param factor Game's scale factor
-	 * @param vertices Vertices
-	 */
 	public static void drawLine2D_2(float red, float green, float blue, float alpha, int factor, float size, Vec2f... vertices) {
 		glEnable(GL_LINE_SMOOTH);
 
@@ -439,15 +369,6 @@ public class NEX {
 		glDisable(GL_POINT_SMOOTH);
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param red Red value
-	 * @param green Green value
-	 * @param blue Blue value
-	 * @param alpha Alpha value
-	 * @param factor Game's scale factor
-	 * @param vertices Vertices
-	 */
 	public static void drawLine2D(float red, float green, float blue, float alpha, int factor, Vec2f... vertices) {
 		glEnable(GL_LINE_SMOOTH);
 		if(!(factor == 1))
@@ -479,14 +400,6 @@ public class NEX {
 		glDisable(GL_POINT_SMOOTH);
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param x1 Min-X
-	 * @param y1 Min-Y
-	 * @param x2 Max-X
-	 * @param y2 Max-Y
-	 * @param color Element's uniform color
-	 */
 	public static void drawRectRoundedUpper(float x1, float y1, float x2, float y2, int color) {
         float f = (float)(color >> 24 & 255) / 255.0F;
         float f1 = (float)(color >> 16 & 255) / 255.0F;
@@ -512,14 +425,6 @@ public class NEX {
         glEnable(GL_ALPHA_TEST);
     }
 
-	/**
-	 * @category GUI Elements
-	 * @param x1 Min-X
-	 * @param y1 Min-Y
-	 * @param x2 Max-X
-	 * @param y2 Max-Y
-	 * @param color Element's uniform color
-	 */
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color) {
 		final float f = (float)(color >> 24 & 255) / 255.0F;
         final float f1 = (float)(color >> 16 & 255) / 255.0F;
@@ -545,14 +450,6 @@ public class NEX {
         glEnable(GL_ALPHA_TEST);    
     }
 	
-	/**
-	 * @category GUI Elements
-	 * @param cx Pos-X
-	 * @param cy Pos-Y
-	 * @param r Radius
-	 * @param rotation Rotation
-	 * @param percentage Fullness
-	 */
 	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage) {
 
 		float x = r;
@@ -657,12 +554,6 @@ public class NEX {
 		}
 	}
 
-	/**
-	 * @category Main renderer
-	 * @param x X pos
-	 * @param y Y pos
-	 * @param z Z pos
-	 */
 	public static void addVertex(float x, float y, float z) {
 		if (hasColor)
 			buffer[bufferIndex + 5] = color;
@@ -673,10 +564,6 @@ public class NEX {
 		bufferIndex += 8;
 	}
 
-	/**
-	 * @category Main renderer
-	 * @param triangle Is triangle renderer?
-	 */
 	public static void draw(boolean triangle) {
 		if (!triangle) {
 			intBuffer.clear();
@@ -725,36 +612,16 @@ public class NEX {
 		reset();
 	}
 
-	/**
-	 * @category Main renderer
-	 */
 	private static void reset() {
 		byteBuffer.clear();
 		bufferIndex = 0;
 	}
 	
-	/**
-	 * @category GUI Elements
-	 * @param left Min-Y
-	 * @param top Min-Y
-	 * @param right Max-X
-	 * @param buttom Max-Y
-	 * @param color Border color
-	 * @param color2 Button color
-	 * @param border Border width
-	 */
 	public static void drawButton(float left, float top, float right, float bottom, int color, int color2, int border) {
 		drawRect(left, top, right, bottom, color, true, null, false);
 		drawRect(left + border, top + border, right - border, bottom - border, color2, true, null, false);
 	}
 	
-	/**
-	 * @category Textures
-	 * @param x PosX
-	 * @param y PosY
-	 * @param width Texture's width
-	 * @param height Texture's height
-	 */
 	public static void drawScaledTex(float x, float y, int width, int height) {
 		glBegin(GL_QUADS);
 		glTexCoord2f(0, 1); glVertex3d(x, height + y, 0);

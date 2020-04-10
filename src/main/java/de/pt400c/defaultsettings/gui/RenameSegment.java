@@ -33,7 +33,7 @@ public class RenameSegment extends Segment {
 	private final int type;
 	boolean denied = false;
 	
-	private static final String chars = "@^°\"§$%&/=?`´\\#+*'-}][{-_~";
+	private static final String chars = "@^Â°\"Â§$%&/=?`Â´\\#+*'-}][{-_~";
 
 	public RenameSegment(Screen gui, String text, float posX, float posY, int width, int height, boolean popupSegment, int type) {
 		super(gui, posX, posY, width, height, popupSegment);

@@ -46,7 +46,7 @@ curseforge:
     expire_in: 6 months
 
 maven:
-  stage: deploy
+  stage: build
   script:
     - echo "isSonaType=true" >> gradle.properties
     - ./gradlew uploadArchives

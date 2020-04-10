@@ -48,7 +48,8 @@ curseforge:
 maven:
   stage: deploy
   script:
-    - ./gradlew build publish
+    - echo "isSonaType=true" >> gradle.properties
+    - ./gradlew uploadArchives
   only:
     variables:
         - $BUILD_MAVEN == "publish"

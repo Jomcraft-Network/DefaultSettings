@@ -26,7 +26,7 @@ public class SearchbarSegment extends Segment {
 	private float flashingTimer = 0;
 	private final ResourceLocation icon;
 	protected final ScrollableSegment parent;
-	private static final String chars = "@^\"$%&/()=?`\\#+*'-}][{-_~";
+	private static final String chars = "@^°\"§$%&/()=?`´\\#+*'-}][{-_~";
 
 	public SearchbarSegment(GuiScreen gui, float posX, float posY, int width, int height, boolean popupSegment, ScrollableSegment parent) {
 		super(gui, posX, posY, width, height, popupSegment);

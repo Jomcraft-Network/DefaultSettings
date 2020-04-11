@@ -118,10 +118,6 @@ public class FileUtil {
 		}
 	};
 	
-	/**
-	 * Returning DefaultSettings's main data storage
-	 * @category Main storage
-	 */
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
 		storeFolder.mkdir();
@@ -248,11 +244,7 @@ public class FileUtil {
 		}
 		return privateJson;
 	}
-	
-	/**
-	 * Generate or get DefaultSettings' main config JSON object
-	 * @category Main storage
-	 */
+
 	public static MainJSON getMainJSON() {
 
 		if(mainJson != null)

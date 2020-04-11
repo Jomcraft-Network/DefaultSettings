@@ -18,6 +18,8 @@ before_script:
   - echo "cursegradle.api_token=$curse_api" >> gradle.properties
   - echo "maven.username=$maven_username" >> gradle.properties
   - echo "maven.password=$maven_password" >> gradle.properties
+  - echo "ossrhUsername=$ossrhUsername" >> gradle.properties
+  - echo "ossrhPassword=$ossrhPassword" >> gradle.properties
   
 cache:
   paths:
@@ -28,6 +30,9 @@ build:
   stage: build
   script:
     - ./gradlew build
+  only:
+    variables:
+        - $BUILD_MAVEN != "publish"
   artifacts:
     paths:
       - build/libs/
@@ -44,11 +49,12 @@ curseforge:
     paths:
       - build/libs/
     expire_in: 6 months
-    
+
 maven:
-  stage: deploy
+  stage: build
   script:
-    - ./gradlew build publish
+    - echo "isSonaType=true" >> gradle.properties
+    - ./gradlew uploadArchives
   only:
     variables:
         - $BUILD_MAVEN == "publish"

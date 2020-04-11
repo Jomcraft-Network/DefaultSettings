@@ -22,6 +22,7 @@ plugins {
 apply plugin: 'forge'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply plugin: 'maven'
 
 version = "1.7.10-2.1.10"
 
@@ -31,7 +32,8 @@ sourceCompatibility = targetCompatibility = '1.8'
 
 def fileVersion = "2.1.10"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
-group= "de.pt400c.defaultsettings"
+group= "net.jomcraft.defaultsettings"
+ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false
 
 archivesBaseName = "DefaultSettings"
 
@@ -78,22 +80,36 @@ processResources
 task signJar {
     doLast {
         configurations.archives.allArtifacts.files.each {
-            ant.signjar(
-                jar: it,
-				storetype:"jks",
-				alias: project.property("signing.alias"),
-                storepass: project.property("signing.keyStorePassword"),
-                keystore: project.property("signing.keystorePath"),
-                keypass: project.property("signing.keyStorePassword"),
-                preservelastmodified:"true"
-            )
-            signing.sign(it)
-			project.logger.lifecycle("JAR Signed: " + it.name)
-        }
+            if(it.name.endsWith(".jar")){
+            	ant.signjar(
+                	jar: it,
+					storetype:"jks",
+					alias: project.property("signing.alias"),
+                	storepass:project.property("signing.keyStorePassword"),
+                	keystore: project.property("signing.keystorePath"),
+                	keypass: project.property("signing.keyStorePassword"),
+                	preservelastmodified:"true"
+            	)
+            	//if(!isReleaseVersion)
+            	signing.sign(it)
+				project.logger.lifecycle("JAR Signed: " + it.name)
+			}
+       }
     }
 }
 
 build.dependsOn signJar
+
+uploadArchives.dependsOn signJar
+
+signing {
+	if(isReleaseVersion)
+    	sign configurations.archives
+}
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = isReleaseVersion }
+}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.allSource
@@ -108,6 +124,13 @@ task deobfJar(type: Jar) {
 artifacts {
 	archives sourcesJar
 	archives deobfJar
+	if(isReleaseVersion)
+		archives javadocJar
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
 }
 
 task zipVerification {
@@ -159,32 +182,49 @@ curseforge {
   
 }
 
-publishing {
-    tasks.publish.dependsOn 'build'
-    publications {
-        mavenJava(MavenPublication) {
-        	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.7.10'
-            version = "$fileVersion"
-            artifact jar
-            artifact deobfJar
-            artifact sourcesJar
-           
-            artifact("$buildDir/libs/verification.zip"){
-           		classifier "verification"
-        		extension "zip"
-            }
-            
-        }
-    }
+uploadArchives {
   repositories {
-  		maven {
-  			credentials {
-        		username project.property("maven.username")
-        		password project.property("maven.password")
-    		}
-    		url "https://maven.jomcraft.net/repository/release"
-    	}
-    
-	}
+    mavenDeployer {
+      beforeDeployment { MavenDeployment mvnd ->
+               signing.signPom(mvnd)
+	  }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'DefaultSettings'
+        packaging 'jar'
+		artifactId 'DefaultSettings-1.13.2'
+        description 'DefaultSettings Minecraft Mod API'
+        url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+
+        scm {
+        	connection 'scm:git:git://gitlab.com/jomcraft-sources/defaultsettings.git'
+        	developerConnection 'scm:git:git@gitlab.com:jomcraft-sources/defaultsettings.git'
+        	url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+        }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'PT400C'
+            name 'Rolf Marker'
+            email 'pt400c@gmail.com'
+          }
+        }
+      }
+    }
+  }
 }

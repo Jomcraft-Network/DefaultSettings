@@ -121,16 +121,16 @@ task deobfJar(type: Jar) {
 	classifier = 'deobf'
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
 artifacts {
 	archives sourcesJar
 	archives deobfJar
 	if(isReleaseVersion)
 		archives javadocJar
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
 }
 
 task zipVerification {

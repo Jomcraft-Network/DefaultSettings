@@ -16,7 +16,7 @@ import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL30;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 
@@ -40,7 +40,6 @@ public class FontRendererClass {
     private static boolean oldOpenGL = false;
 
     public FontRendererClass() {
-
         for (int i = 0; i < 32; ++i) {
             int j = (i >> 3 & 1) * 85;
             int k = (i >> 2 & 1) * 170 + j;
@@ -208,6 +207,10 @@ public class FontRendererClass {
     
     private int renderString(String text, float x, float y, int color, float factor, boolean bold) {
         if (text == null) {
+        	//if(alphaBefore)
+    		//	GL11.glEnable(GL11.GL_ALPHA_TEST);
+    	//	else
+    		//	GL11.glDisable(GL11.GL_ALPHA_TEST);
     		glDisable(GL_BLEND);
             return 0;
         } else {
@@ -224,6 +227,10 @@ public class FontRendererClass {
             this.posX = x;
             this.posY = y;
             this.renderStringAtPos(text, factor, bold);
+    //        if(alphaBefore)
+    	//		GL11.glEnable(GL11.GL_ALPHA_TEST);
+    //		else
+    	//		GL11.glDisable(GL11.GL_ALPHA_TEST);
     		glDisable(GL_BLEND);
             return (int)this.posX;
         }
@@ -462,9 +469,28 @@ public class FontRendererClass {
     	glColor4f(r, g, b, a);
     }
 
-    protected void enableAlpha() {
-    	RenderSystem.enableAlphaTest();
+    
+    @SuppressWarnings("deprecation")
+	protected void enableAlpha() {
+    //	alphaBefore = GL11.glGetBoolean(GL11.GL_ALPHA_TEST);
+    //	GL11.glEnable(GL11.GL_ALPHA_TEST);
+    	if(DefaultSettings.is_1_15)
+    		GlStateManager.ALPHA_TEST.test.enable();
+    	else {
+    		Alpha1_14Handler.enableAlph();
+    		//Alpha1_14Handler alpha = (Alpha1_14Handler) DefaultSettings.alphaTest;
+    		//((Alpha1_14Handler) DefaultSettings.alphaTest).enableAlph();
+    	}
     }
+    
+   // public static AlphaState JavaCompiler() {
+ //  	//return (AlphaState) javaCompilerBeanPropertyReader.executeGetter(stateManager);
+// try {
+  //   return ((AlphaState) staticMethodHandle.invokeExact(stateManager));
+// } catch (Throwable e) {
+ //    throw new IllegalStateException(e);
+// }/
+ //  }
 
     protected void bindTexture(boolean bold) {
     	

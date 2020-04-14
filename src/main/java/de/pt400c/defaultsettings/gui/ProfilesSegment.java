@@ -211,7 +211,7 @@ public class ProfilesSegment extends Segment {
 
 		glPushMatrix();
 		glEnable(GL_SCISSOR_TEST);
-		glScissor((int) (this.getPosX() * scaleFactor), (int) ((float) (MC.getMainWindow().getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
+		glScissor((int) (this.getPosX() * scaleFactor), (int) ((float) (MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight() - 1F) * scaleFactor), (int) (this.getWidth() * scaleFactor), (int) ((float) (this.getHeight() + 1F) * scaleFactor));
 		boolean hover = false;
 		for (int i = 0; i < this.list.size(); i++) {
 			final float yOffTemp = row - 0.5F + row * i + add;
@@ -543,7 +543,7 @@ public class ProfilesSegment extends Segment {
 		private final ResourceLocation icon;
 		int cursorPosition;
 		protected final ProfilesSegment parent;
-		private static final String chars = "@^°\"§$%&/()=?`´\\#+*'-}][{-_~";
+		private static final String chars = "@^Â°\"Â§$%&/()=?`Â´\\#+*'-}][{-_~";
 
 		public SearchbarSegment(Screen gui, float posX, float posY, int width, int height, boolean popupSegment, ProfilesSegment parent) {
 			super(gui, posX, posY, width, height, popupSegment);

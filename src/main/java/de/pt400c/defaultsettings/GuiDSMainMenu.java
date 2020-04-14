@@ -28,7 +28,7 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     @Override
     public void init() {
     	
-    	Segment.scaledFactor = MC.getMainWindow().getGuiScaleFactor();
+    	Segment.scaledFactor = MC.mainWindow.getGuiScaleFactor();
     	
     	MC.keyboardListener.enableRepeatEvents(true);
         this.clearSegments();

@@ -37,6 +37,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Level;
+
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -121,11 +123,7 @@ public class FileUtil {
 			return false;
 		}
 	};
-	
-	/**
-	 * Returning DefaultSettings's main data storage
-	 * @category Main storage
-	 */
+
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
 		storeFolder.mkdir();
@@ -253,10 +251,6 @@ public class FileUtil {
 		return privateJson;
 	}
 	
-	/**
-	 * Generate or get DefaultSettings' main config JSON object
-	 * @category Main storage
-	 */
 	public static MainJSON getMainJSON() {
 
 		if(mainJson != null)
@@ -1022,6 +1016,12 @@ public class FileUtil {
 		md.update(string.getBytes());
 		byte[] digest = md.digest();
 		return DatatypeConverter.printHexBinary(digest).toUpperCase();
+	}
+	
+	public static String byteToHash(byte[] array) throws NoSuchAlgorithmException {
+		return Hashing.sha256()
+				  .hashBytes(array)
+				  .toString();
 	}
 	
 	public static String fileToHash(InputStream is) throws IOException {

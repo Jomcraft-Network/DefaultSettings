@@ -18,15 +18,17 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.15.2-2.1.9"
+version = "1.14.x-1.15.2-2.1.10a"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.9"
+def fileVersion = "2.1.10a"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
-group= "de.pt400c.defaultsettings"
+group= "net.jomcraft.defaultsettings"
+ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false
 
 archivesBaseName = "DefaultSettings"
 
@@ -50,13 +52,14 @@ minecraft {
             source sourceSets.main
         }
     }
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.1.24'
 }
 
-def forge_version = "31.1.24"
+def forge_version = "28.2.3"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -76,7 +79,12 @@ jar {
 
 	exclude('net/**') 
 
+	exclude('de/pt400c/defaultsettings/font/Alpha1_14Handler**')
+	
+	exclude('com/**') 
+    
     manifest {
+    	attributes 'FMLAT': 'defaultsettings_at.cfg'
         attributes([
             "Specification-Title": "DefaultSettings",
             "Specification-Vendor": "Jomcraft Network",
@@ -88,31 +96,49 @@ jar {
             "Build-ID": buildID
         ])
     }
+
 }
 
 task signJar {
+
     doLast {
         configurations.archives.allArtifacts.files.each {
-            ant.signjar(
-                jar: it,
-				storetype:"jks",
-				alias: project.property("signing.alias"),
-                storepass:project.property("signing.keyStorePassword"),
-                keystore: project.property("signing.keystorePath"),
-                keypass: project.property("signing.keyStorePassword"),
-                preservelastmodified:"true"
-            )
-            signing.sign(it)
-			project.logger.lifecycle("JAR Signed: " + it.name)
-        }
+           if(it.name.endsWith(".jar")){
+            	ant.signjar(
+                	jar: it,
+					storetype:"jks",
+					alias: project.property("signing.alias"),
+                	storepass:project.property("signing.keyStorePassword"),
+                	keystore: project.property("signing.keystorePath"),
+                	keypass: project.property("signing.keyStorePassword"),
+                	preservelastmodified:"true"
+            	)
+            	//if(!isReleaseVersion)
+            	signing.sign(it)
+				project.logger.lifecycle("JAR Signed: " + it.name)
+			}
+       }
     }
 }
 
 build.dependsOn signJar
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+uploadArchives.dependsOn signJar
+
+signing {
+	if(isReleaseVersion)
+    	sign configurations.archives
+}
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = isReleaseVersion }
+}
+
+task sourcesJar(type: Jar) {
 
 	exclude('net/**') 
+	
+	exclude('com/**') 
 	
 	from sourceSets.main.allSource
 	classifier = 'sources'
@@ -122,15 +148,25 @@ task deobfJar(type: Jar) {
 	
 	exclude('net/**')
 	
+	exclude('de/pt400c/defaultsettings/font/Alpha1_14Handler**')
+	
+	exclude('com/**') 
+	
 	from sourceSets.main.output
 	classifier = 'deobf'
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
 }
 
 artifacts {
 	archives sourcesJar
 	archives deobfJar
+	if(isReleaseVersion)
+		archives javadocJar
 }
-
 
 task zipVerification {
     doLast {
@@ -185,32 +221,49 @@ curseforge {
 
 }
 
-publishing {
-    tasks.publish.dependsOn 'build'
-    publications {
-        mavenJava(MavenPublication) {
-        	groupId = 'de.pt400c.defaultsettings'
-            artifactId = 'DefaultSettings-1.15.2'
-            version = "$fileVersion"
-            artifact jar
-            artifact deobfJar
-            artifact sourcesJar
-           
-            artifact("$buildDir/libs/verification.zip"){
-           		classifier "verification"
-        		extension "zip"
-            }
-            
-        }
-    }
+uploadArchives {
   repositories {
-  		maven {
-  			credentials {
-        		username project.property("maven.username")
-        		password project.property("maven.password")
-    		}
-    	url "https://maven.jomcraft.net/repository/release"
+    mavenDeployer {
+      beforeDeployment { MavenDeployment mvnd ->
+               signing.signPom(mvnd)
+	  }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'DefaultSettings'
+        packaging 'jar'
+		artifactId 'DefaultSettings-1.14.x-1.15.2'
+        description 'DefaultSettings Minecraft Mod API'
+        url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+
+        scm {
+        	connection 'scm:git:git://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
+        	developerConnection 'scm:git:git@github.com/DefaultSettings-GH/DefaultSettings-GH.git'
+        	url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+        }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'PT400C'
+            name 'Rolf Marker'
+            email 'pt400c@gmail.com'
+          }
+        }
+      }
     }
-    
-}
+  }
 }

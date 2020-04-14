@@ -68,7 +68,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 			glBlendFuncSeparate(770, 771, 1, 0);
 
 			final int scaleFactor = (int) scaledFactor;
-			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.getMainWindow().getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
+			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 
 			glDisable(GL_BLEND);
 			glDisable(GL_SCISSOR_TEST);

@@ -47,8 +47,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
     	this.minecraft = minecraft;
         this.parentScreen = parentScreen;
-        this.framerateLimit = MC.getMainWindow().getLimitFramerate();
-        MC.getMainWindow().setFramerateLimit(60);
+        this.framerateLimit = MC.mainWindow.getLimitFramerate();
+        MC.mainWindow.setFramerateLimit(60);
 	}
     
     @Override
@@ -95,12 +95,12 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	Segment.resized++;
 
-    	Segment.scaledFactor = MC.getMainWindow().getGuiScaleFactor();
+    	Segment.scaledFactor = MC.mainWindow.getGuiScaleFactor();
     	
     	new FileUtil.RegistryChecker();
     	
     	if(this.framebufferMc != null) 
-    		this.framebufferMc.resize(MC.getMainWindow().getWidth(), MC.getMainWindow().getHeight());
+    		this.framebufferMc.resize(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
 			
     	MC.keyboardListener.enableRepeatEvents(true);
     	
@@ -113,7 +113,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	if(!init) {
     		this.clearSegments();
-        	this.framebufferMc = new FramebufferObject(MC.getMainWindow().getWidth(), MC.getMainWindow().getHeight());
+        	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
@@ -264,7 +264,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	BakeryRegistry.clearAll();
     	if(framebufferMc != null)
     		framebufferMc.deleteFramebuffer();
-    	MC.getMainWindow().setFramerateLimit(this.framerateLimit);
+    	MC.mainWindow.setFramerateLimit(this.framerateLimit);
     	super.onClose();
     }
     
@@ -522,9 +522,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
     	
-    	if(MC.getMainWindow().getWidth() != this.storeWidth || MC.getMainWindow().getHeight() != this.storeHeight) {
-    		this.storeWidth = MC.getMainWindow().getWidth();
-    		this.storeHeight = MC.getMainWindow().getHeight();
+    	if(MC.mainWindow.getWidth() != this.storeWidth || MC.mainWindow.getHeight() != this.storeHeight) {
+    		this.storeWidth = MC.mainWindow.getWidth();
+    		this.storeHeight = MC.mainWindow.getHeight();
     		testInit();
     	}
     	
@@ -538,7 +538,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glClear(256);
 		glMatrixMode(5889);
 		glLoadIdentity();
-		glOrtho(0.0D, MC.getMainWindow().getScaledWidth(), MC.getMainWindow().getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
+		glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
 		glMatrixMode(5888);
 		glLoadIdentity();
 		glTranslatef(0.0F, 0.0F, -2000.0F);
@@ -572,7 +572,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glPushMatrix();
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		glBlitFramebuffer(0, 0, MC.getMainWindow().getWidth(), MC.getMainWindow().getHeight(), 0, 0, MC.getMainWindow().getWidth(), MC.getMainWindow().getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 		glPopMatrix();
 

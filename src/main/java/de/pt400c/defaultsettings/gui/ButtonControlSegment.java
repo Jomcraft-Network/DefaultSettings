@@ -277,6 +277,7 @@ public class ButtonControlSegment extends BakedSegment {
 		drawTexture(1);
 		glPopMatrix();
 		this.selected_prev = selected;
+		this.color_prev = this.color;
 		this.grabbed_prev = this.grabbed;
 	}
 	

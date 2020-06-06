@@ -49,7 +49,6 @@ public class FramebufferObject
 		this.colorBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, this.colorBuffer);
 		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 9, GL_RGBA8, this.framebufferWidth, this.framebufferHeight);
-
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, this.colorBuffer);
 	}
 

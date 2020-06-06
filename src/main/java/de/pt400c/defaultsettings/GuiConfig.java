@@ -18,7 +18,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL30.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -527,24 +526,16 @@ public class GuiConfig extends DefaultSettingsGUI {
     		this.storeHeight = MC.mainWindow.getHeight();
     		testInit();
     	}
-    	
-    	MC.getFramebuffer().unbindFramebuffer();
-		glPushMatrix();
-		glClear(16640);
-		this.framebufferMc.bindFramebuffer(true);
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_TEXTURE_2D);
 
-		glClear(256);
+		this.framebufferMc.bindFramebuffer(true);
+		glClear(16640);
+		glEnable(GL_TEXTURE_2D);
 		glMatrixMode(5889);
 		glLoadIdentity();
 		glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
 		glMatrixMode(5888);
 		glLoadIdentity();
 		glTranslatef(0.0F, 0.0F, -2000.0F);
-
-		glClear(256);
-		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_ALPHA_TEST);
@@ -562,20 +553,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
 		super.render(mouseX, mouseY, partialTicks);
 
-		glPushMatrix();
-
-		glPopMatrix();
-		this.framebufferMc.unbindFramebuffer();
-		glPopMatrix();
-
 		MC.getFramebuffer().bindFramebuffer(true);
-		glPushMatrix();
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
 		glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-		glPopMatrix();
-
     }
     
 	private class ButtonState {

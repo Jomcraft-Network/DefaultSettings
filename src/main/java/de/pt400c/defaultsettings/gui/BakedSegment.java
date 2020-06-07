@@ -67,7 +67,7 @@ public abstract class BakedSegment extends Segment {
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);
 		RenderHelper.disableStandardItemLighting();
-		glClear(256);
+		//glClear(256);
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
@@ -95,7 +95,7 @@ public abstract class BakedSegment extends Segment {
 			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).popupField.mapFrameBufferContents.msFbo);	
 			glViewport((int) 0, (int) 0, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.width, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.height);
 		}else if(this.gui instanceof GuiConfig){
-			//glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}else {
 			MC.getFramebuffer().bindFramebuffer(true);

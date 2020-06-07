@@ -14,7 +14,6 @@ import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -571,16 +570,16 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 		glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
 
-		glPushMatrix();
+		//glPushMatrix();
 
-		glTranslated(0, 0, 0);
+		//glTranslated(0, 0, 0);
 		
 		glColor4f(1, 1, 1, 1);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	    
 		glEnable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
@@ -598,7 +597,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glDisable(GL_BLEND);
 		
 		glBindTexture(GL_TEXTURE_2D, currBound);
-		glPopMatrix();
+		//glPopMatrix();
     }
     
 	private class ButtonState {

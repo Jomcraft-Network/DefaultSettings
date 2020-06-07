@@ -1,14 +1,8 @@
 package de.pt400c.defaultsettings;
 
 import static org.lwjgl.opengl.GL30.*;
-
 import java.nio.ByteBuffer;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,7 +32,6 @@ public class FramebufferObject
 	}
 
 	public void deleteFramebuffer() {
-		//this.unbindFramebuffer();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(this.framebuffer);
@@ -87,21 +80,7 @@ public class FramebufferObject
 	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, this.textureColorBufferMultiSampled, 0);
 	}
 
-    /*
-	public void bindFramebuffer(final boolean vp) {
-		glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferObject);
-
-		if (vp) 
-			glViewport(0, 0, this.framebufferWidth, this.framebufferHeight);
-
-	}
-
-    public void unbindFramebuffer() {
-    	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }*/
-
     public void framebufferClear() {
-      //  this.bindFramebuffer(true);
         glClear(GL_COLOR_BUFFER_BIT);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -109,7 +88,8 @@ public class FramebufferObject
 	public void resize(int width, int height) {
 		glDeleteFramebuffers(this.framebuffer);
 		glDeleteFramebuffers(this.intermediateFBO);
-		//glDeleteRenderbuffers(this.textureColorBufferMultiSampled);
+		glDeleteTextures(this.screenTexture);
+		glDeleteTextures(this.textureColorBufferMultiSampled);
         this.createBindFramebuffer(width, height);
 	}
 }

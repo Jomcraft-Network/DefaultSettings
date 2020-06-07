@@ -21,11 +21,11 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.14.x-1.15.2-2.1.10a"
+version = "1.14.x-1.15.2-2.1.12"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.10a"
+def fileVersion = "2.1.12"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "net.jomcraft.defaultsettings"
 ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false
@@ -35,7 +35,7 @@ archivesBaseName = "DefaultSettings"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200225-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
 
 	runs {
         client {
@@ -56,7 +56,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.24'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.8'
 }
 
 def forge_version = "28.2.3"
@@ -113,7 +113,6 @@ task signJar {
                 	keypass: project.property("signing.keyStorePassword"),
                 	preservelastmodified:"true"
             	)
-            	//if(!isReleaseVersion)
             	signing.sign(it)
 				project.logger.lifecycle("JAR Signed: " + it.name)
 			}
@@ -198,6 +197,9 @@ curseforge {
     addGameVersion '1.15.2'
     addGameVersion '1.15.1'
     addGameVersion '1.15'
+    addGameVersion '1.14.2'
+    addGameVersion '1.14.1'
+    addGameVersion '1.14'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }

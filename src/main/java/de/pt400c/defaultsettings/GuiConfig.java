@@ -525,9 +525,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     		this.storeWidth = MC.mainWindow.getWidth();
     		this.storeHeight = MC.mainWindow.getHeight();
     		testInit();
+    		this.framebufferMc.bindFramebuffer(true);
     	}
 
-		this.framebufferMc.bindFramebuffer(true);
+		
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);
 		glMatrixMode(5889);
@@ -553,10 +554,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
 		super.render(mouseX, mouseY, partialTicks);
 
-		MC.getFramebuffer().bindFramebuffer(true);
+		//MC.getFramebuffer().bindFramebuffer(true);
 
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		//glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
+		//glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
     }
     
 	private class ButtonState {

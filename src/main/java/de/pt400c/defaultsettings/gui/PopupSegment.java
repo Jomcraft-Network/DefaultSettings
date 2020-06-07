@@ -245,7 +245,7 @@ public class PopupSegment extends Segment {
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+		//glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 		glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		
 		int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);

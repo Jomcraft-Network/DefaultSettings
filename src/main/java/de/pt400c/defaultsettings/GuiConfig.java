@@ -43,6 +43,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 	private int storeWidth;
 	private int storeHeight;
 	private final int framerateLimit;
+	public double thingWidth = 0;
+	public double thingHeight = 0;
     
 	public GuiConfig(Minecraft minecraft, Screen parentScreen) {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
@@ -109,6 +111,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     		System.gc();
     		this.gcAmount = 0;
     	}
+    	
+    	this.thingWidth = MC.mainWindow.getWidth() / (int) Segment.scaledFactor;
+    	
+    	this.thingHeight = MC.mainWindow.getHeight() / (int) Segment.scaledFactor;
     		
     	this.gcAmount++;
     	
@@ -527,7 +533,6 @@ public class GuiConfig extends DefaultSettingsGUI {
     		this.storeWidth = MC.mainWindow.getWidth();
     		this.storeHeight = MC.mainWindow.getHeight();
     		testInit();
-    		
     	}
 
     	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
@@ -583,9 +588,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 		glBegin(GL_QUADS);
 	
-		glTexCoord2f(0, 0); glVertex3d(0, MC.mainWindow.getHeight() / (int) Segment.scaledFactor, 0);
-		glTexCoord2f(1, 0); glVertex3d(MC.mainWindow.getWidth() / (int) Segment.scaledFactor, MC.mainWindow.getHeight() / (int) Segment.scaledFactor, 0);
-		glTexCoord2f(1, 1); glVertex3d(MC.mainWindow.getWidth() / (int) Segment.scaledFactor, 0, 0);
+		glTexCoord2f(0, 0); glVertex3d(0, thingHeight, 0);
+		glTexCoord2f(1, 0); glVertex3d(thingWidth, thingHeight, 0);
+		glTexCoord2f(1, 1); glVertex3d(thingWidth, 0, 0);
 		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
 		glEnd();
 		
@@ -594,7 +599,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
 		glBindTexture(GL_TEXTURE_2D, currBound);
 		glPopMatrix();
-		glClearColor(0, 0, 0, 0);
     }
     
 	private class ButtonState {

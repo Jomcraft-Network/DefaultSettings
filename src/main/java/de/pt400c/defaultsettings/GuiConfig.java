@@ -14,10 +14,12 @@ import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL30.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -525,10 +527,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     		this.storeWidth = MC.mainWindow.getWidth();
     		this.storeHeight = MC.mainWindow.getHeight();
     		testInit();
-    		this.framebufferMc.bindFramebuffer(true);
+    		
     	}
 
-		
+    	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);
 		glMatrixMode(5889);
@@ -553,11 +555,46 @@ public class GuiConfig extends DefaultSettingsGUI {
 		headerPart.render(mouseX, mouseY, partialTicks);
 		
 		super.render(mouseX, mouseY, partialTicks);
+		
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.intermediateFBO);
+        glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		
+        MC.getFramebuffer().bindFramebuffer(true);
+        
+        int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
 
-		//MC.getFramebuffer().bindFramebuffer(true);
+		glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
 
-		//glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		//glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glPushMatrix();
+
+		glTranslated(0, 0, 0);
+		
+		glColor4f(1, 1, 1, 1);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	    
+		glEnable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+		glBegin(GL_QUADS);
+	
+		glTexCoord2f(0, 0); glVertex3d(0, MC.mainWindow.getHeight() / (int) Segment.scaledFactor, 0);
+		glTexCoord2f(1, 0); glVertex3d(MC.mainWindow.getWidth() / (int) Segment.scaledFactor, MC.mainWindow.getHeight() / (int) Segment.scaledFactor, 0);
+		glTexCoord2f(1, 1); glVertex3d(MC.mainWindow.getWidth() / (int) Segment.scaledFactor, 0, 0);
+		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
+		glEnd();
+		
+		glEnable(GL_ALPHA_TEST);
+		glDisable(GL_BLEND);
+		
+		glBindTexture(GL_TEXTURE_2D, currBound);
+		glPopMatrix();
+		glClearColor(0, 0, 0, 0);
     }
     
 	private class ButtonState {

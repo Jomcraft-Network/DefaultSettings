@@ -13,10 +13,10 @@ import de.pt400c.defaultsettings.gui.*;
 import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL30.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -32,13 +32,19 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
-    public FramebufferObject framebufferMc;
+    public FramebufferDefault framebufferMc;
     public boolean init = false;
 	public HeaderPart headerPart = null;
 	private int gcAmount;
 	public ProfilesSegment scrollableProfiles;
 	private int storeWidth;
 	private int storeHeight;
+	public double thingWidth = 0;
+	public double thingHeight = 0;
+	public int renderTick = 0;
+	public long laterTick = 0;
+	public long prevTick = 0;
+	public float median = 0;
     
     public GuiConfig(Minecraft minecraft, GuiScreen parentScreen) {
         this.mc = minecraft;
@@ -107,21 +113,23 @@ public class GuiConfig extends DefaultSettingsGUI {
     		this.gcAmount = 0;
     	}
     		
+    	this.thingWidth = MC.mainWindow.getWidth() / (int) Segment.scaledFactor;
+    	
+    	this.thingHeight = MC.mainWindow.getHeight() / (int) Segment.scaledFactor;
+    	
     	this.gcAmount++;
     	
     	if(!init) {
     		this.clearSegments();
-        	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
+        	this.framebufferMc = new FramebufferDefault(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
-        		if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0) {
+        		if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0)
         			GuiConfig.this.exportModeInfo();
-    			}else {
-        		
+    			else 
     				GuiConfig.this.mc.displayGuiScreen(GuiConfig.this.parentScreen);
-        		
-    			}
+    			
         		return true;}, 5F, false));
         	
         	this.addSegment(new HelpSegment(this, i -> {return i.width - 55;}, 30));
@@ -262,6 +270,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	BakeryRegistry.clearAll();
     	if(framebufferMc != null)
     		framebufferMc.deleteFramebuffer();
+    	DefaultSettings.targetMS = 9;
     	super.onGuiClosed();
     }
     
@@ -524,24 +533,38 @@ public class GuiConfig extends DefaultSettingsGUI {
     		this.storeHeight = MC.mainWindow.getHeight();
     		init();
     	}
-    	
-    	this.mc.getFramebuffer().unbindFramebuffer();
-		glPushMatrix();
-		glClear(16640);
-		this.framebufferMc.bindFramebuffer(true);
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_TEXTURE_2D);
 
-		glClear(256);
+		if(this.renderTick == Integer.MAX_VALUE)
+			this.renderTick = -1;
+		
+		this.renderTick++;
+    	
+		this.prevTick = this.laterTick;
+    	this.laterTick = System.currentTimeMillis();
+    	float diff = (float) (laterTick - prevTick);
+    	float fps = ((1F / diff) * 1000);
+		
+    	median+= fps; 
+    	
+    	if(this.renderTick % 120 == 0) {
+    		float medFPS = median / 120F;
+    
+    		if(medFPS < 50 && DefaultSettings.targetMS > 1) {
+    			DefaultSettings.targetMS -= 1;
+    			init();
+    		}
+    		median = 0;
+    	}
+
+    	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
+		glClear(16640);
+		glEnable(GL_TEXTURE_2D);
 		glMatrixMode(5889);
 		glLoadIdentity();
 		glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
 		glMatrixMode(5888);
 		glLoadIdentity();
 		glTranslatef(0.0F, 0.0F, -2000.0F);
-
-		glClear(256);
-		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_ALPHA_TEST);
@@ -558,21 +581,33 @@ public class GuiConfig extends DefaultSettingsGUI {
 		headerPart.render(mouseX, mouseY, partialTicks);
 		
 		super.render(mouseX, mouseY, partialTicks);
+		
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
+        glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		
+        MC.getFramebuffer().bindFramebuffer(true);
+		glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
+		
+		glColor4f(1, 1, 1, 1);
 
-		glPushMatrix();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glPopMatrix();
-		this.framebufferMc.unbindFramebuffer();
-		glPopMatrix();
+		glEnable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
-		this.mc.getFramebuffer().bindFramebuffer(true);
-		glPushMatrix();
-
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, framebufferMc.framebufferObject);
-		glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-		glPopMatrix();
-
+		glBegin(GL_QUADS);
+	
+		glTexCoord2f(0, 0); glVertex3d(0, thingHeight, 0);
+		glTexCoord2f(1, 0); glVertex3d(thingWidth, thingHeight, 0);
+		glTexCoord2f(1, 1); glVertex3d(thingWidth, 0, 0);
+		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
+		glEnd();
+		
+		glEnable(GL_ALPHA_TEST);
+		glDisable(GL_BLEND);
     }
     
 	private class ButtonState {

@@ -21,10 +21,10 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.13.2-2.1.9"
+version = "1.13.2-2.1.13"
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.9"
+def fileVersion = "2.1.13"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "net.jomcraft.defaultsettings"
 ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false
@@ -101,7 +101,6 @@ task signJar {
                 	keypass: project.property("signing.keyStorePassword"),
                 	preservelastmodified:"true"
             	)
-            	//if(!isReleaseVersion)
             	signing.sign(it)
 				project.logger.lifecycle("JAR Signed: " + it.name)
 			}
@@ -171,6 +170,7 @@ curseforge {
     changelog = file("changelog.html")
     changelogType = 'html'
     releaseType = 'release'
+    addGameVersion '1.13.2'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }
@@ -210,14 +210,15 @@ uploadArchives {
       pom.project {
         name 'DefaultSettings'
         packaging 'jar'
+		artifactId 'DefaultSettings-1.13.2'
         version fileVersion
-        description 'DefaultSettings Minecraft Mod API'
-        url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+        description 'https://github.com/DefaultSettings-GH/'
+        url 'https://github.com/DefaultSettings-GH/DefaultSettings-GH'
 
         scm {
-        	connection 'scm:git:git://gitlab.com/jomcraft-sources/defaultsettings.git'
-        	developerConnection 'scm:git:ssh://gitlab.com/jomcraft-sources/defaultsettings.git'
-        	url 'https://gitlab.com/jomcraft-sources/defaultsettings/-/tree/master-1.13.2'
+        	connection 'https://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
+        	developerConnection 'https://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
+        	url 'https://github.com/DefaultSettings-GH/DefaultSettings-GH'
         }
 
         licenses {
@@ -235,6 +236,7 @@ uploadArchives {
           }
         }
       }
-    }
+    
   }
+}
 }

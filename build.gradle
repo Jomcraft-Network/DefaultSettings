@@ -143,8 +143,10 @@ task zipVerification {
                 include(name: 'pubkey.gpg')
             }
         }
-        delete fileTree("$buildDir/libs/") {
-			include '**/*.asc'
+        if(!isReleaseVersion){
+        	delete fileTree("$buildDir/libs/") {
+				include '**/*.asc'
+			}
 		}
         project.logger.lifecycle("Created verification ZIP")
     }

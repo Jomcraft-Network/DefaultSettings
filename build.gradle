@@ -201,13 +201,13 @@ uploadArchives {
         name 'DefaultSettings'
         packaging 'jar'
 		artifactId 'DefaultSettings-1.13.2'
-        description 'DefaultSettings Minecraft Mod API'
-        url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+        description 'https://github.com/DefaultSettings-GH/'
+        url 'https://github.com/DefaultSettings-GH/DefaultSettings-GH'
 
         scm {
-        	connection 'scm:git:git://gitlab.com/jomcraft-sources/defaultsettings.git'
-        	developerConnection 'scm:git:git@gitlab.com:jomcraft-sources/defaultsettings.git'
-        	url 'https://gitlab.com/jomcraft-sources/defaultsettings'
+        	connection 'https://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
+        	developerConnection 'https://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
+        	url 'https://github.com/DefaultSettings-GH/DefaultSettings-GH'
         }
 
         licenses {

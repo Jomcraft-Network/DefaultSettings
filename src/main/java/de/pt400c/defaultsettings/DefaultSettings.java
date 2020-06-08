@@ -62,7 +62,7 @@ public class DefaultSettings {
 	@SuppressWarnings("unchecked")
 	public DefaultSettings() {
 		instance = this;
-System.out.println("INIT!");
+
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			if (setUp)
 				return;
@@ -189,7 +189,7 @@ System.out.println("INIT!");
 			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 
 				try {
-/*
+
 					GameSettings gameSettings = FileUtil.MC.gameSettings;
 					gameSettings.loadOptions();
 					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
@@ -203,7 +203,7 @@ System.out.println("INIT!");
 					FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
 
 					FileUtil.MC.gameSettings.saveOptions();
-*/
+
 					// ForgeHooksClient.refreshResources(FileUtil.MC, VanillaResourceType.LANGUAGES,
 					// VanillaResourceType.MODELS, VanillaResourceType.SHADERS,
 					// VanillaResourceType.SOUNDS, VanillaResourceType.TEXTURES);

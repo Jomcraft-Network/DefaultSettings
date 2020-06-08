@@ -215,7 +215,6 @@ curseforge {
         name 'DefaultSettings'
         packaging 'jar'
 		artifactId 'DefaultSettings-1.8.x-1.12.x'
-        description 'DefaultSettings Minecraft Mod API'
         version fileVersion
         description 'https://github.com/DefaultSettings-GH/'
         url 'https://github.com/DefaultSettings-GH/DefaultSettings-GH'

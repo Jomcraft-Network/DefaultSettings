@@ -201,6 +201,7 @@ uploadArchives {
         name 'DefaultSettings'
         packaging 'jar'
 		artifactId 'DefaultSettings-1.13.2'
+		version fileVersion
         description 'https://github.com/DefaultSettings-GH/'
         url 'https://github.com/DefaultSettings-GH/DefaultSettings-GH'
 

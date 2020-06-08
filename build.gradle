@@ -210,7 +210,7 @@ uploadArchives {
       pom.project {
         name 'DefaultSettings'
         packaging 'jar'
-
+        version fileVersion
         description 'DefaultSettings Minecraft Mod API'
         url 'https://gitlab.com/jomcraft-sources/defaultsettings'
 

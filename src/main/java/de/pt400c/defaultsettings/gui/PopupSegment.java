@@ -129,7 +129,7 @@ public class PopupSegment extends Segment {
 				glMatrixMode(GL_MODELVIEW);
 				glPopMatrix();
 
-				//((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
+				glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 				glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 				compiled = true;
 			}

@@ -34,7 +34,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
-    public FramebufferObject framebufferMc;
+    public FramebufferDefault framebufferMc;
     public boolean init = false;
 	public HeaderPart headerPart = null;
 	private int gcAmount;
@@ -123,7 +123,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	if(!init) {
     		this.clearSegments();
-        	this.framebufferMc = new FramebufferObject(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
+        	this.framebufferMc = new FramebufferDefault(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
@@ -586,7 +586,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		super.render(mouseX, mouseY, partialTicks);
 		
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.intermediateFBO);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
         glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		
         MC.getFramebuffer().bindFramebuffer(true);

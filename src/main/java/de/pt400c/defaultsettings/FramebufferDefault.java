@@ -1,24 +1,23 @@
 package de.pt400c.defaultsettings;
 
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL32.*;
 import java.nio.ByteBuffer;
-import org.lwjgl.opengl.GL32;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class FramebufferObject
-{
+public class FramebufferDefault {
     public int framebufferWidth;
     public int framebufferHeight;
     public int framebuffer;
-    public int intermediateFBO;
+    public int interFramebuffer;
     public int colorBuffer;
-    public int textureColorBufferMultiSampled;
+    public int multisampledTexture;
     public int screenTexture;
 
-    public FramebufferObject(int width, int height) {
-        this.intermediateFBO = -1;
+    public FramebufferDefault(int width, int height) {
+        this.interFramebuffer = -1;
         this.framebuffer = -1;
         this.createBindFramebuffer(width, height);
     }
@@ -35,20 +34,17 @@ public class FramebufferObject
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(this.framebuffer);
-		glDeleteFramebuffers(this.intermediateFBO);
+		glDeleteFramebuffers(this.interFramebuffer);
 	}
 
 	public void createFramebuffer(int width, int height) {
 		this.framebufferWidth = width;
 		this.framebufferHeight = height;
 		this.createFrameBuffer();
-		this.createMSColorAttachment();
-		
+		this.createMSColorAttachment();	
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		this.createMSFrameBuffer();
 		this.createColorAttachment();
-		
-		
 		this.framebufferClear();
 	}
     
@@ -67,17 +63,16 @@ public class FramebufferObject
     }
     
     private void createMSFrameBuffer() {
-    	this.intermediateFBO = glGenFramebuffers();
-    	glBindFramebuffer(GL_FRAMEBUFFER, this.intermediateFBO);
+    	this.interFramebuffer = glGenFramebuffers();
+    	glBindFramebuffer(GL_FRAMEBUFFER, this.interFramebuffer);
     }
     
     private void createMSColorAttachment() {
-		
-		this.textureColorBufferMultiSampled = glGenTextures();
-	    glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, this.textureColorBufferMultiSampled);
-	    GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, DefaultSettings.targetMS, GL_RGB, this.framebufferWidth, this.framebufferHeight, true);
-	    glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, 0);
-	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, this.textureColorBufferMultiSampled, 0);
+		this.multisampledTexture = glGenTextures();
+	    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
+	    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, DefaultSettings.targetMS, GL_RGB, this.framebufferWidth, this.framebufferHeight, true);
+	    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture, 0);
 	}
 
     public void framebufferClear() {
@@ -87,9 +82,9 @@ public class FramebufferObject
 
 	public void resize(int width, int height) {
 		glDeleteFramebuffers(this.framebuffer);
-		glDeleteFramebuffers(this.intermediateFBO);
+		glDeleteFramebuffers(this.interFramebuffer);
 		glDeleteTextures(this.screenTexture);
-		glDeleteTextures(this.textureColorBufferMultiSampled);
+		glDeleteTextures(this.multisampledTexture);
         this.createBindFramebuffer(width, height);
 	}
 }

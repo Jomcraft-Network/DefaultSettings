@@ -49,7 +49,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 	public long prevTick = 0;
 	public float median = 0;
 	
-    
 	public GuiConfig(Minecraft minecraft, Screen parentScreen) {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
     	this.minecraft = minecraft;
@@ -128,13 +127,11 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
-        		if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0) {
+        		if(GuiConfig.this.menu.exportActive.getByte() == 2 && FileUtil.exportMode() && FileUtil.mainJson.activeConfigs.size() != 0)
         			GuiConfig.this.exportModeInfo();
-    			}else {
-        		
+    			else 		
     				GuiConfig.this.minecraft.displayGuiScreen(GuiConfig.this.parentScreen);
-        		
-    			}
+    		
         		return true;}, 5F, false));
         	
         	this.addSegment(new HelpSegment(this, i -> {return i.width - 55;}, 30));
@@ -276,6 +273,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	if(framebufferMc != null)
     		framebufferMc.deleteFramebuffer();
     	MC.mainWindow.setFramerateLimit(this.framerateLimit);
+    	DefaultSettings.targetMS = 9;
     	super.onClose();
     }
     
@@ -559,17 +557,13 @@ public class GuiConfig extends DefaultSettingsGUI {
     			testInit();
     		}
     		
-    		if(medFPS > 56 && DefaultSettings.targetMS < 9) {
-    			DefaultSettings.targetMS += 1;
-    			testInit();
-    		}
-    	//	System.out.println(median / 120F);
-    	//	System.out.println(DefaultSettings.targetMS);
+    	//	if(medFPS > 56 && DefaultSettings.targetMS < 9) {
+    	//		DefaultSettings.targetMS += 1;
+    	//		testInit();
+    	//	}
     		median = 0;
     	}
-    	
-    	
-    
+
     	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);
@@ -601,22 +595,13 @@ public class GuiConfig extends DefaultSettingsGUI {
         glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		
         MC.getFramebuffer().bindFramebuffer(true);
-        
-        int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
-
 		glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
-
-		//glPushMatrix();
-
-		//glTranslated(0, 0, 0);
 		
 		glColor4f(1, 1, 1, 1);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	    
+
 		glEnable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
@@ -631,9 +616,6 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
 		glEnable(GL_ALPHA_TEST);
 		glDisable(GL_BLEND);
-		
-		glBindTexture(GL_TEXTURE_2D, currBound);
-		//glPopMatrix();
     }
     
 	private class ButtonState {

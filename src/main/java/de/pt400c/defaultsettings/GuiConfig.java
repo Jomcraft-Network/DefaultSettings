@@ -44,6 +44,11 @@ public class GuiConfig extends DefaultSettingsGUI {
 	private final int framerateLimit;
 	public double thingWidth = 0;
 	public double thingHeight = 0;
+	public int renderTick = 0;
+	public long laterTick = 0;
+	public long prevTick = 0;
+	public float median = 0;
+	
     
 	public GuiConfig(Minecraft minecraft, Screen parentScreen) {
     	super(new TranslationTextComponent("defaultsettings.main.title"));
@@ -114,7 +119,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	this.thingWidth = MC.mainWindow.getWidth() / (int) Segment.scaledFactor;
     	
     	this.thingHeight = MC.mainWindow.getHeight() / (int) Segment.scaledFactor;
-    		
+
     	this.gcAmount++;
     	
     	if(!init) {
@@ -534,6 +539,37 @@ public class GuiConfig extends DefaultSettingsGUI {
     		testInit();
     	}
 
+		if(this.renderTick == Integer.MAX_VALUE)
+			this.renderTick = -1;
+		
+		this.renderTick++;
+    	
+		this.prevTick = this.laterTick;
+    	this.laterTick = System.currentTimeMillis();
+    	float diff = (float) (laterTick - prevTick);
+    	float fps = ((1F / diff) * 1000);
+		
+    	median+= fps; 
+    	
+    	if(this.renderTick % 120 == 0) {
+    		float medFPS = median / 120F;
+    
+    		if(medFPS < 40 && DefaultSettings.targetMS > 1) {
+    			DefaultSettings.targetMS -= 1;
+    			testInit();
+    		}
+    		
+    		if(medFPS > 56 && DefaultSettings.targetMS < 9) {
+    			DefaultSettings.targetMS += 1;
+    			testInit();
+    		}
+    	//	System.out.println(median / 120F);
+    	//	System.out.println(DefaultSettings.targetMS);
+    		median = 0;
+    	}
+    	
+    	
+    
     	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);

@@ -75,7 +75,7 @@ public class FramebufferObject
 		
 		this.textureColorBufferMultiSampled = glGenTextures();
 	    glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, this.textureColorBufferMultiSampled);
-	    GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, 9, GL_RGB, this.framebufferWidth, this.framebufferHeight, true);
+	    GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, DefaultSettings.targetMS, GL_RGB, this.framebufferWidth, this.framebufferHeight, true);
 	    glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, 0);
 	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, this.textureColorBufferMultiSampled, 0);
 	}

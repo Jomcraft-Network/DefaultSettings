@@ -57,6 +57,7 @@ public class DefaultSettings {
 	public static boolean init = false;
 	public static Class<?> alphaTest;
 	public static final boolean is_1_15 = !MCPVersion.getMCVersion().startsWith("1.14");
+	public static int targetMS = 9;
 	
 	@SuppressWarnings("unchecked")
 	public DefaultSettings() {

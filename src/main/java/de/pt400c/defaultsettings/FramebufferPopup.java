@@ -43,7 +43,7 @@ public class FramebufferPopup {
         msFbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, msFbo);
         glBindRenderbuffer(GL_RENDERBUFFER, msColorRenderBuffer);
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, 9, GL_RGBA8, width, height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, DefaultSettings.targetMS, GL_RGBA8, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msColorRenderBuffer);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);

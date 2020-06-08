@@ -88,7 +88,7 @@ public class DefaultSettings {
 			}
 
 			try {
-				//FileUtil.restoreContents();
+				FileUtil.restoreContents();
 				
 			} catch (Exception e) {
 				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);

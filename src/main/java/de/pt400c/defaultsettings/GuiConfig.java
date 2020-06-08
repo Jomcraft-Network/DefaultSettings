@@ -552,15 +552,10 @@ public class GuiConfig extends DefaultSettingsGUI {
     	if(this.renderTick % 120 == 0) {
     		float medFPS = median / 120F;
     
-    		if(medFPS < 40 && DefaultSettings.targetMS > 1) {
+    		if(medFPS < 50 && DefaultSettings.targetMS > 1) {
     			DefaultSettings.targetMS -= 1;
     			testInit();
     		}
-    		
-    	//	if(medFPS > 56 && DefaultSettings.targetMS < 9) {
-    	//		DefaultSettings.targetMS += 1;
-    	//		testInit();
-    	//	}
     		median = 0;
     	}
 

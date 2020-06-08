@@ -21,11 +21,11 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.14.x-1.15.2-2.1.12"
+version = "1.14.x-1.15.2-2.1.13"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.12"
+def fileVersion = "2.1.13"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "net.jomcraft.defaultsettings"
 ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false

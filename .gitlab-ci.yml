@@ -54,7 +54,7 @@ maven:
   stage: build
   script:
     - echo "isSonaType=true" >> gradle.properties
-    - ./gradlew uploadArchives
+    - ./gradlew build uploadArchives
   only:
     variables:
         - $BUILD_MAVEN == "publish" 

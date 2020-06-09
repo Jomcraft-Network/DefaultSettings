@@ -41,6 +41,7 @@ public class DefaultSettings {
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static final boolean debug = false;
+	public static int targetMS = 9;
 	
 	@Instance
 	public static DefaultSettings instance;

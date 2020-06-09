@@ -24,13 +24,13 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'maven'
 
-version = "1.7.10-2.1.10"
+version = "1.7.10-2.1.13"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
 sourceCompatibility = targetCompatibility = '1.8'
 
-def fileVersion = "2.1.10"
+def fileVersion = "2.1.13"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group= "net.jomcraft.defaultsettings"
 ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false
@@ -90,7 +90,6 @@ task signJar {
                 	keypass: project.property("signing.keyStorePassword"),
                 	preservelastmodified:"true"
             	)
-            	//if(!isReleaseVersion)
             	signing.sign(it)
 				project.logger.lifecycle("JAR Signed: " + it.name)
 			}

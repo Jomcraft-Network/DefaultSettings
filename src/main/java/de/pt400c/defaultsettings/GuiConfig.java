@@ -13,13 +13,11 @@ import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import de.pt400c.defaultsettings.gui.*;
 import de.pt400c.neptunefx.NEX;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)

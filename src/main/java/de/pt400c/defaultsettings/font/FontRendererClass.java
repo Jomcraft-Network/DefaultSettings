@@ -48,7 +48,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
     public FontRendererClass() {
     	
 		bindTexture(false);
-		oldOpenGL =true;
+		oldOpenGL = true;
 		if(!oldOpenGL) {
 		
 			try {
@@ -59,16 +59,10 @@ public class FontRendererClass implements IResourceManagerReloadListener {
 				
 		}
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		bindTexture(true);
 		
 		if(!oldOpenGL) 
 			GL30.glGenerateMipmap(GL_TEXTURE_2D);
-		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         for (int i = 0; i < 32; ++i) {
             int j = (i >> 3 & 1) * 85;

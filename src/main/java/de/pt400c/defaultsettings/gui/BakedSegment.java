@@ -25,7 +25,6 @@ public abstract class BakedSegment extends Segment {
 	protected int heightBuffer;
 	protected int widthBuffer;
 	protected final boolean stat;
-	private int purple = 0;
 	private final int red;
 	private final int green;
 	private final int blue;
@@ -67,7 +66,6 @@ public abstract class BakedSegment extends Segment {
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);
 		RenderHelper.disableStandardItemLighting();
-		glClear(256);
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
@@ -77,7 +75,6 @@ public abstract class BakedSegment extends Segment {
 		glLoadIdentity();
 		glEnable(GL_BLEND);
 		glTranslatef(0.0f, 0, -2000.0f);
-		this.purple = 2;
 	}
 	
 	public void postRender(float alpha, boolean popup) {
@@ -95,7 +92,7 @@ public abstract class BakedSegment extends Segment {
 			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).popupField.mapFrameBufferContents.msFbo);	
 			glViewport((int) 0, (int) 0, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.width, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.height);
 		}else if(this.gui instanceof GuiConfig){
-			((GuiConfig) this.gui).framebufferMc.bindFramebuffer(true);
+			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}else {
 			MC.getFramebuffer().bindFramebuffer(true);
@@ -139,12 +136,6 @@ public abstract class BakedSegment extends Segment {
 		
 		glBindTexture(GL_TEXTURE_2D, currBound);
 		glPopMatrix();
-		glClearColor(0, 0, 0, 0);
-		
-		if(this.purple > 0 && DefaultSettings.debug) {
-			this.purple--;
-			NEX.drawRect(posX, posY, posX + width, posY + height, 0xa3d100d1, true, null, false);
-		}
-			
+		glClearColor(0, 0, 0, 0);	
 	}
 }

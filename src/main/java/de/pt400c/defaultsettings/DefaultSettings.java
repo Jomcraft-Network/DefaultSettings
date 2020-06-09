@@ -43,6 +43,7 @@ public class DefaultSettings {
 	public static FontRendererClass fontRenderer;
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
 	public static final boolean debug = false;
+	public static int targetMS = 9;
 	
 	@Instance
 	public static DefaultSettings instance;
@@ -93,6 +94,7 @@ public class DefaultSettings {
 	public static void postInit(FMLPostInitializationEvent event) {
 		fontRenderer = new FontRendererClass();
 		((IReloadableResourceManager) MC.getResourceManager()).registerReloadListener(fontRenderer);
+		
 		try {
 			getBuildID();
 			getBuildTime();

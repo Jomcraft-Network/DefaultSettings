@@ -1,12 +1,16 @@
 package de.pt400c.defaultsettings;
 
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarInputStream;
+import javax.net.ssl.HttpsURLConnection;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +40,7 @@ public class DefaultSettings {
 	public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
 	public static Map<String, Integer> keyRebinds_18 = new HashMap<String, Integer>();
 	public static String mcVersion = FMLInjectionData.data()[4].toString();
+	public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
 	public static Map<String, KeyContainer> keyRebinds_19 = new HashMap<String, KeyContainer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static String BUILD_ID = "Unknown";
@@ -60,7 +65,19 @@ public class DefaultSettings {
 		} catch (Exception e) {
 			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
 		}
-		
+		(new Thread() {
+
+			@Override
+			public void run() {
+				try {
+					sendCount();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}).start();
 	}
 	
 	@EventHandler
@@ -133,4 +150,39 @@ public class DefaultSettings {
 		return instance;
 	}
 
+	public static void sendCount() throws Exception {
+		String url = "https://apiv1.jomcraft.net/count";
+		String jsonString = "{\"id\":\"Defaultsettings\", \"code\":" + RandomStringUtils.random(32, true, true) + "}"; 
+		URL obj = new URL(url);
+		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+		con.setRequestMethod("POST");
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+		con.setDoOutput(true);
+		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+		wr.writeBytes(jsonString);
+
+		wr.flush();
+		wr.close();
+		con.getResponseCode();
+		//if (resCode < HttpsURLConnection.HTTP_BAD_REQUEST) {
+		//	result = con.getInputStream();
+		//} else {
+		//	result = con.getErrorStream();
+		//}
+		/*
+		BufferedReader in = new BufferedReader(new InputStreamReader(result));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		//String JSON = response.toString();
+		in.close();*/
+		con.disconnect();
+		
+
+	}
 }

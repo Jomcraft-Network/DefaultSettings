@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/endpoint?url=https://apiv1.jomcraft.net/stats/defaultsettings/endpoint)](https://gitlab.com/jomcraft-sources/defaultsettings) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/1.15.2/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/1.15.2)
+[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/defaultsettings/endpoint)](https://gitlab.com/jomcraft-sources/defaultsettings) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/1.15.2/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/1.15.2)
 
 ### DefaultSettings
 

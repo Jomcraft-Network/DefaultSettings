@@ -1,4 +1,4 @@
-[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/defaultsettings/endpoint)](https://gitlab.com/jomcraft-sources/defaultsettings) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/master-1.13.2/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/master-1.13.2)
+[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/defaultsettings/endpoint?cache=3600)](https://gitlab.com/jomcraft-sources/defaultsettings) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/master-1.13.2/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/master-1.13.2)
 
 ### DefaultSettings
 

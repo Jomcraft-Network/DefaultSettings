@@ -177,8 +177,10 @@ task zipVerification {
                 include(name: 'pubkey.gpg')
             }
         }
-        delete fileTree("$buildDir/libs/") {
-			include '**/*.asc'
+        if(!isReleaseVersion){
+        	delete fileTree("$buildDir/libs/") {
+				include '**/*.asc'
+			}
 		}
         project.logger.lifecycle("Created verification ZIP")
     }
@@ -197,6 +199,8 @@ curseforge {
     addGameVersion '1.15.2'
     addGameVersion '1.15.1'
     addGameVersion '1.15'
+    addGameVersion '1.14.4'
+    addGameVersion '1.14.3'
     addGameVersion '1.14.2'
     addGameVersion '1.14.1'
     addGameVersion '1.14'

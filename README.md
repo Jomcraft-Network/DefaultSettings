@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/maven-metadata/v/https/maven.jomcraft.net/repository/release/de/pt400c/defaultsettings/DefaultSettings-1.14.x/maven-metadata.xml.svg?label=latest)](https://maven.jomcraft.net/#artifact/de.pt400c.defaultsettings/DefaultSettings-1.14.x) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/1.14.x/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/1.14.x)
+[![Version](https://img.shields.io/endpoint?url=https://apiv1.jomcraft.net/stats/defaultsettings/endpoint)](https://gitlab.com/jomcraft-sources/defaultsettings) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/1.15.2/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/1.15.2)
 
 ### DefaultSettings
 

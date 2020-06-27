@@ -433,12 +433,6 @@ public class GuiModList extends Screen
         lines.add(ForgeI18n.parseMessage("fml.menu.mods.info.idstate", selectedMod.getModId(), ModList.get().getModContainerById(selectedMod.getModId()).
                 map(ModContainer::getCurrentState).map(Object::toString).orElse("NONE")));
 
-        selectedMod.getModConfig().getOptional("credits").ifPresent(credits->
-                lines.add(ForgeI18n.parseMessage("fml.menu.mods.info.credits", credits)));
-        selectedMod.getModConfig().getOptional("authors").ifPresent(authors ->
-                lines.add(ForgeI18n.parseMessage("fml.menu.mods.info.authors", authors)));
-        selectedMod.getModConfig().getOptional("displayURL").ifPresent(displayURL ->
-                lines.add(ForgeI18n.parseMessage("fml.menu.mods.info.displayurl", displayURL)));
         if (selectedMod.getOwningFile() == null || selectedMod.getOwningFile().getMods().size()==1)
             lines.add(ForgeI18n.parseMessage("fml.menu.mods.info.nochildmods"));
         else

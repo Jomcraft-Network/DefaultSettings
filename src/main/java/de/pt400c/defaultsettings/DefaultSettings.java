@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import com.mojang.blaze3d.platform.GlStateManager;
-import de.pt400c.defaultsettings.EventHandlers.NewModInfo;
 import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
@@ -33,15 +31,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
-import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.versions.mcp.MCPVersion;
 
 @Mod(value = DefaultSettings.MODID)
@@ -64,7 +58,7 @@ public class DefaultSettings {
 	public static final boolean is_1_15 = !MCPVersion.getMCVersion().startsWith("1.14");
 	public static int targetMS = 9;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "deprecation" })
 	public DefaultSettings() {
 		instance = this;
 
@@ -74,23 +68,6 @@ public class DefaultSettings {
 			
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::regInit);
-			
-			try {
-				Field sortedList = ModList.class.getDeclaredField("sortedList");
-				sortedList.setAccessible(true);
-				List<ModInfo> editList = (List<ModInfo>) sortedList.get(ModList.get());
-				ModInfo prevModInfo = editList.stream().filter(modInfos -> modInfos.getModId().equals(DefaultSettings.MODID)).findFirst().get();
-				NewModInfo modInfo = new NewModInfo(prevModInfo);
-				editList.set(editList.indexOf(prevModInfo), modInfo);
-				ModContainer modContainer = ModList.get().getModContainerById(DefaultSettings.MODID).get();
-				Field modInfoField = ModContainer.class.getDeclaredField("modInfo");
-				modInfoField.setAccessible(true);
-				modInfoField.set(modContainer, (IModInfo) modInfo);
-
-			} catch (NullPointerException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-
-				e.printStackTrace();
-			}
 
 			try {
 				FileUtil.restoreContents();
@@ -147,6 +124,7 @@ public class DefaultSettings {
 		System.exit(0);
     }*/
 
+	@SuppressWarnings("deprecation")
 	public void postInit(FMLLoadCompleteEvent event) {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			
@@ -201,6 +179,7 @@ public class DefaultSettings {
 
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void regInit(RegistryEvent.NewRegistry event) {
 		
 		if (!init) {

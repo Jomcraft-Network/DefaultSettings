@@ -6,7 +6,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.gui.GuiModList;
 import net.minecraftforge.fml.client.gui.screen.ModListScreen;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import static org.lwjgl.glfw.GLFW.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 
@@ -30,16 +29,4 @@ public class EventHandlers {
 		CommandSwitchProfile.register(event);
 		CommandDefaultSettings.register(event);
 	}
-	
-	protected static class NewModInfo extends ModInfo {
-        public NewModInfo(ModInfo modInfo) {
-            super(modInfo.getOwningFile(), modInfo.getModConfig());
-        }
-        
-        @Override
-        public boolean hasConfigUI() {
-            return true;
-        }
-    }
-
 }

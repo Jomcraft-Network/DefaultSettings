@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 import javax.net.ssl.HttpsURLConnection;
@@ -22,7 +21,6 @@ import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraft.client.GameSettings;
-import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -160,18 +158,6 @@ public class DefaultSettings {
 
 					GameSettings gameSettings = FileUtil.MC.gameSettings;
 					gameSettings.loadOptions();
-				/*	FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
-					List<String> repositoryEntries = new ArrayList<String>();
-					for (String resourcePack : gameSettings.resourcePacks) {
-						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
-							if (entry.getName().equals(resourcePack)) {
-								
-								repositoryEntries.add(entry.getName());
-							}
-					}
-					
-					FileUtil.MC.getResourcePackList().setEnabledPacks(repositoryEntries);
-*/
 					FileUtil.MC.gameSettings.saveOptions();
 
 				} catch (NullPointerException e) {
@@ -228,23 +214,7 @@ public class DefaultSettings {
 		wr.flush();
 		wr.close();
 		con.getResponseCode();
-		//if (resCode < HttpsURLConnection.HTTP_BAD_REQUEST) {
-		//	result = con.getInputStream();
-		//} else {
-		//	result = con.getErrorStream();
-		//}
-		/*
-		BufferedReader in = new BufferedReader(new InputStreamReader(result));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		//String JSON = response.toString();
-		in.close();*/
 		con.disconnect();
-		
 
 	}
 }

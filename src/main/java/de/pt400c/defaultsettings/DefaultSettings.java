@@ -160,7 +160,7 @@ public class DefaultSettings {
 
 					GameSettings gameSettings = FileUtil.MC.gameSettings;
 					gameSettings.loadOptions();
-					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
+				/*	FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
 					List<String> repositoryEntries = new ArrayList<String>();
 					for (String resourcePack : gameSettings.resourcePacks) {
 						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
@@ -169,18 +169,10 @@ public class DefaultSettings {
 								repositoryEntries.add(entry.getName());
 							}
 					}
-
-					//FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
-					
-					
 					
 					FileUtil.MC.getResourcePackList().setEnabledPacks(repositoryEntries);
-
+*/
 					FileUtil.MC.gameSettings.saveOptions();
-
-					// ForgeHooksClient.refreshResources(FileUtil.MC, VanillaResourceType.LANGUAGES,
-					// VanillaResourceType.MODELS, VanillaResourceType.SHADERS,
-					// VanillaResourceType.SOUNDS, VanillaResourceType.TEXTURES);
 
 				} catch (NullPointerException e) {
 					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);

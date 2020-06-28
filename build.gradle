@@ -78,19 +78,19 @@ jar {
 	
 	exclude('com/**') 
     
-    manifest {
-    	attributes 'FMLAT': 'defaultsettings_at.cfg'
-        attributes([
-            "Specification-Title": "DefaultSettings",
-            "Specification-Vendor": "Jomcraft Network",
-            "Specification-Version": fileVersion,
-            "Implementation-Title": "DefaultSettings",
-            "Implementation-Version": fileVersion,
-            "Implementation-Vendor" : "Jomcraft Network",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "Build-ID": buildID
-        ])
-    }
+	manifest {
+		attributes 'FMLAT': 'defaultsettings_at.cfg'
+		attributes([
+			"Specification-Title": "DefaultSettings",
+			"Specification-Vendor": "Jomcraft Network",
+			"Specification-Version": fileVersion,
+			"Implementation-Title": "DefaultSettings",
+			"Implementation-Version": fileVersion,
+			"Implementation-Vendor" : "Jomcraft Network",
+			"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+			"Build-ID": buildID
+		])
+	}
 
 }
 
@@ -132,8 +132,6 @@ task deobfJar(type: Jar) {
 	
 	exclude('net/**')
 	
-	exclude('de/pt400c/defaultsettings/font/Alpha1_14Handler**')
-	
 	exclude('com/**') 
 	
 	from sourceSets.main.output
@@ -156,10 +154,8 @@ task zipVerification {
                 include(name: 'pubkey.gpg')
             }
         }
-        if(!isReleaseVersion){
-        	delete fileTree("$buildDir/libs/") {
-				include '**/*.asc'
-			}
+		delete fileTree("$buildDir/libs/") {
+			include '**/*.asc'
 		}
         project.logger.lifecycle("Created verification ZIP")
     }

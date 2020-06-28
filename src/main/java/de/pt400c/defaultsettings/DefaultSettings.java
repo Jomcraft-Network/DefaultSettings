@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,10 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
-import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraft.client.GameSettings;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +33,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.versions.mcp.MCPVersion;
 
 @Mod(value = DefaultSettings.MODID)
 public class DefaultSettings {
@@ -55,7 +51,6 @@ public class DefaultSettings {
 	public static final boolean debug = false;
 	public static boolean init = false;
 	public static Class<?> alphaTest;
-	public static final boolean is_1_15 = !MCPVersion.getMCVersion().startsWith("1.14");
 	public static int targetMS = 9;
 	
 	@SuppressWarnings({ "deprecation" })
@@ -145,31 +140,6 @@ public class DefaultSettings {
 			} catch (NullPointerException e) {
 				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 			}
-			
-			//<end>Credits to Compaszer (https://gitlab.com/Compaszer)
-			
-			try {
-				String path = "/Alpha1_14Handler.clazz";
-				InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
-
-				byte[] b = new byte[is.available()];
-				is.read(b);
-
-				if (!FileUtil.byteToHash(b).equals("74474cc13af384bff32de57d8ae81ba504912d71ae7534f76125b62d2ea80d19")) {
-					DefaultSettings.log.log(Level.ERROR, "This mod has been manipulated! Save exit!");
-					Minecraft.getInstance().shutdown();
-					return;
-				}
-
-				Method defC = GlStateManager.class.getClassLoader().getClass().getSuperclass().getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-				defC.setAccessible(true);
-				defC.invoke(GlStateManager.class.getClassLoader(), "de.pt400c.defaultsettings.font.Alpha1_14Handler", b, 0, b.length);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			//Credits to Compaszer (https://gitlab.com/Compaszer)</end>
 
 		});
 		
@@ -191,14 +161,20 @@ public class DefaultSettings {
 					GameSettings gameSettings = FileUtil.MC.gameSettings;
 					gameSettings.loadOptions();
 					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
-					List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
+					List<String> repositoryEntries = new ArrayList<String>();
 					for (String resourcePack : gameSettings.resourcePacks) {
 						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
-							if (entry.getName().equals(resourcePack))
-								repositoryEntries.add(entry);
+							if (entry.getName().equals(resourcePack)) {
+								
+								repositoryEntries.add(entry.getName());
+							}
 					}
 
-					FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
+					//FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
+					
+					
+					
+					FileUtil.MC.getResourcePackList().setEnabledPacks(repositoryEntries);
 
 					FileUtil.MC.gameSettings.saveOptions();
 

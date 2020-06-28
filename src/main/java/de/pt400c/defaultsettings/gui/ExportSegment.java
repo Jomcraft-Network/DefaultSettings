@@ -214,8 +214,8 @@ public class ExportSegment extends BakedSegment {
 		if(this.isSelected(mouseX, mouseY) && this.hoverMessage != null) {
 			final ArrayList<String> lines = new ArrayList<String>();
 			float textWidth = (int) (mouseX + 12 + fontRenderer.getStringWidth(this.hoverMessage, 0.8F, true));
-			if(textWidth > this.gui.width) {
-				lines.addAll(fontRenderer.listFormattedStringToWidth(this.hoverMessage, (int) (this.gui.width - mouseX - 12), true));
+			if(textWidth > this.gui.field_230708_k_) {
+				lines.addAll(fontRenderer.listFormattedStringToWidth(this.hoverMessage, (int) (this.gui.field_230708_k_ - mouseX - 12), true));
 			}else {
 				lines.add(this.hoverMessage);
 			}

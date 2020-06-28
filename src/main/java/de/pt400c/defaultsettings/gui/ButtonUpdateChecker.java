@@ -95,7 +95,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 			ArrayList<String> lines = new ArrayList<String>();
 			
 			float textWidth = 0;
-			lines.addAll(fontRenderer.listFormattedStringToWidth(text, (int) (this.gui.width - mouseX - 12), true));
+			lines.addAll(fontRenderer.listFormattedStringToWidth(text, (int) (this.gui.field_230708_k_ - mouseX - 12), true));
 			for(String line : lines) {
 				
 				if(fontRenderer.getStringWidth(line, 0.8F, true) > textWidth)

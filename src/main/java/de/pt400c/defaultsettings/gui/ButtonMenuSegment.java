@@ -144,7 +144,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		
 		glEnable(GL_SCISSOR_TEST);
 
-		glScissor(0, (int) ((gui.height - (posY + this.getHeight() / 2 - 14 + 21)) * (int) scaledFactor), (int)(74 * (1 - percent) * (int) scaledFactor), 21 * (int) scaledFactor);
+		glScissor(0, (int) ((gui.field_230709_l_ - (posY + this.getHeight() / 2 - 14 + 21)) * (int) scaledFactor), (int)(74 * (1 - percent) * (int) scaledFactor), 21 * (int) scaledFactor);
 		
 		fontRenderer.drawString(this.title, (float) (posi + 17), (float) (posY + this.getHeight() / 2 - 8) + 1.2F * percent, this.activated ? 0xffff8518 : 0xffe6e6e6, 0.9F - 0.3F * percent, true);
 		glDisable(GL_SCISSOR_TEST);

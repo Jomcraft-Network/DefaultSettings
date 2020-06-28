@@ -15,7 +15,7 @@ public class MenuArea extends Segment {
 	public Segment selected = null;
 
 	public MenuArea(Screen gui, float posX, float posY) {
-		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
+		super(gui, posX, posY, gui.field_230708_k_ - posX, gui.field_230709_l_ - posY, false);
 	}
 	
 	@Override

@@ -3,7 +3,6 @@ package de.pt400c.defaultsettings.gui;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
@@ -118,15 +117,15 @@ public class SearchbarSegment extends Segment {
 
 		int color = 0;
 
-		this.width = MathUtil.clamp(fontRenderer.getStringWidth(this.query, 1, false) + 15, 40, this.gui.width - 180);
+		this.width = MathUtil.clamp(fontRenderer.getStringWidth(this.query, 1, false) + 15, 40, this.gui.field_230708_k_ - 180);
 
 		String text = this.query;
 		float dots = fontRenderer.getStringWidth("...", 1, false);
 
 		float widthString = fontRenderer.getStringWidth(text, 1, false);
 
-		if (widthString >= this.gui.width - 190) 
-			text = fontRenderer.trimStringToWidth(text, (int) (this.gui.width - 190 - 1 - dots), false) + "...";
+		if (widthString >= this.gui.field_230708_k_ - 190) 
+			text = fontRenderer.trimStringToWidth(text, (int) (this.gui.field_230708_k_ - 190 - 1 - dots), false) + "...";
 		
 		MenuScreen menu = ((GuiConfig) this.gui).menu;
 

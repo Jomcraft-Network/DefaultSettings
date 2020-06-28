@@ -28,7 +28,7 @@ public class CommandSwitchProfile {
 	}
 
 	private static int saveProcess(CommandSource source, ITextComponent iTextComponent) throws CommandSyntaxException {
-		String profile = iTextComponent.getFormattedText();
+		String profile = iTextComponent.getString();
 	    if(new File(FileUtil.getMainFolder(), profile).exists()) {
 	    	if(!FileUtil.privateJson.currentProfile.equals(profile)) {
 				

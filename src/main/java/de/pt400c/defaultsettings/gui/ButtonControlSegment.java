@@ -68,8 +68,8 @@ public class ButtonControlSegment extends BakedSegment {
 			final ArrayList<String> lines = new ArrayList<String>();
 			
 			float textWidth = (int) (mouseX + 12 + fontRenderer.getStringWidth(message, 0.8F, true));
-			if(textWidth > this.gui.width) {
-				lines.addAll(fontRenderer.listFormattedStringToWidth(message, (int) (this.gui.width - mouseX - 12), true));
+			if(textWidth > this.gui.field_230708_k_) {
+				lines.addAll(fontRenderer.listFormattedStringToWidth(message, (int) (this.gui.field_230708_k_ - mouseX - 12), true));
 			}else {
 				lines.add(message);
 			}

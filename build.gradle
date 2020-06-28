@@ -13,15 +13,13 @@ buildscript {
 
 plugins {
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "maven-publish"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.14.x-1.15.2-2.1.15"
+version = "1.16.1-2.1.15"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
@@ -35,7 +33,7 @@ archivesBaseName = "DefaultSettings"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.16'
 
 	runs {
         client {
@@ -56,10 +54,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.2.27'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.24'
 }
 
-def forge_version = "28.2.3"
+def forge_version = "32.0.14"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -196,14 +194,7 @@ curseforge {
     changelog = file("changelog.html")
     changelogType = 'html'
     releaseType = 'release'
-    addGameVersion '1.15.2'
-    addGameVersion '1.15.1'
-    addGameVersion '1.15'
-    addGameVersion '1.14.4'
-    addGameVersion '1.14.3'
-    addGameVersion '1.14.2'
-    addGameVersion '1.14.1'
-    addGameVersion '1.14'
+    addGameVersion '1.16.1'
     mainArtifact(jar) {
     	displayName = "$archivesBaseName-$version"
     }
@@ -225,52 +216,4 @@ curseforge {
     
   }
 
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment mvnd ->
-               signing.signPom(mvnd)
-	  }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'DefaultSettings'
-        packaging 'jar'
-		artifactId 'DefaultSettings-1.14.x-1.15.2'
-        description 'DefaultSettings Minecraft Mod API'
-        version fileVersion
-        url 'https://gitlab.com/jomcraft-sources/defaultsettings'
-
-        scm {
-        	connection 'scm:git:git://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
-        	developerConnection 'scm:git:git@github.com/DefaultSettings-GH/DefaultSettings-GH.git'
-        	url 'https://gitlab.com/jomcraft-sources/defaultsettings'
-        }
-
-        licenses {
-          license {
-            name 'The Apache License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-          }
-        }
-
-        developers {
-          developer {
-            id 'PT400C'
-            name 'Rolf Marker'
-            email 'pt400c@gmail.com'
-          }
-        }
-      }
-    }
-  }
 }

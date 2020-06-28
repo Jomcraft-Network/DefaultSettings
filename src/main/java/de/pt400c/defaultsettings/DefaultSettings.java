@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 import javax.net.ssl.HttpsURLConnection;
@@ -25,7 +24,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.font.FontRendererClass;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -190,21 +188,8 @@ public class DefaultSettings {
 
 					GameSettings gameSettings = FileUtil.MC.gameSettings;
 					gameSettings.loadOptions();
-					FileUtil.MC.getResourcePackList().reloadPacksFromFinders();
-					List<ClientResourcePackInfo> repositoryEntries = new ArrayList<ClientResourcePackInfo>();
-					for (String resourcePack : gameSettings.resourcePacks) {
-						for (ClientResourcePackInfo entry : FileUtil.MC.getResourcePackList().getAllPacks())
-							if (entry.getName().equals(resourcePack))
-								repositoryEntries.add(entry);
-					}
-
-					FileUtil.MC.getResourcePackList().getEnabledPacks().addAll(repositoryEntries);
 
 					FileUtil.MC.gameSettings.saveOptions();
-
-					// ForgeHooksClient.refreshResources(FileUtil.MC, VanillaResourceType.LANGUAGES,
-					// VanillaResourceType.MODELS, VanillaResourceType.SHADERS,
-					// VanillaResourceType.SOUNDS, VanillaResourceType.TEXTURES);
 
 				} catch (NullPointerException e) {
 					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
@@ -260,23 +245,6 @@ public class DefaultSettings {
 		wr.flush();
 		wr.close();
 		con.getResponseCode();
-		//if (resCode < HttpsURLConnection.HTTP_BAD_REQUEST) {
-		//	result = con.getInputStream();
-		//} else {
-		//	result = con.getErrorStream();
-		//}
-		/*
-		BufferedReader in = new BufferedReader(new InputStreamReader(result));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		//String JSON = response.toString();
-		in.close();*/
 		con.disconnect();
-		
-
 	}
 }

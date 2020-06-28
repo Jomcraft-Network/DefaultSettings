@@ -13,22 +13,19 @@ buildscript {
 
 plugins {
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "maven-publish"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "1.14.x-1.15.2-2.1.15"
+version = "1.14.x-1.15.2-2.1.16"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.15"
+def fileVersion = "2.1.16"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
-group= "net.jomcraft.defaultsettings"
-ext.isReleaseVersion = project.hasProperty("isSonaType") ? isSonaType : false
+group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
 
@@ -100,38 +97,28 @@ jar {
 }
 
 task signJar {
-
-    doLast {
-        configurations.archives.allArtifacts.files.each {
-           if(it.name.endsWith(".jar")){
-            	ant.signjar(
-                	jar: it,
+	if(project.hasProperty("signing.alias") && project.property("signing.alias") != null && !project.property("signing.alias").equals("")){
+		doLast {
+			configurations.archives.allArtifacts.files.each {
+				if(it.name.endsWith(".jar")){
+					ant.signjar(jar: it,
 					storetype:"jks",
 					alias: project.property("signing.alias"),
-                	storepass:project.property("signing.keyStorePassword"),
-                	keystore: project.property("signing.keystorePath"),
-                	keypass: project.property("signing.keyStorePassword"),
-                	preservelastmodified:"true"
-            	)
-            	signing.sign(it)
-				project.logger.lifecycle("JAR Signed: " + it.name)
+					storepass:project.property("signing.keyStorePassword"),
+					keystore: project.property("signing.keystorePath"),
+					keypass: project.property("signing.keyStorePassword"),
+					preservelastmodified:"true")
+					signing.sign(it)
+					project.logger.lifecycle("JAR Signed: " + it.name)
+				}
 			}
-       }
-    }
+		}
+	} else {
+		project.logger.lifecycle("Signing skipped, not authorized")	
+	}
 }
 
 build.dependsOn signJar
-
-uploadArchives.dependsOn signJar
-
-signing {
-	if(isReleaseVersion)
-    	sign configurations.archives
-}
-
-subprojects {
-    tasks.withType(Javadoc).all { enabled = isReleaseVersion }
-}
 
 task sourcesJar(type: Jar) {
 
@@ -155,21 +142,15 @@ task deobfJar(type: Jar) {
 	classifier = 'deobf'
 }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
 artifacts {
+	archives jar
 	archives sourcesJar
 	archives deobfJar
-	if(isReleaseVersion)
-		archives javadocJar
 }
 
 task zipVerification {
-    doLast {
-        ant.zip(destfile: "$buildDir/libs/verification.zip") {
+	doLast {
+		ant.zip(destfile: "$buildDir/libs/verification.zip") {
             fileset(dir: "$buildDir/libs/") {
                 include(name: '*.asc')
             }
@@ -177,10 +158,8 @@ task zipVerification {
                 include(name: 'pubkey.gpg')
             }
         }
-        if(!isReleaseVersion){
-        	delete fileTree("$buildDir/libs/") {
-				include '**/*.asc'
-			}
+		delete fileTree("$buildDir/libs/") {
+			include '**/*.asc'
 		}
         project.logger.lifecycle("Created verification ZIP")
     }
@@ -189,88 +168,39 @@ task zipVerification {
 build.dependsOn zipVerification
 
 curseforge {
-
-  apiKey = project.property("cursegradle.api_token")
-  project {
-    id = '318012'
-    changelog = file("changelog.html")
-    changelogType = 'html'
-    releaseType = 'release'
-    addGameVersion '1.15.2'
-    addGameVersion '1.15.1'
-    addGameVersion '1.15'
-    addGameVersion '1.14.4'
-    addGameVersion '1.14.3'
-    addGameVersion '1.14.2'
-    addGameVersion '1.14.1'
-    addGameVersion '1.14'
-    mainArtifact(jar) {
-    	displayName = "$archivesBaseName-$version"
-    }
+	if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
+		apiKey = project.property("cursegradle.api_token")
+		project {
+			id = '318012'
+			changelog = file("changelog.html")
+			changelogType = 'html'
+			releaseType = 'release'
+			addGameVersion '1.15.2'
+			addGameVersion '1.15.1'
+			addGameVersion '1.15'
+			addGameVersion '1.14.4'
+			addGameVersion '1.14.3'
+			addGameVersion '1.14.2'
+			addGameVersion '1.14.1'
+			addGameVersion '1.14'
+			mainArtifact(jar) {
+				displayName = "$archivesBaseName-$version"
+			}
     
-    addArtifact (sourcesJar) {
-    	releaseType = 'release'
-    	displayName = "$archivesBaseName-$version-sources"
-    }
+			addArtifact (sourcesJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-sources"
+			}
     
-    addArtifact (deobfJar) {
-    	releaseType = 'release'
-    	displayName = "$archivesBaseName-$version-deobf"
-    }
+			addArtifact (deobfJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-deobf"
+			}
     
-    addArtifact ("$buildDir/libs/verification.zip") {
-    	releaseType = 'release'
-    	displayName = 'GPGVerification'
-    }
-    
-  }
-
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment mvnd ->
-               signing.signPom(mvnd)
-	  }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'DefaultSettings'
-        packaging 'jar'
-		artifactId 'DefaultSettings-1.14.x-1.15.2'
-        description 'DefaultSettings Minecraft Mod API'
-        version fileVersion
-        url 'https://gitlab.com/jomcraft-sources/defaultsettings'
-
-        scm {
-        	connection 'scm:git:git://github.com/DefaultSettings-GH/DefaultSettings-GH.git'
-        	developerConnection 'scm:git:git@github.com/DefaultSettings-GH/DefaultSettings-GH.git'
-        	url 'https://gitlab.com/jomcraft-sources/defaultsettings'
-        }
-
-        licenses {
-          license {
-            name 'The Apache License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-          }
-        }
-
-        developers {
-          developer {
-            id 'PT400C'
-            name 'Rolf Marker'
-            email 'pt400c@gmail.com'
-          }
-        }
-      }
-    }
-  }
+			addArtifact ("$buildDir/libs/verification.zip") {
+				releaseType = 'release'
+				displayName = 'GPGVerification'
+			}
+		}
+	}
 }

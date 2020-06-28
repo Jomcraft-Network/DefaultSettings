@@ -6,7 +6,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.versions.mcp.MCPVersion;
 import de.pt400c.defaultsettings.DefaultSettings;
-import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.neptunefx.NEX;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static de.pt400c.defaultsettings.FileUtil.MC;

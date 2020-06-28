@@ -140,10 +140,6 @@ public class DefaultSettings {
 
 					FileUtil.MC.gameSettings.saveOptions();
 
-					// ForgeHooksClient.refreshResources(FileUtil.MC, VanillaResourceType.LANGUAGES,
-					// VanillaResourceType.MODELS, VanillaResourceType.SHADERS,
-					// VanillaResourceType.SOUNDS, VanillaResourceType.TEXTURES);
-
 				} catch (NullPointerException e) {
 					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
 				}
@@ -227,24 +223,6 @@ public class DefaultSettings {
 		wr.flush();
 		wr.close();
 		con.getResponseCode();
-		//if (resCode < HttpsURLConnection.HTTP_BAD_REQUEST) {
-		//	result = con.getInputStream();
-		//} else {
-		//	result = con.getErrorStream();
-		//}
-		/*
-		BufferedReader in = new BufferedReader(new InputStreamReader(result));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		//String JSON = response.toString();
-		in.close();*/
 		con.disconnect();
-		
-
 	}
-
 }

@@ -174,7 +174,7 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		case AHEAD_OF_TIME:
 			return "Beta";
 		case UP_TO_DATE:
-			return "Up to date";
+			return "Latest";
 		case ERROR:
 
 		default:

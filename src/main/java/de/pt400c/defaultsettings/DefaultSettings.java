@@ -21,6 +21,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLFingerprintViolationEvent;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -102,6 +103,17 @@ public class DefaultSettings {
 	}
 	
 	@EventHandler
+	public static void keysEvent(FMLLoadCompleteEvent event) {
+		try {
+			FileUtil.restoreKeys();
+		} catch (IOException e) {
+			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+		} catch (NullPointerException e) {
+			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
+		}
+	}
+	
+	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
 		if (isServer)
 			return;
@@ -114,14 +126,6 @@ public class DefaultSettings {
 			getBuildTime();
 		} catch(NullPointerException | IOException e) {
 			
-		}
-
-		try {
-			FileUtil.restoreKeys();
-		} catch (IOException e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
-		} catch (NullPointerException e) {
-			DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 		}
 	}
 	

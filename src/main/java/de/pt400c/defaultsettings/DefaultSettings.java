@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLInjectionData;
@@ -118,7 +119,10 @@ public class DefaultSettings {
 		} catch(NullPointerException | IOException e) {
 			
 		}
-		
+	}
+	
+	@EventHandler
+	public static void keysEvent(FMLLoadCompleteEvent event) {
 		try {
 			FileUtil.restoreKeys();
 		} catch (IOException e) {

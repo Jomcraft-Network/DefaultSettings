@@ -542,11 +542,9 @@ public class FileUtil {
 					
 					if(opt.equals("options.txt")) {
 						restoreOptions();
-					}else if(opt.equals("keys.txt")) {
-						restoreKeys();
-					}else if(opt.equals("optionsof.txt")) {
+					} else if(opt.equals("optionsof.txt")) {
 						restoreOptionsOF();
-					}else if(opt.equals("servers.dat")) {
+					} else if(opt.equals("servers.dat")) {
 						restoreServers();
 					}
 				

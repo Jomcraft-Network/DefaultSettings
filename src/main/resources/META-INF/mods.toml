@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[26,)"
 logoFile="logo.png"
+license="Apache License 2.0"
 
 [[mods]] 
 	modId="defaultsettings" 

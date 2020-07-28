@@ -24,7 +24,7 @@ public class CommandSwitchProfile {
 			}));
 		}
 
-		event.getCommandDispatcher().register(literalargumentbuilder);
+    	event.getServer().getCommandManager().getDispatcher().register(literalargumentbuilder);
 	}
 
 	private static int saveProcess(CommandSource source, ITextComponent iTextComponent) throws CommandSyntaxException {

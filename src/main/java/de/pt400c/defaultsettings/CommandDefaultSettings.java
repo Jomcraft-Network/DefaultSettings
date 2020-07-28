@@ -31,8 +31,7 @@ public class CommandDefaultSettings {
 		         return exportMode(command.getSource(), null);
 		      }));
 
-
-		event.getCommandDispatcher().register(literalargumentbuilder);
+		event.getServer().getCommandManager().getDispatcher().register(literalargumentbuilder);
 	}
 	
 	private static int exportMode(CommandSource source, String argument) throws CommandSyntaxException {

@@ -19,11 +19,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.16.1-2.1.16"
+version = "1.16.1-2.1.17"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.1.16"
+def fileVersion = "2.1.17"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group = "net.jomcraft.defaultsettings"
 
@@ -53,10 +53,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.1-32.0.24'
+    minecraft 'net.minecraftforge:forge:1.16.1-32.0.93'
 }
 
-def forge_version = "32.0.14"
+def forge_version = "32.0.90"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {

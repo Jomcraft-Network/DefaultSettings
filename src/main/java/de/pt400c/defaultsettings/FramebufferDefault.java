@@ -32,7 +32,6 @@ public class FramebufferDefault {
 
 	public void deleteFramebuffer() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(this.framebuffer);
 		glDeleteFramebuffers(this.interFramebuffer);
 	}

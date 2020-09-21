@@ -55,6 +55,7 @@ public class DefaultSettings {
 	public static Class<?> alphaTest;
 	public static final boolean is_1_15 = !MCPVersion.getMCVersion().startsWith("1.14");
 	public static int targetMS = 9;
+	public static boolean compatibilityMode = false;
 	
 	@SuppressWarnings({ "deprecation" })
 	public DefaultSettings() {

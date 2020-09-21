@@ -105,9 +105,13 @@ public class GuiConfig extends DefaultSettingsGUI {
     
     	new FileUtil.RegistryChecker();
 
-    	if(this.framebufferMc != null) 
-    		this.framebufferMc.resize(MC.displayWidth, MC.displayHeight);
- 
+    	if(!DefaultSettings.compatibilityMode) {
+	    	
+    		if(this.framebufferMc != null) 
+    			this.framebufferMc.resize(MC.displayWidth, MC.displayHeight);
+    	
+    	}
+
         Keyboard.enableRepeatEvents(true);
         
         this.thingWidth = MC.displayWidth / (int) Segment.scaledresolution.getScaleFactor();
@@ -116,7 +120,8 @@ public class GuiConfig extends DefaultSettingsGUI {
         
         if(!init) {
 
-        	this.framebufferMc = new FramebufferDefault(MC.displayWidth, MC.displayHeight);
+        	if(!DefaultSettings.compatibilityMode)
+    			this.framebufferMc = new FramebufferDefault(MC.displayWidth, MC.displayHeight);
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.width - 22;}, 2, 20, 20, button -> {
     		
@@ -233,9 +238,12 @@ public class GuiConfig extends DefaultSettingsGUI {
     public void onGuiClosed() {
     	Keyboard.enableRepeatEvents(false);
     	BakeryRegistry.clearAll();
+    	if(!DefaultSettings.compatibilityMode) {
+	    	
+    		if(framebufferMc != null)
+    			framebufferMc.deleteFramebuffer();
     	
-    	if(framebufferMc != null)
-    		framebufferMc.deleteFramebuffer();
+    	}
     	DefaultSettings.targetMS = 9;
     	tpe.shutdownNow();
     }
@@ -281,16 +289,19 @@ public class GuiConfig extends DefaultSettingsGUI {
     		}
     		median = 0;
     	}
+    	
+		if (!DefaultSettings.compatibilityMode) {
 
-    	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
-		glClear(16640);
-		glEnable(GL_TEXTURE_2D);
-		glMatrixMode(5889);
-		glLoadIdentity();
-		glOrtho(0.0D, Segment.scaledresolution.getScaledWidth_double(), Segment.scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
-		glMatrixMode(5888);
-		glLoadIdentity();
-		glTranslatef(0.0F, 0.0F, -2000.0F);
+			glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
+			glClear(16640);
+			glEnable(GL_TEXTURE_2D);
+			glMatrixMode(5889);
+			glLoadIdentity();
+			glOrtho(0.0D, Segment.scaledresolution.getScaledWidth_double(), Segment.scaledresolution.getScaledHeight_double(), 0.0D, 1000.0D, 3000.0D);
+			glMatrixMode(5888);
+			glLoadIdentity();
+			glTranslatef(0.0F, 0.0F, -2000.0F);
+		}
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_ALPHA_TEST);
@@ -308,32 +319,39 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
-        glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		
-        MC.getFramebuffer().bindFramebuffer(true);
-		glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
-		
-		glColor4f(1, 1, 1, 1);
+		if (!DefaultSettings.compatibilityMode) {
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
+			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-		glEnable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			MC.getFramebuffer().bindFramebuffer(true);
+			glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
 
-		glBegin(GL_QUADS);
-	
-		glTexCoord2f(0, 0); glVertex3d(0, thingHeight, 0);
-		glTexCoord2f(1, 0); glVertex3d(thingWidth, thingHeight, 0);
-		glTexCoord2f(1, 1); glVertex3d(thingWidth, 0, 0);
-		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
-		glEnd();
-		
-		glEnable(GL_ALPHA_TEST);
-		glDisable(GL_BLEND);
+			glColor4f(1, 1, 1, 1);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+			glEnable(GL_BLEND);
+			glDisable(GL_ALPHA_TEST);
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+			glBegin(GL_QUADS);
+
+			glTexCoord2f(0, 0);
+			glVertex3d(0, thingHeight, 0);
+			glTexCoord2f(1, 0);
+			glVertex3d(thingWidth, thingHeight, 0);
+			glTexCoord2f(1, 1);
+			glVertex3d(thingWidth, 0, 0);
+			glTexCoord2f(0, 1);
+			glVertex3d(0, 0, 0);
+			glEnd();
+
+			glEnable(GL_ALPHA_TEST);
+			glDisable(GL_BLEND);
+		}
 	}
 	
 	public void exportModeInfo() {

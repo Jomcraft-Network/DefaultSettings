@@ -15,6 +15,7 @@ public class PrivateJSON {
 	public String currentProfile = "!NEW!";
 	public String privateIdentifier = null;
 	private boolean framerateTransformAllowed = true;
+	public boolean compatibilityMode = false;
 	
 	public void save() {
 		try (FileWriter writer = new FileWriter(new File(FileUtil.mcDataDir, "ds_private_storage.json"))) {

@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL11.*;
 import java.nio.ByteBuffer;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,12 +29,11 @@ public class FramebufferDefault {
 			this.deleteFramebuffer();
 
 		this.createFramebuffer(width, height);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		MC.getFramebuffer().bindFramebuffer(true);
 	}
 
 	public void deleteFramebuffer() {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		MC.getFramebuffer().bindFramebuffer(true);
 		glDeleteFramebuffers(this.framebuffer);
 		glDeleteFramebuffers(this.interFramebuffer);
 	}
@@ -43,7 +43,7 @@ public class FramebufferDefault {
 		this.framebufferHeight = height;
 		this.createFrameBuffer();
 		this.createMSColorAttachment();	
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		MC.getFramebuffer().bindFramebuffer(true);
 		this.createMSFrameBuffer();
 		this.createColorAttachment();
 		this.framebufferClear();
@@ -78,7 +78,7 @@ public class FramebufferDefault {
 
     public void framebufferClear() {
         glClear(GL_COLOR_BUFFER_BIT);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        MC.getFramebuffer().bindFramebuffer(true);
     }
 
 	public void resize(int width, int height) {

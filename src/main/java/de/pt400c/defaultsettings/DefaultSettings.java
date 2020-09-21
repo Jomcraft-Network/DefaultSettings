@@ -50,6 +50,7 @@ public class DefaultSettings {
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
 	public static final boolean debug = false;
 	public static int targetMS = 9;
+	public static boolean compatibilityMode = false;
 	
 	@Instance
 	public static DefaultSettings instance;

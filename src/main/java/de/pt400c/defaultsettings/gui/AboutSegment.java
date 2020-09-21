@@ -67,7 +67,7 @@ public class AboutSegment extends Segment {
      	
      	fontRenderer.drawString("Build - Time:", (float) this.getPosX(), (float) this.getPosY() + 90 + 20 * 2, 0xfff0f0f0, 1.2F, true);
      	
-     	fontRenderer.drawString("Created by Jomcraft Network, 2019", (float) this.getPosX(), (float) this.getPosY() + 90 + 70, 0xfff0f0f0, 1.2F, true);
+     	fontRenderer.drawString("Created by Jomcraft Network, 2020", (float) this.getPosX(), (float) this.getPosY() + 90 + 70, 0xfff0f0f0, 1.2F, true);
      	
      	fontRenderer.drawString(MinecraftForge.MC_VERSION + "-" + DefaultSettings.VERSION, (float) this.getPosX() + 125, (float) this.getPosY() + 90, 0xff9e9e9e, 1.2F, false);
      	

@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL30.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import de.pt400c.defaultsettings.GuiConfig;
 import static de.pt400c.defaultsettings.FileUtil.MC;
@@ -90,7 +91,10 @@ public abstract class BakedSegment extends Segment {
 			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).popupField.mapFrameBufferContents.msFbo);	
 			glViewport((int) 0, (int) 0, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.width, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.height);
 		}else if(this.gui instanceof GuiConfig){
-			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+			if(DefaultSettings.compatibilityMode)
+				MC.getFramebuffer().bindFramebuffer(true);
+			else
+				glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 
 			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}else {

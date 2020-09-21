@@ -226,15 +226,16 @@ public class FileUtil {
 		if(privateFile.exists()) {
 			try (Reader reader = new FileReader(privateFile)) {
 				privateJson = gson.fromJson(reader, PrivateJSON.class);
-				
-				if(privateJson.privateIdentifier == null || privateJson.privateIdentifier.isEmpty())
+
+				if (privateJson.privateIdentifier == null || privateJson.privateIdentifier.isEmpty())
 					privateJson.privateIdentifier = UUID.randomUUID().toString();
-				
+
 				privateJson.save();
-				
-			 } catch (Exception e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);  	
-		     }
+
+			} catch (Exception e) {
+				DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
+			}
+			DefaultSettings.compatibilityMode = privateJson.compatibilityMode;
 			
 		}else {
 			

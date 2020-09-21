@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
@@ -117,7 +118,7 @@ public class PopupSegment extends Segment {
 				glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
 				glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				MC.getFramebuffer().bindFramebuffer(true);
 
 				glClear(16640);
 
@@ -129,7 +130,11 @@ public class PopupSegment extends Segment {
 				glMatrixMode(GL_MODELVIEW);
 				glPopMatrix();
 
-				glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+				if(DefaultSettings.compatibilityMode)
+					MC.getFramebuffer().bindFramebuffer(true);
+				else
+					glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+
 				glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 				compiled = true;
 			}
@@ -223,7 +228,7 @@ public class PopupSegment extends Segment {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBufferContents.fbo);
 		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		MC.getFramebuffer().bindFramebuffer(true);
 
 		glClear(16640);
 
@@ -235,7 +240,11 @@ public class PopupSegment extends Segment {
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+		if(DefaultSettings.compatibilityMode)
+			MC.getFramebuffer().bindFramebuffer(true);
+		else
+			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+
 		glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		
 		int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);

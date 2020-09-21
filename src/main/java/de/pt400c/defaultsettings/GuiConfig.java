@@ -35,7 +35,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     public ButtonMenuSegment selectedSegment = null;
     private ExecutorService tpe = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private ButtonState[] cooldowns = new ButtonState[] {new ButtonState(false, 0), new ButtonState(false, 0), new ButtonState(false, 0)};
-    public FramebufferDefault framebufferMc;
+   // public FramebufferDefault framebufferMc;
     public boolean init = false;
 	public HeaderPart headerPart = null;
 	private int gcAmount;
@@ -106,8 +106,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	new FileUtil.RegistryChecker();
     	
-    	if(this.framebufferMc != null) 
-    		this.framebufferMc.resize(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
+   // 	if(this.framebufferMc != null) 
+    //		this.framebufferMc.resize(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
 			
     	MC.keyboardListener.enableRepeatEvents(true);
     	
@@ -124,7 +124,7 @@ public class GuiConfig extends DefaultSettingsGUI {
     	
     	if(!init) {
     		this.clearSegments();
-        	this.framebufferMc = new FramebufferDefault(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
+        //	this.framebufferMc = new FramebufferDefault(MC.mainWindow.getWidth(), MC.mainWindow.getHeight());
     	
         	this.addSegment(new QuitButtonSegment(this, i -> {return i.field_230708_k_ - 22;}, 2, 20, 20, button -> {
     		
@@ -271,8 +271,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     	MC.keyboardListener.enableRepeatEvents(false);
     	tpe.shutdownNow();
     	BakeryRegistry.clearAll();
-    	if(framebufferMc != null)
-    		framebufferMc.deleteFramebuffer();
+    //	if(framebufferMc != null)
+    //		framebufferMc.deleteFramebuffer();
     	MC.mainWindow.setFramerateLimit(this.framerateLimit);
     	DefaultSettings.targetMS = 9;
     	super.func_231175_as__();
@@ -560,7 +560,8 @@ public class GuiConfig extends DefaultSettingsGUI {
     		median = 0;
     	}
 
-    	glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
+    	//glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
+    	/*
 		glClear(16640);
 		glEnable(GL_TEXTURE_2D);
 		glMatrixMode(5889);
@@ -568,7 +569,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
 		glMatrixMode(5888);
 		glLoadIdentity();
-		glTranslatef(0.0F, 0.0F, -2000.0F);
+		glTranslatef(0.0F, 0.0F, -2000.0F);*/
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_ALPHA_TEST);
@@ -585,6 +586,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 		headerPart.render(mouseX, mouseY, partialTicks);
 		
 		super.func_230430_a_(stack, mouseX, mouseY, partialTicks);
+		
+		/*
 		
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
@@ -611,7 +614,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 		glEnd();
 		
 		glEnable(GL_ALPHA_TEST);
-		glDisable(GL_BLEND);
+		glDisable(GL_BLEND);*/
     }
     
 	private class ButtonState {

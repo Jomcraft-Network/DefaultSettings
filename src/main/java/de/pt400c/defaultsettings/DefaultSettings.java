@@ -50,6 +50,7 @@ public class DefaultSettings {
 	public static boolean init = false;
 	public static Class<?> alphaTest;
 	public static int targetMS = 9;
+	public static boolean compatibilityMode = false;
 	
 	@SuppressWarnings({ "deprecation" })
 	public DefaultSettings() {

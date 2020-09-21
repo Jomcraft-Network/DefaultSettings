@@ -3,6 +3,8 @@ package de.pt400c.defaultsettings;
 import java.nio.ByteBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import static org.lwjgl.opengl.GL30.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -47,7 +49,7 @@ public class FramebufferPopup {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msColorRenderBuffer);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        MC.getFramebuffer().bindFramebuffer(true);
         texture = glGenTextures();
         fbo = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -59,7 +61,7 @@ public class FramebufferPopup {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        MC.getFramebuffer().bindFramebuffer(true);
         
         BakeryRegistry.fbos.add(new Integer(msFbo));
         BakeryRegistry.fbos.add(new Integer(fbo));

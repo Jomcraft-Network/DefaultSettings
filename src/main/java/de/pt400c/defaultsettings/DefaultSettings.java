@@ -54,6 +54,7 @@ public class DefaultSettings {
 	public static final boolean debug = false;
 	public static boolean init = false;
 	public static int targetMS = 9;
+	public static boolean compatibilityMode = false;
 	
 	public DefaultSettings() {
 		instance = this;

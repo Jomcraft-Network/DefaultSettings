@@ -2,6 +2,7 @@ package de.pt400c.defaultsettings.gui;
 
 import javax.annotation.Nonnull;
 import de.pt400c.defaultsettings.GuiConfig;
+import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderHelper;
@@ -129,7 +130,11 @@ public class PopupSegment extends Segment {
 				glMatrixMode(GL_MODELVIEW);
 				glPopMatrix();
 
-				MC.getFramebuffer().bindFramebuffer(true);
+				if(DefaultSettings.compatibilityMode)
+					MC.getFramebuffer().bindFramebuffer(true);
+				else
+					glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+				
 				glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 				compiled = true;
 			}
@@ -244,8 +249,11 @@ public class PopupSegment extends Segment {
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
+		if(DefaultSettings.compatibilityMode)
+			MC.getFramebuffer().bindFramebuffer(true);
+		else
+			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 
-		MC.getFramebuffer().bindFramebuffer(true);
 		glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		
 		int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);

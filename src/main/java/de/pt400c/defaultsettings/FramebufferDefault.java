@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class FramebufferDefault {
-  /*  public int framebufferWidth;
+    public int framebufferWidth;
     public int framebufferHeight;
     public int framebuffer;
     public int interFramebuffer;
@@ -86,5 +86,5 @@ public class FramebufferDefault {
 		glDeleteTextures(this.screenTexture);
 		glDeleteTextures(this.multisampledTexture);
         this.createBindFramebuffer(width, height);
-	}*/
+	}
 }

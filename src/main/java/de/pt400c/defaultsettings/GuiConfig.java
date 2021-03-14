@@ -12,7 +12,11 @@ import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import de.pt400c.defaultsettings.gui.*;
-import de.pt400c.neptunefx.NEX;
+import net.jomcraft.neptunefx.BakeryRegistry;
+import net.jomcraft.neptunefx.FramebufferDefault;
+import net.jomcraft.neptunefx.NEX;
+import net.jomcraft.neptunefx.NeptuneFX;
+import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
@@ -700,11 +704,11 @@ public class GuiConfig extends DefaultSettingsGUI {
 					NEX.drawCircle(110 + offs, 25F / 2F, 25F / 2F, 270, 50);
 
 					glEnable(GL_TEXTURE_2D);
-					DefaultSettings.fontRenderer.drawString("Tab", MathUtil.clamp(72 / 2 - (DefaultSettings.fontRenderer.getStringWidth("Tab", 1.2F, true) / 2), 0, Integer.MAX_VALUE), 7, 0xffffffff, 1.4F, true);
+					NeptuneFX.fontRenderer.drawString("Tab", MathUtil.clamp(72 / 2 - (NeptuneFX.fontRenderer.getStringWidth("Tab", 1.2F, true) / 2), 0, Integer.MAX_VALUE), 7, 0xffffffff, 1.4F, true);
 
-					DefaultSettings.fontRenderer.drawString("- DefaultSettings -", 100 + (this.gui.width - 100) / 2 - DefaultSettings.fontRenderer.getStringWidth("- DefaultSettings -", 1.2F, true) / 2, 8, 0xffffffff, 1.2F, true);
+					NeptuneFX.fontRenderer.drawString("- DefaultSettings -", 100 + (this.gui.width - 100) / 2 - NeptuneFX.fontRenderer.getStringWidth("- DefaultSettings -", 1.2F, true) / 2, 8, 0xffffffff, 1.2F, true);
 					
-					DefaultSettings.fontRenderer.drawString(tabName, 80, 8, 0xffffffff, 1.2F, true);
+					NeptuneFX.fontRenderer.drawString(tabName, 80, 8, 0xffffffff, 1.2F, true);
 
 					glDisable(GL_BLEND);
 					postRender(1, false);

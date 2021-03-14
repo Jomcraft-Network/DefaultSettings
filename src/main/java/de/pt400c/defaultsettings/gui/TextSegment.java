@@ -3,7 +3,7 @@ package de.pt400c.defaultsettings.gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import static net.jomcraft.neptunefx.NeptuneFX.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 

@@ -5,7 +5,7 @@ import java.util.function.Function;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static de.pt400c.neptunefx.NEX.*;
+import static net.jomcraft.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
 public class ButtonSegment extends Segment {

@@ -8,9 +8,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
-import static de.pt400c.neptunefx.NEX.*;
+import static net.jomcraft.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
-import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
+import net.jomcraft.neptunefx.NeptuneFX;
+import net.jomcraft.neptunefx.gui.MathUtil;
+import net.jomcraft.neptunefx.gui.MathUtil.Vec2f;
 import de.pt400c.defaultsettings.gui.MenuScreen.MutableByte;
 
 @SideOnly(Side.CLIENT)
@@ -160,7 +162,7 @@ public class ButtonBulkActionSegment extends Segment {
 			FileUtil.switchState(this.parent.cache_activity, this.parent.searchbar.query);
 
 			if (this.parent.cache_activity == 1) {
-				File fileDir = new File(FileUtil.mcDataDir, "config");
+				File fileDir = new File(NeptuneFX.mcDataDir, "config");
 				FileFilter ff = null;
 				String arg = this.parent.searchbar.query;
 				if (arg != null) {

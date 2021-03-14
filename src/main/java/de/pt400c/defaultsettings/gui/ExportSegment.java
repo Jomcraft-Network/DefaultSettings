@@ -2,10 +2,9 @@ package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import static de.pt400c.defaultsettings.FileUtil.MC;
-import static de.pt400c.neptunefx.NEX.*;
+import static net.jomcraft.neptunefx.NeptuneFX.*;
+import static net.jomcraft.neptunefx.NEX.*;
 import java.awt.Color;
-import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
@@ -14,7 +13,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
-import de.pt400c.neptunefx.NEX;
+import net.jomcraft.neptunefx.NEX;
+import net.jomcraft.neptunefx.gui.MathUtil;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 

@@ -4,14 +4,15 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
-import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import java.util.function.Function;
 import org.lwjgl.input.Mouse;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import static de.pt400c.neptunefx.NEX.*;
+import static net.jomcraft.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
+import net.jomcraft.neptunefx.NeptuneFX;
+import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -61,7 +62,7 @@ public class ScrollableSegment extends Segment {
 		case 0: {
 
 			List<RowItem> rows = new ArrayList<RowItem>();
-			File fileDir = new File(FileUtil.mcDataDir, "config");
+			File fileDir = new File(NeptuneFX.mcDataDir, "config");
 			FileFilter ff = null;
 			//if (arg != null && arg.length != 0) {
 				ff = new FileFilter() {
@@ -122,7 +123,7 @@ public class ScrollableSegment extends Segment {
 	public void guiContentUpdate(String... arg){
 		FileFilter ff = null;
 
-		File fileDir = new File(FileUtil.mcDataDir, "config");
+		File fileDir = new File(NeptuneFX.mcDataDir, "config");
 		if (arg != null && arg.length != 0) {
 			
 			if(!this.searchbar.activated && !arg[0].equals("")) 
@@ -282,14 +283,14 @@ public class ScrollableSegment extends Segment {
 				break;
 			
 			final String text = this.list.get(i).displayString;
-			final float dots = fontRenderer.getStringWidth("...", 1, false);
+			final float dots = NeptuneFX.fontRenderer.getStringWidth("...", 1, false);
 
-			final float widthString = fontRenderer.getStringWidth(text, 1, false);
+			final float widthString = NeptuneFX.fontRenderer.getStringWidth(text, 1, false);
 
 			if (widthString >= (width - 40)) {
-				fontRenderer.drawString(fontRenderer.trimStringToWidth(text, (int) ((width - 40) - 1 - dots), false) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
+				NeptuneFX.fontRenderer.drawString(NeptuneFX.fontRenderer.trimStringToWidth(text, (int) ((width - 40) - 1 - dots), false) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
 			} else {
-				fontRenderer.drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
+				NeptuneFX.fontRenderer.drawString(text, (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
 			}
 
 			for (Segment segment : this.list.get(i).childs) 

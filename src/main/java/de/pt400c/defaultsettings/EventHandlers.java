@@ -1,6 +1,6 @@
 package de.pt400c.defaultsettings;
 
-import static de.pt400c.defaultsettings.FileUtil.MC;
+import static net.jomcraft.neptunefx.NeptuneFX.MC;
 import org.lwjgl.input.Keyboard;
 import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

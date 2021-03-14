@@ -1,12 +1,12 @@
 package de.pt400c.defaultsettings.gui;
 
 import de.pt400c.defaultsettings.DefaultSettings;
-import static de.pt400c.neptunefx.NEX.*;
-import static de.pt400c.defaultsettings.FileUtil.MC;
+import static net.jomcraft.neptunefx.NEX.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import cpw.mods.fml.relauncher.Side;
+import static net.jomcraft.neptunefx.NeptuneFX.*;
 import cpw.mods.fml.relauncher.SideOnly;
 import static org.lwjgl.opengl.GL11.*;
 

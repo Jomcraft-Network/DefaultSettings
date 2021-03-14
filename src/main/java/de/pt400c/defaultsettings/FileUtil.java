@@ -36,26 +36,22 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Level;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import cpw.mods.fml.client.FMLClientHandler;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.ScrollableSegment;
-import net.minecraft.client.Minecraft;
+import net.jomcraft.neptunefx.NeptuneFX;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.launchwrapper.Launch;
+import static net.jomcraft.neptunefx.NeptuneFX.*;
 
 public class FileUtil {
 	
-	public static final Minecraft MC = Minecraft.getMinecraft();
-	public static final File mcDataDir = MC.mcDataDir;
 	public static final boolean isDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"); 
-	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	public static MainJSON mainJson;
 	public static PrivateJSON privateJson;
 	public static IgnoreJSON ignoreJson;
@@ -1106,7 +1102,7 @@ public class FileUtil {
 		
 		public void save() {
 			try (FileWriter writer = new FileWriter(this.location)) {
-	            FileUtil.gson.toJson(this, writer);
+	            NeptuneFX.gson.toJson(this, writer);
 	        } catch (IOException e) {
 	        	DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
 	        }

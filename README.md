@@ -4,20 +4,8 @@
 
 ---
 
-Adding DefaultSettings as a dependency for your mod (use DS as an API)
+DefaultSettings is a Minecraft Forge mod created by the Jomcraft Network development team. Official downloads and further information may be found on our [curseforge page](https://www.curseforge.com/minecraft/mc-mods/defaultsettings). If a guide on how to use the mod is required, you may also visit the [CF support pages](https://www.curseforge.com/minecraft/mc-mods/defaultsettings/pages/usage).
 
-##### Add this to your build.gradle
+##### License
 
-```md
-repositories {
-    maven {
-        url "https://maven.jomcraft.net/repository/release"
-    }
-}
-
-dependencies {
-   deobfCompile 'de.pt400c.defaultsettings:DefaultSettings-1.13.2:[VERSION]'
-}
-```
-
-Edition & version could be grabbed from [here](https://maven.jomcraft.net/repository/release/de/pt400c/defaultsettings/).
+This project is licensed under the **Apache License Version 2.0** license. We do not grant any type of warranty.

@@ -19,3 +19,10 @@ logoFile="logo.png"
     versionRange="[${forge_version},)"
     ordering="NONE"
     side="CLIENT"
+    
+[[dependencies.defaultsettings]]
+    modId="neptunefx"
+    mandatory=true
+    versionRange="[1.0.0,)"
+    ordering="NONE"
+    side="CLIENT"

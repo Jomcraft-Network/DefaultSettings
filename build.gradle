@@ -42,7 +42,7 @@ minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
     runDir = "eclipse"
     
-    replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
+    replaceIn 	"net/jomcraft/defaultsettings/DefaultSettings.java"
 	replace 	"@FINGERPRINT@", signSHA1
     replace   	"DS-Version", fileVersion
 }
@@ -52,7 +52,7 @@ jar {
 
     manifest {
         attributes("FMLAT": "defaultsettings_at.cfg")
-        attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
+        attributes 'FMLCorePlugin': 'net.jomcraft.defaultsettings.core.DefaultSettingsPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'false'
         attributes([
             "Build-ID": buildID,

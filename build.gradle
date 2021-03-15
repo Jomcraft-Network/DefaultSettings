@@ -36,17 +36,18 @@ minecraft {
 	mappings = "snapshot_20171003"
     runDir = "eclipse"
     
-    replaceIn 	"de/pt400c/defaultsettings/DefaultSettings.java"
+    replaceIn 	"net/jomcraft/defaultsettings/DefaultSettings.java"
 	replace 	"@FINGERPRINT@", signSHA1
     replace   	"DS-Version", fileVersion
 }
 
 jar {
     println "BuildID: $buildID"
-	exclude('net/**')   
+	exclude('net/minecraft/**') 
+	exclude('net/minecraftforge/**') 
     manifest {
         attributes("FMLAT": "defaultsettings_at.cfg")
-		attributes 'FMLCorePlugin': 'de.pt400c.defaultsettings.core.DefaultSettingsPlugin'
+		attributes 'FMLCorePlugin': 'net.jomcraft.defaultsettings.core.DefaultSettingsPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'false'
         attributes([
             "Build-ID": buildID,
@@ -118,7 +119,8 @@ subprojects {
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 
-	exclude('net/**') 
+	exclude('net/minecraft/**') 
+	exclude('net/minecraftforge/**') 
 
 	from sourceSets.main.allSource
 	classifier = 'sources'
@@ -126,7 +128,8 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 task deobfJar(type: Jar) {
 	
-	exclude('net/**') 
+	exclude('net/minecraft/**') 
+	exclude('net/minecraftforge/**') 
 
 	from sourceSets.main.output
 	classifier = 'deobf'

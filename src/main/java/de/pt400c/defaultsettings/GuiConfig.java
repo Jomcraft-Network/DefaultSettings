@@ -383,7 +383,7 @@ public class GuiConfig extends DefaultSettingsGUI {
 				try {
 		
 					FileUtil.moveAllConfigs();
-					FileUtil.checkMD5();
+					FileUtil.checkMD5(false, false); //TODO: BROKEN!!
 					
 				} catch (IOException e) {
 					if(e instanceof ClosedByInterruptException)

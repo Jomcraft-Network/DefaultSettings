@@ -20,3 +20,10 @@ license="Apache License 2.0"
     versionRange="[${forge_version},)"
     ordering="NONE"
     side="CLIENT"
+    
+[[dependencies.defaultsettings]]
+    modId="neptunefx"
+    mandatory=true
+    versionRange="[1.0.1,)"
+    ordering="NONE"
+    side="CLIENT"

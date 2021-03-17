@@ -23,6 +23,6 @@ logoFile="logo.png"
 [[dependencies.defaultsettings]]
     modId="neptunefx"
     mandatory=true
-    versionRange="[1.0.2,)"
+    versionRange="[1.0.1,)"
     ordering="NONE"
     side="CLIENT"

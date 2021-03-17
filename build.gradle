@@ -19,11 +19,11 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.14.x-1.15.2-2.2.0"
+version = "1.14.x-1.15.2-2.2.1"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.2.0"
+def fileVersion = "2.2.1"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group = "net.jomcraft.defaultsettings"
 
@@ -56,6 +56,16 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.2.27'
 }
 
+repositories {
+	maven {
+        url "https://www.cursemaven.com"
+    }
+}
+
+dependencies {
+	compile "curse.maven:NeptuneFX-441854:3241377"
+}
+
 def forge_version = "28.2.3"
 
 processResources {
@@ -74,11 +84,7 @@ jar {
 
 	println "BuildID: $buildID"
 
-	exclude('net/**') 
-
-	exclude('de/pt400c/defaultsettings/font/Alpha1_14Handler**')
-	
-	exclude('com/**') 
+	exclude('net/minecraftforge/**') 
     
     manifest {
     	attributes 'FMLAT': 'defaultsettings_at.cfg'
@@ -122,9 +128,7 @@ build.dependsOn signJar
 
 task sourcesJar(type: Jar) {
 
-	exclude('net/**') 
-	
-	exclude('com/**') 
+	exclude('net/minecraftforge/**') 
 	
 	from sourceSets.main.allSource
 	classifier = 'sources'
@@ -132,11 +136,7 @@ task sourcesJar(type: Jar) {
 
 task deobfJar(type: Jar) {
 	
-	exclude('net/**')
-	
-	exclude('de/pt400c/defaultsettings/font/Alpha1_14Handler**')
-	
-	exclude('com/**') 
+	exclude('net/minecraftforge/**') 
 	
 	from sourceSets.main.output
 	classifier = 'deobf'

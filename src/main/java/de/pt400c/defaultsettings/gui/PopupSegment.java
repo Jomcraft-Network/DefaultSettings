@@ -3,13 +3,12 @@ package de.pt400c.defaultsettings.gui;
 import javax.annotation.Nonnull;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.DefaultSettings;
-import net.jomcraft.neptunefx.FramebufferPopup;
-import net.jomcraft.neptunefx.NEX;
-import net.jomcraft.neptunefx.gui.MathUtil;
+import de.pt400c.defaultsettings.FramebufferPopup;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
@@ -87,7 +86,7 @@ public class PopupSegment extends Segment {
 			
 			float alpha = (float) ((Math.sin(3 * this.backgroundTimer - (MathUtil.PI / 2)) + 1) / 2);
 			glDisable(GL_ALPHA_TEST);
-			NEX.drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
+			drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
 			glEnable(GL_ALPHA_TEST);
 
 			if (!compiled) {
@@ -197,7 +196,7 @@ public class PopupSegment extends Segment {
 	}
 	
 	public boolean isSelectedUpper(int mouseX, int mouseY) {
-		return (mouseX >= popX + 5 && mouseY >= popY + 15 && mouseX <= popX + (testWidth - 10) + 5 && mouseY <= popY + 29) || (mouseX >= popX + 15 && mouseY >= popY + 5 && mouseX < popX + (testWidth - 20) + 5 && mouseY < popY + 15) || (NEX.distanceBetweenPoints(popX + 15F, popY + 15F, mouseX, mouseY) <= 10) || (NEX.distanceBetweenPoints(popX + (testWidth - 10) - 5F, popY + 15F, mouseX, mouseY) <= 10);
+		return (mouseX >= popX + 5 && mouseY >= popY + 15 && mouseX <= popX + (testWidth - 10) + 5 && mouseY <= popY + 29) || (mouseX >= popX + 15 && mouseY >= popY + 5 && mouseX < popX + (testWidth - 20) + 5 && mouseY < popY + 15) || (distanceBetweenPoints(popX + 15F, popY + 15F, mouseX, mouseY) <= 10) || (distanceBetweenPoints(popX + (testWidth - 10) - 5F, popY + 15F, mouseX, mouseY) <= 10);
 	}
 	
 	public void renderContents(int mouseX, int mouseY, float partialTicks) {

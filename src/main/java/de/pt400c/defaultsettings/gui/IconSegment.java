@@ -1,7 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import de.pt400c.defaultsettings.DefaultSettings;
-import static net.jomcraft.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.NEX.*;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;

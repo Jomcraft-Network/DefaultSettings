@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarInputStream;
@@ -13,6 +14,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import de.pt400c.defaultsettings.font.FontRendererClass;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -43,6 +46,7 @@ public class DefaultSettings {
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static String BUILD_ID = "Unknown";
 	public static String BUILD_TIME = "Unknown";
+	public static FontRendererClass fontRenderer;
 	public static final boolean is180 = DefaultSettings.mcVersion.equals("1.8");
 	public static final boolean debug = false;
 	public static int targetMS = 9;
@@ -107,6 +111,9 @@ public class DefaultSettings {
 	
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
+		fontRenderer = new FontRendererClass();
+		((IReloadableResourceManager) MC.getResourceManager()).registerReloadListener(fontRenderer);
+		
 		try {
 			getBuildID();
 			getBuildTime();

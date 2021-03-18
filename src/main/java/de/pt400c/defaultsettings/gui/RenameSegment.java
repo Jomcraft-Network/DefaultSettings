@@ -2,18 +2,20 @@ package de.pt400c.defaultsettings.gui;
 
 import org.apache.commons.io.FileUtils;
 import org.lwjgl.input.Keyboard;
+
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.gui.MathUtil;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
-import static net.jomcraft.neptunefx.NeptuneFX.*;
+
 import java.io.File;
 import java.io.IOException;
+
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)

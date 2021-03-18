@@ -7,11 +7,10 @@ import net.minecraft.client.gui.GuiScreen;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
-import static net.jomcraft.neptunefx.NeptuneFX.*;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.gui.MathUtil;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 

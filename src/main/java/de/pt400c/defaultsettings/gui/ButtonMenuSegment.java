@@ -4,10 +4,9 @@ import java.util.function.Function;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.GuiConfig;
-import static net.jomcraft.neptunefx.NEX.*;
-import static net.jomcraft.neptunefx.NeptuneFX.*;
-import net.jomcraft.neptunefx.gui.MathUtil;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 

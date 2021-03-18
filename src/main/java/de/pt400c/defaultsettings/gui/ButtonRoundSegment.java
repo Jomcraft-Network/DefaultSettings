@@ -3,13 +3,13 @@ package de.pt400c.defaultsettings.gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
-import static net.jomcraft.neptunefx.NeptuneFX.*;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.gui.MathUtil;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import de.pt400c.defaultsettings.GuiConfig;
+
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)

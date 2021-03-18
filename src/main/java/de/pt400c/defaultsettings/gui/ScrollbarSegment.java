@@ -3,8 +3,8 @@ package de.pt400c.defaultsettings.gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.gui.MathUtil.Vec2f;
+import static de.pt400c.neptunefx.NEX.*;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 

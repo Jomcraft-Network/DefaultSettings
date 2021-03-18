@@ -5,9 +5,9 @@ import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.gui.MathUtil.Vec2f;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 
 @SideOnly(Side.CLIENT)
 public class QuitButtonSegment extends ButtonSegment {

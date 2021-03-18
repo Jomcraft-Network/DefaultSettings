@@ -5,14 +5,12 @@ import java.io.FileFilter;
 import java.util.List;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
-import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.NEX;
-import net.jomcraft.neptunefx.gui.MathUtil.Vec2f;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import de.pt400c.defaultsettings.gui.MenuScreen.MutableByte;
 
 @SideOnly(Side.CLIENT)
@@ -77,7 +75,7 @@ public class ButtonBulkActionSegment extends Segment {
 	       
         float inRad = 1F;
        
-        NEX.drawRectRoundedCorners(this.getPosX() - 2 - 3, this.getPosY() - 2 - 3, (float) this.getPosX() + this.width + 2 + 3, (float) this.getPosY() + this.height + 2 + 3, color, outRad);
+        drawRectRoundedCorners(this.getPosX() - 2 - 3, this.getPosY() - 2 - 3, (float) this.getPosX() + this.width + 2 + 3, (float) this.getPosY() + this.height + 2 + 3, color, outRad);
        
         float factor = 1F - ((outRad - inRad) / outRad);
        
@@ -85,7 +83,7 @@ public class ButtonBulkActionSegment extends Segment {
 		
 		if (this.timer <= MathUtil.PI / 3) {
 			color = 0xff282828;
-			NEX.drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
+			drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 		}
 
 		color = 0xfffe8518;
@@ -94,7 +92,7 @@ public class ButtonBulkActionSegment extends Segment {
 	       
         color = ((value & 0x0ff) << 24) | (((color >> 16 & 255) & 0x0ff) << 16) | (((color >> 8 & 255) & 0x0ff) << 8) | ((color & 255) & 0x0ff);
 		
-        NEX.drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
+        drawRectRoundedCorners(this.getPosX() - 2 - 3 + inRad, this.getPosY() - 2 - 3 + inRad, (float) this.getPosX() + this.width + 2 + 3 - inRad, (float) this.getPosY() + this.height + 2 + 3 - inRad, color, innerRadius < 0 ? 0 : innerRadius);
 
         int scaleFactor = scaledresolution.getScaleFactor();
         

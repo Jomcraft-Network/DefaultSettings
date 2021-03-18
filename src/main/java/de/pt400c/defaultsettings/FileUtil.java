@@ -390,7 +390,7 @@ public class FileUtil {
 			activeProfile = profileName;
 
 			FileUtil.moveAllConfigs();
-			FileUtil.checkMD5();
+			FileUtil.checkMD5(true, false);
 			
 			String[] extensions = new String[] { "zip"};
 			List<Path> oldestFiles = Collections.emptyList();
@@ -1104,18 +1104,202 @@ public class FileUtil {
 		}
 	}
 	
-	public static void checkMD5() throws FileNotFoundException, IOException {
+	public static InputStream getServersStream() throws IOException {
+		final File serversFile = new File(mcDataDir, "servers.dat");
+		if (serversFile.exists()) {
+			return new FileInputStream(serversFile);
+		}
+		return null;
+	}
+	
+	public static InputStream getOptionsOFStream() throws IOException {
+		final File optionsFile = new File(mcDataDir, "optionsof.txt");
+		if (optionsFile.exists()) {
+			return new FileInputStream(optionsFile);
+		}
+		return null;
+	}
+	
+	public static InputStream getOptionsShadersStream() throws IOException {
+		final File optionsFile = new File(mcDataDir, "optionsof.txt");
+		if (optionsFile.exists()) {
+			return new FileInputStream(optionsFile);
+		}
+		return null;
+	}
+	
+	public static InputStream getKeysStream() throws IOException, NullPointerException {
+		FileInputStream stream = null;
+		PrintWriter writer = null;
+		File file = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
+		try {
+			writer = new PrintWriter(new FileWriter(file));
+			for (KeyBinding keyBinding : MC.gameSettings.keyBindings) 
+				if(DefaultSettings.mcVersion.startsWith("1.8"))
+					writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
+				else
+					writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + ":" + keyBinding.getKeyModifier().name() + "\n");
+			stream = new FileInputStream(file);
+		} catch (IOException e) {
+			throw e;
+		} catch (NullPointerException e) {
+			throw e;
+		} finally {
+			writer.close();
+		}
+
+		return stream;
+	}
+	
+	public static InputStream getOptionsStream() throws IOException, NullPointerException {
+		final File keysFile = new File(mcDataDir, "options.txt");
+		FileInputStream stream = null;
+		if(keysFile.exists()) {
+			BufferedReader reader = null;
+			PrintWriter writer = null;
+			File file = new File(getMainFolder(), activeProfile + "/options.txt_temp");
+			try {
+				writer = new PrintWriter(new FileWriter(file));
+				reader = new BufferedReader(new FileReader(keysFile));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					if (line.startsWith("key_"))
+						continue;
+					writer.print(line + "\n");
+
+				}
+				stream = new FileInputStream(file);
+			} catch (IOException e) {
+				throw e;
+			} catch (NullPointerException e) {
+				throw e;
+			} finally {
+				try {
+					reader.close();
+					writer.close();
+				
+				} catch (IOException e) {
+					throw e;
+				} catch (NullPointerException e) {
+					throw e;
+				}
+			}
+			return stream;
+		}
+		return null;
+	}
+	
+	public static boolean checkChanged() {
+		boolean ret = false;
+		try {
+
+			InputStream keys = getKeysStream();
+			InputStream options = getOptionsStream();
+			InputStream optionsOF = getOptionsOFStream();
+			InputStream optionsShaders = getOptionsShadersStream();
+			InputStream servers = getServersStream();
+
+			String hashO = "";
+			String writtenHashO = "";
+			
+			if(options != null) {
+			
+				hashO = fileToHash(options);
+				writtenHashO = mainJson.hashes.get(activeProfile + "/options.txt");
+			}
+
+			String hashK = "";
+			String writtenHashK = "";
+			
+			if(keys != null) {
+			
+				hashK = fileToHash(keys);
+				writtenHashK = mainJson.hashes.get(activeProfile + "/keys.txt");
+			
+			}
+
+			String hashOF = "";
+			String writtenHashOF = "";
+			
+			if(optionsOF != null) {
+			
+				hashOF = fileToHash(optionsOF);
+				writtenHashOF = mainJson.hashes.get(activeProfile + "/optionsof.txt");
+
+			}
+			
+			String hashShaders = "";
+			String writtenHashShaders = "";
+			
+			if(optionsShaders != null) {
+			
+				hashShaders = fileToHash(optionsShaders);
+				writtenHashShaders = mainJson.hashes.get(activeProfile + "/optionsshaders.txt");
+
+			}
+			
+			String hashS = "";
+			String writtenHashS = "";
+			
+			if(servers != null) {
+			
+				hashS = fileToHash(servers);
+				writtenHashS = mainJson.hashes.get(activeProfile + "/servers.dat");
+
+			}
+			
+			if (mainJson.hashes.containsKey(activeProfile + "/options.txt") && !hashO.equals(writtenHashO)) {
+				ret = true;
+			} else if (mainJson.hashes.containsKey(activeProfile + "/keys.txt") && !hashK.equals(writtenHashK)) {
+				ret = true;
+			} else if (mainJson.hashes.containsKey(activeProfile + "/optionsof.txt") && !hashOF.equals(writtenHashOF)) {
+				ret = true;
+			} else if (mainJson.hashes.containsKey(activeProfile + "/optionsshaders.txt") && !hashShaders.equals(writtenHashShaders)) {
+				ret = true;
+			} else if (mainJson.hashes.containsKey(activeProfile + "/servers.dat") && !hashS.equals(writtenHashS)) {
+				ret = true;
+			}
+			
+			options.close();
+			File fileO = new File(getMainFolder(), activeProfile + "/options.txt_temp");
+			Files.delete(fileO.toPath());
+			keys.close();
+			File fileK = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
+			Files.delete(fileK.toPath());
+
+		} catch (Exception e) {
+			DefaultSettings.log.log(Level.ERROR, "Error while saving configs: ", e);
+		}
+
+		return ret;
+	}
+	
+	public static void checkMD5(boolean updateExisting, boolean configs) throws FileNotFoundException, IOException {
 		Collection<File> config = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File configFile : config) {
 			if (!configFile.isDirectory() && !configFile.getName().equals("ignore.json")) {
-				mainJson.hashes.put(activeProfile + "/" + configFile.getPath().split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1), fileToHash(new FileInputStream(configFile)));
+				if(optUse.contains(configFile.getName()) && configs)
+					continue;
+				String relativePath = configFile.getPath().substring((mcDataDir.getPath().length()));
+				String pathString = activeProfile + "/" + relativePath.split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1);
+				if(!updateExisting && mainJson.hashes.containsKey(pathString)){
+					
+				} else {
+					mainJson.hashes.put(pathString, fileToHash(new FileInputStream(configFile)));
+				}
 			}
 		}
 		
 		Collection<File> shared = FileUtils.listFilesAndDirs(new File(getMainFolder(), "sharedConfigs"), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File sharedFile : shared) {
 			if (!sharedFile.isDirectory() && !sharedFile.getName().equals("ignore.json")) {
-				mainJson.hashes.put(sharedFile.getPath().split("defaultsettings")[1].substring(1), fileToHash(new FileInputStream(sharedFile)));
+				String relativePath = sharedFile.getPath().substring((mcDataDir.getPath().length()));
+				String pathString = relativePath.split("defaultsettings")[1].substring(1);
+				if(!updateExisting && mainJson.hashes.containsKey(pathString)){
+					
+				} else {
+					mainJson.hashes.put(pathString, fileToHash(new FileInputStream(sharedFile)));
+				}
 			}
 		}
 

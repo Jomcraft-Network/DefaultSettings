@@ -378,7 +378,7 @@ public class FileUtil {
 			activeProfile = profileName;
 
 			FileUtil.moveAllConfigs();
-			FileUtil.checkMD5(false, false); //TODO: BROKEN!!
+			FileUtil.checkMD5(true, false);
 			
 			String[] extensions = new String[] { "zip"};
 			List<Path> oldestFiles = Collections.emptyList();

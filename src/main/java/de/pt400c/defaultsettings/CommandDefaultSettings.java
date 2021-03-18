@@ -69,7 +69,7 @@ public class CommandDefaultSettings {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 		
-		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (!argument.equals("-o") && !argument.equals("-of"))) {
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument != null && !argument.equals("-o") && !argument.equals("-of"))) {
 			source.sendFeedback(new StringTextComponent(TextFormatting.GOLD + "These files already exist! If you want to overwrite"), true);
 			source.sendFeedback(new StringTextComponent(TextFormatting.GOLD + "them, add the '-o' argument"), true);
 			return 0;

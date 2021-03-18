@@ -83,9 +83,13 @@ public class CommandDefaultSettings_18 extends CommandBase {
 						boolean somethingChanged = FileUtil.checkChanged();
 
 						if(somethingChanged && !args[1].equals("-of")) {
-							sender.func_145747_a(new ChatComponentText("\u00a76\n\n"));
+							sender.func_145747_a(new ChatComponentText("\u00a76"));
+							sender.func_145747_a(new ChatComponentText("\u00a76"));
+							sender.func_145747_a(new ChatComponentText("\u00a76"));
 							sender.func_145747_a(new ChatComponentText("\u00a76You seem to have updated certain config files!"));
-							sender.func_145747_a(new ChatComponentText("\u00a76Users who already play your pack won't (!) receive those changes.\n"));
+							sender.func_145747_a(new ChatComponentText("\u00a76Users who already play your pack won't (!)"));
+							sender.func_145747_a(new ChatComponentText("\u00a76receive those changes."));
+							sender.func_145747_a(new ChatComponentText("\u00a76"));
 							sender.func_145747_a(new ChatComponentText("\u00a76If you want to ship the new configs to those players too,"));
 							sender.func_145747_a(new ChatComponentText("\u00a76append the '-of' argument instead of '-o'"));
 						}

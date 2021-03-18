@@ -68,9 +68,13 @@ public class CommandDefaultSettings_19 extends CommandBase {
 						boolean somethingChanged = FileUtil.checkChanged();
 
 						if(somethingChanged && !args[1].equals("-of")) {
-							sender.sendMessage(new TextComponentString("\u00a76\n\n"));
+							sender.sendMessage(new TextComponentString("\u00a76"));
+							sender.sendMessage(new TextComponentString("\u00a76"));
+							sender.sendMessage(new TextComponentString("\u00a76"));
 							sender.sendMessage(new TextComponentString("\u00a76You seem to have updated certain config files!"));
-							sender.sendMessage(new TextComponentString("\u00a76Users who already play your pack won't (!) receive those changes.\n"));
+							sender.sendMessage(new TextComponentString("\u00a76Users who already play your pack won't (!)"));
+							sender.sendMessage(new TextComponentString("\u00a76receive those changes."));
+							sender.sendMessage(new TextComponentString("\u00a76"));
 							sender.sendMessage(new TextComponentString("\u00a76If you want to ship the new configs to those players too,"));
 							sender.sendMessage(new TextComponentString("\u00a76append the '-of' argument instead of '-o'"));
 						}

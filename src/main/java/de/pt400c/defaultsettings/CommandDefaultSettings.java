@@ -9,6 +9,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.TextComponentString;
@@ -32,6 +34,11 @@ public class CommandDefaultSettings {
 		      }));
 
 		event.getCommandDispatcher().register(literalargumentbuilder);
+		
+		LiteralCommandNode<CommandSource> node = event.getCommandDispatcher().register(literalargumentbuilder);
+		
+		event.getCommandDispatcher().register(Commands.literal("ds").redirect(node));
+
 	}
 	
 	private static int exportMode(CommandSource source, String argument) throws CommandSyntaxException {
@@ -69,13 +76,33 @@ public class CommandDefaultSettings {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 		
-		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || !argument.equals("-o"))) {
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || (!argument.equals("-o") && !argument.equals("-of")))) {
 			source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "These files already exist! If you want to overwrite"), true);
 			source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "them, add the '-o' argument"), true);
 			return 0;
 		}
 
 		MutableBoolean issue = new MutableBoolean(false);
+		
+		tpe.execute(new ThreadRunnable(source, issue) {
+
+			@Override
+			public void run() {
+				try {
+					boolean somethingChanged = FileUtil.checkChanged();
+
+					if(somethingChanged && !argument.equals("-of")) {
+						source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "\n\n"), true);
+						source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "You seem to have updated certain config files!"), true);
+						source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"), true);
+						source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "If you want to ship the new configs to those players too,"), true);
+						source.sendFeedback(new TextComponentString(TextFormatting.GOLD + "append the '-of' argument instead of '-o'"), true);
+					}
+				} catch (Exception e) {
+					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+				}
+			}
+		});
 
 		tpe.execute(new ThreadRunnable(source, issue) {
 
@@ -123,6 +150,13 @@ public class CommandDefaultSettings {
 
 				if (issue.getBoolean())
 					source.sendFeedback(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"), true);
+				else
+					try {
+						boolean updateExisting = argument != null && argument.equals("-of");
+						FileUtil.checkMD5(updateExisting, false);
+					} catch (IOException e) {
+						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
+					}
 			}
 		});
 

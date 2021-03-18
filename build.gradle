@@ -12,17 +12,17 @@ buildscript {
 }
 
 plugins {
-    id 'com.matthewprenger.cursegradle' version '1.3.0'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.13.2-2.2.0"
+version = "1.13.2-2.2.1"
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
-def fileVersion = "2.2.0"
+def fileVersion = "2.2.1"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group = "net.jomcraft.defaultsettings"
 
@@ -152,6 +152,9 @@ curseforge {
 			id = '318012'
 			changelog = file("changelog.html")
 			changelogType = 'html'
+			relations {
+      			requiredDependency 'neptunefx'
+    		}
 			releaseType = 'release'
 			addGameVersion '1.13.2'
 			mainArtifact(jar) {

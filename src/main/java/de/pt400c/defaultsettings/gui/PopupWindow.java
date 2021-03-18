@@ -6,8 +6,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
-import static net.jomcraft.neptunefx.NeptuneFX.*;
-import static net.jomcraft.neptunefx.NEX.*;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import static de.pt400c.neptunefx.NEX.*;
 
 @SideOnly(Side.CLIENT)
 public class PopupWindow extends Segment {

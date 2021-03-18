@@ -7,8 +7,6 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.Level;
 
-import net.jomcraft.neptunefx.NeptuneFX;
-
 public class PrivateJSON {
 	
 	public static transient final long serialVersionUID = 498123L;
@@ -20,8 +18,8 @@ public class PrivateJSON {
 	public boolean compatibilityMode = false;
 	
 	public void save() {
-		try (FileWriter writer = new FileWriter(new File(NeptuneFX.mcDataDir, "ds_private_storage.json"))) {
-            NeptuneFX.gson.toJson(this, writer);
+		try (FileWriter writer = new FileWriter(new File(FileUtil.mcDataDir, "ds_private_storage.json"))) {
+            FileUtil.gson.toJson(this, writer);
         } catch (IOException e) {
         	DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
         }

@@ -1,6 +1,6 @@
 package de.pt400c.defaultsettings.gui;
 
-import static net.jomcraft.neptunefx.NeptuneFX.*;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import org.lwjgl.input.Mouse;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

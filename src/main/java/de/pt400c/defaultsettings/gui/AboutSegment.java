@@ -1,13 +1,12 @@
 package de.pt400c.defaultsettings.gui;
 
-import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import de.pt400c.defaultsettings.DefaultSettings;
-import net.jomcraft.neptunefx.NEX;
-import static net.jomcraft.neptunefx.NeptuneFX.fontRenderer;
-import static net.jomcraft.neptunefx.NeptuneFX.MC;
+import de.pt400c.neptunefx.NEX;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.util.ArrayList;
 import cpw.mods.fml.relauncher.Side;

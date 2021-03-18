@@ -6,7 +6,6 @@ import java.util.function.Function;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.GuiConfig;
-import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
 
 @SideOnly(Side.CLIENT)

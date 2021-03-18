@@ -1,7 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
-import static net.jomcraft.neptunefx.NEX.*;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.util.function.Function;
 import cpw.mods.fml.relauncher.Side;

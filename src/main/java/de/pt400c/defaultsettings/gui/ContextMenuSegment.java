@@ -1,9 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
-import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
-import static net.jomcraft.neptunefx.NeptuneFX.*;
-import static net.jomcraft.neptunefx.NEX.*;
+import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
+import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.io.File;

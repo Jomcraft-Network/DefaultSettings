@@ -1,6 +1,6 @@
 package de.pt400c.defaultsettings;
 
-import static net.jomcraft.neptunefx.NeptuneFX.MC;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.io.IOException;
 import java.nio.channels.ClosedByInterruptException;
 import java.util.concurrent.ExecutorService;
@@ -13,12 +13,6 @@ import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL11.*;
-
-import net.jomcraft.neptunefx.BakeryRegistry;
-import net.jomcraft.neptunefx.FramebufferDefault;
-import net.jomcraft.neptunefx.NEX;
-import net.jomcraft.neptunefx.NeptuneFX;
-import net.jomcraft.neptunefx.gui.MathUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import de.pt400c.defaultsettings.gui.AboutSegment;
@@ -31,6 +25,7 @@ import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.ExportSegment;
 import de.pt400c.defaultsettings.gui.HelpSegment;
 import de.pt400c.defaultsettings.gui.LeftMenu;
+import de.pt400c.defaultsettings.gui.MathUtil;
 import de.pt400c.defaultsettings.gui.MenuArea;
 import de.pt400c.defaultsettings.gui.MenuScreen;
 import de.pt400c.defaultsettings.gui.PopupSegment;
@@ -41,6 +36,7 @@ import de.pt400c.defaultsettings.gui.ScrollableSegment;
 import de.pt400c.defaultsettings.gui.Segment;
 import de.pt400c.defaultsettings.gui.SplitterSegment;
 import de.pt400c.defaultsettings.gui.TextSegment;
+import de.pt400c.neptunefx.NEX;
 
 public class GuiConfig extends DefaultSettingsGUI {
     public final GuiScreen parentScreen;
@@ -709,11 +705,11 @@ public class GuiConfig extends DefaultSettingsGUI {
 				NEX.drawCircle(110 + offs, 25F / 2F, 25F / 2F, 270, 50);
 
 				glEnable(GL_TEXTURE_2D);
-				NeptuneFX.fontRenderer.drawString("Tab", MathUtil.clamp(72 / 2 - (NeptuneFX.fontRenderer.getStringWidth("Tab", 1.2F, true) / 2), 0, Integer.MAX_VALUE), 7, 0xffffffff, 1.4F, true);
+				DefaultSettings.fontRenderer.drawString("Tab", MathUtil.clamp(72 / 2 - (DefaultSettings.fontRenderer.getStringWidth("Tab", 1.2F, true) / 2), 0, Integer.MAX_VALUE), 7, 0xffffffff, 1.4F, true);
 
-				NeptuneFX.fontRenderer.drawString("- DefaultSettings -", 100 + (this.gui.width - 100) / 2 - NeptuneFX.fontRenderer.getStringWidth("- DefaultSettings -", 1.2F, true) / 2, 8, 0xffffffff, 1.2F, true);
+				DefaultSettings.fontRenderer.drawString("- DefaultSettings -", 100 + (this.gui.width - 100) / 2 - DefaultSettings.fontRenderer.getStringWidth("- DefaultSettings -", 1.2F, true) / 2, 8, 0xffffffff, 1.2F, true);
 				
-				NeptuneFX.fontRenderer.drawString(tabName, 80, 8, 0xffffffff, 1.2F, true);
+				DefaultSettings.fontRenderer.drawString(tabName, 80, 8, 0xffffffff, 1.2F, true);
 
 				glDisable(GL_BLEND);
 				postRender(1, false);

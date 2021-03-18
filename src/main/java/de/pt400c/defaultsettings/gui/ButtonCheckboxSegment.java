@@ -9,10 +9,8 @@ import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import static org.lwjgl.opengl.GL11.*;
-import static net.jomcraft.neptunefx.NEX.*;
-import net.jomcraft.neptunefx.NeptuneFX;
-import net.jomcraft.neptunefx.gui.MathUtil;
-import net.jomcraft.neptunefx.gui.MathUtil.Vec2f;
+import static de.pt400c.neptunefx.NEX.*;
+import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 
 @SideOnly(Side.CLIENT)
 public class ButtonCheckboxSegment extends Segment {
@@ -143,7 +141,7 @@ public class ButtonCheckboxSegment extends Segment {
 			this.active = Boolean.logicalXor(this.active, true);
 			FileUtil.switchActive(this.name);
 
-			File fileDir = new File(NeptuneFX.mcDataDir, "config");
+			File fileDir = new File(FileUtil.mcDataDir, "config");
 			FileFilter ff = null;
 			String arg = this.parent.searchbar.query;
 			if (arg != null) {

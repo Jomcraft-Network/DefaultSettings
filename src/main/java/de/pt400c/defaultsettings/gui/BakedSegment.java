@@ -6,10 +6,9 @@ import static org.lwjgl.opengl.GL30.*;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import de.pt400c.defaultsettings.DefaultSettings;
+import de.pt400c.defaultsettings.FramebufferPopup;
 import de.pt400c.defaultsettings.GuiConfig;
-import static net.jomcraft.neptunefx.NeptuneFX.MC;
-
-import net.jomcraft.neptunefx.FramebufferPopup;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 

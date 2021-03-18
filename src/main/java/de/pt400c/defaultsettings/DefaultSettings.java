@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 import javax.net.ssl.HttpsURLConnection;
+import static de.pt400c.defaultsettings.FileUtil.MC;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +25,8 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
+import de.pt400c.defaultsettings.font.FontRendererClass;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -40,6 +43,7 @@ public class DefaultSettings {
 	private static boolean isServer = false;
 	public static String BUILD_ID = "Unknown";
 	public static String BUILD_TIME = "Unknown";
+	public static FontRendererClass fontRenderer;
 	public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static final boolean debug = false;
@@ -114,7 +118,10 @@ public class DefaultSettings {
 	public static void postInit(FMLPostInitializationEvent event) {
 		if (isServer)
 			return;
-
+		
+		fontRenderer = new FontRendererClass();
+		((IReloadableResourceManager) MC.getResourceManager()).registerReloadListener(fontRenderer);
+		
 		try {
 			getBuildID();
 			getBuildTime();

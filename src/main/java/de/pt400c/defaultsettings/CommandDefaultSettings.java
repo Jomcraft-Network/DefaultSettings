@@ -64,13 +64,33 @@ public class CommandDefaultSettings extends CommandBase {
 
 		if (args[0].toLowerCase().equals("save")) {
 
-			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o")))) {
+			if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (args.length == 1 || (args.length == 2 && !args[1].equals("-o") && !args[1].equals("-of")))) {
 				sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "These files already exist! If you want to overwrite"));
 				sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "them, add the '-o' argument"));
 				return;
 			}
 
 			MutableBoolean issue = new MutableBoolean(false);
+			
+			tpe.execute(new ThreadRunnable(sender, issue) {
+
+				@Override
+				public void run() {
+					try {
+						boolean somethingChanged = FileUtil.checkChanged();
+
+						if(somethingChanged && !args[1].equals("-of")) {
+							sender.addChatMessage(new ChatComponentText("\u00a76\n\n"));
+							sender.addChatMessage(new ChatComponentText("\u00a76You seem to have updated certain config files!"));
+							sender.addChatMessage(new ChatComponentText("\u00a76Users who already play your pack won't (!) receive those changes.\n"));
+							sender.addChatMessage(new ChatComponentText("\u00a76If you want to ship the new configs to those players too,"));
+							sender.addChatMessage(new ChatComponentText("\u00a76append the '-of' argument instead of '-o'"));
+						}
+					} catch (Exception e) {
+						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+					}
+				}
+			});
 
 			tpe.execute(new ThreadRunnable(sender, issue) {
 
@@ -118,6 +138,13 @@ public class CommandDefaultSettings extends CommandBase {
 
 					if (issue.getBoolean())
 						sender.addChatMessage(new ChatComponentText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
+					else
+						try {
+							boolean updateExisting = args.length > 1 && args[1].equals("-of");
+							FileUtil.checkMD5(updateExisting, false);
+						} catch (IOException e) {
+							DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
+						}
 				}
 			});
 		} else {

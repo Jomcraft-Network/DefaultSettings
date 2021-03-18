@@ -86,6 +86,7 @@ public class CommandDefaultSettings extends CommandBase {
 							sender.addChatMessage(new ChatComponentText("\u00a76You seem to have updated certain config files!"));
 							sender.addChatMessage(new ChatComponentText("\u00a76Users who already play your pack won't (!)"));
 							sender.addChatMessage(new ChatComponentText("\u00a76receive those changes."));
+							sender.addChatMessage(new ChatComponentText("\u00a76"));
 							sender.addChatMessage(new ChatComponentText("\u00a76If you want to ship the new configs to those players too,"));
 							sender.addChatMessage(new ChatComponentText("\u00a76append the '-of' argument instead of '-o'"));
 						}

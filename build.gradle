@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-	compile "curse.maven:NeptuneFX-441854:3241377"
+	compile "curse.maven:NeptuneFX-441854:3243705"
 }
 
 def forge_version = "28.2.3"

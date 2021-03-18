@@ -27,7 +27,7 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, guiFactory = DefaultSettings.modGuiFactory, dependencies = "required-after:neptunefx@[1.0.0,)", certificateFingerprint = "@FINGERPRINT@")
+@Mod(modid = DefaultSettings.MODID, name = DefaultSettings.NAME, version = DefaultSettings.VERSION, guiFactory = DefaultSettings.modGuiFactory, dependencies = "before:*", certificateFingerprint = "@FINGERPRINT@")
 public class DefaultSettings {
 
 	//-Dfml.coreMods.load=de.pt400c.defaultsettings.core.DefaultSettingsPlugin

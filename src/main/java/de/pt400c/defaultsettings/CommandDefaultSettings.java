@@ -9,6 +9,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
@@ -32,7 +34,9 @@ public class CommandDefaultSettings {
 		      }));
 
 
-		event.getCommandDispatcher().register(literalargumentbuilder);
+		LiteralCommandNode<CommandSource> node = event.getCommandDispatcher().register(literalargumentbuilder);
+		
+		event.getCommandDispatcher().register(Commands.literal("ds").redirect(node));
 	}
 	
 	private static int exportMode(CommandSource source, String argument) throws CommandSyntaxException {
@@ -64,12 +68,14 @@ public class CommandDefaultSettings {
 
 	}
 	
+	//ADD ALIAS!
+	
 	private static int saveProcess(CommandSource source, String argument) throws CommandSyntaxException {
 
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 		
-		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument != null && !argument.equals("-o") && !argument.equals("-of"))) {
+		if((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || (!argument.equals("-o") && !argument.equals("-of")))) {
 			source.sendFeedback(new StringTextComponent(TextFormatting.GOLD + "These files already exist! If you want to overwrite"), true);
 			source.sendFeedback(new StringTextComponent(TextFormatting.GOLD + "them, add the '-o' argument"), true);
 			return 0;

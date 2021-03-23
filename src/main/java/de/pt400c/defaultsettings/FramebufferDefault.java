@@ -1,9 +1,13 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
+import static org.lwjgl.opengl.GL11.glGetInteger;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.*;
 import java.nio.ByteBuffer;
+
+import org.lwjgl.opengl.GL30;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -68,10 +72,14 @@ public class FramebufferDefault {
     }
     
     private void createMSColorAttachment() {
-		this.multisampledTexture = glGenTextures();
-	    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
-	    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, DefaultSettings.targetMS, GL_RGB, this.framebufferWidth, this.framebufferHeight, true);
-	    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+		this.multisampledTexture = GL30.glGenTextures();
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture); //ISSUE / CRASH HERE!
+		if(glGetError() != 0) {
+			DefaultSettings.compatibilityMode = true;
+			return;
+		}
+	    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Math.min(glGetInteger(GL_MAX_SAMPLES), DefaultSettings.targetMS), GL_RGBA8, this.framebufferWidth, this.framebufferHeight, true);
+	    glBindTexture(GL_TEXTURE_2D, 0);
 	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture, 0);
 	}
 

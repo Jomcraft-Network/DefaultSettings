@@ -69,10 +69,14 @@ public class FramebufferDefault {
     }
     
     private void createMSColorAttachment() {
-		this.multisampledTexture = glGenTextures();
-	    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
-	    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, DefaultSettings.targetMS, GL_RGB, this.framebufferWidth, this.framebufferHeight, true);
-	    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+    	this.multisampledTexture = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
+		if(glGetError() != 0) {
+			DefaultSettings.compatibilityMode = true;
+			return;
+		}
+	    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Math.min(glGetInteger(GL_MAX_SAMPLES), DefaultSettings.targetMS), GL_RGBA8, this.framebufferWidth, this.framebufferHeight, true);
+	    glBindTexture(GL_TEXTURE_2D, 0);
 	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture, 0);
 	}
 

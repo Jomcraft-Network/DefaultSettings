@@ -109,16 +109,10 @@ public class PopupSegment extends Segment {
 				glEnable(GL_BLEND);
 				glTranslatef(0.0f, 0, -2000.0f);
 
-				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 				this.window.render(mouseX, mouseY, partialTicks);
 
 				glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
-				glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-				MC.getFramebuffer().bindFramebuffer(true);
 
 				glClear(16640);
 
@@ -129,10 +123,12 @@ public class PopupSegment extends Segment {
 				glPopMatrix();
 				glMatrixMode(GL_MODELVIEW);
 				glPopMatrix();
+				
+				glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+				
+				MC.getFramebuffer().bindFramebuffer(true);
 
-				if(DefaultSettings.compatibilityMode)
-					MC.getFramebuffer().bindFramebuffer(true);
-				else
+				if(!DefaultSettings.compatibilityMode)
 					glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 				
 				glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
@@ -229,30 +225,24 @@ public class PopupSegment extends Segment {
 		glEnable(GL_BLEND);
 		glTranslatef(0.0f, 0, -2000.0f);
 
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
 		this.window.renderContents(mouseX, mouseY, partialTicks);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBufferContents.fbo);
-		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		MC.getFramebuffer().bindFramebuffer(true);
+		glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
 
 		glClear(16640);
 
-		glLoadIdentity();
-
-		glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 
-		if(DefaultSettings.compatibilityMode)
-			MC.getFramebuffer().bindFramebuffer(true);
-		else
+		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		
+		MC.getFramebuffer().bindFramebuffer(true);
+		
+		if(!DefaultSettings.compatibilityMode)
 			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 		
 		glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);

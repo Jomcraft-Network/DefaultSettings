@@ -333,6 +333,8 @@ public class NEX {
 
 		glPointSize(5.5F * (factor / 2F));
 
+		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+		
 		glBegin(GL_POINTS);
 		
 		for(Vec2f vector : vertices) 
@@ -359,6 +361,8 @@ public class NEX {
 		glEnable(GL_POINT_SMOOTH);
 	
 		glPointSize(size * (factor / 2F));
+		
+		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 
 		glBegin(GL_POINTS);
 		
@@ -391,6 +395,9 @@ public class NEX {
 			glPointSize(3.0F * (factor - 1));
 		else
 			glPointSize(1F);
+		
+		glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+		
 		glBegin(GL_POINTS);
 		
 		for(Vec2f vector : vertices) 

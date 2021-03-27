@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static de.pt400c.neptunefx.NEX.*;
@@ -101,10 +102,10 @@ public class ButtonRoundSegment extends BakedSegment {
 		if (!compiled) {
 			preRender();
 			glPushMatrix();
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.disableTexture2D();
 
 			drawRectRoundedCorners(0, 0, width, height, 0xffffffff, Integer.MAX_VALUE);
 
@@ -122,9 +123,9 @@ public class ButtonRoundSegment extends BakedSegment {
 
 			drawRectRoundedCorners(diff, diff, width - diff, height - diff, ((255 & 0x0ff) << 24) | ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff), Integer.MAX_VALUE);
 
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_ALPHA_TEST);
-			glDisable(GL_BLEND);
+			GlStateManager.enableTexture2D();
+			GlStateManager.enableAlpha();
+			GlStateManager.disableBlend();
 
 			fontRenderer.drawString(this.title, 1 + (this.getWidth()) / 2 - fontRenderer.getStringWidth(this.title, size, true) / 2, 6.5F + (size > 0.8F ? 1.2F : 0), 0xffffffff, size, true);
 

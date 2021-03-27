@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -8,7 +9,6 @@ import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.neptunefx.NEX;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -26,11 +26,11 @@ public class AboutSegment extends Segment {
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		glPushMatrix();
 		
-		glEnable(GL_BLEND);
-     	glBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.enableBlend();
+     	GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
 		NEX.drawScaledTex((float) posX, (float) posY - 5, 80, 80);
-		glDisable(GL_BLEND);
+		GlStateManager.disableBlend();
 		
 		fontRenderer.drawString("DefaultSettings", (float) this.getPosX() + 90, (float) this.getPosY() - 5, 0xfff0f0f0, 1.8F, true);
 		final String text = "This client mod offers the ability of creating and using modpacks which ship custom settings, entries in the server list or even custom keybindings without having them overwriting your local settings every time the modpack updates";

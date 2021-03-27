@@ -2,8 +2,8 @@ package de.pt400c.defaultsettings;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 
 public class BakeryRegistry {
 	
@@ -15,17 +15,17 @@ public class BakeryRegistry {
 	
 	public static void clearAll() {
 		for(int fbo : fbos)
-			glDeleteFramebuffers(fbo);
+			OpenGlHelper.glDeleteFramebuffers(fbo);
 		
 		fbos.clear();
 		
 		for(int texture : textures)
-			glDeleteTextures(texture);
+			GlStateManager.deleteTexture(texture);
 		
 		textures.clear();
 		
 		for(int renderb : renderbs)
-			glDeleteRenderbuffers(renderb);
+			OpenGlHelper.glDeleteRenderbuffers(renderb);
 		
 		renderbs.clear();
 	}

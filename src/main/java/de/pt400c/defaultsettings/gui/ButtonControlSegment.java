@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -189,10 +190,10 @@ public class ButtonControlSegment extends BakedSegment {
 		if(!compiled) {
 			preRender();
 			glPushMatrix();
-			glEnable(GL_BLEND);
-	    	glDisable(GL_ALPHA_TEST);
+			GlStateManager.enableBlend();
+	    	GlStateManager.disableAlpha();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    	glDisable(GL_TEXTURE_2D);
+	    	GlStateManager.disableTexture2D();
 
 			drawRectRoundedCorners(0, 0, width, height, this.color, Integer.MAX_VALUE);
 			
@@ -210,9 +211,9 @@ public class ButtonControlSegment extends BakedSegment {
 
 			drawRectRoundedCorners(diff, diff, width - diff, height - diff, ((255 & 0x0ff) << 24) | ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff), Integer.MAX_VALUE);
 			
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_ALPHA_TEST);
-			glDisable(GL_BLEND);
+			GlStateManager.enableTexture2D();
+			GlStateManager.enableAlpha();
+			GlStateManager.disableBlend();
 			final String txt = this.title;
 			glEnable(GL_SCISSOR_TEST);
 			
@@ -222,10 +223,10 @@ public class ButtonControlSegment extends BakedSegment {
 	    	
 	    	glScissor((int) ((this.width - 20 * (1 - alpha)) * scaledresolution.getScaleFactor()), (int) (0 * scaledresolution.getScaleFactor()), (int) 20/*((this.getWidth() - 8)*/ * scaledresolution.getScaleFactor(), (int) (30 * scaledresolution.getScaleFactor()));
 	    		
-	    	glEnable(GL_BLEND);
-	    	glDisable(GL_ALPHA_TEST);
+	    	GlStateManager.enableBlend();
+	    	GlStateManager.disableAlpha();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    	glDisable(GL_TEXTURE_2D);
+	    	GlStateManager.disableTexture2D();
 	    	
 	    	int color = 0xffbf3f3a;
 
@@ -253,19 +254,19 @@ public class ButtonControlSegment extends BakedSegment {
 	    	
 	    	drawRect(width - diff - (height - diff * 2) / 2 - 5, diff, width - diff - (height - diff * 2) / 2 - 4, height - diff, darkenColor(color, 0.8F).getRGB(), false, null, false);
 	    	
-	    	glEnable(GL_TEXTURE_2D);
+	    	GlStateManager.enableTexture2D();
 
-	    	glDisable(GL_BLEND);
+	    	GlStateManager.disableBlend();
 	    	
-	    	glEnable(GL_ALPHA_TEST);
-	    	glEnable(GL_BLEND);
+	    	GlStateManager.enableAlpha();
+	    	GlStateManager.enableBlend();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			glColor4f(1, 1, 1, 1 -alpha);
+			GlStateManager.color(1, 1, 1, 1 -alpha);
 			MC.getTextureManager().bindTexture(icon);
 			drawScaledTex((float) this.width - 20, (float) 6, (int) (18 - alpha), (int) (18 - alpha));
 			
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 			glDisable(GL_SCISSOR_TEST);
 	    	
 	    	glPopMatrix();

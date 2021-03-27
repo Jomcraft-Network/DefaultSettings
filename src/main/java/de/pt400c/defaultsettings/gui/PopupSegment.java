@@ -1,10 +1,15 @@
 package de.pt400c.defaultsettings.gui;
 
 import javax.annotation.Nonnull;
+
+import org.lwjgl.opengl.GL11;
+
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -85,20 +90,20 @@ public class PopupSegment extends Segment {
 			}
 			
 			float alpha = (float) ((Math.sin(3 * this.backgroundTimer - (MathUtil.PI / 2)) + 1) / 2);
-			glDisable(GL_ALPHA_TEST);
+			GlStateManager.disableAlpha();
 			drawRect(this.posX, this.posY, this.posX + width, this.posY + height, 0xc2000000, true, alpha, true);
-			glEnable(GL_ALPHA_TEST);
+			GlStateManager.enableAlpha();
 
 			if (!compiled) {
 				this.heightBuffer = bufferHeight / scaledresolution.getScaleFactor();
 				this.widthBuffer = bufferWidth / scaledresolution.getScaleFactor();
-				glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
-				glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
+				GlStateManager.color((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+				OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
 				glViewport(0, 0, bufferWidth, bufferHeight);
-				glClear(16640);
-				glEnable(GL_TEXTURE_2D);
+				GlStateManager.clear(16640);
+				GlStateManager.enableTexture2D();
 				RenderHelper.disableStandardItemLighting();
-				glClear(256);
+				GlStateManager.clear(256);
 				glMatrixMode(GL_PROJECTION);
 				glPushMatrix();
 				glLoadIdentity();
@@ -106,19 +111,19 @@ public class PopupSegment extends Segment {
 				glMatrixMode(GL_MODELVIEW);
 				glPushMatrix();
 				glLoadIdentity();
-				glEnable(GL_BLEND);
+				GlStateManager.enableBlend();
 				glTranslatef(0.0f, 0, -2000.0f);
 
 				this.window.render(mouseX, mouseY, partialTicks);
 
-				glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
-				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
+				OpenGlHelper.glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
+				OpenGlHelper.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
 
-				glClear(16640);
+				GlStateManager.clear(16640);
 
 				glLoadIdentity();
 
-				glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+				GlStateManager.color((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
 				glMatrixMode(GL_PROJECTION);
 				glPopMatrix();
 				glMatrixMode(GL_MODELVIEW);
@@ -126,10 +131,13 @@ public class PopupSegment extends Segment {
 				
 				glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 				
-				MC.getFramebuffer().bindFramebuffer(true);
+				if(DefaultSettings.antiAlias)
+					OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				else
+					MC.getFramebuffer().bindFramebuffer(true);
 
 				if(!DefaultSettings.compatibilityMode)
-					glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+					OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 
 				glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 				compiled = true;
@@ -137,7 +145,7 @@ public class PopupSegment extends Segment {
 			
 			int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
 
-			glBindTexture(GL_TEXTURE_2D, this.mapFrameBuffer.texture);
+			GlStateManager.bindTexture(this.mapFrameBuffer.texture);
 			
 			if (this.dragging) {
 				
@@ -157,16 +165,16 @@ public class PopupSegment extends Segment {
 			
 			float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 			
-			glColor4f(1, 1, 1, 1 - alphaRate);
+			GlStateManager.color(1, 1, 1, 1 - alphaRate);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		    
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
+			GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 			glBegin(GL_QUADS);
 		
@@ -176,15 +184,15 @@ public class PopupSegment extends Segment {
 			glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
 			glEnd();
 			
-			glEnable(GL_ALPHA_TEST);
-			glDisable(GL_BLEND);
+			GlStateManager.enableAlpha();
+			GlStateManager.disableBlend();
 			
-			glBindTexture(GL_TEXTURE_2D, currBound);
+			GlStateManager.bindTexture(currBound);
 			glPopMatrix();
 
 			renderContents(mouseX, mouseY, partialTicks);
 			float c = 58F / 255F;
-			glColor4f(c, c, c, 1);
+			GlStateManager.color(c, c, c, 1);
 			
 			this.window.hoverChecks(mouseX, mouseY);
 
@@ -198,13 +206,13 @@ public class PopupSegment extends Segment {
 	public void renderContents(int mouseX, int mouseY, float partialTicks) {
 		this.heightBuffer = bufferHeight / scaledresolution.getScaleFactor();
 		this.widthBuffer = bufferWidth / scaledresolution.getScaleFactor();
-		glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
-		glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
+		GlStateManager.color((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+		OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
 		glViewport(0, 0, bufferWidth, bufferHeight);
-		glClear(16640);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.clear(16640);
+		GlStateManager.enableTexture2D();
 		RenderHelper.disableStandardItemLighting();
-		glClear(256);
+		GlStateManager.clear(256);
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
@@ -212,16 +220,16 @@ public class PopupSegment extends Segment {
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
-		glEnable(GL_BLEND);
+		GlStateManager.enableBlend();
 		glTranslatef(0.0f, 0, -2000.0f);
 
 		this.window.renderContents(mouseX, mouseY, partialTicks);
 
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBufferContents.fbo);
-		glColor4f((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
+		OpenGlHelper.glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBufferContents.msFbo);
+		OpenGlHelper.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBufferContents.fbo);
+		GlStateManager.color((float) 1.0f, (float) 1.0f, (float) 1.0f, (float) 1.0f);
 
-		glClear(16640);
+		GlStateManager.clear(16640);
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -230,32 +238,35 @@ public class PopupSegment extends Segment {
 
 		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		
-		MC.getFramebuffer().bindFramebuffer(true);
+		if(DefaultSettings.antiAlias)
+			OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 		
 		if(!DefaultSettings.compatibilityMode)
-			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+			OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 
 		glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		
 		int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
 
-		glBindTexture(GL_TEXTURE_2D, this.mapFrameBufferContents.texture);
+		GlStateManager.bindTexture(this.mapFrameBufferContents.texture);
 
 		glPushMatrix();
 		glTranslated(this.popX, this.popY, 0);
 		
 		float alphaRate = ((GuiConfig) this.gui).popupField == null ? 1 : (float) ((Math.sin(3 * ((GuiConfig) this.gui).popupField.windowTimer - 3 * (MathUtil.PI / 2)) + 1) / 2);
 		
-		glColor4f(1, 1, 1, 1 - alphaRate);
+		GlStateManager.color(1, 1, 1, 1 - alphaRate);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	    
-		glEnable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 		glBegin(GL_QUADS);
 	
@@ -265,10 +276,10 @@ public class PopupSegment extends Segment {
 		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
 		glEnd();
 		
-		glEnable(GL_ALPHA_TEST);
-		glDisable(GL_BLEND);
+		GlStateManager.enableAlpha();
+		GlStateManager.disableBlend();
 		
-		glBindTexture(GL_TEXTURE_2D, currBound);
+		GlStateManager.bindTexture(currBound);
 		glPopMatrix();
 
 	}

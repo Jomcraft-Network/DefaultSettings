@@ -10,9 +10,10 @@ import de.pt400c.defaultsettings.gui.TextSegment;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
@@ -27,6 +28,8 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     
     @Override
     public void initGui() {
+    	
+    	DefaultSettings.antiAlias = !OpenGlHelper.isFramebufferEnabled();
     	
     	if(DefaultSettings.is180)
 			Segment.scaledresolution = new ScaledResolution(MC, MC.displayWidth, MC.displayHeight);
@@ -64,15 +67,15 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		Gui.drawRect(0, 0, this.width, this.height, 0xff2c2c2c);
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		glShadeModel(GL_SMOOTH);
 		glShadeModel(GL_FLAT);
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.enableTexture2D();
     	Gui.drawRect(0, 0, width, 25, 0xff505050);
     	Gui.drawRect(0, 25, width, 26, 0xff161616);
     	super.drawScreen(mouseX, mouseY, partialTicks);

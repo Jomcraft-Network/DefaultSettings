@@ -51,6 +51,7 @@ public class DefaultSettings {
 	public static final boolean debug = false;
 	public static int targetMS = 9;
 	public static boolean compatibilityMode = false;
+	public static boolean antiAlias = false;
 	
 	@Instance
 	public static DefaultSettings instance;

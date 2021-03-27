@@ -9,6 +9,7 @@ import java.nio.IntBuffer;
 import de.pt400c.defaultsettings.gui.MathUtil;
 import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class NEX {
 	private static int[] buffer = new int[0x10000];
@@ -56,9 +57,9 @@ public class NEX {
 	public static void drawRect(float x1, float y1, float x2, float y2, Integer color, boolean blending, Float alpha, boolean multiply) {
         
         if(blending) {
-        	glEnable(GL_BLEND);
-        	glDisable(GL_ALPHA_TEST);
-        	glDisable(GL_TEXTURE_2D);
+        	GlStateManager.enableBlend();
+        	GlStateManager.disableAlpha();
+        	GlStateManager.disableTexture2D();
         	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
 
@@ -68,11 +69,11 @@ public class NEX {
         	final float f1 = (float)(color >> 8 & 255) / 255.0F;
             final float f2 = (float)(color & 255) / 255.0F;
             if(alpha == null)
-            	glColor4f(f, f1, f2, f3);
+            	GlStateManager.color(f, f1, f2, f3);
             else if(multiply)
-            	glColor4f(f, f1, f2, f3 * alpha);
+            	GlStateManager.color(f, f1, f2, f3 * alpha);
             else
-            	glColor4f(f, f1, f2, f3 - alpha);
+            	GlStateManager.color(f, f1, f2, f3 - alpha);
         }
 
         addVertex((float) x2, (float) y1, 0);
@@ -83,9 +84,9 @@ public class NEX {
 		draw(false);
 
 		if(blending) {
-			glEnable(GL_TEXTURE_2D);
-        	glDisable(GL_BLEND);
-        	glEnable(GL_ALPHA_TEST);
+			GlStateManager.enableTexture2D();
+        	GlStateManager.disableBlend();
+        	GlStateManager.enableAlpha();
 		}
     }
 	
@@ -102,7 +103,7 @@ public class NEX {
         	final float f = (float)(color >> 16 & 255) / 255.0F;
         	final float f1 = (float)(color >> 8 & 255) / 255.0F;
             final float f2 = (float)(color & 255) / 255.0F;
-            glColor4f(f, f1, f2, f3);
+            GlStateManager.color(f, f1, f2, f3);
         }
         
         addVertex((float) x1 + radius - innerRad, (float) y1 + radius, 0);
@@ -155,7 +156,7 @@ public class NEX {
         	final float f = (float)(color >> 16 & 255) / 255.0F;
         	final float f1 = (float)(color >> 8 & 255) / 255.0F;
             final float f2 = (float)(color & 255) / 255.0F;
-            glColor4f(f, f1, f2, f3);
+            GlStateManager.color(f, f1, f2, f3);
         }
 
         addVertex((float) x1 + radius, (float) y1 + radius, 0);
@@ -300,7 +301,7 @@ public class NEX {
 	}
 	
 	public static void drawDot(float red, float green, float blue, float alpha, float factor, float size, Vec2f vector) {
-		glColor4f(red, green, blue, alpha);
+		GlStateManager.color(red, green, blue, alpha);
 
 		glEnable(GL_POINT_SMOOTH);
 
@@ -327,7 +328,7 @@ public class NEX {
 	}
 	
 	public static void drawDots(float red, float green, float blue, float alpha, float factor, Vec2f... vertices) {
-		glColor4f(red, green, blue, alpha);
+		GlStateManager.color(red, green, blue, alpha);
 
 		glEnable(GL_POINT_SMOOTH);
 
@@ -348,7 +349,7 @@ public class NEX {
 		glLineWidth(size * (factor / 2F));
 
 		glBegin(GL_LINE_STRIP);
-		glColor4f(red, green, blue, alpha);
+		GlStateManager.color(red, green, blue, alpha);
 		
 		for(Vec2f vector : vertices) 
 			glVertex3f(vector.x, vector.y, 0.0f);
@@ -377,7 +378,7 @@ public class NEX {
 			glLineWidth(1F);
 
 		glBegin(GL_LINE_STRIP);
-		glColor4f(red, green, blue, alpha);
+		GlStateManager.color(red, green, blue, alpha);
 		
 		for(Vec2f vector : vertices) 
 			glVertex3f(vector.x, vector.y, 0.0f);
@@ -406,11 +407,11 @@ public class NEX {
         float f2 = (float)(color >> 8 & 255) / 255.0F;
         float f3 = (float)(color & 255) / 255.0F;
 
-        glEnable(GL_BLEND);
-        glDisable(GL_ALPHA_TEST);
-        glDisable(GL_TEXTURE_2D);
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableTexture2D();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(f1, f2, f3, f);
+        GlStateManager.color(f1, f2, f3, f);
         
         drawCircle(x1 + 10, y1 + 10, 10, 180F, 75);
 
@@ -420,9 +421,9 @@ public class NEX {
         
         drawRect(x1, y1 + 10, x2, y2, null, false, null, false);
 
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL_BLEND);
-        glEnable(GL_ALPHA_TEST);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
     }
 
 	public static void drawRectRoundedLower(float x1, float y1, float x2, float y2, int color) {
@@ -431,11 +432,11 @@ public class NEX {
         final float f2 = (float)(color >> 8 & 255) / 255.0F;
         final float f3 = (float)(color & 255) / 255.0F;
 
-        glEnable(GL_BLEND);
-        glDisable(GL_ALPHA_TEST);
-        glDisable(GL_TEXTURE_2D);
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableTexture2D();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glColor4f(f1, f2, f3, f);
+        GlStateManager.color(f1, f2, f3, f);
         
         drawCircle(x1 + 10, y2 - 10, 10, 90F, 75);
         
@@ -445,9 +446,9 @@ public class NEX {
         
         drawRect(x1 + 10, y2 - 10, x2 - 10, y2, null, false, null, false);
 
-        glEnable(GL_TEXTURE_2D);
-        glDisable(GL_BLEND);
-        glEnable(GL_ALPHA_TEST);    
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();    
     }
 	
 	public static void drawCircle(float cx, float cy, float r, float rotation, int percentage) {

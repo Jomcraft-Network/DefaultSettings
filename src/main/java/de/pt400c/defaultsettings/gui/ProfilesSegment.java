@@ -15,6 +15,7 @@ import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.gui.MathUtil.Vec2f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -160,8 +161,8 @@ public class ProfilesSegment extends Segment {
 		this.maxSize = row - 0.5F + row * (this.list.size() - 1);
 		int color = 0xffe6e6e6;
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		if (maxSize <= height)
@@ -171,8 +172,8 @@ public class ProfilesSegment extends Segment {
 
 		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() + 2 : 0), this.getPosY() + this.height, 0xff3c3c3c, false, null, false);
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
 
 		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xff3c3c3c, true, null, false);
 
@@ -226,9 +227,9 @@ public class ProfilesSegment extends Segment {
 			final float dots = fontRenderer.getStringWidth("...", 1, false);
 
 			final float widthString = fontRenderer.getStringWidth(text, 1, false);
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
+			GlStateManager.disableTexture2D();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
 			if (this.profiles.get(i).equals(this.context.id)) 
@@ -250,9 +251,9 @@ public class ProfilesSegment extends Segment {
 					hover = true;
 
 			}
-			glEnable(GL_TEXTURE_2D);
-			glDisable(GL_BLEND);
-			glEnable(GL_ALPHA_TEST);
+			GlStateManager.enableTexture2D();
+			GlStateManager.disableBlend();
+			GlStateManager.enableAlpha();
 
 			if (widthString >= (width - 40)) 
 				fontRenderer.drawString( fontRenderer.trimStringToWidth(text, (int) ((width - 40) - 1 - dots), false) + "...", (int) this.getPosX() + 23, (int) this.getPosY() + yOffTemp - 11.5F, 0xffe6e6e6, 1.0F, false);
@@ -288,16 +289,16 @@ public class ProfilesSegment extends Segment {
 			drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width - 2,
 					this.getPosY() + this.getHeight(), 0xffe6e6e6, true, null, false);
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		drawRectRoundedCornersHollow(this.getPosX() - 4, this.getPosY() - 4,
 				(float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth() + 2) + 4,
 				this.getPosY() + this.height + 4, color, 10, 6);
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
 
 		if (!this.invisible)
 			this.scrollBar.render(mouseX, mouseY, partialTicks);
@@ -486,9 +487,9 @@ public class ProfilesSegment extends Segment {
 				distanceY = 0;
 			}
 
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			GlStateManager.disableTexture2D();
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 			
 			drawRectRoundedCorners(this.getPosX(), this.getPosY() + 3, this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight() - 3, 0xffe0e0e0, 800);
 			drawLine2D_2(0.2F, 0.2F, 0.2F, 1, scaledresolution.getScaleFactor(), 2, new Vec2f(this.getPosX() + this.width / 2 - 2F + 0.5F, this.getPosY() + this.height / 2 - 3), new Vec2f(this.getPosX() + this.width / 2 + 2F - 0.5F, this.getPosY() + this.height / 2 - 3));
@@ -496,8 +497,8 @@ public class ProfilesSegment extends Segment {
 			drawLine2D_2(0.2F, 0.2F, 0.2F, 1, scaledresolution.getScaleFactor(), 2, new Vec2f(this.getPosX() + this.width / 2 - 2F + 0.5F, this.getPosY() + this.height / 2), new Vec2f(this.getPosX() + this.width / 2 + 2F - 0.5F, this.getPosY() + this.height / 2));
 			
 			drawLine2D_2(0.2F, 0.2F, 0.2F, 1, scaledresolution.getScaleFactor(), 2, new Vec2f(this.getPosX() + this.width / 2 - 2F + 0.5F, this.getPosY() + this.height / 2 + 3), new Vec2f(this.getPosX() + this.width / 2 + 2F - 0.5F, this.getPosY() + this.height / 2 + 3));
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
 		
 		}
 		
@@ -616,8 +617,8 @@ public class ProfilesSegment extends Segment {
 
 		@Override
 		public void render(int mouseX, int mouseY, float partialTicks) {
-			glEnable(GL_BLEND);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+			GlStateManager.disableTexture2D();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			flashingTimer += 0.07;
@@ -648,13 +649,13 @@ public class ProfilesSegment extends Segment {
 			
 			drawRectRoundedCorners(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xff3c3c3c, Integer.MAX_VALUE);
 
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.enableTexture2D();
 			
 			Minecraft.getMinecraft().getTextureManager().bindTexture(icon);
 			glColor3f(1, 1, 1);
 			drawScaledTex(this.getPosX() - 18, this.getPosY() + 2, 15, 15);
 			
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.disableTexture2D();
 
 			this.cursorTimer++;
 			if (this.cursorTimer > 80)
@@ -669,22 +670,22 @@ public class ProfilesSegment extends Segment {
 				float f1 = (float) (color >> 8 & 255) / 255.0F;
 				float f2 = (float) (color & 255) / 255.0F;
 
-				glColor4f(f, f1, f2, f3);
+				GlStateManager.color(f, f1, f2, f3);
 
 				drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 			}
 			
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
 			glPushMatrix();
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 
 			if (this.query.isEmpty())
 				fontRenderer.drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffe6e6e6, darken).getRGB() : 0xffe6e6e6, 1, false);
 			else
 				fontRenderer.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), 0xffe6e6e6, 1, false);
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 			glPopMatrix();
 		}
 
@@ -771,8 +772,8 @@ public class ProfilesSegment extends Segment {
 			customPosX += this.getPosX();
 			customPosY += this.getPosY();
 
-			glEnable(GL_BLEND);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+			GlStateManager.disableTexture2D();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
 			float f = (float) (color >> 16 & 255) / 255.0F;
@@ -806,12 +807,12 @@ public class ProfilesSegment extends Segment {
 			f2 = (float) (color & 255) / 255.0F;
 			float f3 = (float) (color >> 24 & 255) / 255.0F;
 			
-			glColor4f(f, f1, f2, f3);
+			GlStateManager.color(f, f1, f2, f3);
 			
 			drawCircle(customPosX + width / 2, customPosY + width / 2, 3F, 0, 0);
 
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
 		}
 		
 		@Override
@@ -916,8 +917,8 @@ public class ProfilesSegment extends Segment {
 			}
 			
 			glPushMatrix();
-			glEnable(GL_BLEND);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+			GlStateManager.disableTexture2D();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
 			int color = 0xff47b832;
@@ -936,8 +937,8 @@ public class ProfilesSegment extends Segment {
 	     	drawLine2D_2(1, 1, 1, 1, scaleFactor, 3.0F, new Vec2f(posX + width / 2, posY + 3), new Vec2f(posX + width / 2, posY + height - 3));
 	     	drawLine2D_2(1, 1, 1, 1, scaleFactor, 3.0F, new Vec2f(posX + 3, posY + height / 2), new Vec2f(posX + width -3, posY + height / 2));
 	    
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
 			glPopMatrix();
 			
 		}

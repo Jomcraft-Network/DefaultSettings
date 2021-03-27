@@ -175,8 +175,8 @@ public class FontRendererClass implements IResourceManagerReloadListener {
 
     public int drawString(String text, float x, float y, int color, float factor, boolean bold) {
         enableAlpha();
-        glEnable(GL_BLEND);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
         MC.getTextureManager().bindTexture(!bold ? bold_tex : tex);
         return this.renderString(text, x, y, color, factor, bold);
     }
@@ -235,7 +235,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
     
     private int renderString(String text, float x, float y, int color, float factor, boolean bold) {
         if (text == null) {
-    		glDisable(GL_BLEND);
+    		GlStateManager.disableBlend();
             return 0;
         } else {
 
@@ -251,7 +251,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
             this.posX = x;
             this.posY = y;
             this.renderStringAtPos(text, factor, bold);
-    		glDisable(GL_BLEND);
+    		GlStateManager.disableBlend();
             return (int)this.posX;
         }
     }
@@ -486,7 +486,7 @@ public class FontRendererClass implements IResourceManagerReloadListener {
     }
 
     protected void setColor(float r, float g, float b, float a) {
-    	glColor4f(r, g, b, a);
+    	GlStateManager.color(r, g, b, a);
     }
 
     protected void enableAlpha() {

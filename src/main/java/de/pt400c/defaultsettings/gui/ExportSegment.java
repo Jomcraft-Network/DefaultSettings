@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -81,9 +82,9 @@ public class ExportSegment extends BakedSegment {
 		if (!compiled) {
 			preRender();
 
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
+			GlStateManager.disableTexture2D();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glShadeModel(GL_SMOOTH);
@@ -126,17 +127,17 @@ public class ExportSegment extends BakedSegment {
 
 			drawRectRoundedCorners(xPos + offset * 2, 20 + offset, xPos + 29 - offset * 2, 14 + 20 - offset, on, 7 - offset);
 
-			glEnable(GL_TEXTURE_2D);
-			glDisable(GL_BLEND);
-			glEnable(GL_ALPHA_TEST);
+			GlStateManager.enableTexture2D();
+			GlStateManager.disableBlend();
+			GlStateManager.enableAlpha();
 
 			fontRenderer.drawString("I", xPos + offset * -1F + 11, 23.5F, new Color(255, 255, 255, (int) (MathUtil.clamp(255 * processFactor, 4, 255))).getRGB(), 0.8F, true);
 
 			fontRenderer.drawString("0", xPos + 29 + offset * 0.7F - 14, 23.5F, new Color(255, 255, 255, (int) (MathUtil.clamp(255 * (1 - processFactor), 4, 255))).getRGB(), 0.8F, true);
 
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlpha();
+			GlStateManager.disableTexture2D();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			float radius = 9.4F;
@@ -164,28 +165,28 @@ public class ExportSegment extends BakedSegment {
 
 			final int scaleFactor = scaledresolution.getScaleFactor();
 
-			glEnable(GL_TEXTURE_2D);
-			glDisable(GL_BLEND);
-			glEnable(GL_ALPHA_TEST);
+			GlStateManager.enableTexture2D();
+			GlStateManager.disableBlend();
+			GlStateManager.enableAlpha();
 			final float percent = MathUtil.clamp(menu.offsetTick / menu.maxOffTick, 0, 0.95F);
 			glPushMatrix();
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.enableBlend();
+			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			MC.getTextureManager().bindTexture(icon);
-			glColor4f(1, 1, 1, percent);
+			GlStateManager.color(1, 1, 1, percent);
 			glTranslatef(5 + 7 * percent, 2, 0);
 			drawScaledTex(0, 0, 19, 19);
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 			glPopMatrix();
 
 			glEnable(GL_SCISSOR_TEST);
 
-			glEnable(GL_BLEND);
+			GlStateManager.enableBlend();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			glScissor((int) ((this.menu.offs * 1.2F) / 2 * (scaleFactor)), (int) (5 * (scaleFactor)), (int) ((72 - this.menu.offs * 1.6F) * (scaleFactor)) - (int) ((this.menu.offs * 1.2F) / 2 * (scaleFactor)), (int) (35 * (scaleFactor)));
 
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 
 			if (!(percent >= 0.8F))
 				fontRenderer.drawString("Export Mode:", 2F + (72 - this.menu.offs) / 2 - fontRenderer.getStringWidth("Export Mode:", 0.9F, true) / 2, 6, calcAlpha(0xffffffff, percent).getRGB(), 0.9F, true);

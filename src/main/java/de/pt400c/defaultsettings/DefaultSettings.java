@@ -51,6 +51,7 @@ public class DefaultSettings {
 	public static Class<?> alphaTest;
 	public static int targetMS = 9;
 	public static boolean compatibilityMode = false;
+	public static boolean antiAlias = false;
 	
 	@SuppressWarnings({ "deprecation" })
 	public DefaultSettings() {
@@ -149,29 +150,30 @@ public class DefaultSettings {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void regInit(RegistryEvent.NewRegistry event) {
-		
+	public void regInit(FMLLoadCompleteEvent event) {
 		if (!init) {
-
 			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+				event.enqueueWork(new Runnable() {
 
-				try {
+					@Override
+					public void run() {
+						try {
+							GameSettings gameSettings = FileUtil.MC.gameSettings;
+							gameSettings.loadOptions();
+							FileUtil.MC.gameSettings.saveOptions();
 
-					GameSettings gameSettings = FileUtil.MC.gameSettings;
-					gameSettings.loadOptions();
-					FileUtil.MC.gameSettings.saveOptions();
+						} catch (NullPointerException e) {
+							DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
+						}
 
-				} catch (NullPointerException e) {
-					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
-				}
+					}
 
+				});
 			});
 			DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 				DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 			});
-
 			init = true;
-
 		}
 	}
 	

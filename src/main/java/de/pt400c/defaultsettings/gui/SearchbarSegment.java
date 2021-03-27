@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import static org.lwjgl.glfw.GLFW.*;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.neptunefx.NEX.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
+import com.mojang.blaze3d.platform.GlStateManager;
 import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -108,8 +108,8 @@ public class SearchbarSegment extends Segment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
@@ -140,13 +140,13 @@ public class SearchbarSegment extends Segment {
 		
 		drawRectRoundedCorners(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xff3c3c3c, Integer.MAX_VALUE);
 
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.enableTexture();
 		
 		MC.getTextureManager().bindTexture(icon);
 		glColor3f(1, 1, 1);
 		drawScaledTex(this.getPosX() - 18, this.getPosY() + 2, 15, 15);
 		
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.disableTexture();
 
 		this.cursorTimer++;
 		if (this.cursorTimer > 80)
@@ -161,22 +161,22 @@ public class SearchbarSegment extends Segment {
 			float f1 = (float) (color >> 8 & 255) / 255.0F;
 			float f2 = (float) (color & 255) / 255.0F;
 
-			glColor4f(f, f1, f2, f3);
+			GlStateManager.color4f(f, f1, f2, f3);
 
 			drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 		
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture();
 		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.enableBlend();
+		GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
 			fontRenderer.drawString("Query", (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffe6e6e6, darken).getRGB() : 0xffe6e6e6, 1, false);
 		else
 			fontRenderer.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), 0xffe6e6e6, 1, false);
-		glDisable(GL_BLEND);
+		GlStateManager.disableBlend();
 		glPopMatrix();
 	}
 

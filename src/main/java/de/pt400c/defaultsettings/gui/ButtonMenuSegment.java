@@ -1,7 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
-
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -9,7 +9,6 @@ import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.GuiConfig;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -64,13 +63,13 @@ public class ButtonMenuSegment extends ButtonSegment {
 			this.offsetX = func;
 			glPushMatrix();
 			glEnable(GL_SCISSOR_TEST);
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.enableBlend();
+			GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
 
 			final int scaleFactor = (int) scaledFactor;
 			glScissor((int) ((this.getPosX() + 2 + this.offsetX) * scaleFactor), (int) ((MC.mainWindow.getScaledHeight() - this.getPosY() - this.getHeight()) * scaleFactor), (int) ((this.getWidth() - 4) * scaleFactor), (int) (this.getHeight() * scaleFactor));
 
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 			glDisable(GL_SCISSOR_TEST);
 	
 			glPopMatrix();
@@ -91,10 +90,10 @@ public class ButtonMenuSegment extends ButtonSegment {
 		
 		float posi = 74 / 2 - width;
 
-		glEnable(GL_BLEND);
+		GlStateManager.enableBlend();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_ALPHA_TEST);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.disableAlphaTest();
+		GlStateManager.disableTexture();
 		
 		int outer = calcAlpha(0xffff8518, percent * 1.7F).getRGB();
 		
@@ -127,20 +126,20 @@ public class ButtonMenuSegment extends ButtonSegment {
 		if(this.activated)
 			drawRectRoundedCorners(-10, posY + this.getHeight() / 2 - 14, 40 * (percent), posY + this.getHeight() / 2 + 7, 0xa9505050, 800);
 
-		glDisable(GL_BLEND);
-		glEnable(GL_ALPHA_TEST);
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlphaTest();
 
-		glEnable(GL_TEXTURE_2D);
-		glColor4f(f, f1, f2, 1);
+		GlStateManager.enableTexture();
+		GlStateManager.color4f(f, f1, f2, 1);
 		
 		float animStuff = posi - 36 + 23;
 		
 		this.icon.customRender(mouseX, mouseY, posi - 36 - animStuff * percent, 0, partialTicks);
 	
-		glEnable(GL_BLEND);
+		GlStateManager.enableBlend();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.enableTexture();
 		
 		glEnable(GL_SCISSOR_TEST);
 
@@ -149,7 +148,7 @@ public class ButtonMenuSegment extends ButtonSegment {
 		fontRenderer.drawString(this.title, (float) (posi + 17), (float) (posY + this.getHeight() / 2 - 8) + 1.2F * percent, this.activated ? 0xffff8518 : 0xffe6e6e6, 0.9F - 0.3F * percent, true);
 		glDisable(GL_SCISSOR_TEST);
 
-		glDisable(GL_BLEND);
+		GlStateManager.disableBlend();
 	}
 	
 	@Override

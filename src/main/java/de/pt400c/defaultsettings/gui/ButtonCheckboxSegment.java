@@ -3,6 +3,9 @@ package de.pt400c.defaultsettings.gui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
@@ -59,8 +62,8 @@ public class ButtonCheckboxSegment extends Segment {
 		customPosX += this.getPosX();
 		customPosY += this.getPosY();
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		float outRad = 3F;
@@ -97,8 +100,8 @@ public class ButtonCheckboxSegment extends Segment {
 			drawLine2D_2(f, f1, f2, f3, scaleFactor, 3F, new Vec2f((float) customPosX - 2, (float) customPosY + 1.5F), new Vec2f((float) customPosX + 4 - 3, (float) customPosY + 4 + 1), new Vec2f((float) customPosX + 7 - 2.5F, (float) customPosY - 5 + 3F));
 		}
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture();
 	}
 	
 	@Override

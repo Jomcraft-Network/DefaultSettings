@@ -2,7 +2,7 @@ package de.pt400c.defaultsettings;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.lwjgl.opengl.GL11.*;
+import com.mojang.blaze3d.platform.GlStateManager;
 import static org.lwjgl.opengl.GL30.*;
 
 public class BakeryRegistry {
@@ -15,12 +15,12 @@ public class BakeryRegistry {
 	
 	public static void clearAll() {
 		for(int fbo : fbos)
-			glDeleteFramebuffers(fbo);
+			GlStateManager.deleteFramebuffers(fbo);
 		
 		fbos.clear();
 		
 		for(int texture : textures)
-			glDeleteTextures(texture);
+			GlStateManager.deleteTexture(texture);
 		
 		textures.clear();
 		

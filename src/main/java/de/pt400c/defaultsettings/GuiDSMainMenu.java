@@ -1,8 +1,16 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.Level;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.gui.ButtonRoundSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Segment;
@@ -12,7 +20,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL11.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -28,6 +35,14 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     
     @Override
     public void func_231160_c_() {
+    	
+    	try {
+			Method method = GLX.class.getMethod("isUsingFBOs");
+			Boolean returnValue = (Boolean) method.invoke(null);
+			DefaultSettings.antiAlias = !returnValue;
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			DefaultSettings.log.log(Level.INFO, "Optifine is not present, disable AA");
+		}
     	
     	Segment.scaledFactor = MC.mainWindow.getGuiScaleFactor();
     	
@@ -62,15 +77,15 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     @Override
     public void func_230430_a_(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
 		AbstractGui.func_238467_a_(stack, 0, 0, this.field_230708_k_, this.field_230709_l_, 0xff2c2c2c);
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		GlStateManager.disableTexture();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlphaTest();
+		GlStateManager.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		glShadeModel(GL_SMOOTH);
 		glShadeModel(GL_FLAT);
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.disableAlphaTest();
+		GlStateManager.enableTexture();
 		AbstractGui.func_238467_a_(stack, 0, 0, this.field_230708_k_, 25, 0xff505050);
 		AbstractGui.func_238467_a_(stack, 0, 25, this.field_230708_k_, 26, 0xff161616);
     	super.func_230430_a_(stack, mouseX, mouseY, partialTicks);

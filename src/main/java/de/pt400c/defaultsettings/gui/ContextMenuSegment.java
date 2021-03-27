@@ -6,12 +6,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 
@@ -221,8 +221,8 @@ public class ContextMenuSegment extends Segment {
 	     
         color = ((value & 0x0ff) << 24) | (((color >> 16 & 255) & 0x0ff) << 16) | (((color >> 8 & 255) & 0x0ff) << 8) | ((color & 255) & 0x0ff);
 		
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		drawRectRoundedCorners(this.posX, this.posY, this.posX + this.width, this.posY + this.height, color, 2);
 		int selected = isSelectedSome(mouseX, mouseY);
@@ -258,11 +258,11 @@ public class ContextMenuSegment extends Segment {
 		
 		drawRect(this.posX + 1.5F, this.posY + 45.75F, this.posX + this.width - 1.5F, this.posY + 46.25F, color, false, null, false);
 		
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture();
 		
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.enableBlend();
+		GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
 
 		fontRenderer.drawString("Delete", this.getPosX() + 3, this.getPosY() + 5, calcAlpha(0xffffffff, 1 - alpha).getRGB(), 0.9F, true);
 		
@@ -271,7 +271,7 @@ public class ContextMenuSegment extends Segment {
 		fontRenderer.drawString("Clone", this.getPosX() + 3, this.getPosY() + 35, calcAlpha(0xffffffff, 1 - alpha).getRGB(), 0.9F, true);
 		
 		fontRenderer.drawString("Set Main", this.getPosX() + 3, this.getPosY() + 50, calcAlpha(0xffffffff, 1 - alpha).getRGB(), 0.9F, true);
-		glDisable(GL_BLEND);
+		GlStateManager.disableBlend();
 		
 	}
 }

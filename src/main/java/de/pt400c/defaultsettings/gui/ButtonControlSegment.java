@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import java.util.Collections;
 import java.util.function.Function;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import static org.lwjgl.opengl.GL11.*;
@@ -189,10 +192,10 @@ public class ButtonControlSegment extends BakedSegment {
 		if(!compiled) {
 			preRender();
 			glPushMatrix();
-			glEnable(GL_BLEND);
-	    	glDisable(GL_ALPHA_TEST);
+			GlStateManager.enableBlend();
+	    	GlStateManager.disableAlphaTest();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    	glDisable(GL_TEXTURE_2D);
+	    	GlStateManager.disableTexture();
 
 			drawRectRoundedCorners(0, 0, width, height, this.color, Integer.MAX_VALUE);
 			
@@ -210,9 +213,9 @@ public class ButtonControlSegment extends BakedSegment {
 
 			drawRectRoundedCorners(diff, diff, width - diff, height - diff, ((255 & 0x0ff) << 24) | ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff), Integer.MAX_VALUE);
 			
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_ALPHA_TEST);
-			glDisable(GL_BLEND);
+			GlStateManager.enableTexture();
+			GlStateManager.enableAlphaTest();
+			GlStateManager.disableBlend();
 			final String txt = this.title;
 			glEnable(GL_SCISSOR_TEST);
 			
@@ -222,10 +225,10 @@ public class ButtonControlSegment extends BakedSegment {
 	    	
 	    	glScissor((int) ((this.width - 20 * (1 - alpha)) * (int) scaledFactor), (int) (0 * (int) scaledFactor), (int) 20 * (int) scaledFactor, (int) (30 * (int) scaledFactor));
 	    		
-	    	glEnable(GL_BLEND);
-	    	glDisable(GL_ALPHA_TEST);
+	    	GlStateManager.enableBlend();
+	    	GlStateManager.disableAlphaTest();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    	glDisable(GL_TEXTURE_2D);
+	    	GlStateManager.disableTexture();
 	    	
 	    	int color = 0xffbf3f3a;
 
@@ -253,19 +256,19 @@ public class ButtonControlSegment extends BakedSegment {
 	    	
 	    	drawRect(width - diff - (height - diff * 2) / 2 - 5, diff, width - diff - (height - diff * 2) / 2 - 4, height - diff, darkenColor(color, 0.8F).getRGB(), false, null, false);
 	    	
-	    	glEnable(GL_TEXTURE_2D);
+	    	GlStateManager.enableTexture();
 
-	    	glDisable(GL_BLEND);
+	    	GlStateManager.disableBlend();
 	    	
-	    	glEnable(GL_ALPHA_TEST);
-	    	glEnable(GL_BLEND);
+	    	GlStateManager.enableAlphaTest();
+	    	GlStateManager.enableBlend();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			glColor4f(1, 1, 1, 1 -alpha);
+			GlStateManager.color4f(1, 1, 1, 1 -alpha);
 			MC.getTextureManager().bindTexture(icon);
 			drawScaledTex((float) this.width - 20, (float) 6, (int) (18 - alpha), (int) (18 - alpha));
 			
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 			glDisable(GL_SCISSOR_TEST);
 	    	
 	    	glPopMatrix();

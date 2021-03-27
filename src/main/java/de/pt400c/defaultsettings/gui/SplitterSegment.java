@@ -4,8 +4,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.neptunefx.NEX.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.util.function.Function;
+import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.GuiConfig;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -34,10 +34,10 @@ public class SplitterSegment extends BakedSegment {
 	
 			glPushMatrix();
 
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_BLEND);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-			glDisable(GL_ALPHA_TEST);
+			GlStateManager.disableTexture();
+			GlStateManager.enableBlend();
+			GlStateManager.glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			GlStateManager.disableAlphaTest();
 			glShadeModel(GL_SMOOTH);
 			drawGradientCircle(0, 2.2F, 2F, 270, 75, 0xffaaaaaa, 0x00e6e6e6);
 			drawGradientCircle(0, this.getHeight() - 2.2F, 2F, 0, 75, 0xffaaaaaa, 0x00e6e6e6);
@@ -66,8 +66,8 @@ public class SplitterSegment extends BakedSegment {
 			glEnd();
 			glDisable(GL_POINT_SMOOTH);
 
-			glDisable(GL_BLEND);
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture();
 
 			drawRect(0, 1, 1, this.getHeight() - 1, 0xffe6e6e6, true, null, false);
 

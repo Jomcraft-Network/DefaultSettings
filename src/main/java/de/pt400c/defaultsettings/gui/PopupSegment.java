@@ -41,8 +41,8 @@ public class PopupSegment extends Segment {
 		
 		bufferWidth = bufferWidth * (int) scaledFactor;
 		bufferHeight = bufferHeight * (int) scaledFactor;
-		this.popX = this.gui.field_230708_k_ / 2 - (testWidth - 10) / 2;
-		this.popY = this.gui.field_230709_l_ / 2 - (testHeight - 10) / 2;
+		this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+		this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 		this.mapFrameBufferContents = new FramebufferPopup(bufferWidth, bufferHeight);
 		this.mapFrameBuffer = new FramebufferPopup(bufferWidth, bufferHeight);
 	}
@@ -51,12 +51,12 @@ public class PopupSegment extends Segment {
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		
 		if(resized != this.resized_mark) {
-			width = this.gui.field_230708_k_;
-			height = this.gui.field_230709_l_;
+			width = this.gui.width;
+			height = this.gui.height;
 			bufferWidth = testWidth * (int) scaledFactor;
 			bufferHeight = testHeight * (int) scaledFactor;
-			this.popX = this.gui.field_230708_k_ / 2 - (testWidth - 10) / 2;
-			this.popY = this.gui.field_230709_l_ / 2 - (testHeight - 10) / 2;
+			this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+			this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 			this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
 			this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
 			this.resized_mark = resized;
@@ -320,8 +320,8 @@ public class PopupSegment extends Segment {
 	}
 	
 	public void reset() {
-		this.popX = this.gui.field_230708_k_ / 2 - (testWidth - 10) / 2;
-		this.popY = this.gui.field_230709_l_ / 2 - (testHeight - 10) / 2;
+		this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+		this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 		this.compiled = false;
 	}
 	
@@ -347,8 +347,8 @@ public class PopupSegment extends Segment {
 		this.testHeight = height;
 		bufferWidth = testWidth * (int) scaledFactor;
 		bufferHeight = testHeight * (int) scaledFactor;
-		this.popX = this.gui.field_230708_k_ / 2 - (testWidth - 10) / 2;
-		this.popY = this.gui.field_230709_l_ / 2 - (testHeight - 10) / 2;
+		this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+		this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 		this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
 		this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
 		this.compiled = false;
@@ -366,8 +366,8 @@ public class PopupSegment extends Segment {
 			this.testHeight = 110;
 			bufferWidth = testWidth * (int) scaledFactor;
 			bufferHeight = testHeight * (int) scaledFactor;
-			this.popX = this.gui.field_230708_k_ / 2 - (testWidth - 10) / 2;
-			this.popY = this.gui.field_230709_l_ / 2 - (testHeight - 10) / 2;
+			this.popX = this.gui.width / 2 - (testWidth - 10) / 2;
+			this.popY = this.gui.height / 2 - (testHeight - 10) / 2;
 			this.mapFrameBufferContents.resize(bufferWidth, bufferHeight);
 			this.mapFrameBuffer.resize(bufferWidth, bufferHeight);
 			this.compiled = false;

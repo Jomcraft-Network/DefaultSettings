@@ -313,8 +313,8 @@ public class ProfilesSegment extends Segment {
 		if (hover) {
 			String txt = "Main Profile, default to be used";
 			float textWidth = (int) (mouseX + 12 + fontRenderer.getStringWidth(txt, 0.8F, true));
-			if (textWidth > this.gui.field_230708_k_) {
-				lines.addAll(fontRenderer.listFormattedStringToWidth(txt, (int) (this.gui.field_230708_k_ - mouseX - 12), true));
+			if (textWidth > this.gui.width) {
+				lines.addAll(fontRenderer.listFormattedStringToWidth(txt, (int) (this.gui.width - mouseX - 12), true));
 			} else {
 				lines.add(txt);
 			}
@@ -634,15 +634,15 @@ public class ProfilesSegment extends Segment {
 
 			int color = 0;
 
-			this.width = MathUtil.clamp(fontRenderer.getStringWidth(this.query, 1, false) + 15, 40, this.gui.field_230708_k_ - 240);
+			this.width = MathUtil.clamp(fontRenderer.getStringWidth(this.query, 1, false) + 15, 40, this.gui.width - 240);
 
 			String text = this.query;
 			float dots = fontRenderer.getStringWidth("...", 1, false);
 
 			float widthString = fontRenderer.getStringWidth(text, 1, false);
 
-			if (widthString >= this.gui.field_230708_k_ - 250) 
-				text = fontRenderer.trimStringToWidth(text, (int) (this.gui.field_230708_k_ - 250 - 1 - dots), false) + "...";
+			if (widthString >= this.gui.width - 250) 
+				text = fontRenderer.trimStringToWidth(text, (int) (this.gui.width - 250 - 1 - dots), false) + "...";
 			
 			MenuScreen menu = ((GuiConfig) this.gui).menu;
 

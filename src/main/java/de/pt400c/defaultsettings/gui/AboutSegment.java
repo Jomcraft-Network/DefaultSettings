@@ -39,9 +39,9 @@ public class AboutSegment extends Segment {
 		final ArrayList<String> lines = new ArrayList<String>();
 		float textWidth = this.getPosX() + 90 + fontRenderer.getStringWidth(text, 1, false);
 		
-		int maxSize = MathUtil.clamp((int) (this.gui.field_230708_k_ - this.getPosX() - 90), 200, Integer.MAX_VALUE);
+		int maxSize = MathUtil.clamp((int) (this.gui.width - this.getPosX() - 90), 200, Integer.MAX_VALUE);
 
-		if(textWidth > this.gui.field_230708_k_) {
+		if(textWidth > this.gui.width) {
 			lines.addAll(fontRenderer.listFormattedStringToWidth(text, maxSize, false));
 		}else {
 			lines.add(text);

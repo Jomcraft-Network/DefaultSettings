@@ -15,7 +15,7 @@ public class MenuScreen extends Segment {
 	public volatile MutableByte exportActive = new MutableByte((byte) 0); //0 : Not clear, 1 : false : 2 : true
 
 	public MenuScreen(Screen gui, float posX, float posY) {
-		super(gui, posX, posY, gui.field_230708_k_ - posX, gui.field_230709_l_ - posY, false);
+		super(gui, posX, posY, gui.width - posX, gui.height - posY, false);
 		new Thread(new ThreadRunnable(exportActive) {
 			
 			@Override
@@ -55,8 +55,8 @@ public class MenuScreen extends Segment {
     public void render(int mouseX, int mouseY, float partialTicks) {
 
 		if(resized != this.resized_mark) {
-			width = gui.field_230708_k_ - posX;
-			height = gui.field_230709_l_ - posY;
+			width = gui.width - posX;
+			height = gui.height - posY;
 			this.resized_mark = resized;
 		}
 		

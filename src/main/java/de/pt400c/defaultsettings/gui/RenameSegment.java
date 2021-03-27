@@ -214,8 +214,8 @@ public class RenameSegment extends Segment {
 
 		float widthString = fontRenderer.getStringWidth(text, 1, false);
 
-		if (widthString >= this.gui.field_230708_k_ - 190) 
-			text = fontRenderer.trimStringToWidth(text, (int) (this.gui.field_230708_k_ - 190 - 1 - dots), false) + "...";
+		if (widthString >= this.gui.width - 190) 
+			text = fontRenderer.trimStringToWidth(text, (int) (this.gui.width - 190 - 1 - dots), false) + "...";
 
 		MenuScreen menu = ((GuiConfig) this.gui).menu;
 

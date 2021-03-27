@@ -39,7 +39,7 @@ public class HelpSegment extends BakedSegment {
 		
 		gui.popup.setOpening(true, 320, 210);
 		gui.popup.getWindow().title = "Help: " + HeaderPart.tabName;
-		gui.popup.getWindow().setPos(gui.field_230708_k_ / 2 - 310 / 2, gui.field_230709_l_ / 2 - 200 / 2);
+		gui.popup.getWindow().setPos(gui.width / 2 - 310 / 2, gui.height / 2 - 200 / 2);
 		gui.popupField = gui.popup;
 		gui.popupField.getWindow().clearChildren();
 		final String end = "\n\n\u00a7cIMPORTANT\u00a7r: Do \u00a74NOT\u00a7r forget to \u00a7aactivate\u00a7r the\n'export mode' before exporting your modpack with the\nTwitch Launcher (or any other launcher).\n\n\u00a76Still facing problems? Contact PT400C#8363 on Discord\u00a7r";

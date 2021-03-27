@@ -7,6 +7,9 @@ import static de.pt400c.neptunefx.NEX.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import de.pt400c.defaultsettings.GuiConfig;
 
@@ -101,10 +104,10 @@ public class ButtonRoundSegment extends BakedSegment {
 		if (!compiled) {
 			preRender();
 			glPushMatrix();
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
+			GlStateManager.enableBlend();
+			GlStateManager.disableAlphaTest();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDisable(GL_TEXTURE_2D);
+			GlStateManager.disableTexture();
 
 			drawRectRoundedCorners(0, 0, width, height, 0xffffffff, Integer.MAX_VALUE);
 
@@ -122,9 +125,9 @@ public class ButtonRoundSegment extends BakedSegment {
 
 			drawRectRoundedCorners(diff, diff, width - diff, height - diff, ((255 & 0x0ff) << 24) | ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff), Integer.MAX_VALUE);
 
-			glEnable(GL_TEXTURE_2D);
-			glEnable(GL_ALPHA_TEST);
-			glDisable(GL_BLEND);
+			GlStateManager.enableTexture();
+			GlStateManager.enableAlphaTest();
+			GlStateManager.disableBlend();
 
 			fontRenderer.drawString(this.title, 1 + (this.getWidth()) / 2 - fontRenderer.getStringWidth(this.title, size, true) / 2, 6.5F + (size > 0.8F ? 1.2F : 0), 0xffffffff, size, true);
 

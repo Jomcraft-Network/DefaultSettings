@@ -1,7 +1,16 @@
 package de.pt400c.defaultsettings;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+
+import org.apache.logging.log4j.Level;
+
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.gui.ButtonRoundSegment;
 import de.pt400c.defaultsettings.gui.DefaultSettingsGUI;
 import de.pt400c.defaultsettings.gui.Segment;
@@ -27,6 +36,14 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     
     @Override
     public void init() {
+    	
+    	try {
+			Method method = GLX.class.getMethod("isUsingFBOs");
+			Boolean returnValue = (Boolean) method.invoke(null);
+			DefaultSettings.antiAlias = !returnValue;
+		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			DefaultSettings.log.log(Level.INFO, "Optifine is not present, disable AA");
+		}
     	
     	Segment.scaledFactor = MC.mainWindow.getGuiScaleFactor();
     	
@@ -61,15 +78,16 @@ public class GuiDSMainMenu extends DefaultSettingsGUI {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
 		AbstractGui.fill(0, 0, this.width, this.height, 0xff2c2c2c);
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		GlStateManager.disableTexture();
+		GlStateManager.enableBlend();
+
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		glShadeModel(GL_SMOOTH);
 		glShadeModel(GL_FLAT);
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.disableAlphaTest();
+		GlStateManager.enableTexture();
 		AbstractGui.fill(0, 0, width, 25, 0xff505050);
 		AbstractGui.fill(0, 25, width, 26, 0xff161616);
     	super.render(mouseX, mouseY, partialTicks);

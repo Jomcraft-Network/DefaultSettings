@@ -3,6 +3,9 @@ package de.pt400c.defaultsettings.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.UpdateContainer;
@@ -53,9 +56,9 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 		float inRad = 1.5F;
 
-		glEnable(GL_BLEND);
-    	glDisable(GL_ALPHA_TEST);
-    	glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+    	GlStateManager.disableAlphaTest();
+    	GlStateManager.disableTexture();
     	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		drawRectRoundedCorners(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), NEX.darkenColor(statusToColor(DefaultSettings.getUpdater().getStatus(), darken), 0.5F).getRGB(), 5);
@@ -66,12 +69,12 @@ public class ButtonUpdateChecker extends ButtonSegment {
 
 		drawRectRoundedCorners(this.getPosX() + inRad, this.getPosY() + inRad, (float) this.getPosX() + this.width - inRad, (float) this.getPosY() + this.height - inRad, statusToColor(DefaultSettings.getUpdater().getStatus(), darken), innerRadius < 0 ? 0 : innerRadius);
 
-    	glDisable(GL_BLEND);
-    	glEnable(GL_ALPHA_TEST);
+    	GlStateManager.disableBlend();
+    	GlStateManager.enableAlphaTest();
 
-    	glEnable(GL_BLEND);
+    	GlStateManager.enableBlend();
  
-    	glDisable(GL_TEXTURE_2D);
+    	GlStateManager.disableTexture();
     	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
     	glEnable(GL_SCISSOR_TEST);
@@ -79,12 +82,12 @@ public class ButtonUpdateChecker extends ButtonSegment {
 		glScissor((6 + (int) (this.menu.offs / 2.8F)) * (int) scaledFactor, (int) (5) * (int) scaledFactor, (int)((54 - this.menu.offs / 0.6F) * (int) scaledFactor), 25 * (int) scaledFactor);
 
 		final float percent = MathUtil.clamp(menu.offsetTick / menu.maxOffTick, 0, 1);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.enableTexture();
 		fontRenderer.drawString(statusToStr(DefaultSettings.getUpdater().getStatus()), posX + width / 2F - fontRenderer.getStringWidth(statusToStr(DefaultSettings.getUpdater().getStatus()), 0.8F, false) / 2 - 3, this.getPosY() + 9, calcAlpha(DefaultSettings.getUpdater().getStatus() != Status.OUTDATED ? 0xffffffff : 0xff6e6e6e, percent).getRGB(), 0.8F, true);
 	
 	    glDisable(GL_SCISSOR_TEST);
 	    	
-	    glDisable(GL_BLEND);
+	    GlStateManager.disableBlend();
 	}
 
 	@Override

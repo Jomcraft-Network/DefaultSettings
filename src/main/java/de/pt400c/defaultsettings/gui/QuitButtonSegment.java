@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import java.util.function.Function;
+import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,8 +37,9 @@ public class QuitButtonSegment extends ButtonSegment {
 		}
 		
 		glPushMatrix();
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+
+		GlStateManager.disableTexture();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		drawRectRoundedCorners(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), this.isSelected(mouseX, mouseY) ? 0xffbe2e2c : 0xffd85755, this.isPopupSegment ? 3.0F : 5.0F);
@@ -45,8 +47,8 @@ public class QuitButtonSegment extends ButtonSegment {
 		final int scaleFactor = (int) scaledFactor;
      	drawLine2D_2(1, 1, 1, 1, scaleFactor, this.isPopupSegment ? 3.0F : 5.0F, new Vec2f((float) posX + width / 2 - this.offs, (float) posY + height / 2 - this.offs), new Vec2f((float) posX + width / 2 + this.offs, (float) posY + height / 2 + this.offs));
      	drawLine2D_2(1, 1, 1, 1, scaleFactor, this.isPopupSegment ? 3.0F : 5.0F, new Vec2f((float) posX + width / 2 + this.offs, (float) posY + height / 2 - this.offs), new Vec2f((float) posX + width / 2 - this.offs, (float) posY + height / 2 + this.offs));
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture();
 		glPopMatrix();
 	}
 }

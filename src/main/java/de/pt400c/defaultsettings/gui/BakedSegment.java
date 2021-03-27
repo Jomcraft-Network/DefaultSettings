@@ -1,8 +1,8 @@
 package de.pt400c.defaultsettings.gui;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL30.*;
+import com.mojang.blaze3d.platform.GlStateManager;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import de.pt400c.defaultsettings.GuiConfig;
 import static de.pt400c.defaultsettings.FileUtil.MC;
@@ -58,12 +58,12 @@ public abstract class BakedSegment extends Segment {
 	public void preRender() {
 		this.heightBuffer = bufferHeight / (int) scaledFactor;
 		this.widthBuffer = bufferWidth / (int) scaledFactor;
-		glColor4f(red / 255F, green / 255F, blue / 255F, (float) 1.0f);
+		GlStateManager.color4f(red / 255F, green / 255F, blue / 255F, (float) 1.0f);
 		glClearColor(red / 255F, green / 255F, blue / 255F, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
+		GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
 		glViewport(0, 0, bufferWidth, bufferHeight);
-		glClear(16640);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.clear(16640, false);
+		GlStateManager.enableTexture();
 		RenderHelper.disableStandardItemLighting();
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
@@ -72,34 +72,42 @@ public abstract class BakedSegment extends Segment {
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
-		glEnable(GL_BLEND);
+		GlStateManager.enableBlend();
+
 		glTranslatef(0.0f, 0, -2000.0f);
 	}
 	
 	public void postRender(float alpha, boolean popup) {
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
-		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(16640);
+		GlStateManager.bindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
+		GlStateManager.bindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
+		GlStateManager.clear(16640, false);
 		glLoadIdentity();
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
+		
+		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		
 		if(popup && ((GuiConfig) this.gui).popupField != null) {
-			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).popupField.mapFrameBufferContents.msFbo);	
-			glViewport((int) 0, (int) 0, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.width, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.height);
+			GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).popupField.mapFrameBufferContents.msFbo);	
+			GlStateManager.viewport((int) 0, (int) 0, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.width, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.height);
 		}else if(this.gui instanceof GuiConfig){
-			if(DefaultSettings.compatibilityMode)
-				MC.getFramebuffer().bindFramebuffer(true);
-			else
-				glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
+			if(DefaultSettings.compatibilityMode) {
+				if(DefaultSettings.antiAlias)
+					GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+				else
+					MC.getFramebuffer().bindFramebuffer(true);
+			} else
+				GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 			
-			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
+			GlStateManager.viewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}else {
-			MC.getFramebuffer().bindFramebuffer(true);
-			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
+			if(DefaultSettings.antiAlias)
+				GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+			else
+				MC.getFramebuffer().bindFramebuffer(true);
+			GlStateManager.viewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}
 	
 		compiled = true;
@@ -109,22 +117,23 @@ public abstract class BakedSegment extends Segment {
 	public void drawTexture(float alpha) {
 		int currBound = glGetInteger(GL_TEXTURE_BINDING_2D);
 
-		glBindTexture(GL_TEXTURE_2D, this.mapFrameBuffer.texture);
+		GlStateManager.bindTexture(this.mapFrameBuffer.texture);
 
 		glPushMatrix();
 
 		glTranslated(this.posX, this.posY, 0);
 		
-		glColor4f(1, 1, 1, alpha);
+		GlStateManager.color4f(1, 1, 1, alpha);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	    
-		glEnable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		GlStateManager.enableBlend();
+
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 		glBegin(GL_QUADS);
 	
@@ -134,10 +143,10 @@ public abstract class BakedSegment extends Segment {
 		glTexCoord2f(0, 1); glVertex3d(0, 0, 0);
 		glEnd();
 		
-		glEnable(GL_ALPHA_TEST);
-		glDisable(GL_BLEND);
+		GlStateManager.enableAlphaTest();
+		GlStateManager.disableBlend();
 		
-		glBindTexture(GL_TEXTURE_2D, currBound);
+		GlStateManager.bindTexture(currBound);
 		glPopMatrix();
 		glClearColor(0, 0, 0, 0);
 			

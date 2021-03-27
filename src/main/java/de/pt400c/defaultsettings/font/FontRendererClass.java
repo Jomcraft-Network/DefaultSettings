@@ -1,7 +1,6 @@
 package de.pt400c.defaultsettings.font;
 
 import static de.pt400c.defaultsettings.FileUtil.MC;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -147,8 +146,8 @@ public class FontRendererClass {
 
     public int drawString(String text, float x, float y, int color, float factor, boolean bold) {
         enableAlpha();
-        glEnable(GL_BLEND);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
         MC.getTextureManager().bindTexture(!bold ? bold_tex : tex);
         return this.renderString(text, x, y, color, factor, bold);
     }
@@ -211,7 +210,7 @@ public class FontRendererClass {
     		//	GL11.glEnable(GL11.GL_ALPHA_TEST);
     	//	else
     		//	GL11.glDisable(GL11.GL_ALPHA_TEST);
-    		glDisable(GL_BLEND);
+    		GlStateManager.disableBlend();
             return 0;
         } else {
 
@@ -231,7 +230,7 @@ public class FontRendererClass {
     	//		GL11.glEnable(GL11.GL_ALPHA_TEST);
     //		else
     	//		GL11.glDisable(GL11.GL_ALPHA_TEST);
-    		glDisable(GL_BLEND);
+    		GlStateManager.disableBlend();
             return (int)this.posX;
         }
     }
@@ -466,7 +465,7 @@ public class FontRendererClass {
     }
 
     protected void setColor(float r, float g, float b, float a) {
-    	glColor4f(r, g, b, a);
+    	GlStateManager.color4f(r, g, b, a);
     }
 
     
@@ -509,23 +508,23 @@ public class FontRendererClass {
     				
     		}
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             
             MC.getTextureManager().bindTexture(bold_tex);
             
             if(!oldOpenGL) 
     			GL30.glGenerateMipmap(GL_TEXTURE_2D);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 			init = false;
     	}
     	
     	MC.getTextureManager().bindTexture(bold ? bold_tex : tex);
-    	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    	GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     protected IResource getResource(ResourceLocation location) throws IOException {

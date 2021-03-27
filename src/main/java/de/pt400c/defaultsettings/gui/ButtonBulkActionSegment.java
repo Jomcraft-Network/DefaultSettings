@@ -3,6 +3,9 @@ package de.pt400c.defaultsettings.gui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.screen.Screen;
@@ -68,8 +71,9 @@ public class ButtonBulkActionSegment extends Segment {
 		float f1 = (float) (color >> 8 & 255) / 255.0F;
 		float f2 = (float) (color & 255) / 255.0F;
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+
+		GlStateManager.disableTexture();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		float outRad = 4.5F;
@@ -119,8 +123,8 @@ public class ButtonBulkActionSegment extends Segment {
 			drawLine2D_2(f, f1, f2, f3, scaleFactor, 4, new Vec2f((float) this.getPosX() - 1, (float) this.getPosY() + 3.5F), new Vec2f((float) this.getPosX() + 4 - 1, (float) this.getPosY() + 4 + 3.5F), new Vec2f((float) this.getPosX() + 7, (float) this.getPosY() - 5 + 3.5F));
 		}
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture();
 	}
 	
 	@Override

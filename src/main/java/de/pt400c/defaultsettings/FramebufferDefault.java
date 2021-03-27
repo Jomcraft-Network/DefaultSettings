@@ -1,8 +1,15 @@
 package de.pt400c.defaultsettings;
 
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL32.*;
-import java.nio.ByteBuffer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.IntBuffer;
+import org.apache.logging.log4j.Level;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL32;
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,13 +35,28 @@ public class FramebufferDefault {
 			this.deleteFramebuffer();
 
 		this.createFramebuffer(width, height);
-		MC.getFramebuffer().bindFramebuffer(true);
+		DefaultSettings.antiAlias = false;
+		try {
+			Method method = GLX.class.getMethod("isUsingFBOs");
+			Boolean returnValue = (Boolean) method.invoke(null);
+			DefaultSettings.antiAlias = !returnValue;
+		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			DefaultSettings.log.log(Level.INFO, "Optifine is not present, disable AA");
+		}
+
+		if(DefaultSettings.antiAlias)
+			GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 	}
 
 	public void deleteFramebuffer() {
-		MC.getFramebuffer().bindFramebuffer(true);
-		glDeleteFramebuffers(this.framebuffer);
-		glDeleteFramebuffers(this.interFramebuffer);
+		if(DefaultSettings.antiAlias)
+			GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
+		GlStateManager.deleteFramebuffers(this.framebuffer);
+		GlStateManager.deleteFramebuffers(this.interFramebuffer);
 	}
 
 	public void createFramebuffer(int width, int height) {
@@ -42,53 +64,59 @@ public class FramebufferDefault {
 		this.framebufferHeight = height;
 		this.createFrameBuffer();
 		this.createMSColorAttachment();	
-		MC.getFramebuffer().bindFramebuffer(true);
+		if(DefaultSettings.antiAlias)
+			GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 		this.createMSFrameBuffer();
 		this.createColorAttachment();
 		this.framebufferClear();
 	}
     
 	private void createColorAttachment() {
-		this.screenTexture = glGenTextures();
-	    glBindTexture(GL_TEXTURE_2D, this.screenTexture);
-	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this.framebufferWidth, this.framebufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, (ByteBuffer) null);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.screenTexture, 0);
+		this.screenTexture = GlStateManager.genTexture();
+		GlStateManager.bindTexture(this.screenTexture);
+		GlStateManager.texImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, this.framebufferWidth, this.framebufferHeight, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, (IntBuffer) null);
+		GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+	    GlStateManager.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+		GlStateManager.framebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, this.screenTexture, 0);
 	}
 	
     private void createFrameBuffer() {
-    	this.framebuffer = glGenFramebuffers();
-    	glBindFramebuffer(GL_FRAMEBUFFER, this.framebuffer);
+    	this.framebuffer = GlStateManager.genFramebuffers();
+    	GlStateManager.bindFramebuffer(GL30.GL_FRAMEBUFFER, this.framebuffer);
     }
     
     private void createMSFrameBuffer() {
-    	this.interFramebuffer = glGenFramebuffers();
-    	glBindFramebuffer(GL_FRAMEBUFFER, this.interFramebuffer);
+    	this.interFramebuffer = GlStateManager.genFramebuffers();
+    	GlStateManager.bindFramebuffer(GL30.GL_FRAMEBUFFER, this.interFramebuffer);
     }
     
     private void createMSColorAttachment() {
-    	this.multisampledTexture = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
-		if(glGetError() != 0) {
+    	this.multisampledTexture = GlStateManager.genTexture();
+		GL30.glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
+		if(GL11.glGetError() != 0) {
 			DefaultSettings.compatibilityMode = true;
 			return;
 		}
-	    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Math.min(glGetInteger(GL_MAX_SAMPLES), DefaultSettings.targetMS), GL_RGBA8, this.framebufferWidth, this.framebufferHeight, true);
-	    glBindTexture(GL_TEXTURE_2D, 0);
-	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture, 0);
+		GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, Math.min(GL30.glGetInteger(GL30.GL_MAX_SAMPLES), DefaultSettings.targetMS), GL30.GL_RGBA8, this.framebufferWidth, this.framebufferHeight, true);
+	    GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+	    GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture, 0);
 	}
 
     public void framebufferClear() {
-        glClear(GL_COLOR_BUFFER_BIT);
-        MC.getFramebuffer().bindFramebuffer(true);
+    	GlStateManager.clear(GL11.GL_COLOR_BUFFER_BIT, false);
+    	if(DefaultSettings.antiAlias)
+			GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
     }
 
 	public void resize(int width, int height) {
-		glDeleteFramebuffers(this.framebuffer);
-		glDeleteFramebuffers(this.interFramebuffer);
-		glDeleteTextures(this.screenTexture);
-		glDeleteTextures(this.multisampledTexture);
+		GlStateManager.deleteFramebuffers(this.framebuffer);
+		GlStateManager.deleteFramebuffers(this.interFramebuffer);
+		GlStateManager.deleteTexture(this.screenTexture);
+		GlStateManager.deleteTexture(this.multisampledTexture);
         this.createBindFramebuffer(width, height);
 	}
 }

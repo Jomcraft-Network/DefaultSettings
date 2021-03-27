@@ -9,6 +9,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import org.apache.logging.log4j.Level;
+
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import de.pt400c.defaultsettings.gui.*;
 import de.pt400c.neptunefx.NEX;
 import net.minecraft.client.Minecraft;
@@ -569,9 +572,9 @@ public class GuiConfig extends DefaultSettingsGUI {
     	}
 
 		if (!DefaultSettings.compatibilityMode) {
-			glBindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
-			glClear(16640);
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, this.framebufferMc.framebuffer);
+			GlStateManager.clear(16640, false);
+			GlStateManager.enableTexture();
 			glMatrixMode(5889);
 			glLoadIdentity();
 			glOrtho(0.0D, MC.mainWindow.getScaledWidth(), MC.mainWindow.getScaledHeight(), 0.0D, 1000.0D, 3000.0D);
@@ -580,14 +583,14 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glTranslatef(0.0F, 0.0F, -2000.0F);
 		}
 		
-		glEnable(GL_BLEND);
+		GlStateManager.enableBlend();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_ALPHA_TEST);
+		GlStateManager.disableAlphaTest();
 		
 		AbstractGui.fill(0, 0, this.width, this.height, 0xff2c2c2c);
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);	
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture();	
 
 		this.buttonS.color = cooldowns[1].getProgress() ? 0xffccab14 : cooldowns[1].renderCooldown < 0 ? 0xffcc1414 : cooldowns[1].renderCooldown > 0 ? 0xff5dcc14 : 0xffe6e6e6;
 		this.buttonK.color = cooldowns[2].getProgress() ? 0xffccab14 : cooldowns[2].renderCooldown < 0 ? 0xffcc1414 : cooldowns[2].renderCooldown > 0 ? 0xff5dcc14 : 0xffe6e6e6;
@@ -599,21 +602,25 @@ public class GuiConfig extends DefaultSettingsGUI {
 		
 		if (!DefaultSettings.compatibilityMode) {
 
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
+			GlStateManager.bindFramebuffer(GL_READ_FRAMEBUFFER, this.framebufferMc.framebuffer);
+			GlStateManager.bindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
 			glBlitFramebuffer(0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), 0, 0, MC.mainWindow.getWidth(), MC.mainWindow.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-			MC.getFramebuffer().bindFramebuffer(true);
-			glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
+			if(DefaultSettings.antiAlias)
+				GlStateManager.bindFramebuffer(GL_FRAMEBUFFER, 0);
+			else
+				MC.getFramebuffer().bindFramebuffer(true);
+			GlStateManager.bindTexture(this.framebufferMc.screenTexture);
 
-			glColor4f(1, 1, 1, 1);
+			GlStateManager.color4f(1, 1, 1, 1);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GlStateManager.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-			glEnable(GL_BLEND);
-			glDisable(GL_ALPHA_TEST);
-			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+			GlStateManager.enableBlend();
+
+			GlStateManager.disableAlphaTest();
+			GlStateManager.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 			glBegin(GL_QUADS);
 
@@ -627,8 +634,8 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glVertex3d(0, 0, 0);
 			glEnd();
 
-			glEnable(GL_ALPHA_TEST);
-			glDisable(GL_BLEND);
+			GlStateManager.enableAlphaTest();
+			GlStateManager.disableBlend();
 		}
     }
     
@@ -673,8 +680,9 @@ public class GuiConfig extends DefaultSettingsGUI {
 
 			if(!compiled) {
 				preRender();
-				glEnable(GL_BLEND);
-				glDisable(GL_TEXTURE_2D);
+				GlStateManager.enableBlend();
+
+				GlStateManager.disableTexture();
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 				final int index = ((GuiConfig) gui).menu.index;
@@ -702,22 +710,22 @@ public class GuiConfig extends DefaultSettingsGUI {
 				
 				NEX.drawRect(72 - 25F / 2F, 0, 110 + offs, 25, 0xff787878, false, null, false);
 				
-		        glColor4f(40F / 255F, 40F / 255F, 40F / 255F, 1);
+		        GlStateManager.color4f(40F / 255F, 40F / 255F, 40F / 255F, 1);
 				
 				NEX.drawCircle(72 - 25F / 2F, 25F / 2F, 25F / 2F, 270, 50);
 
-				glColor4f(120F / 255F, 120F / 255F, 120F / 255F, 1);
+				GlStateManager.color4f(120F / 255F, 120F / 255F, 120F / 255F, 1);
 				
 				NEX.drawCircle(110 + offs, 25F / 2F, 25F / 2F, 270, 50);
 
-				glEnable(GL_TEXTURE_2D);
+				GlStateManager.enableTexture();
 				DefaultSettings.fontRenderer.drawString("Tab", MathUtil.clamp(72 / 2 - (DefaultSettings.fontRenderer.getStringWidth("Tab", 1.2F, true) / 2), 0, Integer.MAX_VALUE), 7, 0xffffffff, 1.4F, true);
 
 				DefaultSettings.fontRenderer.drawString("- DefaultSettings -", 100 + (this.gui.width - 100) / 2 - DefaultSettings.fontRenderer.getStringWidth("- DefaultSettings -", 1.2F, true) / 2, 8, 0xffffffff, 1.2F, true);
 				
 				DefaultSettings.fontRenderer.drawString(tabName, 80, 8, 0xffffffff, 1.2F, true);
 
-				glDisable(GL_BLEND);
+				GlStateManager.disableBlend();
 				postRender(1, false);
 			}
 

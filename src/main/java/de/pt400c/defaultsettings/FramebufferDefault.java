@@ -7,6 +7,7 @@ import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.nio.ByteBuffer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.OpenGlHelper;
 
 @SideOnly(Side.CLIENT)
 public class FramebufferDefault {
@@ -29,11 +30,20 @@ public class FramebufferDefault {
 			this.deleteFramebuffer();
 
 		this.createFramebuffer(width, height);
-		MC.getFramebuffer().bindFramebuffer(true);
+		DefaultSettings.antiAlias = !OpenGlHelper.isFramebufferEnabled();
+
+		if(DefaultSettings.antiAlias)
+			OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
+
 	}
 
 	public void deleteFramebuffer() {
-		MC.getFramebuffer().bindFramebuffer(true);
+		if(DefaultSettings.antiAlias)
+			OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 		glDeleteFramebuffers(this.framebuffer);
 		glDeleteFramebuffers(this.interFramebuffer);
 	}
@@ -43,7 +53,10 @@ public class FramebufferDefault {
 		this.framebufferHeight = height;
 		this.createFrameBuffer();
 		this.createMSColorAttachment();	
-		MC.getFramebuffer().bindFramebuffer(true);
+		if(DefaultSettings.antiAlias)
+			OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 		this.createMSFrameBuffer();
 		this.createColorAttachment();
 		this.framebufferClear();

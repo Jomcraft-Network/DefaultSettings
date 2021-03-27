@@ -7,6 +7,7 @@ import de.pt400c.defaultsettings.GuiConfig;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FramebufferPopup;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import static de.pt400c.neptunefx.NEX.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -126,7 +127,10 @@ public class PopupSegment extends Segment {
 				
 				glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 				
-				MC.getFramebuffer().bindFramebuffer(true);
+				if(DefaultSettings.antiAlias)
+					OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+				else
+					MC.getFramebuffer().bindFramebuffer(true);
 
 				if(!DefaultSettings.compatibilityMode)
 					glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
@@ -230,7 +234,10 @@ public class PopupSegment extends Segment {
 
 		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		
-		MC.getFramebuffer().bindFramebuffer(true);
+		if(DefaultSettings.antiAlias)
+			OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 		
 		if(!DefaultSettings.compatibilityMode)
 

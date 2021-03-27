@@ -15,6 +15,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL11.*;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
 import de.pt400c.defaultsettings.gui.AboutSegment;
 import de.pt400c.defaultsettings.gui.BakedSegment;
 import de.pt400c.defaultsettings.gui.ButtonControlSegment;
@@ -358,7 +359,10 @@ public class GuiConfig extends DefaultSettingsGUI {
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.framebufferMc.interFramebuffer);
 			glBlitFramebuffer(0, 0, MC.displayWidth, MC.displayHeight, 0, 0, MC.displayWidth, MC.displayHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-			MC.getFramebuffer().bindFramebuffer(true);
+			if(DefaultSettings.antiAlias)
+				OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+			else
+				MC.getFramebuffer().bindFramebuffer(true);
 			glBindTexture(GL_TEXTURE_2D, this.framebufferMc.screenTexture);
 
 			glColor4f(1, 1, 1, 1);

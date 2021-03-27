@@ -10,6 +10,7 @@ import de.pt400c.defaultsettings.FramebufferPopup;
 import de.pt400c.defaultsettings.GuiConfig;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 
 @SideOnly(Side.CLIENT)
@@ -79,26 +80,32 @@ public abstract class BakedSegment extends Segment {
 	public void postRender(float alpha, boolean popup) {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this.mapFrameBuffer.msFbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this.mapFrameBuffer.fbo);
-		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(16640);
 		glLoadIdentity();
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
+		glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		
 		if(popup && ((GuiConfig) this.gui).popupField != null) {
 			glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).popupField.mapFrameBufferContents.msFbo);	
 			glViewport((int) 0, (int) 0, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.width, (int) ((GuiConfig) this.gui).popupField.mapFrameBufferContents.height);
 		}else if(this.gui instanceof GuiConfig){
 			if(DefaultSettings.compatibilityMode)
-				MC.getFramebuffer().bindFramebuffer(true);
+				if(DefaultSettings.antiAlias)
+					OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+				else
+					MC.getFramebuffer().bindFramebuffer(true);
 			else
 				glBindFramebuffer(GL_FRAMEBUFFER, ((GuiConfig) this.gui).framebufferMc.framebuffer);
 
 			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}else {
-			MC.getFramebuffer().bindFramebuffer(true);
+			if(DefaultSettings.antiAlias)
+				OpenGlHelper.func_153171_g(GL_FRAMEBUFFER, 0);
+			else
+				MC.getFramebuffer().bindFramebuffer(true);
 			glViewport((int) 0, (int) 0, (int) MC.getFramebuffer().framebufferWidth, (int) MC.getFramebuffer().framebufferHeight);
 		}
 	

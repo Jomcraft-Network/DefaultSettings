@@ -199,22 +199,6 @@ public class DefaultSettings {
 					}
 
 				});
-				/*event.enqueueWork(new Runnable() {
-
-					@Override
-					public void run() {
-						try {
-							GameSettings gameSettings = FileUtil.MC.gameSettings;
-							gameSettings.loadOptions();
-							FileUtil.MC.gameSettings.saveOptions();
-
-						} catch (NullPointerException e) {
-							DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
-						}
-
-					}
-
-				});*/
 			});
 			DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 				DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");

@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.14.x-1.15.2-2.2.4"
+version = "1.15.x-2.2.4"
 
 def buildID = Long.toUnsignedString(new Random().nextLong(), 16).toUpperCase()
 
@@ -56,7 +56,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.2.27'
 }
 
-def forge_version = "28.2.3"
+def forge_version = "29.0.4"
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
@@ -181,11 +181,6 @@ curseforge {
 			addGameVersion '1.15.2'
 			addGameVersion '1.15.1'
 			addGameVersion '1.15'
-			addGameVersion '1.14.4'
-			addGameVersion '1.14.3'
-			addGameVersion '1.14.2'
-			addGameVersion '1.14.1'
-			addGameVersion '1.14'
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"
 			}

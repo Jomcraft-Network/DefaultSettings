@@ -97,11 +97,11 @@ public class FramebufferDefault {
     
     private void createMSColorAttachment() {
 		this.multisampledTexture = GlStateManager.genTexture();
-		GL30.glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture); //ISSUE / CRASH HERE!
-	//	if(GL11.glGetError() != 0) {
-	//		DefaultSettings.compatibilityMode = true;
-	//		return;
-	//	}
+		GL30.glBindTexture(GL32.GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture);
+		if(GL11.glGetError() != 0) {
+			DefaultSettings.compatibilityMode = true;
+			return;
+		}
 		GL32.glTexImage2DMultisample(GL32.GL_TEXTURE_2D_MULTISAMPLE, Math.min(GL30.glGetInteger(GL30.GL_MAX_SAMPLES), DefaultSettings.targetMS), GL30.GL_RGBA8, this.framebufferWidth, this.framebufferHeight, true);
 	    GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
 	    GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL32.GL_TEXTURE_2D_MULTISAMPLE, this.multisampledTexture, 0);

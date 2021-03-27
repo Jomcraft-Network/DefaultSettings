@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.SharedConstants;
 
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
@@ -203,8 +204,8 @@ public class RenameSegment extends Segment {
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		flashingTimer += 0.07;
@@ -246,22 +247,22 @@ public class RenameSegment extends Segment {
 			float f1 = (float) (color >> 8 & 255) / 255.0F;
 			float f2 = (float) (color & 255) / 255.0F;
 
-			glColor4f(f, f1, f2, f3);
+			GlStateManager.color4f(f, f1, f2, f3);
 
 			drawRect(this.getPosX() + 5 + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + 4, this.getPosX() + 5.5F + fontRenderer.getStringWidth(text.substring(0, this.cursorPosition), 1, false), this.getPosY() + this.getHeight() - 4, null, false, null, false);
 		}
 		
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
 		glPushMatrix();
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 
 		if (this.query.isEmpty())
 			fontRenderer.drawString(tex, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), this.focused && !this.activated ? darkenColor(0xffe6e6e6, darken).getRGB() : 0xffe6e6e6, 1, false);
 		else
 			fontRenderer.drawString(text, (float) (this.getPosX() + 5), (float) (this.getPosY() + 5), 0xffe6e6e6, 1, false);
-		glDisable(GL_BLEND);
+		GlStateManager.disableBlend();
 		glPopMatrix();
 	}
 	

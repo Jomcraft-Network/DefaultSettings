@@ -19,3 +19,10 @@ logoFile="logo.png"
     versionRange="[${forge_version},)"
     ordering="NONE"
     side="CLIENT"
+    
+[[dependencies.defaultsettings]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.13,]"
+    ordering="NONE"
+    side="CLIENT"

@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -95,26 +96,26 @@ public class HelpSegment extends BakedSegment {
 			
 			preRender();
 
-			glEnable(GL_BLEND);
-	    	glDisable(GL_ALPHA_TEST);
-	    	glDisable(GL_TEXTURE_2D);
+			GlStateManager.enableBlend();
+	    	GlStateManager.disableAlphaTest();
+	    	GlStateManager.disableTexture2D();
 	    	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 			drawRectRoundedCorners(0, 0, this.width, this.height, calcAlpha(0xff696969, this.processFactor).getRGB(), 4);
 	
-			glEnable(GL_TEXTURE_2D);
+			GlStateManager.enableTexture2D();
 	    	
 			MC.getTextureManager().bindTexture(icon);
 			glColor3f(1, 1, 1);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			drawScaledTex(2, this.height / 2 - 16 / 2, (int) 16, (int) 16);
-			glDisable(GL_BLEND);
+			GlStateManager.disableBlend();
 			
 			fontRenderer.drawString("Help", 21, 9, 0xffffffff, 0.8F, true);
-			glEnable(GL_ALPHA_TEST);
+			GlStateManager.enableAlphaTest();
     	
 		postRender(1, false);
 		}

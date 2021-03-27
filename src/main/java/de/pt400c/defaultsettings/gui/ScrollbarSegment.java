@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.neptunefx.NEX.*;
@@ -52,9 +53,9 @@ public class ScrollbarSegment extends ButtonSegment {
 			distanceY = 0;
 		}
 
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		
 		drawRectRoundedCorners(this.getPosX(), this.getPosY() + 3, this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight() - 3, 0xffe0e0e0, 800);
 		drawLine2D_2(0.2F, 0.2F, 0.2F, 1, (int) scaledFactor, 2, new Vec2f(this.getPosX() + this.width / 2 - 2F + 0.5F, this.getPosY() + this.height / 2 - 3), new Vec2f(this.getPosX() + this.width / 2 + 2F - 0.5F, this.getPosY() + this.height / 2 - 3));
@@ -62,8 +63,8 @@ public class ScrollbarSegment extends ButtonSegment {
 		drawLine2D_2(0.2F, 0.2F, 0.2F, 1, (int) scaledFactor, 2, new Vec2f(this.getPosX() + this.width / 2 - 2F + 0.5F, this.getPosY() + this.height / 2), new Vec2f(this.getPosX() + this.width / 2 + 2F - 0.5F, this.getPosY() + this.height / 2));
 		
 		drawLine2D_2(0.2F, 0.2F, 0.2F, 1, (int) scaledFactor, 2, new Vec2f(this.getPosX() + this.width / 2 - 2F + 0.5F, this.getPosY() + this.height / 2 + 3), new Vec2f(this.getPosX() + this.width / 2 + 2F - 0.5F, this.getPosY() + this.height / 2 + 3));
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
 	
 	}
 	

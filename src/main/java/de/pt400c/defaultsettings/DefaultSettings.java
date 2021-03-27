@@ -28,7 +28,7 @@ import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -55,6 +55,7 @@ public class DefaultSettings {
 	public static boolean init = false;
 	public static int targetMS = 9;
 	public static boolean compatibilityMode = false;
+	public static boolean antiAlias = false;
 	
 	public DefaultSettings() {
 		instance = this;
@@ -119,40 +120,41 @@ public class DefaultSettings {
 		System.exit(0);
     }*/
 	
-	public void regInit(RegistryEvent.NewRegistry event) {
-		
+	public void regInit(FMLLoadCompleteEvent event) {
 		if (!init) {
-
 			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+				DeferredWorkQueue.runLater(new Runnable() {
 
-				try {
+					@Override
+					public void run() {
+						try {
 
-					GameSettings gameSettings = MC.gameSettings;
-					gameSettings.loadOptions();
-					MC.getResourcePackList().reloadPacksFromFinders();
-					List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
-					for (String resourcePack : gameSettings.resourcePacks)
-						for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b())
-							if (entry.getName().equals(resourcePack))
-								repositoryEntries.add(entry);
+							GameSettings gameSettings = MC.gameSettings;
+							gameSettings.loadOptions();
+							MC.getResourcePackList().reloadPacksFromFinders();
+							List<ResourcePackInfoClient> repositoryEntries = new ArrayList<ResourcePackInfoClient>();
+							for (String resourcePack : gameSettings.resourcePacks)
+								for (ResourcePackInfoClient entry : MC.getResourcePackList().func_198978_b())
+									if (entry.getName().equals(resourcePack))
+										repositoryEntries.add(entry);
 
-					MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
-					FileUtil.setField(FileUtil.devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
+							MC.getResourcePackList().getPackInfos().addAll(repositoryEntries);
+							FileUtil.setField(FileUtil.devEnv ? "currentLanguage" : "field_135048_c", LanguageManager.class, MC.getLanguageManager(), gameSettings.language);
 
-					FileUtil.MC.gameSettings.saveOptions();
+							FileUtil.MC.gameSettings.saveOptions();
 
-				} catch (NullPointerException e) {
-					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
-				}
+						} catch (NullPointerException e) {
+							DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
+						}
 
+					}
+
+				});
 			});
-			
 			DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
 				DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 			});
-
 			init = true;
-
 		}
 	}
 

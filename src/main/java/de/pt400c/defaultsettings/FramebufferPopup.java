@@ -1,6 +1,10 @@
 package de.pt400c.defaultsettings;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.opengl.GL30.*;
@@ -30,10 +34,10 @@ public class FramebufferPopup {
         BakeryRegistry.renderbs.remove(new Integer(msColorRenderBuffer));
         BakeryRegistry.textures.remove(new Integer(texture));
 		
-		glDeleteFramebuffers(this.fbo);
-		glDeleteRenderbuffers(this.msFbo);
-		glDeleteRenderbuffers(this.msColorRenderBuffer);
-		glDeleteTextures(this.texture);
+		OpenGlHelper.glDeleteFramebuffers(this.fbo);
+		OpenGlHelper.glDeleteRenderbuffers(this.msFbo);
+		OpenGlHelper.glDeleteRenderbuffers(this.msColorRenderBuffer);
+		GlStateManager.deleteTexture(this.texture);
 
 		this.width = width;
 		this.height = height;
@@ -41,28 +45,34 @@ public class FramebufferPopup {
 	}
 	
 	public void setupFBO() {
-        msColorRenderBuffer = glGenRenderbuffers();
-        msFbo = glGenFramebuffers();
-        glBindFramebuffer(GL_FRAMEBUFFER, msFbo);
+        msColorRenderBuffer = OpenGlHelper.glGenRenderbuffers();
+        msFbo = OpenGlHelper.glGenFramebuffers();
+        OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, msFbo);
         glBindRenderbuffer(GL_RENDERBUFFER, msColorRenderBuffer);
         glRenderbufferStorageMultisample(GL_RENDERBUFFER, Math.min(glGetInteger(GL_MAX_SAMPLES), DefaultSettings.targetMS), GL_RGBA8, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msColorRenderBuffer);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        MC.getFramebuffer().bindFramebuffer(true);
+        if(DefaultSettings.antiAlias)
+			OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
 
-        texture = glGenTextures();
-        fbo = glGenFramebuffers();
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        texture = GlStateManager.generateTexture();
+        fbo = OpenGlHelper.glGenFramebuffers();
+        OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        GlStateManager.bindTexture(texture);
+        GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) null);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+        GlStateManager.texImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (IntBuffer) null);
+        OpenGlHelper.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
-        MC.getFramebuffer().bindFramebuffer(true);
+        if(DefaultSettings.antiAlias)
+			OpenGlHelper.glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		else
+			MC.getFramebuffer().bindFramebuffer(true);
         
         BakeryRegistry.fbos.add(new Integer(msFbo));
         BakeryRegistry.fbos.add(new Integer(fbo));

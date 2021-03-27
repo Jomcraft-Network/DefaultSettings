@@ -11,6 +11,7 @@ import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static org.lwjgl.opengl.GL11.*;
@@ -220,8 +221,8 @@ public class ScrollableSegment extends Segment {
 		this.maxSize = row - 0.5F + row * (this.list.size() - 1);
 		final int color = 0xffe6e6e6;
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
 		if (maxSize <= height)
@@ -231,8 +232,8 @@ public class ScrollableSegment extends Segment {
 
 		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.width + (!this.invisible ? this.scrollBar.getWidth() + 2 : 0), this.getPosY() + this.height, 0xff3c3c3c, false, null, false);
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
 
 		drawRect(this.getPosX(), this.getPosY(), this.getPosX() + this.getWidth(), this.getPosY() + this.getHeight(), 0xff3c3c3c, true, null, false);
 
@@ -318,14 +319,14 @@ public class ScrollableSegment extends Segment {
 		if(!this.invisible)
 			drawRect(this.getPosX() + this.width - 3, this.getPosY(), this.getPosX() + this.width - 2, this.getPosY() + this.getHeight(), 0xffe6e6e6, true, null, false);
 
-		glEnable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		drawRectRoundedCornersHollow(this.getPosX() - 4, this.getPosY() - 4, (float) this.getPosX() + (this.invisible ? this.width : this.width + this.scrollBar.getWidth() + 2) + 4, this.getPosY() + this.height + 4, color, 10, 6);
 
-		glDisable(GL_BLEND);
-		glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableTexture2D();
 
 		if (!this.invisible)
 			this.scrollBar.render(mouseX, mouseY, partialTicks);

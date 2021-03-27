@@ -1,6 +1,7 @@
 package de.pt400c.defaultsettings.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
@@ -35,14 +36,14 @@ public class TextSegment extends Segment {
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
 		glPushMatrix();
-     	glEnable(GL_BLEND);
-     	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+     	GlStateManager.enableBlend();
+     	GlStateManager.blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
      	int offsetY = 0;
      	for(String line : this.text.split("\n")) {
      		fontRenderer.drawString(line, (float) this.getPosX(), (float) this.getPosY() + offsetY, this.color, this.size, true);
      		offsetY += this.offset;
      	}
-		glDisable(GL_BLEND);
+		GlStateManager.disableBlend();
 		glPopMatrix();
 	}
 }

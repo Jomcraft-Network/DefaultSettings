@@ -340,7 +340,8 @@ public class FileUtil {
 			mainJson.save();
 		}else {
 
-			copyAndHashPrivate();
+			if(otherCreator)
+				copyAndHashPrivate();
 			mainJson.setExportMode(false);
 			mainJson.save();
 			

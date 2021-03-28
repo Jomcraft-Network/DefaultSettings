@@ -10,6 +10,9 @@ import de.pt400c.neptunefx.NEX;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import static de.pt400c.defaultsettings.FileUtil.MC;
 import java.util.ArrayList;
+
+import org.lwjgl.opengl.GL11;
+
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
@@ -29,6 +32,10 @@ public class AboutSegment extends Segment {
 		GlStateManager.enableBlend();
      	GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		NEX.drawScaledTex((float) posX, (float) posY - 5, 80, 80);
 		GlStateManager.disableBlend();
 		

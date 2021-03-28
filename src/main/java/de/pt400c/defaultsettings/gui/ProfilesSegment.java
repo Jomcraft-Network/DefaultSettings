@@ -8,6 +8,8 @@ import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import java.util.function.Function;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import static de.pt400c.neptunefx.NEX.*;
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
@@ -652,6 +654,10 @@ public class ProfilesSegment extends Segment {
 			GlStateManager.enableTexture2D();
 			
 			Minecraft.getMinecraft().getTextureManager().bindTexture(icon);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			glColor3f(1, 1, 1);
 			drawScaledTex(this.getPosX() - 18, this.getPosY() + 2, 15, 15);
 			

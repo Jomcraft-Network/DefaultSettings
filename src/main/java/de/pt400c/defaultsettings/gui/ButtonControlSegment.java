@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import java.util.Collections;
 import java.util.function.Function;
+
+import org.lwjgl.opengl.GL11;
+
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import static org.lwjgl.opengl.GL11.*;
@@ -264,6 +267,10 @@ public class ButtonControlSegment extends BakedSegment {
 			
 			GlStateManager.color(1, 1, 1, 1 -alpha);
 			MC.getTextureManager().bindTexture(icon);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			drawScaledTex((float) this.width - 20, (float) 6, (int) (18 - alpha), (int) (18 - alpha));
 			
 			GlStateManager.disableBlend();

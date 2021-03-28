@@ -12,6 +12,9 @@ import static de.pt400c.defaultsettings.DefaultSettings.fontRenderer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
+
+import org.lwjgl.opengl.GL11;
+
 import de.pt400c.defaultsettings.DefaultSettings;
 import de.pt400c.defaultsettings.FileUtil;
 import de.pt400c.defaultsettings.GuiConfig;
@@ -173,6 +176,10 @@ public class ExportSegment extends BakedSegment {
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 			MC.getTextureManager().bindTexture(icon);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			GlStateManager.color(1, 1, 1, percent);
 			glTranslatef(5 + 7 * percent, 2, 0);
 			drawScaledTex(0, 0, 19, 19);

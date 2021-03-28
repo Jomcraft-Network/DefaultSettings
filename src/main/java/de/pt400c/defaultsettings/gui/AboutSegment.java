@@ -31,6 +31,10 @@ public class AboutSegment extends Segment {
 		GlStateManager.enableBlend();
      	GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 		MC.getTextureManager().bindTexture(icon);
+		GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		NEX.drawScaledTex((float) posX, (float) posY - 5, 80, 80);
 		GlStateManager.disableBlend();
 		

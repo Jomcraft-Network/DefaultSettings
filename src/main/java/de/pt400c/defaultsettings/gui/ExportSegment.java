@@ -173,6 +173,10 @@ public class ExportSegment extends BakedSegment {
 			GlStateManager.enableBlend();
 			GlStateManager.blendFuncSeparate(770, 771, 1, 0);
 			MC.getTextureManager().bindTexture(icon);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			GlStateManager.color4f(1, 1, 1, percent);
 			glTranslatef(5 + 7 * percent, 2, 0);
 			drawScaledTex(0, 0, 19, 19);

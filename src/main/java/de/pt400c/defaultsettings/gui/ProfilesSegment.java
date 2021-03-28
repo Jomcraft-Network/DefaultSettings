@@ -661,6 +661,10 @@ public class ProfilesSegment extends Segment {
 			GlStateManager.enableTexture2D();
 			
 			MC.getTextureManager().bindTexture(icon);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			GlStateManager.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			glColor3f(1, 1, 1);
 			drawScaledTex(this.getPosX() - 18, this.getPosY() + 2, 15, 15);
 			

@@ -147,7 +147,7 @@ public class DefaultSettings {
 			}
 			
 			//<end>Credits to Compaszer (https://gitlab.com/Compaszer)
-			
+			/*
 			try {
 				String path = "/Alpha1_14Handler.clazz";
 				InputStream is = this.getClass().getClassLoader().getResourceAsStream(path);
@@ -167,7 +167,7 @@ public class DefaultSettings {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 			
 			//Credits to Compaszer (https://gitlab.com/Compaszer)</end>
 

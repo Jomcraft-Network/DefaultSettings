@@ -651,6 +651,10 @@ public class ProfilesSegment extends Segment {
 			glEnable(GL_TEXTURE_2D);
 			
 			Minecraft.getMinecraft().getTextureManager().bindTexture(icon);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			glColor3f(1, 1, 1);
 			drawScaledTex(this.getPosX() - 18, this.getPosY() + 2, 15, 15);
 			

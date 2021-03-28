@@ -263,6 +263,10 @@ public class ButtonControlSegment extends BakedSegment {
 			
 			glColor4f(1, 1, 1, 1 -alpha);
 			MC.getTextureManager().bindTexture(icon);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			drawScaledTex((float) this.width - 20, (float) 6, (int) (18 - alpha), (int) (18 - alpha));
 			
 			glDisable(GL_BLEND);

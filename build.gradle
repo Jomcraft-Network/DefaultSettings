@@ -1,0 +1,173 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'signing'
+
+version = "1.17.x-2.5.0"
+
+def fileVersion = "2.5.0"
+def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
+group = "net.jomcraft.defaultsettings"
+
+archivesBaseName = "DefaultSettings"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+minecraft {
+    mappings channel: 'official', version: '1.17.1'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.12'
+}
+
+def forge_version = "37.0.12"
+
+jar {
+    
+	manifest {
+		attributes 'FMLAT': 'defaultsettings_at.cfg'
+		attributes([
+			"Specification-Title": "DefaultSettings",
+			"Specification-Vendor": "Jomcraft Network",
+			"Specification-Version": fileVersion,
+			"Implementation-Title": "DefaultSettings",
+			"Implementation-Version": fileVersion,
+			"Implementation-Vendor" : "Jomcraft Network",
+			"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+		])
+	}
+
+}
+
+task signJar {
+	if(project.hasProperty("signing.alias") && project.property("signing.alias") != null && !project.property("signing.alias").equals("")){
+		doLast {
+			configurations.archives.allArtifacts.files.each {
+				if(it.name.endsWith(".jar")){
+					ant.signjar(jar: it,
+					storetype:"jks",
+					alias: project.property("signing.alias"),
+					storepass:project.property("signing.keyStorePassword"),
+					keystore: project.property("signing.keystorePath"),
+					keypass: project.property("signing.keyStorePassword"),
+					preservelastmodified:"true")
+					signing.sign(it)
+					project.logger.lifecycle("JAR Signed: " + it.name)
+				}
+			}
+		}
+	} else {
+		project.logger.lifecycle("Signing skipped, not authorized")	
+	}
+}
+
+build.dependsOn signJar
+
+task sourcesJar(type: Jar) {
+	
+	from sourceSets.main.allSource
+	classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+	
+	from sourceSets.main.output
+	classifier = 'deobf'
+}
+
+artifacts {
+	archives jar
+	archives sourcesJar
+	archives deobfJar
+}
+
+curseforge {
+	if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
+		apiKey = project.property("cursegradle.api_token")
+		project {
+			id = '318012'
+			changelog = file("changelog.html")
+			changelogType = 'html'
+			releaseType = 'beta'
+			addGameVersion '1.17.1'
+			mainArtifact(jar) {
+				displayName = "$archivesBaseName-$version"
+			}
+    
+			addArtifact (sourcesJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-sources"
+			}
+    
+			addArtifact (deobfJar) {
+				releaseType = 'release'
+				displayName = "$archivesBaseName-$version-deobf"
+			}
+		}
+	}
+}

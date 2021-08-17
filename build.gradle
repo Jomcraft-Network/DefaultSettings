@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.17.x-2.5.0"
+version = "1.16.x-2.5.0"
 
 def fileVersion = "2.5.0"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
@@ -24,12 +24,12 @@ group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.16.5'
 
     runs {
         client {
@@ -82,10 +82,10 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.12'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.2'
 }
 
-def forge_version = "37.0.12"
+def forge_version = "36.0.0"
 
 jar {
     
@@ -154,7 +154,13 @@ curseforge {
 			changelog = file("changelog.html")
 			changelogType = 'html'
 			releaseType = 'beta'
-			addGameVersion '1.17.1'
+			addGameVersion '1.16.5'
+			addGameVersion '1.16.4'
+			addGameVersion '1.16.3'
+			addGameVersion '1.16.2'
+			addGameVersion '1.16.1'
+			addGameVersion '1.16'
+			
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"
 			}

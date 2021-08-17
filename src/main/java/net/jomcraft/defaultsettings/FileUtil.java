@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
@@ -38,11 +37,11 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class FileUtil {
 	
@@ -733,7 +732,7 @@ public class FileUtil {
 					if (line.isEmpty()) 
 						continue;
 					
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputConstants.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
+					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputMappings.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -754,7 +753,7 @@ public class FileUtil {
 			if(update) {
 	
 	
-			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings) {
+			for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings) {
 				if (DefaultSettings.keyRebinds.containsKey(keyBinding.getName())) {
 					KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getName());
 					
@@ -763,33 +762,14 @@ public class FileUtil {
 					
 					
 					keyBinding.defaultKey = container.input;
-					ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, keyBinding, container.modifier, "keyModifierDefault");
-					//setField("keyModifierDefault", KeyMapping.class, keyBinding, container.modifier);
+					ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
 					keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), container.input);
 
 				}
 			}
-			KeyMapping.resetMapping();
+			KeyBinding.resetMapping();
 			}
 
-		}
-	}
-	
-	@SuppressWarnings({ "rawtypes", "unused" })
-	@Deprecated
-	private static void setField(String name, Class clazz, Object obj, Object value) {
-		try {
-			Field field = clazz.getDeclaredField(name);
-			field.setAccessible(true);
-			field.set(obj, value);
-		} catch (IllegalAccessException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
-		} catch (IllegalArgumentException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
-		} catch (NoSuchFieldException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
-		} catch (SecurityException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
 		}
 	}
 	
@@ -950,7 +930,7 @@ public class FileUtil {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
-			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings) 
+			for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings) 
 				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
 
 		} catch (IOException e) {
@@ -1084,7 +1064,7 @@ public class FileUtil {
 		File file = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
 		try {
 			writer = new PrintWriter(new FileWriter(file));
-			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings) 
+			for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings) 
 				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
 			stream = new FileInputStream(file);
 		} catch (IOException e) {

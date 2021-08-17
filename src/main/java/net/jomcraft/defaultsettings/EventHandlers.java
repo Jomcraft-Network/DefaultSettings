@@ -1,7 +1,7 @@
 package net.jomcraft.defaultsettings;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 
 public class EventHandlers {
 	

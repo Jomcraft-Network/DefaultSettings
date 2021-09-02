@@ -87,6 +87,21 @@ dependencies {
 
 def forge_version = "37.0.12"
 
+processResources {
+
+	duplicatesStrategy = 'include'
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+
+        expand 'version': fileVersion, 'forge_version': forge_version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+
 jar {
     
 	manifest {

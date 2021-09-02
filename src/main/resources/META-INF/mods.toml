@@ -5,7 +5,7 @@ license="Apache License 2.0"
 
 [[mods]] 
 	modId="defaultsettings" 
-	version="2.5.0" 
+	version="${version}"
 	displayName="DefaultSettings"
 	description='''Keep your game's local settings in case of an update to your modpack'''
 	side="CLIENT"
@@ -17,7 +17,7 @@ license="Apache License 2.0"
 [[dependencies.defaultsettings]]
     modId="forge"
     mandatory=true
-    versionRange="[37.0.12,)"
+    versionRange="[${forge_version},)"
     ordering="NONE"
     side="CLIENT"
     

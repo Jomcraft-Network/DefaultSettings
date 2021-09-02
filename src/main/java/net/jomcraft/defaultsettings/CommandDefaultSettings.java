@@ -34,8 +34,6 @@ public class CommandDefaultSettings {
 			return saveProcessConfigs(command.getSource(), StringArgumentType.getString(command, "argument"));
 		})));
 
-		event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
-
 		LiteralCommandNode<CommandSourceStack> node = event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
 
 		event.getServer().getCommands().getDispatcher().register(Commands.literal("ds").redirect(node));

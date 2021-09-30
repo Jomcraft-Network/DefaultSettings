@@ -168,6 +168,7 @@ public class CommandDefaultSettings {
 					try {
 						boolean updateExisting = argument != null && argument.equals("-of");
 						FileUtil.checkMD5(updateExisting, false);
+						FileUtil.copyAndHashPrivate();
 					} catch (IOException e) {
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}

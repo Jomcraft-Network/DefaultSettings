@@ -27,12 +27,12 @@ public class UpdateContainer {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
-	public void setOnlineVersion(String version){
+
+	public void setOnlineVersion(String version) {
 		this.onlineVersion = version;
 	}
-	
-	public String getOnlineVersion(){
+
+	public String getOnlineVersion() {
 		return this.onlineVersion;
 	}
 
@@ -57,7 +57,7 @@ public class UpdateContainer {
 					Map<String, Object> json = new Gson().fromJson(data, Map.class);
 
 					Map<String, String> promos = (Map<String, String>) json.get("promos");
-					//String display_url = (String) json.get("homepage");
+					// String display_url = (String) json.get("homepage");
 					String mcVersion = MCPVersion.getMCVersion();
 					String rec = promos.get(mcVersion + "-recommended");
 					String lat = promos.get(mcVersion + "-latest");
@@ -96,37 +96,36 @@ public class UpdateContainer {
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.ERROR);
 					return;
 				}
-				if(target != null)
+				if (target != null)
 					DefaultSettings.getUpdater().setOnlineVersion(target.toString());
-				
+
 				switch (status) {
-				case BETA: 
+				case BETA:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.UP_TO_DATE);
 					break;
-				case BETA_OUTDATED: 
+				case BETA_OUTDATED:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.OUTDATED);
 					break;
-				case UP_TO_DATE: 
+				case UP_TO_DATE:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.UP_TO_DATE);
 					break;
-				case AHEAD: 
+				case AHEAD:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.AHEAD_OF_TIME);
 					break;
-				case OUTDATED: 
+				case OUTDATED:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.OUTDATED);
 					break;
-				case PENDING: 
+				case PENDING:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.CHECKING);
 					break;
-				case FAILED: 
+				case FAILED:
 
-				default: 
+				default:
 					DefaultSettings.getUpdater().setStatus(UpdateContainer.Status.ERROR);
-				
+
 				}
 			}
 		});
-		
 
 	}
 
@@ -145,7 +144,7 @@ public class UpdateContainer {
 		}
 		throw new IOException("Couldn't create a proper connection to the remote host");
 	}
-	
+
 	public static enum Status {
 		UNKNOWN, CHECKING, UP_TO_DATE, OUTDATED, ERROR, AHEAD_OF_TIME;
 	}

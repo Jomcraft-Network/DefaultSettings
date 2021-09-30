@@ -25,9 +25,9 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
       - name: Build with Gradle
-        with:
-          CURSE_API: ${{ secrets.curse_api }}
         run: ./gradlew build curseforge
+        env:
+          CURSE_API: ${{ secrets.curse_api }}
       - uses: actions/upload-artifact@v2
         with:
           name: 'Prebuilt Artifacts'

@@ -6,9 +6,7 @@
 !/build.gradle
 !/.gitignore
 !/changelog.html
-!/.gitlab-ci.yml
 !/gradle/
 !/LICENSE
 !/pubkey.gpg
-!/Jenkinsfile
 !/.github/

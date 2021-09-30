@@ -16,9 +16,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.17.x-2.5.1"
+version = "1.17.x-2.5.2"
 
-def fileVersion = "2.5.1"
+def fileVersion = "2.5.2"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group = "net.jomcraft.defaultsettings"
 
@@ -119,30 +119,6 @@ jar {
 
 }
 
-task signJar {
-	if(project.hasProperty("signing.alias") && project.property("signing.alias") != null && !project.property("signing.alias").equals("")){
-		doLast {
-			configurations.archives.allArtifacts.files.each {
-				if(it.name.endsWith(".jar")){
-					ant.signjar(jar: it,
-					storetype:"jks",
-					alias: project.property("signing.alias"),
-					storepass:project.property("signing.keyStorePassword"),
-					keystore: project.property("signing.keystorePath"),
-					keypass: project.property("signing.keyStorePassword"),
-					preservelastmodified:"true")
-					signing.sign(it)
-					project.logger.lifecycle("JAR Signed: " + it.name)
-				}
-			}
-		}
-	} else {
-		project.logger.lifecycle("Signing skipped, not authorized")	
-	}
-}
-
-build.dependsOn signJar
-
 task sourcesJar(type: Jar) {
 	
 	from sourceSets.main.allSource
@@ -162,13 +138,13 @@ artifacts {
 }
 
 curseforge {
-	if(project.hasProperty("cursegradle.api_token") && project.property("cursegradle.api_token") != null && !project.property("cursegradle.api_token").equals("")) {
-		apiKey = project.property("cursegradle.api_token")
+	if(System.getenv("curse_api") != null && !System.getenv("curse_api").equals("")) {
+		apiKey = System.getenv("curse_api")
 		project {
 			id = '318012'
 			changelog = file("changelog.html")
 			changelogType = 'html'
-			releaseType = 'beta'
+			releaseType = 'release'
 			addGameVersion '1.17.1'
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"

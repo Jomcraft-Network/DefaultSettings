@@ -16,9 +16,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'signing'
 
-version = "1.17.x-2.5.2"
+version = "1.17.x-2.6.0"
 
-def fileVersion = "2.5.2"
+def fileVersion = "2.6.0"
 def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group = "net.jomcraft.defaultsettings"
 

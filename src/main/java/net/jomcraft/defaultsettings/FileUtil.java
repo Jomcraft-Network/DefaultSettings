@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
@@ -63,11 +62,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("servers.dat") /*
-																																																																																																																	 * && (file.getPath().split("config")[1].split(Pattern.quote("\\")). length > 2
-																																																																																																																	 *//*
-																																																																																																																		 * ? true : getMainJSON().activeConfigs.contains(file.getName())
-																																																																																																																		 *//* ) */)
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("servers.dat") /*																																																																																																										 *//* ) */)
 				return true;
 
 			return false;
@@ -773,24 +768,6 @@ public class FileUtil {
 				KeyMapping.resetMapping();
 			}
 
-		}
-	}
-
-	@SuppressWarnings({ "rawtypes", "unused" })
-	@Deprecated
-	private static void setField(String name, Class clazz, Object obj, Object value) {
-		try {
-			Field field = clazz.getDeclaredField(name);
-			field.setAccessible(true);
-			field.set(obj, value);
-		} catch (IllegalAccessException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
-		} catch (IllegalArgumentException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
-		} catch (NoSuchFieldException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
-		} catch (SecurityException e) {
-			DefaultSettings.log.log(Level.ERROR, "Reflection exception: ", e);
 		}
 	}
 

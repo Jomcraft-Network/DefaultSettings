@@ -138,8 +138,8 @@ artifacts {
 }
 
 curseforge {
-	if(System.getenv("curse_api") != null && !System.getenv("curse_api").equals("")) {
-		apiKey = System.getenv("curse_api")
+	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
+		apiKey = System.getenv("CURSE_API")
 		project {
 			id = '318012'
 			changelog = file("changelog.html")

@@ -27,7 +27,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build curseforge
         env:
-          CURSE_API: ${{ secrets.curse_api }}
+          CURSE_API: ${{ secrets.CURSE_API }}
       - uses: actions/upload-artifact@v2
         with:
           name: 'Prebuilt Artifacts'

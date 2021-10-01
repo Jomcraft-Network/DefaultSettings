@@ -1,10 +1,10 @@
-[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/defaultsettings/endpoint?cache=3600)](https://gitlab.com/jomcraft-sources/defaultsettings) [![Build Status](https://gitlab.com/jomcraft-sources/defaultsettings/badges/master-1.13.2/pipeline.svg)](https://gitlab.com/jomcraft-sources/defaultsettings/tree/master-1.13.2)
+[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/defaultsettings/endpoint?cache=3600)](https://github.com/Jomcraft-Network/DefaultSettings) [![Java CI](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml/badge.svg?branch=1.13.2)](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml)
 
 ### DefaultSettings
 
 ---
 
-DefaultSettings is a Minecraft Forge mod created by the Jomcraft Network development team. Official downloads and further information may be found on our [curseforge page](https://www.curseforge.com/minecraft/mc-mods/defaultsettings). If a guide on how to use the mod is required, you may also visit the [CF support pages](https://www.curseforge.com/minecraft/mc-mods/defaultsettings/pages/usage).
+DefaultSettings is a Minecraft Forge mod created by the Jomcraft Network development team. Official downloads and further information may be found on our [curseforge page](https://www.curseforge.com/minecraft/mc-mods/defaultsettings). If a guide on how to use the mod is required, you may also visit our [Wiki](https://github.com/Jomcraft-Network/DefaultSettings/wiki).
 
 ##### License
 

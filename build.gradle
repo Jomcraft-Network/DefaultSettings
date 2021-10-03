@@ -14,7 +14,6 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-apply plugin: 'signing'
 
 version = "1.17.x-2.6.0"
 
@@ -160,5 +159,8 @@ curseforge {
 				displayName = "$archivesBaseName-$version-deobf"
 			}
 		}
+		options {
+    		detectNewerJava = true
+  		}
 	}
 }

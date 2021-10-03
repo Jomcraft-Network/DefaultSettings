@@ -73,6 +73,7 @@ public class CommandDefaultSettings {
 						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files"), true);
 						boolean updateExisting = argument != null && argument.equals("-of");
 						FileUtil.checkMD5(updateExisting, true);
+						FileUtil.copyAndHashPrivate();
 					} catch (IOException e) {
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}

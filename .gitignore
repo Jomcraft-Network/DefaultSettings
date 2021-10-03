@@ -6,6 +6,7 @@
 !/build.gradle
 !/.gitignore
 !/changelog.html
+!/README.md
 !/gradle/
 !/LICENSE
 !/pubkey.gpg

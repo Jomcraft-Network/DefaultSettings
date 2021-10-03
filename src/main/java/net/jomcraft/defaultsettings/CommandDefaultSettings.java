@@ -35,8 +35,6 @@ public class CommandDefaultSettings {
 			return saveProcessConfigs(command.getSource(), StringArgumentType.getString(command, "argument"));
 		})));
 
-		event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
-
 		LiteralCommandNode<CommandSource> node = event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
 
 		event.getServer().getCommands().getDispatcher().register(Commands.literal("ds").redirect(node));
@@ -76,6 +74,7 @@ public class CommandDefaultSettings {
 						source.sendSuccess(new StringTextComponent(TextFormatting.GREEN + "Successfully saved your mod configuration files"), true);
 						boolean updateExisting = argument != null && argument.equals("-of");
 						FileUtil.checkMD5(updateExisting, true);
+						FileUtil.copyAndHashPrivate();
 					} catch (IOException e) {
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}

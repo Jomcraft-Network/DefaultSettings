@@ -754,11 +754,44 @@ public class FileUtil {
 
 			if (update) {
 
+				ArrayList<String> presentKeys = new ArrayList<String>();
+
+				final File localKeysFile = new File(mcDataDir, "options.txt");
+				if (localKeysFile.exists()) {
+					BufferedReader localReader = null;
+					try {
+						localReader = new BufferedReader(new FileReader(localKeysFile));
+						String line;
+						while ((line = localReader.readLine()) != null) {
+							if (line.isEmpty())
+								continue;
+
+							if(line.startsWith("key_key.")) {
+								final String key = line.split("key_")[1].split(":")[0];
+								presentKeys.add(key);
+							}
+						}
+					} catch (IOException e) {
+						throw e;
+
+					} catch (NullPointerException e) {
+						throw e;
+					} finally {
+						try {
+							localReader.close();
+						} catch (IOException e) {
+							throw e;
+						} catch (NullPointerException e) {
+							throw e;
+						}
+					}
+				}
+				
 				for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings) {
 					if (DefaultSettings.keyRebinds.containsKey(keyBinding.getName())) {
 						KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getName());
 
-						if (initial)
+						if (initial || !presentKeys.contains(keyBinding.getName()))
 							keyBinding.setKey(container.input);
 
 						keyBinding.defaultKey = container.input;

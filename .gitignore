@@ -6,7 +6,6 @@
 !/build.gradle
 !/.gitignore
 !/changelog.html
-!/.gitlab-ci.yml
 !/gradle/
 !/README.md
 !/LICENSE

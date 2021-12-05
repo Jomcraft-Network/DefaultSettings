@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[36,)"
+loaderVersion="[38,)"
 logoFile="logo.png"
 license="Apache License 2.0"
 
 [[mods]] 
-	modId="defaultsettings" 
-	version="${version}" 
+	modId="defaultsettings"
+	version="${version}"
 	displayName="DefaultSettings"
 	description='''Keep your game's local settings in case of an update to your modpack'''
 	side="CLIENT"
@@ -24,6 +24,6 @@ license="Apache License 2.0"
 [[dependencies.defaultsettings]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16,)"
+    versionRange="[1.18,1.19)"
     ordering="NONE"
     side="CLIENT"

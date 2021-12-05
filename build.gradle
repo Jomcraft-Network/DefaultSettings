@@ -15,20 +15,19 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.16.x-2.6.1"
+version = "1.18.x-2.6.1"
 
 def fileVersion = "2.6.1"
-def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.18'
 
     runs {
         client {
@@ -81,10 +80,10 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.2'
+    minecraft 'net.minecraftforge:forge:1.18-38.0.14'
 }
 
-def forge_version = "36.0.0"
+def forge_version = "38.0.0"
 
 processResources {
 
@@ -144,12 +143,7 @@ curseforge {
 			changelog = file("changelog.html")
 			changelogType = 'html'
 			releaseType = 'release'
-			addGameVersion '1.16.5'
-			addGameVersion '1.16.4'
-			addGameVersion '1.16.3'
-			addGameVersion '1.16.2'
-			addGameVersion '1.16.1'
-			addGameVersion '1.16'
+			addGameVersion '1.18'
 			
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"

@@ -37,11 +37,11 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
 import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class FileUtil {
 
@@ -62,11 +62,7 @@ public class FileUtil {
 
 		@Override
 		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("servers.dat") /*
-																																																																																																																	 * && (file.getPath().split("config")[1].split(Pattern.quote("\\")). length > 2
-																																																																																																																	 *//*
-																																																																																																																		 * ? true : getMainJSON().activeConfigs.contains(file.getName())
-																																																																																																																		 *//* ) */)
+			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("servers.dat") /*																																																																																																										 *//* ) */)
 				return true;
 
 			return false;
@@ -735,7 +731,7 @@ public class FileUtil {
 					if (line.isEmpty())
 						continue;
 
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputMappings.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
+					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputConstants.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -766,7 +762,7 @@ public class FileUtil {
 							if (line.isEmpty())
 								continue;
 
-							if(line.startsWith("key_key.")) {
+							if (line.startsWith("key_key.")) {
 								final String key = line.split("key_")[1].split(":")[0];
 								presentKeys.add(key);
 							}
@@ -786,8 +782,8 @@ public class FileUtil {
 						}
 					}
 				}
-				
-				for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings) {
+
+				for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings) {
 					if (DefaultSettings.keyRebinds.containsKey(keyBinding.getName())) {
 						KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getName());
 
@@ -795,12 +791,12 @@ public class FileUtil {
 							keyBinding.setKey(container.input);
 
 						keyBinding.defaultKey = container.input;
-						ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
-						keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), container.input);
+						ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, keyBinding, container.modifier, "keyModifierDefault");
+						keyBinding.setKeyModifierAndCode(keyBinding.getDefaultKeyModifier(), container.input);
 
 					}
 				}
-				KeyBinding.resetMapping();
+				KeyMapping.resetMapping();
 			}
 
 		}
@@ -949,7 +945,7 @@ public class FileUtil {
 		PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
-			for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings)
+			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
 				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
 
 		} catch (IOException e) {
@@ -1086,7 +1082,7 @@ public class FileUtil {
 		File file = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
 		try {
 			writer = new PrintWriter(new FileWriter(file));
-			for (KeyBinding keyBinding : Minecraft.getInstance().options.keyMappings)
+			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
 				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
 			stream = new FileInputStream(file);
 		} catch (IOException e) {
@@ -1338,5 +1334,4 @@ public class FileUtil {
 			}
 		}
 	}
-
 }

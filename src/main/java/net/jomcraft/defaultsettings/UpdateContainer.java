@@ -51,7 +51,7 @@ public class UpdateContainer {
 				VersionChecker.Status status = PENDING;
 				ComparableVersion target = null;
 				try {
-					InputStream con = openUrlStream(mc.getModInfo().getUpdateURL());
+					InputStream con = openUrlStream(mc.getModInfo().getUpdateURL().get());
 					String data = new String(ByteStreams.toByteArray(con), "UTF-8");
 					con.close();
 					Map<String, Object> json = new Gson().fromJson(data, Map.class);

@@ -1270,6 +1270,23 @@ public class FileUtil {
 		return ret;
 	}
 
+	public static ArrayList<String> listConfigFiles() throws FileNotFoundException, IOException {
+		// Collection<File> config = FileUtils.listFilesAndDirs(new
+		// File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE,
+		// TrueFileFilter.INSTANCE);
+		ArrayList<String> files = new ArrayList<String>();
+		for (File configFile : new File(getMainFolder(), activeProfile).listFiles()) {
+			if (!configFile.getName().equals("ignore.json")) {
+				if (optUse.contains(configFile.getName()))
+					continue;
+				String relativePath = configFile.getPath().substring((mcDataDir.getPath().length()));
+				String pathString = relativePath.split("defaultsettings")[1].substring(1).split(activeProfile)[1].substring(1);
+				files.add(pathString);
+			}
+		}
+		return files;
+	}
+
 	public static void checkMD5(boolean updateExisting, boolean configs) throws FileNotFoundException, IOException {
 		Collection<File> config = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File configFile : config) {

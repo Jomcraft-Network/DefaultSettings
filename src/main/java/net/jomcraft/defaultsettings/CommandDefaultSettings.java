@@ -5,7 +5,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -25,21 +24,25 @@ public class CommandDefaultSettings {
 		LiteralArgumentBuilder<CommandSourceStack> literalargumentbuilder = Commands.literal("defaultsettings");
 
 		literalargumentbuilder.then(Commands.literal("save").executes((command) -> {
-			return saveProcess(command.getSource(), null);
-		}).then(Commands.argument("argument", StringArgumentType.string()).executes((command) -> {
-			return saveProcess(command.getSource(), StringArgumentType.getString(command, "argument"));
-		}))).then(Commands.literal("saveconfigs").executes((command) -> {
-			return saveProcessConfigs(command.getSource(), null);
-		}).then(Commands.argument("argument", StringArgumentType.string()).executes((command) -> {
-			return saveProcessConfigs(command.getSource(), StringArgumentType.getString(command, "argument"));
-		})));
+			return saveProcess(command.getSource(), null, null);
+		}).then(Commands.argument("operation", OperationArguments.operationArguments()).executes((command) -> {
+			return saveProcess(command.getSource(), OperationArguments.getString(command, "operation"), null);
+		}).then(Commands.argument("type", TypeArguments.typeArguments()).executes((command) -> {
+			return saveProcess(command.getSource(), OperationArguments.getString(command, "operation"), TypeArguments.getString(command, "type"));
+		})))).then(Commands.literal("saveconfigs").executes((command) -> {
+			return saveProcessConfigs(command.getSource(), null, null);
+		}).then(Commands.argument("operation", OperationArguments.operationArguments()).executes((command) -> {
+			return saveProcessConfigs(command.getSource(), OperationArguments.getString(command, "operation"), null);
+		}).then(Commands.argument("config", ConfigArguments.configArguments()).executes((command) -> {
+			return saveProcessConfigs(command.getSource(), OperationArguments.getString(command, "operation"), ConfigArguments.getString(command, "config"));
+		}))));
 
 		LiteralCommandNode<CommandSourceStack> node = event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
 
 		event.getServer().getCommands().getDispatcher().register(Commands.literal("ds").redirect(node));
 	}
 
-	private static int saveProcessConfigs(CommandSourceStack source, String argument) throws CommandSyntaxException {
+	private static int saveProcessConfigs(CommandSourceStack source, String argument, String argument2) throws CommandSyntaxException {
 
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
@@ -53,12 +56,12 @@ public class CommandDefaultSettings {
 				try {
 					boolean somethingChanged = FileUtil.checkChangedConfig();
 
-					if (somethingChanged && (argument == null || !argument.equals("-of"))) {
+					if (somethingChanged && (argument == null || !argument.equals("forceOverride"))) {
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "\n\n"), true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "You seem to have updated certain config files!"), true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"), true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "If you want to ship the new configs to those players too,"), true);
-						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "append the '-of' argument"), true);
+						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "append the 'forceOverride' argument"), true);
 					}
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
@@ -71,7 +74,7 @@ public class CommandDefaultSettings {
 				else
 					try {
 						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files"), true);
-						boolean updateExisting = argument != null && argument.equals("-of");
+						boolean updateExisting = argument != null && argument.equals("forceOverride");
 						FileUtil.checkMD5(updateExisting, true);
 						FileUtil.copyAndHashPrivate();
 					} catch (IOException e) {
@@ -83,14 +86,13 @@ public class CommandDefaultSettings {
 		return 0;
 	}
 
-	private static int saveProcess(CommandSourceStack source, String argument) throws CommandSyntaxException {
-
+	private static int saveProcess(CommandSourceStack source, String argument, String argument2) throws CommandSyntaxException {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 
-		if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || (!argument.equals("-o") && !argument.equals("-of")))) {
+		if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
 			source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "These files already exist! If you want to overwrite"), true);
-			source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "them, add the '-o' argument"), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "them, add the 'override' argument"), true);
 			return 0;
 		}
 
@@ -103,12 +105,12 @@ public class CommandDefaultSettings {
 				try {
 					boolean somethingChanged = FileUtil.checkChanged();
 
-					if (somethingChanged && !argument.equals("-of")) {
+					if (somethingChanged && !argument.equals("forceOverride")) {
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "\n\n"), true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "You seem to have updated certain config files!"), true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"), true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "If you want to ship the new configs to those players too,"), true);
-						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "append the '-of' argument instead of '-o'"), true);
+						source.sendSuccess(new TextComponent(ChatFormatting.GOLD + "append the 'forceOverride' argument instead of 'override'"), true);
 					}
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
@@ -121,9 +123,11 @@ public class CommandDefaultSettings {
 			@Override
 			public void run() {
 				try {
-					FileUtil.saveKeys();
-					source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved the key configuration"), true);
-					FileUtil.restoreKeys(true, false);
+					if (argument2 == null || argument2.equals("keybinds")) {
+						FileUtil.saveKeys();
+						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved the key configuration"), true);
+						FileUtil.restoreKeys(true, false);
+					}
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
 					source.sendSuccess(new TextComponent(ChatFormatting.RED + "Couldn't save the key configuration!"), true);
@@ -137,8 +141,10 @@ public class CommandDefaultSettings {
 			@Override
 			public void run() {
 				try {
-					boolean optifine = FileUtil.saveOptions();
-					source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved the default game options" + (optifine ? " (+ Optifine)" : "")), true);
+					if (argument2 == null || argument2.equals("options")) {
+						boolean optifine = FileUtil.saveOptions();
+						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved the default game options" + (optifine ? " (+ Optifine)" : "")), true);
+					}
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
 					source.sendSuccess(new TextComponent(ChatFormatting.RED + "Couldn't save the default game options!"), true);
@@ -152,8 +158,10 @@ public class CommandDefaultSettings {
 			@Override
 			public void run() {
 				try {
-					FileUtil.saveServers();
-					source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved the server list"), true);
+					if (argument2 == null || argument2.equals("servers")) {
+						FileUtil.saveServers();
+						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved the server list"), true);
+					}
 				} catch (Exception e) {
 					DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
 					source.sendSuccess(new TextComponent(ChatFormatting.RED + "Couldn't save the server list!"), true);
@@ -164,7 +172,7 @@ public class CommandDefaultSettings {
 					source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Please inspect the log files for further information!"), true);
 				else
 					try {
-						boolean updateExisting = argument != null && argument.equals("-of");
+						boolean updateExisting = argument != null && argument.equals("forceOverride");
 						FileUtil.checkMD5(updateExisting, false);
 						FileUtil.copyAndHashPrivate();
 					} catch (IOException e) {

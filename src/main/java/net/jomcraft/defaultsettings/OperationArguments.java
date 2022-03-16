@@ -16,9 +16,15 @@ import net.minecraft.commands.SharedSuggestionProvider;
 public class OperationArguments implements ArgumentType<String> {
 
 	private static final List<String> ARGUMENTS = Arrays.asList("override", "forceOverride");
+	private static final List<String> ARGUMENTS_LIMITED = Arrays.asList("forceOverride");
+	private final boolean limited;
 
-	public static OperationArguments operationArguments() {
-		return new OperationArguments();
+	public OperationArguments(boolean limited) {
+		this.limited = limited;
+	}
+
+	public static OperationArguments operationArguments(boolean limited) {
+		return new OperationArguments(limited);
 	}
 
 	@Override
@@ -32,7 +38,7 @@ public class OperationArguments implements ArgumentType<String> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggest(ARGUMENTS, builder);
+		return SharedSuggestionProvider.suggest(this.limited ? ARGUMENTS_LIMITED : ARGUMENTS, builder);
 	}
 
 	@Override

@@ -27,13 +27,13 @@ public class CommandDefaultSettings {
 
 		literalargumentbuilder.then(Commands.literal("save").executes((command) -> {
 			return saveProcess(command.getSource(), null, null);
-		}).then(Commands.argument("operation", OperationArguments.operationArguments()).executes((command) -> {
+		}).then(Commands.argument("operation", OperationArguments.operationArguments(false)).executes((command) -> {
 			return saveProcess(command.getSource(), OperationArguments.getString(command, "operation"), null);
 		}).then(Commands.argument("type", TypeArguments.typeArguments()).executes((command) -> {
 			return saveProcess(command.getSource(), OperationArguments.getString(command, "operation"), TypeArguments.getString(command, "type"));
 		})))).then(Commands.literal("saveconfigs").executes((command) -> {
 			return saveProcessConfigs(command.getSource(), null, null);
-		}).then(Commands.argument("operation", OperationArguments.operationArguments()).executes((command) -> {
+		}).then(Commands.argument("operation", OperationArguments.operationArguments(true)).executes((command) -> {
 			return saveProcessConfigs(command.getSource(), OperationArguments.getString(command, "operation"), null);
 		}).then(Commands.argument("config", ConfigArguments.configArguments()).executes((command) -> {
 			return saveProcessConfigs(command.getSource(), OperationArguments.getString(command, "operation"), ConfigArguments.getString(command, "config"));

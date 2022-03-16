@@ -81,7 +81,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.12'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
 }
 
 def forge_version = "37.0.12"

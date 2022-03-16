@@ -1,6 +1,8 @@
 package net.jomcraft.defaultsettings;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.NoSuchFileException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -73,11 +75,14 @@ public class CommandDefaultSettings {
 					source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Please inspect the log files for further information!"), true);
 				else
 					try {
-						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files"), true);
 						boolean updateExisting = argument != null && argument.equals("forceOverride");
-						FileUtil.checkMD5(updateExisting, true);
-						FileUtil.copyAndHashPrivate();
-					} catch (IOException e) {
+						FileUtil.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
+						FileUtil.copyAndHashPrivate(false, true);
+						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files"), true);
+					} catch (UncheckedIOException | NullPointerException | IOException e) {
+						source.sendSuccess(new TextComponent(ChatFormatting.RED + "Couldn't save the config files!"), true);
+						if(e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException) 
+							source.sendSuccess(new TextComponent(ChatFormatting.RED + "It seems, no file or folder by that name exists"), true);
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}
 			}
@@ -173,8 +178,8 @@ public class CommandDefaultSettings {
 				else
 					try {
 						boolean updateExisting = argument != null && argument.equals("forceOverride");
-						FileUtil.checkMD5(updateExisting, false);
-						FileUtil.copyAndHashPrivate();
+						FileUtil.checkMD5(updateExisting, false, null);
+						FileUtil.copyAndHashPrivate(true, false);
 					} catch (IOException e) {
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}

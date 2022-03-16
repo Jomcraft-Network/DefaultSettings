@@ -1168,8 +1168,10 @@ public class FileUtil {
 		try {
 
 			Collection<File> config = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-			if (config.size() > 1)
-				return false;
+			for (File configFile : config) {
+				if(!(configFile.getName().equals(activeProfile) || optUse.contains(configFile.getName())))
+					return false;
+			}
 
 		} catch (Exception e) {
 			DefaultSettings.log.log(Level.ERROR, "Error while saving configs: ", e);

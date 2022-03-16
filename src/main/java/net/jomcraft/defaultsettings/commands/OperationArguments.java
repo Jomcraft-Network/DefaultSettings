@@ -1,6 +1,5 @@
-package net.jomcraft.defaultsettings;
+package net.jomcraft.defaultsettings.commands;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -11,14 +10,21 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+
 import net.minecraft.commands.SharedSuggestionProvider;
 
-public class ConfigArguments implements ArgumentType<String> {
+public class OperationArguments implements ArgumentType<String> {
 
-	private static List<String> ARGUMENTS = Arrays.asList("fml.toml", "forge-client.toml");
+	private static final List<String> ARGUMENTS = Arrays.asList("override", "forceOverride");
+	private static final List<String> ARGUMENTS_LIMITED = Arrays.asList("forceOverride");
+	private final boolean limited;
 
-	public static ConfigArguments configArguments() {
-		return new ConfigArguments();
+	public OperationArguments(boolean limited) {
+		this.limited = limited;
+	}
+
+	public static OperationArguments operationArguments(boolean limited) {
+		return new OperationArguments(limited);
 	}
 
 	@Override
@@ -32,12 +38,7 @@ public class ConfigArguments implements ArgumentType<String> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-		try {
-			ARGUMENTS = FileUtil.listConfigFiles();
-		} catch (IOException e) {
-			DefaultSettings.log.error(e);
-		}
-		return SharedSuggestionProvider.suggest(ARGUMENTS, builder);
+		return SharedSuggestionProvider.suggest(this.limited ? ARGUMENTS_LIMITED : ARGUMENTS, builder);
 	}
 
 	@Override

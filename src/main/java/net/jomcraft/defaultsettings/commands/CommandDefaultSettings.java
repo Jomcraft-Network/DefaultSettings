@@ -1,4 +1,4 @@
-package net.jomcraft.defaultsettings;
+package net.jomcraft.defaultsettings.commands;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -11,6 +11,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+
+import net.jomcraft.defaultsettings.DefaultSettings;
+import net.jomcraft.defaultsettings.FileUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,7 +25,7 @@ public class CommandDefaultSettings {
 	private static ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new TextComponent(ChatFormatting.RED + "Please wait until the last request has finished"));
 
-	protected static void register(ServerStartingEvent event) {
+	public static void register(ServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSourceStack> literalargumentbuilder = Commands.literal("defaultsettings");
 
 		literalargumentbuilder.then(Commands.literal("save").executes((command) -> {

@@ -483,7 +483,7 @@ public class FileUtil {
 		getSharedIgnore(new File(shared, "ignore.json"));
 	}
 
-	static void copyAndHashPrivate(boolean options, boolean configs) throws NullPointerException, IOException {
+	public static void copyAndHashPrivate(boolean options, boolean configs) throws NullPointerException, IOException {
 		ArrayList<String> toRemove = new ArrayList<String>();
 
 		if (options) {

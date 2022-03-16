@@ -1164,6 +1164,20 @@ public class FileUtil {
 		return DigestUtils.md5Hex(is).toUpperCase();
 	}
 
+	public static boolean checkForConfigFiles() {
+		try {
+
+			Collection<File> config = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+			if (config.size() > 1)
+				return false;
+
+		} catch (Exception e) {
+			DefaultSettings.log.log(Level.ERROR, "Error while saving configs: ", e);
+		}
+
+		return true;
+	}
+
 	public static boolean checkChangedConfig() {
 		boolean ret = false;
 		try {

@@ -79,9 +79,13 @@ public class CommandDefaultSettings {
 						FileUtil.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
 						FileUtil.copyAndHashPrivate(false, true);
 						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files"), true);
+						boolean noFiles = FileUtil.checkForConfigFiles();
+						if (noFiles)
+							source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"), true);
+
 					} catch (UncheckedIOException | NullPointerException | IOException e) {
 						source.sendSuccess(new TextComponent(ChatFormatting.RED + "Couldn't save the config files!"), true);
-						if(e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException) 
+						if (e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException)
 							source.sendSuccess(new TextComponent(ChatFormatting.RED + "It seems, no file or folder by that name exists"), true);
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}

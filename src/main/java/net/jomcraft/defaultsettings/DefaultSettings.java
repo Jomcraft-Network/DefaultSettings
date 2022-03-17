@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
-
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;

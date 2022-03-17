@@ -15,10 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.16.x-2.6.1"
+version = "1.16.x-2.8.0-RC1"
 
-def fileVersion = "2.6.1"
-def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
+def fileVersion = "2.8.0-RC1"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"

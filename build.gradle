@@ -83,7 +83,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.2'
 }
 
-def forge_version = "36.0.0"
+def forge_version = "32.0.0"
 
 processResources {
 

@@ -15,9 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.18.x-2.6.1"
+version = "1.18.x-2.8.0"
 
-def fileVersion = "2.6.1"
+def fileVersion = "2.8.0"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -27,7 +27,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.18'
+    mappings channel: 'official', version: '1.18.2'
 
     runs {
         client {
@@ -80,7 +80,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18-38.0.14'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.0.17'
 }
 
 def forge_version = "38.0.0"
@@ -144,6 +144,8 @@ curseforge {
 			changelogType = 'html'
 			releaseType = 'release'
 			addGameVersion '1.18'
+			addGameVersion '1.18.1'
+			addGameVersion '1.18.2'
 			
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"

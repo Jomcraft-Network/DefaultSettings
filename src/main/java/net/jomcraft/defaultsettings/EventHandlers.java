@@ -1,5 +1,6 @@
 package net.jomcraft.defaultsettings;
 
+import net.jomcraft.defaultsettings.commands.CommandDefaultSettings;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

@@ -83,7 +83,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.0.17'
 }
 
-def forge_version = "37.0.0"
+def forge_version = "38.0.0"
 
 processResources {
 
@@ -144,6 +144,8 @@ curseforge {
 			changelogType = 'html'
 			releaseType = 'release'
 			addGameVersion '1.18'
+			addGameVersion '1.18.1'
+			addGameVersion '1.18.2'
 			
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"

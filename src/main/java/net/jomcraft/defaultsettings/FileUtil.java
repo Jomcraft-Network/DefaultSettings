@@ -1169,7 +1169,7 @@ public class FileUtil {
 
 			Collection<File> config = FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 			for (File configFile : config) {
-				if(!(configFile.getName().equals(activeProfile) || optUse.contains(configFile.getName())))
+				if (!(configFile.getName().equals(activeProfile) || optUse.contains(configFile.getName())))
 					return false;
 			}
 

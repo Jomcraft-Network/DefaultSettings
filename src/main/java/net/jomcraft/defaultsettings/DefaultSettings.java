@@ -12,19 +12,18 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 @Mod(value = DefaultSettings.MODID)
 public class DefaultSettings {
@@ -35,6 +34,8 @@ public class DefaultSettings {
 	public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
+	public static EventOld oldEvent;
+	public static EventNew newEvent;
 	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static DefaultSettings instance;
 	public static boolean init = false;
@@ -48,7 +49,20 @@ public class DefaultSettings {
 				return;
 
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
-			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::regInit);
+
+			ComparableVersion current = new ComparableVersion(FMLLoader.versionInfo().forgeVersion());
+
+			ComparableVersion recommended = new ComparableVersion("40.0.17");
+			
+			int diff = recommended.compareTo(current);
+
+			if (diff >= 0) {
+				oldEvent = new EventOld();
+				FMLJavaModLoadingContext.get().getModEventBus().addListener(oldEvent::regInitOld);
+			} else {
+				newEvent = new EventNew();
+				FMLJavaModLoadingContext.get().getModEventBus().addListener(newEvent::regInitNew);
+			}
 
 			try {
 				FileUtil.restoreContents();
@@ -111,27 +125,6 @@ public class DefaultSettings {
 			DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 		});
 
-	}
-
-	@SuppressWarnings({ "deprecation", "resource" })
-	public void regInit(RegistryEvent.NewRegistry event) {
-		if (!init) {
-			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-				try {
-					Options gameSettings = Minecraft.getInstance().options;
-					gameSettings.load();
-					Minecraft.getInstance().options.save();
-
-				} catch (NullPointerException e) {
-					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
-				}
-
-			});
-			DistExecutor.runWhenOn(Dist.DEDICATED_SERVER, () -> () -> {
-				DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
-			});
-			init = true;
-		}
 	}
 
 	public static UpdateContainer getUpdater() {

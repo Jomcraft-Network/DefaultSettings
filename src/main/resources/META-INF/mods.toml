@@ -4,7 +4,7 @@ logoFile="logo.png"
 license="Apache License 2.0"
 
 [[mods]] 
-	modId="defaultsettings" 
+	modId="defaultsettings"
 	version="${version}"
 	displayName="DefaultSettings"
 	description='''Keep your game's local settings in case of an update to your modpack'''
@@ -24,6 +24,6 @@ license="Apache License 2.0"
 [[dependencies.defaultsettings]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17,1.18)"
+    versionRange="[1.17.1,1.18)"
     ordering="NONE"
     side="CLIENT"

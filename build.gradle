@@ -15,10 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.17.x-2.6.1"
+version = "1.17.x-2.8.0"
 
-def fileVersion = "2.6.1"
-def signSHA1 = "1945fa1cbb8ec2ffad2ccec7a0ca72ad52b20ef8"
+def fileVersion = "2.8.0"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -81,7 +80,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.12'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
 }
 
 def forge_version = "37.0.12"

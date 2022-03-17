@@ -101,7 +101,8 @@ processResources {
 }
 
 jar {
-    
+    exclude('net/minecraft/**') 
+	exclude('net/minecraftforge/**') 
 	manifest {
 		attributes 'FMLAT': 'defaultsettings_at.cfg'
 		attributes([
@@ -118,13 +119,15 @@ jar {
 }
 
 task sourcesJar(type: Jar) {
-	
+	exclude('net/minecraft/**') 
+	exclude('net/minecraftforge/**') 
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
-	
+	exclude('net/minecraft/**') 
+	exclude('net/minecraftforge/**') 
 	from sourceSets.main.output
 	classifier = 'deobf'
 }

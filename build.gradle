@@ -15,9 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.18.x-2.8.0"
+version = "1.18.x-2.8.0-RC1"
 
-def fileVersion = "2.8.0"
+def fileVersion = "2.8.0-RC1"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"

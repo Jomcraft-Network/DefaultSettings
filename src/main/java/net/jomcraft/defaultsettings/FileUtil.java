@@ -1296,9 +1296,6 @@ public class FileUtil {
 	}
 
 	public static ArrayList<String> listConfigFiles() throws FileNotFoundException, IOException {
-		// Collection<File> config = FileUtils.listFilesAndDirs(new
-		// File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE,
-		// TrueFileFilter.INSTANCE);
 		ArrayList<String> files = new ArrayList<String>();
 		for (File configFile : new File(getMainFolder(), activeProfile).listFiles()) {
 			if (!configFile.getName().equals("ignore.json") && !configFile.getName().contains("defaultsettings")) {

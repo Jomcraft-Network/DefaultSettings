@@ -5,13 +5,13 @@ import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.registries.NewRegistryEvent;
 
-public class EventOld {
+public class RegistryEvent {
 
 	@SuppressWarnings({ "deprecation", "resource" })
-	public void regInitOld(RegistryEvent.NewRegistry event) {
+	public void regInitNew(NewRegistryEvent event) {
 		if (!DefaultSettings.init) {
 			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 				try {

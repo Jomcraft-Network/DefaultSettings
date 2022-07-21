@@ -1,20 +1,21 @@
 package net.jomcraft.defaultsettings;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.net.ssl.HttpsURLConnection;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.maven.artifact.versioning.ComparableVersion;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
+import net.jomcraft.defaultsettings.commands.ConfigArguments;
+import net.jomcraft.defaultsettings.commands.OperationArguments;
+import net.jomcraft.defaultsettings.commands.TypeArguments;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -23,7 +24,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.registries.DeferredRegister;
 
 @Mod(value = DefaultSettings.MODID)
 public class DefaultSettings {
@@ -34,11 +35,10 @@ public class DefaultSettings {
 	public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2";
 	public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
 	public static boolean setUp = false;
-	private static final UpdateContainer updateContainer = new UpdateContainer();
 	public static DefaultSettings instance;
-	public static EventOld oldEvent;
-	public static EventNew newEvent;
+	public static RegistryEvent newEvent;
 	public static boolean init = false;
+	private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, DefaultSettings.MODID);
 
 	@SuppressWarnings({ "deprecation" })
 	public DefaultSettings() {
@@ -50,19 +50,13 @@ public class DefaultSettings {
 
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
 
-			ComparableVersion current = new ComparableVersion(FMLLoader.versionInfo().forgeVersion());
+			COMMAND_ARGUMENT_TYPES.register("ds_config", () -> ArgumentTypeInfos.registerByClass(ConfigArguments.class, new ConfigArguments.Info()));
+			COMMAND_ARGUMENT_TYPES.register("ds_operation", () -> ArgumentTypeInfos.registerByClass(OperationArguments.class, new OperationArguments.Info()));
+			COMMAND_ARGUMENT_TYPES.register("ds_type", () -> ArgumentTypeInfos.registerByClass(TypeArguments.class, new TypeArguments.Info()));
 
-			ComparableVersion recommended = new ComparableVersion("40.0.17");
-
-			int diff = recommended.compareTo(current);
-
-			if (diff >= 0) {
-				oldEvent = new EventOld();
-				FMLJavaModLoadingContext.get().getModEventBus().addListener(oldEvent::regInitOld);
-			} else {
-				newEvent = new EventNew();
-				FMLJavaModLoadingContext.get().getModEventBus().addListener(newEvent::regInitNew);
-			}
+			COMMAND_ARGUMENT_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+			newEvent = new RegistryEvent();
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(newEvent::regInitNew);
 
 			try {
 				FileUtil.restoreContents();
@@ -76,20 +70,6 @@ public class DefaultSettings {
 			MinecraftForge.EVENT_BUS.register(new EventHandlers());
 
 			ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
-
-			(new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						sendCount();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-
-			}).start();
 
 		});
 
@@ -127,31 +107,7 @@ public class DefaultSettings {
 
 	}
 
-	public static UpdateContainer getUpdater() {
-		return updateContainer;
-	}
-
 	public static DefaultSettings getInstance() {
 		return instance;
-	}
-
-	public static void sendCount() throws Exception {
-		String url = "https://apiv1.jomcraft.net/count";
-		String jsonString = "{\"id\":\"Defaultsettings\", \"code\":" + RandomStringUtils.random(32, true, true) + "}";
-		URL obj = new URL(url);
-		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-		con.setRequestMethod("POST");
-		con.setRequestProperty("User-Agent", USER_AGENT);
-		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-
-		con.setDoOutput(true);
-		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-		wr.writeBytes(jsonString);
-
-		wr.flush();
-		wr.close();
-		con.getResponseCode();
-		con.disconnect();
-
 	}
 }

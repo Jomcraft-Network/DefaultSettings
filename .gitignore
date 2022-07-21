@@ -12,3 +12,4 @@
 !/pubkey.gpg
 !/Jenkinsfile
 !/.github/
+!/settings.gradle

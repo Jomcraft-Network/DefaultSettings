@@ -5,9 +5,9 @@ plugins {
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
-version = "1.19.x-2.8.1"
+version = "1.19.x-2.8.2"
 
-def fileVersion = "2.8.1"
+def fileVersion = "2.8.2"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"

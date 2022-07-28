@@ -15,9 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.18.x-2.8.1"
+version = "1.18.x-2.8.2"
 
-def fileVersion = "2.8.1"
+def fileVersion = "2.8.2"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -80,7 +80,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.0.17'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.68'
 }
 
 def forge_version = "38.0.0"
@@ -101,8 +101,6 @@ processResources {
 }
 
 jar {
-    exclude('net/minecraft/**') 
-	exclude('net/minecraftforge/**') 
 	manifest {
 		attributes 'FMLAT': 'defaultsettings_at.cfg'
 		attributes([
@@ -119,15 +117,11 @@ jar {
 }
 
 task sourcesJar(type: Jar) {
-	exclude('net/minecraft/**') 
-	exclude('net/minecraftforge/**') 
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
-	exclude('net/minecraft/**') 
-	exclude('net/minecraftforge/**') 
 	from sourceSets.main.output
 	classifier = 'deobf'
 }

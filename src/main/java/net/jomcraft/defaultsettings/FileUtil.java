@@ -14,83 +14,29 @@ import java.io.Reader;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Level;
 import com.google.common.hash.Hashing;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.jomcraft.jcplugin.FileUtilNoMC;
+import net.jomcraft.jcplugin.MainJSON;
+import net.jomcraft.jcplugin.PrivateJSON;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import static net.jomcraft.jcplugin.FileUtilNoMC.*;
 
 public class FileUtil {
-
-	public static final File mcDataDir = Minecraft.getInstance().gameDirectory;
-	public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	public static MainJSON mainJson;
-	public static PrivateJSON privateJson;
-	public static IgnoreJSON ignoreJson;
-	public volatile static Thread registryChecker;
-	public volatile static boolean options_exists = false;
-	public volatile static boolean keys_exists = false;
-	public static ArrayList<String> deleted = new ArrayList<String>();
-	public volatile static boolean servers_exists = false;
-	public static String activeProfile = "Default";
-	public static boolean otherCreator = false;
-	public static boolean firstBootUp;
-	public static final FileFilter fileFilterModular = new FileFilter() {
-
-		@Override
-		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("options.justenoughkeys.txt") && !file.getName().equals("options.amecsapi.txt") && !file.getName().equals("servers.dat"))
-				return true;
-
-			return false;
-		}
-	};
-
-	public static final FileFilter fileFilterAnti = new FileFilter() {
-
-		@Override
-		public boolean accept(File file) {
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("sharedConfigs") && !file.getName().equals("ignore.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("options.justenoughkeys.txt") && !file.getName().equals("options.amecsapi.txt") && !file.getName().equals("servers.dat"))
-				return true;
-
-			return false;
-		}
-	};
-
-	public static final FileFilter fileFilter = new FileFilter() {
-
-		@Override
-		public boolean accept(File file) {
-
-			if (!file.getName().equals("defaultsettings") && !file.getName().equals("defaultsettings.json") && !file.getName().equals("ds_dont_export.json") && !file.getName().equals("keys.txt") && !file.getName().equals("options.txt") && !file.getName().equals("optionsof.txt") && !file.getName().equals("optionsshaders.txt") && !file.getName().equals("options.justenoughkeys.txt") && !file.getName().equals("options.amecsapi.txt") && !file.getName().equals("servers.dat") && !new File(FileUtil.getMainFolder(), "sharedConfigs/" + file.getName()).exists())
-				return true;
-
-			return false;
-		}
-	};
 
 	public static File getMainFolder() {
 		final File storeFolder = new File(mcDataDir, "config/defaultsettings");
@@ -115,7 +61,7 @@ public class FileUtil {
 				}
 			};
 		} else {
-			ff = FileUtil.fileFilter;
+			ff = fileFilter;
 		}
 
 		if (state == 1 || state == 2) {
@@ -156,12 +102,7 @@ public class FileUtil {
 	public static void initialSetupJSON() throws UnknownHostException, SocketException, NoSuchAlgorithmException {
 
 		getPrivateJSON();
-
-		final String version = getMainJSON().getVersion();
-
-		if (!DefaultSettings.VERSION.equals(version))
-			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
-
+		
 		if (!privateJson.privateIdentifier.equals(mainJson.generatedBy) && !mainJson.generatedBy.equals("<default>")) {
 			otherCreator = true;
 		}
@@ -169,14 +110,14 @@ public class FileUtil {
 		mainJson.save();
 	}
 
-	public static IgnoreJSON getSharedIgnore(File location) {
+	public static FileUtilNoMC.IgnoreJSON getSharedIgnore(File location) {
 
 		if (ignoreJson != null)
 			return ignoreJson;
 
 		if (location.exists()) {
 			try (Reader reader = new FileReader(location)) {
-				ignoreJson = gson.fromJson(reader, IgnoreJSON.class);
+				ignoreJson = gson.fromJson(reader, FileUtilNoMC.IgnoreJSON.class);
 				ignoreJson.location = location;
 
 			} catch (Exception e) {
@@ -185,7 +126,7 @@ public class FileUtil {
 
 		} else {
 
-			ignoreJson = new IgnoreJSON(location);
+			ignoreJson = new FileUtilNoMC.IgnoreJSON(location);
 			ignoreJson.save();
 		}
 		return ignoreJson;
@@ -258,40 +199,14 @@ public class FileUtil {
 	}
 
 	public static void restoreContents() throws NullPointerException, IOException, NoSuchAlgorithmException {
+		
+		final String version = getMainJSON().getVersion();
 
-		initialSetupJSON();
+		if (!DefaultSettings.VERSION.equals(version))
+			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
 
-		initialToDefaultProfile();
-		/*
-		String firstFolder = "<ERROR>";
-
-		for (File file : getMainFolder().listFiles()) {
-			if (file.isDirectory() && !file.getName().equals("sharedConfigs")) {
-				firstFolder = file.getName();
-				break;
-			}
-		}
-
-		if (!new File(getMainFolder(), mainJson.mainProfile).exists())
-			mainJson.mainProfile = firstFolder;
-
-		if (privateJson.targetProfile.equals("!NEW!"))
-			privateJson.targetProfile = mainJson.mainProfile;
-
-		if (privateJson.currentProfile.equals("!NEW!"))
-			privateJson.currentProfile = mainJson.mainProfile;
-
-		if (!new File(getMainFolder(), privateJson.targetProfile).exists())
-			privateJson.targetProfile = firstFolder;
-
-		if (!new File(getMainFolder(), privateJson.currentProfile).exists())
-			privateJson.currentProfile = firstFolder;
-
-		privateJson.save();
-
-		mainJson.save();*/
-
-		boolean switchProf = switchProfile();
+		if (mainJson.generatedBy.equals("<default>"))
+			mainJson.generatedBy = privateJson.privateIdentifier;
 
 		activeProfile = privateJson.currentProfile;
 
@@ -299,13 +214,8 @@ public class FileUtil {
 		firstBootUp = !options.exists();
 		if (firstBootUp) {
 			restoreOptions();
-			//restoreConfigs();
-		} else if (switchProf) {
-			//restoreConfigs();
-			mainJson.save();
 		} else {
 			copyAndHashPrivate(true, true);
-			mainJson.save();
 		}
 
 		final File optionsOF = new File(mcDataDir, "optionsof.txt");
@@ -331,160 +241,7 @@ public class FileUtil {
 		if (!options.exists())
 			options.createNewFile();
 
-	}
-
-	private static boolean switchProfile() throws IOException {
-		if (mainJson.generatedBy.equals("<default>"))
-			mainJson.generatedBy = privateJson.privateIdentifier;
-		if (!privateJson.currentProfile.equals(privateJson.targetProfile)) {
-
-			Date date = new Date();
-			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss");
-
-			String profileName = formatter.format(date);
-
-			File fileDir = new File(FileUtil.getMainFolder(), profileName);
-			fileDir.mkdir();
-
-			activeProfile = profileName;
-
-			FileUtil.moveAllConfigs();
-			FileUtil.checkMD5(true, false, null); // TODO: This second "false" is a place holder
-
-			String[] extensions = new String[] { "zip" };
-			List<Path> oldestFiles = Collections.emptyList();
-
-			Collection<File> files = FileUtils.listFiles(getMainFolder(), extensions, false);
-
-			if (files.size() >= 10) {
-
-				final List<Path> list2 = files.stream().map(File::toPath).collect(Collectors.toList());
-				Comparator<? super Path> lastModifiedComparator = (p1, p2) -> Long.compare(p1.toFile().lastModified(), p2.toFile().lastModified());
-				try (Stream<Path> paths = list2.stream()) {
-					oldestFiles = paths.filter(Files::isRegularFile).sorted(lastModifiedComparator).limit(files.size() - 8).collect(Collectors.toList());
-					oldestFiles.stream().forEach(t -> {
-						try {
-							Files.delete(t);
-						} catch (IOException e) {
-							DefaultSettings.log.log(Level.ERROR, "Exception while processing profiles: ", e);
-						}
-					});
-				}
-
-			}
-
-			Path pf = new File(FileUtil.getMainFolder(), profileName + ".zip").toPath();
-			Files.createFile(pf);
-			try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(pf))) {
-				Path pt = Paths.get(fileDir.getPath());
-				Files.walk(pt).filter(path -> !Files.isDirectory(path)).forEach(path -> {
-					ZipEntry zipEntry = new ZipEntry(pt.relativize(path).toString());
-					try {
-						zos.putNextEntry(zipEntry);
-						Files.copy(path, zos);
-						zos.closeEntry();
-					} catch (IOException e) {
-						DefaultSettings.log.log(Level.ERROR, "Exception while processing profiles: ", e);
-					}
-				});
-			}
-
-			try {
-				deleted.add(fileDir.getName());
-
-				FileUtils.deleteDirectory(fileDir);
-
-			} catch (IOException e) {
-				Thread thread = new Thread("File deletion thread") {
-					public void run() {
-						try {
-							Thread.sleep(10000);
-							FileUtils.deleteDirectory(fileDir);
-						} catch (InterruptedException | IOException e) {
-
-						}
-
-					}
-				};
-				thread.start();
-				try {
-					FileUtils.forceDeleteOnExit(fileDir);
-				} catch (IOException e1) {
-
-				}
-
-			}
-
-			activeProfile = privateJson.targetProfile;
-			privateJson.currentProfile = activeProfile;
-			privateJson.save();
-
-			return true;
-
-		}
-		return false;
-
-	}
-
-	private static void initialToDefaultProfile() {
-		if (getMainJSON().mainProfile.equals("!NEW!")) {
-
-			new File(getMainFolder(), "Default").mkdir();
-
-			FileFilter ffm = new FileFilter() {
-
-				@Override
-				public boolean accept(File file) {
-					if (!file.getName().equals("Default"))
-						return true;
-
-					return false;
-				}
-			};
-
-			try {
-				FileUtils.copyDirectory(getMainFolder(), new File(getMainFolder(), "Default"), ffm);
-			} catch (IOException e) {
-				DefaultSettings.log.log(Level.ERROR, "Couldn't move config files: ", e);
-			}
-
-			for (File f : getMainFolder().listFiles(ffm)) {
-				try {
-					if (f.isDirectory())
-						FileUtils.deleteDirectory(f);
-					else
-						Files.delete(f.toPath());
-				} catch (IOException e) {
-					DefaultSettings.log.log(Level.ERROR, "Couldn't move config files: ", e);
-				}
-			}
-
-			privateJson.targetProfile = "Default";
-			privateJson.save();
-			getMainJSON().mainProfile = "Default";
-			mainJson.save();
-
-		}
-		String firstFolder = "<ERROR>";
-		for (File file : getMainFolder().listFiles()) {
-			if (file.isDirectory() && !file.getName().equals("sharedConfigs")) {
-				firstFolder = file.getName();
-				break;
-			}
-		}
-
-		if (firstFolder.equals("<ERROR>")) {
-			new File(getMainFolder(), "Default").mkdir();
-
-			privateJson.targetProfile = "Default";
-			privateJson.save();
-			getMainJSON().mainProfile = "Default";
-			mainJson.save();
-		}
-
-		//File shared = new File(getMainFolder(), "sharedConfigs");
-		//shared.mkdir();
-		//getSharedIgnore(new File(shared, "ignore.json"));
+		mainJson.save();
 	}
 
 	public static void copyAndHashPrivate(boolean options, boolean configs) throws NullPointerException, IOException {
@@ -672,12 +429,12 @@ public class FileUtil {
 
 	public static void deleteKeys() {
 		new File(getMainFolder(), activeProfile + "/keys.txt").delete();
-		FileUtil.keys_exists = false;
+		keys_exists = false;
 	}
 
 	public static void deleteServers() {
 		new File(getMainFolder(), activeProfile + "/servers.dat").delete();
-		FileUtil.servers_exists = false;
+		servers_exists = false;
 	}
 
 	public static void deleteOptions() {
@@ -686,7 +443,7 @@ public class FileUtil {
 		new File(getMainFolder(), activeProfile + "/optionsshaders.txt").delete();
 		new File(getMainFolder(), activeProfile + "/options.justenoughkeys.txt").delete();
 		new File(getMainFolder(), activeProfile + "/options.amecsapi.txt").delete();
-		FileUtil.options_exists = false;
+		options_exists = false;
 	}
 
 	public static void restoreOptions() throws NullPointerException, IOException {
@@ -953,12 +710,12 @@ public class FileUtil {
 				DefaultSettings.log.log(Level.ERROR, "Process the files: ", e);
 			}
 		});
-/*
+
 		try {
 			FileUtils.copyDirectory(new File(getMainFolder(), "sharedConfigs/"), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
-		}*/
+		}
 
 		FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE).stream().filter(file -> !file.isDirectory()).forEach(file -> {
 			try {
@@ -1526,7 +1283,7 @@ public class FileUtil {
 
 		public void save() {
 			try (FileWriter writer = new FileWriter(this.location)) {
-				FileUtil.gson.toJson(this, writer);
+				gson.toJson(this, writer);
 			} catch (IOException e) {
 				DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
 			}

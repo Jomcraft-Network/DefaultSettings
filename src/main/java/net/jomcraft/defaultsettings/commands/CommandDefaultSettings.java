@@ -51,6 +51,11 @@ public class CommandDefaultSettings {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 
+		if (DefaultSettings.shutDown) {
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			return 0;
+		}
+
 		MutableBoolean issue = new MutableBoolean(false);
 
 		tpe.execute(new ThreadRunnable(source, issue) {

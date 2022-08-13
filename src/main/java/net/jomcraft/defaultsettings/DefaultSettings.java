@@ -13,6 +13,7 @@ import com.electronwill.nightconfig.toml.TomlParser;
 import net.jomcraft.defaultsettings.commands.ConfigArguments;
 import net.jomcraft.defaultsettings.commands.OperationArguments;
 import net.jomcraft.defaultsettings.commands.TypeArguments;
+import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.Registry;
@@ -38,6 +39,7 @@ public class DefaultSettings {
 	public static DefaultSettings instance;
 	public static RegistryEvent newEvent;
 	public static boolean init = false;
+	public static boolean shutDown = false;
 	private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, DefaultSettings.MODID);
 
 	@SuppressWarnings({ "deprecation" })
@@ -47,12 +49,12 @@ public class DefaultSettings {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			if (setUp)
 				return;
-			
+
 			try {
-				Class.forName("net.jomcraft.jcplugin.DefaultSettingsPlugin").getSimpleName();
+				Class.forName("net.jomcraft.jcplugin.FileUtilNoMC");
 			} catch (ClassNotFoundException e) {
-				System.exit(1);
-				e.printStackTrace();
+				shutDown = true;
+				DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
 			}
 
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
@@ -65,6 +67,15 @@ public class DefaultSettings {
 			newEvent = new RegistryEvent();
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(newEvent::regInitNew);
 
+			ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
+
+			MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
+
+			MinecraftForge.EVENT_BUS.register(new EventHandlers());
+
+			if (shutDown)
+				return;
+
 			try {
 				FileUtil.restoreContents();
 
@@ -72,11 +83,6 @@ public class DefaultSettings {
 				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game:", e);
 			}
 			setUp = true;
-			MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
-
-			MinecraftForge.EVENT_BUS.register(new EventHandlers());
-
-			ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
 
 		});
 
@@ -99,7 +105,8 @@ public class DefaultSettings {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 
 			try {
-				FileUtil.restoreKeys(true, FileUtil.firstBootUp);
+				if (!shutDown)
+					FileUtil.restoreKeys(true, FileUtilNoMC.firstBootUp);
 			} catch (IOException e) {
 				DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
 			} catch (NullPointerException e) {

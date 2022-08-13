@@ -6,9 +6,9 @@ plugins {
 	//id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-version = "1.19.x-2.8.3"
+version = "1.19.x-2.8.4"
 
-def fileVersion = "2.8.3"
+def fileVersion = "2.8.4"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -78,7 +78,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.0.8'
     
     //Temp solution
-    implementation files('libs/JCPlugin-1.19.x-2.8.3.jar')
+    implementation files('libs/JCPlugin-1.19.x-2.8.4.jar')
 	
 //	shade files('libs/JCPlugin-1.19.x-1.0.8.jar')
 	

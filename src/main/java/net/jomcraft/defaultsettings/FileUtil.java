@@ -262,7 +262,7 @@ public class FileUtil {
 		initialSetupJSON();
 
 		initialToDefaultProfile();
-
+		/*
 		String firstFolder = "<ERROR>";
 
 		for (File file : getMainFolder().listFiles()) {
@@ -289,7 +289,7 @@ public class FileUtil {
 
 		privateJson.save();
 
-		mainJson.save();
+		mainJson.save();*/
 
 		boolean switchProf = switchProfile();
 
@@ -299,9 +299,9 @@ public class FileUtil {
 		firstBootUp = !options.exists();
 		if (firstBootUp) {
 			restoreOptions();
-			restoreConfigs();
+			//restoreConfigs();
 		} else if (switchProf) {
-			restoreConfigs();
+			//restoreConfigs();
 			mainJson.save();
 		} else {
 			copyAndHashPrivate(true, true);
@@ -482,9 +482,9 @@ public class FileUtil {
 			mainJson.save();
 		}
 
-		File shared = new File(getMainFolder(), "sharedConfigs");
-		shared.mkdir();
-		getSharedIgnore(new File(shared, "ignore.json"));
+		//File shared = new File(getMainFolder(), "sharedConfigs");
+		//shared.mkdir();
+		//getSharedIgnore(new File(shared, "ignore.json"));
 	}
 
 	public static void copyAndHashPrivate(boolean options, boolean configs) throws NullPointerException, IOException {
@@ -953,12 +953,12 @@ public class FileUtil {
 				DefaultSettings.log.log(Level.ERROR, "Process the files: ", e);
 			}
 		});
-
+/*
 		try {
 			FileUtils.copyDirectory(new File(getMainFolder(), "sharedConfigs/"), new File(mcDataDir, "config"), fileFilterModular);
 		} catch (IOException e) {
 			throw e;
-		}
+		}*/
 
 		FileUtils.listFilesAndDirs(new File(getMainFolder(), activeProfile), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE).stream().filter(file -> !file.isDirectory()).forEach(file -> {
 			try {

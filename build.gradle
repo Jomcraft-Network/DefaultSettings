@@ -3,11 +3,12 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	//id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-version = "1.19.x-2.8.2"
+version = "1.19.x-2.8.3"
 
-def fileVersion = "2.8.2"
+def fileVersion = "2.8.3"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -17,7 +18,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.1'
+    mappings channel: 'official', version: '1.19.2'
 
     runs {
         client {
@@ -69,11 +70,33 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+//configurations {
+//    shade
+//}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.0'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.0.8'
+    
+    //Temp solution
+    implementation files('libs/JCPlugin-1.19.x-2.8.3.jar')
+	
+//	shade files('libs/JCPlugin-1.19.x-1.0.8.jar')
+	
+	
+	
+	//implementation 'com.github.Jomcraft-Network:JCPlugin:1.0.4'
 }
 
 def forge_version = "41.0.0"
+
+//shadowJar {
+//    classifier = ''
+//    configurations = [project.configurations.shade]
+//}
+
+//reobf {
+//    shadowJar { }
+//}
 
 processResources {
 
@@ -121,6 +144,10 @@ artifacts {
 	archives sourcesJar
 	archives deobfJar
 }
+
+//tasks.build.dependsOn reobfShadowJar
+
+jar.finalizedBy('reobfJar')
 
 curseforge {
 	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {

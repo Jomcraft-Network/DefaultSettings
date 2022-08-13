@@ -13,3 +13,4 @@
 !/Jenkinsfile
 !/.github/
 !/settings.gradle
+!/libs/

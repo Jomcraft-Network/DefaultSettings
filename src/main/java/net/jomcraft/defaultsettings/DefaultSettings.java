@@ -47,6 +47,13 @@ public class DefaultSettings {
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			if (setUp)
 				return;
+			
+			try {
+				Class.forName("net.jomcraft.jcplugin.DefaultSettingsPlugin").getSimpleName();
+			} catch (ClassNotFoundException e) {
+				System.exit(1);
+				e.printStackTrace();
+			}
 
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
 

@@ -6,9 +6,9 @@ plugins {
 	//id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
-version = "1.19.x-2.8.5"
+version = "1.19.x-2.8.6"
 
-def fileVersion = "2.8.5"
+def fileVersion = "2.8.6"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -74,11 +74,23 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 //    shade
 //}
 
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.0.8'
     
     //Temp solution
-    implementation files('libs/JCPlugin-1.19.x-2.8.5.jar')
+    //implementation files('libs/JCPlugin-1.19.x-2.8.5.jar')
+    
+    implementation fg.deobf("curse.maven:jcp-659192:3934117")
+    
 	
 //	shade files('libs/JCPlugin-1.19.x-1.0.8.jar')
 	

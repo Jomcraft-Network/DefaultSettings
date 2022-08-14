@@ -13,7 +13,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.jomcraft.defaultsettings.DefaultSettings;
-import net.jomcraft.defaultsettings.FileUtil;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;

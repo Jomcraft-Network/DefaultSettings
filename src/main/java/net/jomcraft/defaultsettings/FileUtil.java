@@ -1,10 +1,9 @@
 package net.jomcraft.defaultsettings;
 
+import static net.jomcraft.jcplugin.FileUtilNoMC.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,19 +13,13 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collection;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Level;
-import com.google.common.hash.Hashing;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import static net.jomcraft.jcplugin.FileUtilNoMC.*;
 
 public class FileUtil {
 

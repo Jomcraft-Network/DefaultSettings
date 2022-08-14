@@ -13,6 +13,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.jomcraft.defaultsettings.DefaultSettings;
 import net.jomcraft.defaultsettings.FileUtil;
+import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -51,6 +52,11 @@ public class CommandDefaultSettings {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 
+		if (DefaultSettings.shutDown) {
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			return 0;
+		}
+
 		MutableBoolean issue = new MutableBoolean(false);
 
 		tpe.execute(new ThreadRunnable(source, issue) {
@@ -58,7 +64,7 @@ public class CommandDefaultSettings {
 			@Override
 			public void run() {
 				try {
-					boolean somethingChanged = FileUtil.checkChangedConfig();
+					boolean somethingChanged = FileUtilNoMC.checkChangedConfig();
 
 					if (somethingChanged && (argument == null || !argument.equals("forceOverride"))) {
 						source.sendSuccess(Component.literal(ChatFormatting.GOLD + "\n\n"), true);
@@ -78,10 +84,10 @@ public class CommandDefaultSettings {
 				else
 					try {
 						boolean updateExisting = argument != null && argument.equals("forceOverride");
-						FileUtil.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
-						FileUtil.copyAndHashPrivate(false, true);
+						FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
+						FileUtilNoMC.copyAndHashPrivate(false, true);
 						source.sendSuccess(Component.literal(ChatFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : " (single entry)")), true);
-						boolean noFiles = FileUtil.checkForConfigFiles();
+						boolean noFiles = FileUtilNoMC.checkForConfigFiles();
 						if (noFiles)
 							source.sendSuccess(Component.literal(ChatFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"), true);
 
@@ -100,8 +106,13 @@ public class CommandDefaultSettings {
 	private static int saveProcess(CommandSourceStack source, String argument, String argument2) throws CommandSyntaxException {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
+		
+		if (DefaultSettings.shutDown) {
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			return 0;
+		}
 
-		if ((FileUtil.keysFileExist() || FileUtil.optionsFilesExist() || FileUtil.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
+		if ((FileUtilNoMC.keysFileExist() || FileUtilNoMC.optionsFilesExist() || FileUtilNoMC.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
 			source.sendSuccess(Component.literal(ChatFormatting.GOLD + "These files already exist! If you want to overwrite"), true);
 			source.sendSuccess(Component.literal(ChatFormatting.GOLD + "them, add the 'override' argument"), true);
 			return 0;
@@ -170,7 +181,7 @@ public class CommandDefaultSettings {
 			public void run() {
 				try {
 					if (argument2 == null || argument2.equals("servers")) {
-						FileUtil.saveServers();
+						FileUtilNoMC.saveServers();
 						source.sendSuccess(Component.literal(ChatFormatting.GREEN + "Successfully saved the server list"), true);
 					}
 				} catch (Exception e) {
@@ -184,8 +195,8 @@ public class CommandDefaultSettings {
 				else
 					try {
 						boolean updateExisting = argument != null && argument.equals("forceOverride");
-						FileUtil.checkMD5(updateExisting, false, null);
-						FileUtil.copyAndHashPrivate(true, false);
+						FileUtilNoMC.checkMD5(updateExisting, false, null);
+						FileUtilNoMC.copyAndHashPrivate(true, false);
 					} catch (IOException e) {
 						DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
 					}

@@ -52,7 +52,7 @@ public class DefaultSettings {
 				return;
 
 			try {
-				Field pluginClass = Class.forName("net.jomcraft.jcplugin.FileUtilNoMC").getField("checksSuccessful");
+				Field pluginClass = Class.forName("net.jomcraft.jcplugin.JCPlugin").getDeclaredField("checksSuccessful");
 
 				if (!pluginClass.getBoolean(null)) {
 					shutDown = true;

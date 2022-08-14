@@ -2,6 +2,7 @@ package net.jomcraft.defaultsettings;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,8 +52,13 @@ public class DefaultSettings {
 				return;
 
 			try {
-				Class.forName("net.jomcraft.jcplugin.FileUtilNoMC");
-			} catch (ClassNotFoundException e) {
+				Field pluginClass = Class.forName("net.jomcraft.jcplugin.FileUtilNoMC").getField("checksSuccessful");
+
+				if (!pluginClass.getBoolean(null)) {
+					shutDown = true;
+					DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
+				}
+			} catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				shutDown = true;
 				DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
 			}

@@ -106,6 +106,11 @@ public class CommandDefaultSettings {
 	private static int saveProcess(CommandSourceStack source, String argument, String argument2) throws CommandSyntaxException {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
+		
+		if (DefaultSettings.shutDown) {
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			return 0;
+		}
 
 		if ((FileUtilNoMC.keysFileExist() || FileUtilNoMC.optionsFilesExist() || FileUtilNoMC.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
 			source.sendSuccess(Component.literal(ChatFormatting.GOLD + "These files already exist! If you want to overwrite"), true);

@@ -43,7 +43,8 @@ public class DefaultSettings {
 				return;
 
 			try {
-				Field pluginClass = Class.forName("net.jomcraft.jcplugin.FileUtilNoMC").getField("checksSuccessful");
+				
+				Field pluginClass = Class.forName("net.jomcraft.jcplugin.JCPlugin").getDeclaredField("checksSuccessful");
 
 				if (!pluginClass.getBoolean(null)) {
 					shutDown = true;
@@ -51,7 +52,7 @@ public class DefaultSettings {
 				}
 			} catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				shutDown = true;
-				DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
+				DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...", e);
 			}
 
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);

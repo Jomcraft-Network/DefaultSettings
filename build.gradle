@@ -15,9 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.18.x-2.8.2"
+version = "1.18.x-2.8.6"
 
-def fileVersion = "2.8.2"
+def fileVersion = "2.8.6"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -79,8 +79,18 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.68'
+    implementation fg.deobf("curse.maven:jcp-659192:3934117")
 }
 
 def forge_version = "38.0.0"
@@ -132,6 +142,8 @@ artifacts {
 	archives deobfJar
 }
 
+jar.finalizedBy('reobfJar')
+
 curseforge {
 	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
 		apiKey = System.getenv("CURSE_API")
@@ -139,7 +151,7 @@ curseforge {
 			id = '318012'
 			changelog = file("changelog.html")
 			changelogType = 'html'
-			releaseType = 'release'
+			releaseType = 'beta'
 			addGameVersion '1.18'
 			addGameVersion '1.18.1'
 			addGameVersion '1.18.2'

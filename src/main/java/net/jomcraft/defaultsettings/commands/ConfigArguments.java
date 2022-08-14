@@ -11,9 +11,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import net.jomcraft.defaultsettings.DefaultSettings;
-import net.jomcraft.defaultsettings.FileUtil;
+import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.commands.SharedSuggestionProvider;
 
 public class ConfigArguments implements ArgumentType<String> {
@@ -36,7 +35,7 @@ public class ConfigArguments implements ArgumentType<String> {
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
 		try {
-			ARGUMENTS = FileUtil.listConfigFiles();
+			ARGUMENTS = FileUtilNoMC.listConfigFiles();
 		} catch (IOException e) {
 			DefaultSettings.log.error(e);
 		}

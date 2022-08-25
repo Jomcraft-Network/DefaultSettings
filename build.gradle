@@ -15,9 +15,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.18.x-2.8.6"
+version = "1.18.x-2.8.7"
 
-def fileVersion = "2.8.6"
+def fileVersion = "2.8.7"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -110,7 +110,7 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.73'
-    implementation fg.deobf("curse.maven:jcp-659192:3934117")
+    implementation fg.deobf("curse.maven:jcp-659192:3951271")
 }
 
 def forge_version = "38.0.0"
@@ -181,12 +181,12 @@ curseforge {
 			}
     
 			addArtifact (sourcesJar) {
-				releaseType = 'release'
+				releaseType = 'beta'
 				displayName = "$archivesBaseName-$version-sources"
 			}
     
 			addArtifact (deobfJar) {
-				releaseType = 'release'
+				releaseType = 'beta'
 				displayName = "$archivesBaseName-$version-deobf"
 			}
 		}

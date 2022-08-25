@@ -5,9 +5,9 @@ plugins {
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
-version = "1.19.x-2.8.6"
+version = "1.19.x-2.8.7"
 
-def fileVersion = "2.8.6"
+def fileVersion = "2.8.7"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -80,7 +80,7 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.0.8'
-    implementation fg.deobf("curse.maven:jcp-659192:3934117")
+    implementation fg.deobf("curse.maven:jcp-659192:3951271")
 }
 
 def forge_version = "41.0.0"
@@ -141,7 +141,7 @@ curseforge {
 			id = '318012'
 			changelog = file("changelog.html")
 			changelogType = 'html'
-			releaseType = 'release'
+			releaseType = 'beta'
 			addGameVersion '1.19'
 			addGameVersion '1.19.1'
 			
@@ -150,12 +150,12 @@ curseforge {
 			}
     
 			addArtifact (sourcesJar) {
-				releaseType = 'release'
+				releaseType = 'beta'
 				displayName = "$archivesBaseName-$version-sources"
 			}
     
 			addArtifact (deobfJar) {
-				releaseType = 'release'
+				releaseType = 'beta'
 				displayName = "$archivesBaseName-$version-deobf"
 			}
 		}

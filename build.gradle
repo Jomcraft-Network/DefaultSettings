@@ -147,7 +147,6 @@ curseforge {
 			
 			mainArtifact(jar) {
 				displayName = "$archivesBaseName-$version"
-				requiredDependency 'jcplugin'
 			}
     
 			addArtifact (sourcesJar) {

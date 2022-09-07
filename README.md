@@ -1,4 +1,4 @@
-[![Version](https://badgen.net/https/apiv1.jomcraft.net/stats/defaultsettings/endpoint?cache=3600)](https://github.com/Jomcraft-Network/DefaultSettings) [![Java CI](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml/badge.svg?branch=1.16.x-next)](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml)
+[![Version](https://badgen.net/https/apiv3.jomcraft.net/product/defaultsettings%3Fendpoint%3Dforge?cache=3600)](https://github.com/Jomcraft-Network/DefaultSettings) [![Java CI](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml/badge.svg?branch=1.16.x-next)](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml)
 
 ### DefaultSettings
 

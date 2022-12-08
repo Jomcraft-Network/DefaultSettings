@@ -2,12 +2,12 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
-	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'net.darkhax.curseforgegradle' version '1.0.11'
 }
 
-version = "1.19.x-2.8.2"
+version = "1.19.3-2.8.7"
 
-def fileVersion = "2.8.2"
+def fileVersion = "2.8.7"
 group = "net.jomcraft.defaultsettings"
 
 archivesBaseName = "DefaultSettings"
@@ -17,7 +17,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.19.1'
+    mappings channel: 'official', version: '1.19.3'
 
     runs {
         client {
@@ -69,8 +69,18 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.1-42.0.0'
+    minecraft 'net.minecraftforge:forge:1.19.3-44.0.0'
+    implementation fg.deobf("curse.maven:jcp-659192:3951271")
 }
 
 def forge_version = "41.0.0"
@@ -122,33 +132,34 @@ artifacts {
 	archives deobfJar
 }
 
-curseforge {
+jar.finalizedBy('reobfJar')
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
-		apiKey = System.getenv("CURSE_API")
-		project {
-			id = '318012'
-			changelog = file("changelog.html")
-			changelogType = 'html'
-			releaseType = 'release'
-			addGameVersion '1.19'
-			addGameVersion '1.19.1'
-			
-			mainArtifact(jar) {
-				displayName = "$archivesBaseName-$version"
-			}
-    
-			addArtifact (sourcesJar) {
-				releaseType = 'release'
-				displayName = "$archivesBaseName-$version-sources"
-			}
-    
-			addArtifact (deobfJar) {
-				releaseType = 'release'
-				displayName = "$archivesBaseName-$version-deobf"
-			}
-		}
-		options {
-    		detectNewerJava = true
-  		}
+		disableVersionDetection()
+
+		apiToken = System.getenv("CURSE_API")
+
+		def mainFile = upload(318012, jar)
+		mainFile.releaseType = 'release'
+		mainFile.changelogType = 'html'
+		mainFile.changelog = file('changelog.html')
+		mainFile.addRequirement('jcplugin')
+		mainFile.displayName = "$archivesBaseName-$version"
+		mainFile.addModLoader('Forge')
+		mainFile.addJavaVersion('Java 8')
+		mainFile.addJavaVersion('Java 16')
+		mainFile.addJavaVersion('Java 17')
+		mainFile.addGameVersion('1.19.3')
+
+		def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
+		sourcesFile.addRequirement('jcplugin')
+		sourcesFile.changelog = file('changelog.html')
+		sourcesFile.displayName = "$archivesBaseName-$version-sources"
+
+		def deobfFile = mainFile.withAdditionalFile(deobfJar)
+		deobfFile.addRequirement('jcplugin')
+		deobfFile.changelog = file('changelog.html')
+		deobfFile.displayName = "$archivesBaseName-$version-deobf"
 	}
 }

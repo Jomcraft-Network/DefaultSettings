@@ -12,7 +12,6 @@ license="Apache License 2.0"
 	authors="PT400C - Jomcraft Network"
 	credits="Developed by Jomcraft Network"
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/defaultsettings"
-	updateJSONURL="https://gist.githubusercontent.com/PT400C/be22046792a7859688f655f1a5f83975/raw/"
 
 [[dependencies.defaultsettings]]
     modId="forge"

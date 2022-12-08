@@ -12,7 +12,7 @@ public class RegistryEvent {
 
 	@SuppressWarnings({ "deprecation", "resource" })
 	public void regInitNew(NewRegistryEvent event) {
-		if (!DefaultSettings.init) {
+		if (!DefaultSettings.init && !DefaultSettings.shutDown) {
 			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 				try {
 					Options gameSettings = Minecraft.getInstance().options;

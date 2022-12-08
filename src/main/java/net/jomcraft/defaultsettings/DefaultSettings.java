@@ -17,7 +17,6 @@ import net.jomcraft.defaultsettings.commands.TypeArguments;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.core.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
@@ -27,6 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = DefaultSettings.MODID)
 public class DefaultSettings {
@@ -41,7 +41,7 @@ public class DefaultSettings {
 	public static RegistryEvent newEvent;
 	public static boolean init = false;
 	public static boolean shutDown = false;
-	private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, DefaultSettings.MODID);
+	private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, DefaultSettings.MODID);
 
 	@SuppressWarnings({ "deprecation" })
 	public DefaultSettings() {

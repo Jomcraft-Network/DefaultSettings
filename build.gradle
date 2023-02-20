@@ -1,165 +1,115 @@
-plugins {
-    id 'eclipse'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
-	id 'net.darkhax.curseforgegradle' version '1.0.11'
-}
+apply plugin: "idea"
 
-version = "1.19.3-2.8.7"
+subprojects {
+    apply plugin: "java"
+    apply plugin: "idea"
 
-def fileVersion = "2.8.7"
-group = "net.jomcraft.defaultsettings"
+    project.version = "2.8.7"
 
-archivesBaseName = "DefaultSettings"
+    if (!project.hasProperty('javaVersion') || project.property('javaVersion') == "8") {
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+        java.toolchain {
+            project.logger.lifecycle("{}: configuring Java 8 toolchain", project.displayName)
+            languageVersion = JavaLanguageVersion.of(8)
+        }
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+        it.sourceCompatibility = 1.8
+        it.targetCompatibility = 1.8
+        tasks.withType(JavaCompile).configureEach {
+            project.logger.lifecycle("{}: setting source/target compatibility to Java 8 on task {}", project.displayName, it.name)
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+        }
+    } else if (project.hasProperty('javaVersion')) {
 
-minecraft {
-    mappings channel: 'official', version: '1.19.3'
+        int ver = project.property('javaVersion') as int
 
-    runs {
-        client {
-            workingDirectory project.file('run')
+        it.sourceCompatibility = 1.8
+        it.targetCompatibility = 1.8
 
-            property 'forge.logging.markers', 'REGISTRIES'
+        java.toolchain {
+            project.logger.lifecycle("{}: configuring Java {} toolchain", project.displayName, ver)
+            languageVersion = JavaLanguageVersion.of(ver)
+        }
 
-            property 'forge.logging.console.level', 'debug'
+        tasks.withType(JavaCompile).configureEach {
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+            project.logger.lifecycle("{}: setting release to {} on task {}", project.displayName, ver, it.name)
+            options.release = ver
+        }
+    }
 
-            mods {
-                defaultsettings {
-                    source sourceSets.main
-                }
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = "UTF-8"
+    }
+
+    //tasks.withType(GenerateModuleMetadata) {
+    //	enabled = false //probably broken
+    //}
+
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title"     : "DefaultSettings",
+                    "Specification-Vendor"    : "Jomcraft Network",
+                    "Specification-Version"   : project.version,
+                    "Implementation-Title"    : "DefaultSettings",
+                    "Implementation-Version"  : project.version,
+                    "Implementation-Vendor"   : "Jomcraft Network",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ")
+            ])
+        }
+    }
+
+    processResources {
+        project.ext.replace_version = (String replace) -> {
+            inputs.property "version", replace
+
+            filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+                expand "version": replace
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = "https://repo.spongepowered.org/repository/maven-public/"
+            content {
+                includeGroup "org.spongepowered"
             }
         }
 
-        server {
-            workingDirectory project.file('run')
+        mavenCentral({
+            content {
+                includeGroup("org.jetbrains")
+            }
+        })
+    }
 
-            property 'forge.logging.markers', 'REGISTRIES'
+    dependencies {
+        implementation "org.jetbrains:annotations:16.0.2"
+    }
+}
 
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                defaultsettings {
-                    source sourceSets.main
+/*task("copyRelease") {
+    subprojects {
+        dependsOn project.name + ":build"
+    }
+    doFirst {
+        println "Gathering builds"
+        copy {
+            subprojects {
+                if (project.name != "Core") {
+                    def libDir = project.projectDir.toPath().resolve("build/libs")
+                    from(libDir) {
+                        include "*.jar"
+                        exclude "*-dev.jar", "*-sources.jar"
+                    }
+                    into "build/libs/"
+                    duplicatesStrategy DuplicatesStrategy.INCLUDE
                 }
             }
         }
-
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'defaultsettings', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                defaultsettings {
-                    source sourceSets.main
-                }
-            }
-        }
     }
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-}
-
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.0.0'
-    implementation fg.deobf("curse.maven:jcp-659192:3951271")
-}
-
-def forge_version = "41.0.0"
-
-processResources {
-
-	duplicatesStrategy = 'include'
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-
-        expand 'version': fileVersion, 'forge_version': forge_version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
-    }
-}
-
-jar {
-	manifest {
-		attributes 'FMLAT': 'defaultsettings_at.cfg'
-		attributes([
-			"Specification-Title": "DefaultSettings",
-			"Specification-Vendor": "Jomcraft Network",
-			"Specification-Version": fileVersion,
-			"Implementation-Title": "DefaultSettings",
-			"Implementation-Version": fileVersion,
-			"Implementation-Vendor" : "Jomcraft Network",
-			"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-		])
-	}
-
-}
-
-task sourcesJar(type: Jar) {
-	from sourceSets.main.allSource
-	classifier = 'sources'
-}
-
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	classifier = 'deobf'
-}
-
-artifacts {
-	archives jar
-	archives sourcesJar
-	archives deobfJar
-}
-
-jar.finalizedBy('reobfJar')
-
-task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-	if(System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
-		disableVersionDetection()
-
-		apiToken = System.getenv("CURSE_API")
-
-		def mainFile = upload(318012, jar)
-		mainFile.releaseType = 'release'
-		mainFile.changelogType = 'html'
-		mainFile.changelog = file('changelog.html')
-		mainFile.addRequirement('jcplugin')
-		mainFile.displayName = "$archivesBaseName-$version"
-		mainFile.addModLoader('Forge')
-		mainFile.addJavaVersion('Java 8')
-		mainFile.addJavaVersion('Java 16')
-		mainFile.addJavaVersion('Java 17')
-		mainFile.addGameVersion('1.19.3')
-
-		def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
-		sourcesFile.addRequirement('jcplugin')
-		sourcesFile.changelog = file('changelog.html')
-		sourcesFile.displayName = "$archivesBaseName-$version-sources"
-
-		def deobfFile = mainFile.withAdditionalFile(deobfJar)
-		deobfFile.addRequirement('jcplugin')
-		deobfFile.changelog = file('changelog.html')
-		deobfFile.displayName = "$archivesBaseName-$version-deobf"
-	}
-}
+}*/

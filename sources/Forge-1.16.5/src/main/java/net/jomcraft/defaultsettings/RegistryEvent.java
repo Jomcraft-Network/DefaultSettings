@@ -1,21 +1,19 @@
 package net.jomcraft.defaultsettings;
 
+import net.minecraft.client.GameSettings;
 import org.apache.logging.log4j.Level;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.NewRegistryEvent;
 
 public class RegistryEvent {
 
 	@SuppressWarnings({ "deprecation", "resource" })
-	public void regInitNew(NewRegistryEvent event) {
+	public void regInitNew(net.minecraftforge.event.RegistryEvent.NewRegistry event) {
 		if (!DefaultSettings.init && !DefaultSettings.shutDown) {
 			DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 				try {
-					Options gameSettings = Minecraft.getInstance().options;
+					GameSettings gameSettings = Minecraft.getInstance().options;
 					gameSettings.load();
 					Minecraft.getInstance().options.save();
 

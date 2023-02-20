@@ -1,6 +1,20 @@
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven { url = 'https://maven.minecraftforge.net/' }
-    }
+	repositories {
+		gradlePluginPortal()
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		maven {
+			url = 'https://repo.spongepowered.org/repository/maven-public/'
+		}
+	}
 }
+
+rootProject.name = name
+
+include("Fabric-1.16.5")
+project(":Fabric-1.16.5").projectDir = file("./sources/Fabric-1.16.5")
+
+include("Forge-1.16.5")
+project(":Forge-1.16.5").projectDir = file("./sources/Forge-1.16.5")

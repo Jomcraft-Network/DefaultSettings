@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[36,)"
 logoFile="logo.png"
 license="Apache License 2.0"
 
@@ -16,13 +16,13 @@ license="Apache License 2.0"
 [[dependencies.defaultsettings]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="[36.2.0,)"
     ordering="NONE"
     side="CLIENT"
     
 [[dependencies.defaultsettings]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,1.20)"
+    versionRange="[1.16,1.17)"
     ordering="NONE"
     side="CLIENT"

@@ -13,13 +13,12 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import org.apache.logging.log4j.Level;
+
 import com.mojang.blaze3d.platform.InputConstants;
-import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.client.KeyMapping;
+import org.apache.logging.log4j.Level;
+import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class FileUtil {
 
@@ -105,7 +104,7 @@ public class FileUtil {
 					if (line.isEmpty())
 						continue;
 
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputConstants.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
+					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputConstants.getKey(line.split(":")[1]), null));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -165,9 +164,8 @@ public class FileUtil {
 							keyBinding.setKey(container.input);
 
 						keyBinding.defaultKey = container.input;
-						ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, keyBinding, container.modifier, "keyModifierDefault");
-						keyBinding.setKeyModifierAndCode(keyBinding.getDefaultKeyModifier(), container.input);
 
+						//((DefaultSettingsMixin) keyBinding).setDefaultKey(container.input);
 					}
 				}
 				KeyMapping.resetMapping();
@@ -182,7 +180,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
 			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
-				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
+				writer.print(keyBinding.getName() + ":" + keyBinding.key.toString() + "\n");
 
 		} catch (IOException e) {
 			throw e;
@@ -335,7 +333,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(file));
 			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
-				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
+				writer.print(keyBinding.getName() + ":" + keyBinding.key.toString() + "\n");
 			stream = new FileInputStream(file);
 		} catch (IOException e) {
 			throw e;

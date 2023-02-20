@@ -3,10 +3,15 @@ name: Publish CI
 on:
   workflow_dispatch:
     inputs:
-      type:
-        description: 'What type of task to run'
+      publish-all:
+        type: boolean
+        description: 'Should all editions be published?'
         required: true
-        default: 'curseforge'
+        default: false
+      publish-edition:
+        description: 'Edition to publish (Forge-1.16.5 or Fabric-1.16.5)'
+        required: false
+        default: 'Forge-1.16.5'
 
 jobs:
   build:
@@ -24,8 +29,14 @@ jobs:
         run: chmod +x gradlew
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
-      - name: Build with Gradle
-        run: ./gradlew build publishCurseForge
+      - name: Build with Gradle and publish all editions
+        if: ${{ github.event.inputs.publish-all == 'true' }}
+        run: ./gradlew build publishCurseForge copyRelease
+        env:
+          CURSE_API: ${{ secrets.CURSE_API }}
+      - name: Build with Gradle and publish specific edition
+        if: ${{ github.event.inputs.publish-all == 'false' }}
+        run: ./gradlew :${{ github.event.inputs.publish-edition }}:build :${{ github.event.inputs.publish-edition }}:publishCurseForge :${{ github.event.inputs.publish-edition }}:copyRelease
         env:
           CURSE_API: ${{ secrets.CURSE_API }}
       - uses: actions/upload-artifact@v2

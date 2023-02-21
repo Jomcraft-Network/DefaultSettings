@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+logoFile="logo.png"
+license="Apache License 2.0"
+
+[[mods]] 
+	modId="defaultsettings"
+	version="${version}"
+	displayName="DefaultSettings"
+	description='''Keep your game's local settings in case of an update to your modpack'''
+	side="CLIENT"
+	authors="PT400C - Jomcraft Network"
+	credits="Developed by Jomcraft Network"
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/defaultsettings"
+
+[[dependencies.defaultsettings]]
+    modId="forge"
+    mandatory=true
+    versionRange="[43.2.0,)"
+    ordering="NONE"
+    side="CLIENT"
+    
+[[dependencies.defaultsettings]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19,1.19.3)"
+    ordering="NONE"
+    side="CLIENT"

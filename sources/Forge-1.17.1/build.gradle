@@ -1,0 +1,154 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+    }
+}
+
+plugins {
+    id 'net.darkhax.curseforgegradle' version '1.0.11'
+}
+
+apply plugin: 'java'
+apply plugin: 'net.minecraftforge.gradle'
+
+archivesBaseName = "${rootProject.name}"
+
+ext.replace_version(version)
+
+version = "1.17.x-${version}-Forge"
+
+minecraft {
+    mappings channel: 'official', version: '1.17.1'
+
+    runs {
+        client {
+            workingDirectory file('./run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            ideaModule "DefaultSettings.Forge-1.17.1.main"
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "${rootProject.name}" {
+                    source sourceSets.main
+                    //source project(":Core").sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory file('./run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            ideaModule "DefaultSettings.Forge-1.17.1.main"
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "${rootProject.name}" {
+                    source sourceSets.main
+                    //source project(":Core").sourceSets.main
+                }
+            }
+        }
+    }
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
+	implementation fg.deobf("curse.maven:jcp-659192:4404195")
+    //implementation project(":Core")
+}
+
+//processResources {
+ //   inputs.property "version", "1.0.0"
+
+ //   filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+  //      expand "version": "1.0.0"
+  //  }
+//}
+
+/*processResources {
+    duplicatesStrategy = 'include'
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        //expand 'version': "1.0.0"
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}*/
+
+tasks.withType(JavaCompile) {
+    //source(project(":Core").sourceSets.main.allSource)
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'defaultsettings_at.cfg'
+    }
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+}
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    if (System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
+        disableVersionDetection()
+        apiToken = System.getenv("CURSE_API")
+
+        def mainFile = upload(318012, jar)
+        mainFile.releaseType = 'alpha'
+        mainFile.displayName = "$archivesBaseName-$version"
+        mainFile.changelogType = 'html'
+        mainFile.changelog = file('../../changelog.html')
+        mainFile.addModLoader('Forge')
+        mainFile.addJavaVersion('Java 8')
+        mainFile.addJavaVersion('Java 16')
+        mainFile.addJavaVersion('Java 17')
+        mainFile.addGameVersion('1.19.3')
+        mainFile.addGameVersion('1.19.2')
+        mainFile.addGameVersion('1.18.2')
+        mainFile.addGameVersion('1.17.1')
+        mainFile.addGameVersion('1.16.5')
+
+        def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
+        sourcesFile.changelog = file('../../changelog.html')
+        sourcesFile.displayName = "$archivesBaseName-$version-sources"
+    }
+}
+
+task("copyRelease") {
+    dependsOn "build"
+
+    doFirst {
+        println "Gathering builds"
+        copy {
+            def libDir = project.projectDir.toPath().resolve("build/libs")
+            from(libDir) {
+                include "*.jar"
+                exclude "*-dev.jar", "*-sources.jar"
+            }
+            into "../../build/libs/"
+            duplicatesStrategy DuplicatesStrategy.INCLUDE
+        }
+    }
+}

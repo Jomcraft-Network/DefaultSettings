@@ -9,7 +9,7 @@ on:
         required: true
         default: false
       publish-edition:
-        description: 'Edition to publish (Forge-1.16.5 or Fabric-1.16.5)'
+        description: 'Edition to publish (Forge-1.16.5, Fabric-1.16.5, Forge-1.17.1 or Fabric-1.17.1)'
         required: false
         default: 'Forge-1.16.5'
 

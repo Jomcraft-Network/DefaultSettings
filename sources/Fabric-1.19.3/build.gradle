@@ -7,7 +7,7 @@ archivesBaseName = "${rootProject.name}"
 
 ext.replace_version(version)
 
-version = "1.16.x-1.18.x-${version}-Fabric"
+version = "1.19.x-${version}-Fabric"
 
 repositories {
     maven {
@@ -19,12 +19,12 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.16.5"
+	minecraft "com.mojang:minecraft:1.19.3"
 	mappings loom.officialMojangMappings()
 
-	modImplementation "net.fabricmc:fabric-loader:0.11.3"
+	modImplementation "net.fabricmc:fabric-loader:0.14.11"
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.34.2+1.16"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3"
 	
 	//implementation fg.deobf("curse.maven:jcp-659192:4404202")
 	modImplementation "curse.maven:jcp-659192:4404202"
@@ -46,13 +46,13 @@ loom {
 	runs {
 		client {
 			client()
-			setConfigName("Fabric 1.16.5 Client")
+			setConfigName("Fabric 1.19.3 Client")
 			ideConfigGenerated(true)
 			runDir("./run")
 		}
 		server {
 			server()
-			setConfigName("Fabric 1.16.5 Server")
+			setConfigName("Fabric 1.19.3 Server")
 			ideConfigGenerated(true)
 			runDir("./run")
 		}

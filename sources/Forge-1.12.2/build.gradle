@@ -17,18 +17,20 @@ apply plugin: 'net.minecraftforge.gradle'
 
 archivesBaseName = "${rootProject.name}"
 
+def file_version = version;
+
 ext.replace_version(version)
 
-version = "1.16.x-${version}-Forge"
+version = "1.12.2-${version}-Forge"
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'snapshot', version: '20171003-1.12'
 
     runs {
         client {
             workingDirectory file('./run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            ideaModule "DefaultSettings.Forge-1.16.5.main"
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            ideaModule "DefaultSettings.Forge-1.12.2.main"
             property 'forge.logging.console.level', 'debug'
             mods {
                 "${rootProject.name}" {
@@ -40,8 +42,8 @@ minecraft {
 
         server {
             workingDirectory file('./run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            ideaModule "DefaultSettings.Forge-1.16.5.main"
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            ideaModule "DefaultSettings.Forge-1.12.2.main"
             property 'forge.logging.console.level', 'debug'
             mods {
                 "${rootProject.name}" {
@@ -64,31 +66,25 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
-	implementation fg.deobf("curse.maven:jcp-659192:4407104")
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+    implementation fg.deobf("curse.maven:jcp-659192:4407625")
     //implementation project(":Core")
 }
 
-//processResources {
- //   inputs.property "version", "1.0.0"
-
- //   filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
-  //      expand "version": "1.0.0"
-  //  }
-//}
-
-/*processResources {
+processResources {
     duplicatesStrategy = 'include'
 
+    inputs.property "version", file_version
+
     from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-        //expand 'version': "1.0.0"
+        include 'mcmod.info'
+        expand 'version': file_version
     }
 
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
+        exclude 'mcmod.info'
     }
-}*/
+}
 
 tasks.withType(JavaCompile) {
     //source(project(":Core").sourceSets.main.allSource)

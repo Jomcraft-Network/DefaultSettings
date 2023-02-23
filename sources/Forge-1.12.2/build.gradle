@@ -21,7 +21,7 @@ def file_version = version;
 
 ext.replace_version(version)
 
-version = "1.12.2-${version}-Forge"
+version = "1.7.10+1.12.2-${version}-Forge"
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
@@ -91,11 +91,17 @@ tasks.withType(JavaCompile) {
 }
 
 task sourcesJar(type: Jar) {
+    exclude('cpw/**')
+    exclude('net/minecraft/**')
+    exclude('net/minecraftforge/**')
     from sourceSets.main.allSource
     classifier = 'sources'
 }
 
 jar {
+    exclude('cpw/**')
+    exclude('net/minecraft/**')
+    exclude('net/minecraftforge/**')
     manifest {
         attributes 'FMLAT': 'accesstransformer.cfg'
     }

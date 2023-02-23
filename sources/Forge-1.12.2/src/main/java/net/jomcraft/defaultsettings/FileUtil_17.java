@@ -14,13 +14,11 @@ import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.Level;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.settings.KeyModifier;
 
-public class FileUtil {
+public class FileUtil_17 {
 
 	public static FileUtilNoMC.IgnoreJSON getSharedIgnore(File location) {
 
@@ -33,7 +31,7 @@ public class FileUtil {
 				ignoreJson.location = location;
 
 			} catch (Exception e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
+				DefaultSettings_17.log.log(Level.ERROR, "Exception at processing startup: ", e);
 			}
 
 		} else {
@@ -45,11 +43,11 @@ public class FileUtil {
 	}
 
 	public static void restoreContents() throws NullPointerException, IOException, NoSuchAlgorithmException {
-		
+
 		final String version = getMainJSON().getVersion();
 
-		if (!DefaultSettings.VERSION.equals(version))
-			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
+		if (!DefaultSettings_17.VERSION.equals(version))
+			mainJson.setVersion(DefaultSettings_17.VERSION).setPrevVersion(version);
 
 		if (mainJson.generatedBy.equals("<default>"))
 			mainJson.generatedBy = privateJson.privateIdentifier;
@@ -92,8 +90,7 @@ public class FileUtil {
 
 	@SuppressWarnings("resource")
 	public static void restoreKeys(boolean update, boolean initial) throws NullPointerException, IOException, NumberFormatException {
-
-		DefaultSettings.keyRebinds.clear();
+		DefaultSettings_17.keyRebinds.clear();
 		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		if (keysFile.exists()) {
 			BufferedReader reader = null;
@@ -104,7 +101,7 @@ public class FileUtil {
 					if (line.isEmpty())
 						continue;
 
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(Integer.parseInt(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
+					DefaultSettings_17.keyRebinds.put(line.split(":")[0], Integer.parseInt(line.split(":")[1]));
 				}
 			} catch (IOException e) {
 				throw e;
@@ -157,16 +154,14 @@ public class FileUtil {
 				}
 
 				for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings) {
-					if (DefaultSettings.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
-						KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getKeyDescription());
+					if (DefaultSettings_17.keyRebinds.containsKey(keyBinding.getKeyDescription())) {
+						int container = DefaultSettings_17.keyRebinds.get(keyBinding.getKeyDescription());
 
 						if (initial || !presentKeys.contains(keyBinding.getKeyDescription()))
-							keyBinding.keyCode = container.input;
+							keyBinding.keyCode = container;
 
-						keyBinding.keyCodeDefault = container.input;
-						ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
-						keyBinding.setKeyModifierAndCode(keyBinding.getKeyModifierDefault(), container.input);
-
+						keyBinding.keyCodeDefault = container;
+						//ObfuscationReflectionHelper.setPrivateValue(KeyBinding.class, keyBinding, container.modifier, "keyModifierDefault");
 					}
 				}
 				KeyBinding.resetKeyBindingArrayAndHash();
@@ -181,7 +176,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
 			for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings)
-				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + ":" + keyBinding.getKeyModifier().name() + "\n");
+				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
 
 		} catch (IOException e) {
 			throw e;
@@ -334,7 +329,7 @@ public class FileUtil {
 		try {
 			writer = new PrintWriter(new FileWriter(file));
 			for (KeyBinding keyBinding : Minecraft.getMinecraft().gameSettings.keyBindings)
-				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + ":" + keyBinding.getKeyModifier().name() + "\n");
+				writer.print(keyBinding.getKeyDescription() + ":" + keyBinding.getKeyCode() + "\n");
 			stream = new FileInputStream(file);
 		} catch (IOException e) {
 			throw e;
@@ -439,7 +434,7 @@ public class FileUtil {
 			Files.delete(fileK.toPath());
 
 		} catch (Exception e) {
-			DefaultSettings.log.log(Level.ERROR, "Error while saving configs: ", e);
+			DefaultSettings_17.log.log(Level.ERROR, "Error while saving configs: ", e);
 		}
 
 		return ret;

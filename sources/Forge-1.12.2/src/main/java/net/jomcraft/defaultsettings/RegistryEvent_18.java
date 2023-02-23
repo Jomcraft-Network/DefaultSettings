@@ -6,11 +6,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
 
-public class RegistryEvent {
+public class RegistryEvent_18 {
 
 	@SuppressWarnings({ "deprecation", "resource" })
 	public void regInitNew(net.minecraftforge.event.RegistryEvent.NewRegistry event) {
-		if (!DefaultSettings.init && !DefaultSettings.shutDown) {
+		if (!DefaultSettings_18.init && !DefaultSettings_18.shutDown) {
 			if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
 				try {
 					GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
@@ -18,13 +18,13 @@ public class RegistryEvent {
 					Minecraft.getMinecraft().gameSettings.saveOptions();
 
 				} catch (NullPointerException e) {
-					DefaultSettings.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
+					DefaultSettings_18.log.log(Level.ERROR, "Something went wrong while starting up: ", e);
 				}
 			} else {
-				DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
+				DefaultSettings_18.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
 			}
 
-			DefaultSettings.init = true;
+			DefaultSettings_18.init = true;
 		}
 	}
 

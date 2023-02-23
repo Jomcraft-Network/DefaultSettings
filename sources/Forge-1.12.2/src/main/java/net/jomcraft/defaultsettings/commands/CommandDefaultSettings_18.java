@@ -9,8 +9,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import net.jomcraft.defaultsettings.DefaultSettings;
-import net.jomcraft.defaultsettings.FileUtil;
+import net.jomcraft.defaultsettings.DefaultSettings_18;
+import net.jomcraft.defaultsettings.FileUtil_18;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -21,7 +21,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.logging.log4j.Level;
 
-public class CommandDefaultSettings extends CommandBase {
+public class CommandDefaultSettings_18 extends CommandBase {
 
     private static ThreadPoolExecutor tpe = new ThreadPoolExecutor(1, 3, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
@@ -144,7 +144,7 @@ public class CommandDefaultSettings extends CommandBase {
             return;
         }
 
-        if (DefaultSettings.shutDown) {
+        if (DefaultSettings_18.shutDown) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."));
             return;
         }
@@ -166,7 +166,7 @@ public class CommandDefaultSettings extends CommandBase {
                         sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "append the 'forceOverride' argument"));
                     }
                 } catch (Exception e) {
-                    DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
+                    DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the config files!"));
                     issue.setBoolean(true);
                 }
@@ -188,7 +188,7 @@ public class CommandDefaultSettings extends CommandBase {
                         sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the config files!"));
                         if (e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException)
                             sender.sendMessage(new TextComponentString(TextFormatting.RED + "It seems, no file or folder by that name exists"));
-                        DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
+                        DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
                     }
             }
         });
@@ -200,7 +200,7 @@ public class CommandDefaultSettings extends CommandBase {
             return;
         }
 
-        if (DefaultSettings.shutDown) {
+        if (DefaultSettings_18.shutDown) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."));
             return;
         }
@@ -218,7 +218,7 @@ public class CommandDefaultSettings extends CommandBase {
             @Override
             public void run() {
                 try {
-                    boolean somethingChanged = FileUtil.checkChanged();
+                    boolean somethingChanged = FileUtil_18.checkChanged();
 
                     if (somethingChanged && !argument.equals("forceOverride")) {
                         sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "\n\n"));
@@ -228,7 +228,7 @@ public class CommandDefaultSettings extends CommandBase {
                         sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "append the 'forceOverride' argument instead of 'override'"));
                     }
                 } catch (Exception e) {
-                    DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+                    DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
                 }
             }
         });
@@ -239,12 +239,12 @@ public class CommandDefaultSettings extends CommandBase {
             public void run() {
                 try {
                     if (argument2 == null || argument2.equals("keybinds")) {
-                        FileUtil.saveKeys();
+                        FileUtil_18.saveKeys();
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the key configuration"));
-                        FileUtil.restoreKeys(true, false);
+                        FileUtil_18.restoreKeys(true, false);
                     }
                 } catch (Exception e) {
-                    DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+                    DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the key configuration!"));
                     issue.setBoolean(true);
                 }
@@ -257,11 +257,11 @@ public class CommandDefaultSettings extends CommandBase {
             public void run() {
                 try {
                     if (argument2 == null || argument2.equals("options")) {
-                        boolean optifine = FileUtil.saveOptions();
+                        boolean optifine = FileUtil_18.saveOptions();
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the default game options" + (optifine ? " (+ Optifine)" : "")));
                     }
                 } catch (Exception e) {
-                    DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
+                    DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the default game options!"));
                     issue.setBoolean(true);
                 }
@@ -278,7 +278,7 @@ public class CommandDefaultSettings extends CommandBase {
                         sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the server list"));
                     }
                 } catch (Exception e) {
-                    DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
+                    DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the server list!"));
                     issue.setBoolean(true);
                 }
@@ -291,7 +291,7 @@ public class CommandDefaultSettings extends CommandBase {
                         FileUtilNoMC.checkMD5(updateExisting, false, null);
                         FileUtilNoMC.copyAndHashPrivate(true, false);
                     } catch (IOException e) {
-                        DefaultSettings.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
+                        DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
                     }
             }
         });

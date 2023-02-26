@@ -4,7 +4,7 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "2.8.7"
+    project.version = "4.0.0"
 
     if (!project.hasProperty('javaVersion') || project.property('javaVersion') == "8") {
 

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.jomcraft.defaultsettings.commands.CommandDefaultSettings_18;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -16,15 +16,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod(modid = DefaultSettings_18.MODID, acceptedMinecraftVersions = "[1.8,1.12.2]", name = DefaultSettings_18.NAME, version = DefaultSettings_18.VERSION, clientSideOnly = true)
+@Mod(modid = DefaultSettings_18.MODID, acceptedMinecraftVersions = "[1.8,1.12.2]", name = DefaultSettings_18.NAME, clientSideOnly = true)
 public class DefaultSettings_18 {
 
     public static final String MODID = "defaultsettings";
     public static final String NAME = "DefaultSettings";
     public static final Logger log = LogManager.getLogger(DefaultSettings_18.MODID);
-    public static final String VERSION = "2.8.7";
+    public static final String VERSION = DefaultSettings_18.class.getPackage().getImplementationVersion();
     public static Map<String, KeyContainer_18> keyRebinds = new HashMap<String, KeyContainer_18>();
     public static boolean setUp = false;
     public static RegistryEvent_18 newEvent;

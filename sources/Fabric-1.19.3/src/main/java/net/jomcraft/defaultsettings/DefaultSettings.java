@@ -23,7 +23,7 @@ public class DefaultSettings implements ModInitializer {
 
     public static final String MODID = "defaultsettings";
     public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
-    public static final String VERSION = "DUMMY";
+    public static final String VERSION = DefaultSettings.class.getPackage().getImplementationVersion();
     public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
     public static boolean setUp = false;
     public static DefaultSettings instance;

@@ -21,13 +21,13 @@ import org.apache.logging.log4j.Logger;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = DefaultSettings_17.MODID, acceptedMinecraftVersions = "[1.7.10]", name = DefaultSettings_17.NAME, version = DefaultSettings_17.VERSION)
+@Mod(modid = DefaultSettings_17.MODID, acceptedMinecraftVersions = "[1.7.10]", name = DefaultSettings_17.NAME)
 public class DefaultSettings_17 {
 
     public static final String MODID = "defaultsettings";
     public static final String NAME = "DefaultSettings";
     public static final Logger log = LogManager.getLogger(DefaultSettings_17.MODID);
-    public static final String VERSION = "2.8.7";
+    public static final String VERSION = DefaultSettings_17.class.getPackage().getImplementationVersion();
     public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
     public static boolean setUp = false;
     public static boolean init = false;
@@ -76,35 +76,14 @@ public class DefaultSettings_17 {
         ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_17());
 
         try {
-
-
-
             Field eventBusField = MinecraftForge.class.getDeclaredField("EVENT_BUS");
             Object eventBusObject = eventBusField.get(null);
-
-           /* Class<?> ev = eventBus.get(null).getClass();
-            for(Method l : ev.getDeclaredMethods()){
-                System.out.println("AAA: " + l.getName());
-            }*/
             Method m = eventBusObject.getClass().getDeclaredMethod("register", Object.class);
             m.invoke(eventBusObject, DefaultSettings_17.class);
 
-
-
-
-            //Method method = eventBus.get(null).getClass().getDeclaredMethod("register");
-            //method.invoke(eventBus.get(null), DefaultSettings_17.class);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+        } catch (NoSuchFieldException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            DefaultSettings_17.log.log(Level.ERROR, "Mod pre-initialization failed with error:", e);
         }
-//register(Object target)
-        //MinecraftForge.EVENT_BUS.register(DefaultSettings_17.class);
     }
 
     @Mod.EventHandler

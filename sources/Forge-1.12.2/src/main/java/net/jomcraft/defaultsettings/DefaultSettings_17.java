@@ -1,11 +1,13 @@
 package net.jomcraft.defaultsettings;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -14,6 +16,8 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.jomcraft.defaultsettings.commands.CommandDefaultSettings_17;
+import net.jomcraft.jcplugin.JCLogger;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.client.ClientCommandHandler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -47,9 +51,63 @@ public class DefaultSettings_17 {
                 if (!pluginClass.getBoolean(null)) {
                     shutDown = true;
                     DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
+                } else {
+
+                    Map<String, String> launchArgsList = (Map<String, String>) Launch.blackboard.get("launchArgs");
+                    String gameDir = launchArgsList.get("--gameDir");
+
+                    File mods = new File(gameDir, "mods");
+
+                    boolean foundDefaultSettings = false;
+                    String wantedVersion = null;
+
+                    for (File mod : mods.listFiles()) {
+                        if (mod.getName().toLowerCase().contains("defaultsettings")) {
+
+                            JarFile jar = new JarFile(mod);
+
+                            ZipEntry toml = jar.getEntry("META-INF/MANIFEST.MF");
+                            if (toml != null) {
+
+                                BufferedReader result = new BufferedReader(new InputStreamReader(jar.getInputStream(toml)));
+
+                                String readerLine;
+
+                                while ((readerLine = result.readLine()) != null) {
+                                    if (readerLine.contains("Implementation-Title: DefaultSettings")) {
+                                        foundDefaultSettings = true;
+                                    } else if (readerLine.startsWith("JCPluginVersion")) {
+                                        wantedVersion = readerLine.split(": ")[1];
+                                    }
+                                }
+
+                                result.close();
+                            }
+
+                            jar.close();
+
+                            if (foundDefaultSettings && wantedVersion != null) {
+
+                                if (wantedVersion.equals(JCLogger.class.getPackage().getImplementationVersion())) {
+                                    DefaultSettings_17.log.log(Level.INFO, "DefaultSettings found correct version of JCPlugin, starting up...");
+                                    break;
+                                } else {
+                                    shutDown = true;
+                                    DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings can't start up! JCPlugin version must be " + wantedVersion + "!");
+                                }
+
+                            }
+                        }
+                    }
+
+                    if (!foundDefaultSettings || wantedVersion == null) {
+                        shutDown = true;
+                        DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
+                    }
+
                 }
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
-                     IllegalAccessException e) {
+                     IllegalAccessException | IOException e) {
                 shutDown = true;
                 DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
             }

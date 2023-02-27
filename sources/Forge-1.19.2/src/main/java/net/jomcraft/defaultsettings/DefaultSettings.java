@@ -1,13 +1,22 @@
 package net.jomcraft.defaultsettings;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
 import net.jomcraft.defaultsettings.commands.ConfigArguments;
 import net.jomcraft.defaultsettings.commands.OperationArguments;
 import net.jomcraft.defaultsettings.commands.TypeArguments;
+import net.jomcraft.jcplugin.JCLogger;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraftforge.fml.IExtensionPoint;
@@ -52,9 +61,61 @@ public class DefaultSettings {
                 if (!pluginClass.getBoolean(null)) {
                     shutDown = true;
                     DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
+                } else {
+
+                    final Path location = Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.GAMEDIR.get()).get();
+
+                    File mods = new File(location.toFile(), "mods");
+
+                    boolean foundDefaultSettings = false;
+                    String wantedVersion = null;
+
+                    for (File mod : mods.listFiles()) {
+                        if (mod.getName().toLowerCase().contains("defaultsettings")) {
+
+                            JarFile jar = new JarFile(mod);
+
+                            ZipEntry toml = jar.getEntry("META-INF/MANIFEST.MF");
+                            if (toml != null) {
+
+                                BufferedReader result = new BufferedReader(new InputStreamReader(jar.getInputStream(toml)));
+
+                                String readerLine;
+
+                                while ((readerLine = result.readLine()) != null) {
+                                    if (readerLine.contains("Implementation-Title: DefaultSettings")) {
+                                        foundDefaultSettings = true;
+                                    } else if (readerLine.startsWith("JCPluginVersion")) {
+                                        wantedVersion = readerLine.split(": ")[1];
+                                    }
+                                }
+
+                                result.close();
+                            }
+
+                            jar.close();
+
+                            if (foundDefaultSettings && wantedVersion != null) {
+
+                                if (wantedVersion.equals(JCLogger.class.getPackage().getImplementationVersion())) {
+                                    DefaultSettings.log.log(Level.INFO, "DefaultSettings found correct version of JCPlugin, starting up...");
+                                    break;
+                                } else {
+                                    shutDown = true;
+                                    DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! JCPlugin version must be " + wantedVersion + "!");
+                                }
+
+                            }
+                        }
+                    }
+
+                    if (!foundDefaultSettings || wantedVersion == null) {
+                        shutDown = true;
+                        DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
+                    }
                 }
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
-                     IllegalAccessException e) {
+                     IllegalAccessException | IOException e) {
                 shutDown = true;
                 DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
             }

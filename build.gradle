@@ -1,5 +1,7 @@
 apply plugin: "idea"
 
+def jcpluginVersion = "4.0.0"
+
 subprojects {
     apply plugin: "java"
     apply plugin: "idea"
@@ -57,7 +59,8 @@ subprojects {
                     "Implementation-Title"    : "DefaultSettings",
                     "Implementation-Version"  : project.version,
                     "Implementation-Vendor"   : "Jomcraft Network",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ")
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ"),
+                    "JCPluginVersion"         : jcpluginVersion
             ])
         }
     }

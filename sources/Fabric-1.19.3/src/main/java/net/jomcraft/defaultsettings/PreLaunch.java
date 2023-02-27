@@ -12,6 +12,9 @@ public class PreLaunch implements PreLaunchEntrypoint {
     @Override
     public void onPreLaunch() {
         try {
+
+            //TODO: Fix entrypoint crash (similar to Forge)
+
             File location = FabricLoader.getInstance().getGameDir().toFile();
             new File(location, "config").mkdir();
             FileUtilNoMC.mcDataDir = location;

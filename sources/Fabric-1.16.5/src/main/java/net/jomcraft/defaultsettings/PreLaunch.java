@@ -13,10 +13,16 @@ public class PreLaunch implements PreLaunchEntrypoint {
     public void onPreLaunch() {
         try {
 
-            //TODO: Fix entrypoint crash (similar to Forge)
-
             File location = FabricLoader.getInstance().getGameDir().toFile();
             new File(location, "config").mkdir();
+
+            try {
+                Class.forName("net.jomcraft.jcplugin.JCLogger");
+            } catch (ClassNotFoundException e) {
+                DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't find JCPlugin!", e);
+                return;
+            }
+
             FileUtilNoMC.mcDataDir = location;
             FileUtilNoMC.restoreContentsFirst();
 

@@ -5,7 +5,7 @@ plugins {
 
 archivesBaseName = "${rootProject.name}"
 
-ext.replace_version(version)
+def file_version = version;
 
 version = "1.16.x-1.18.x-${version}-Fabric"
 
@@ -29,10 +29,6 @@ dependencies {
 	//implementation fg.deobf("curse.maven:jcp-659192:4404202")
 	modImplementation "curse.maven:jcp-659192:4404202"
 	//implementation project(":Core")
-}
-
-processResources {
-	//from project(":Core").sourceSets.main.resources
 }
 
 tasks.withType(JavaCompile) {
@@ -66,6 +62,15 @@ loom {
 //java {
 //	withSourcesJar()
 //}
+
+processResources {
+	inputs.property "version", file_version
+	inputs.property "JCPluginVersion", rootProject.JCPluginVersion
+
+	filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+		expand "version": file_version, "JCPluginVersion": project.JCPluginVersion
+	}
+}
 
 task sourcesJar(type: Jar) {
 	from sourceSets.main.allSource

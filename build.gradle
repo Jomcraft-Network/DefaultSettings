@@ -6,7 +6,8 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "4.0.0"
+    project.version = "4.0.1"
+    rootProject.ext.setProperty("JCPluginVersion", jcpluginVersion);
 
     if (!project.hasProperty('javaVersion') || project.property('javaVersion') == "8") {
 
@@ -62,16 +63,6 @@ subprojects {
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ"),
                     "JCPluginVersion"         : jcpluginVersion
             ])
-        }
-    }
-
-    processResources {
-        project.ext.replace_version = (String replace) -> {
-            inputs.property "version", replace
-
-            filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
-                expand "version": replace
-            }
         }
     }
 

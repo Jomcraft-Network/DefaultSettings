@@ -5,7 +5,7 @@ plugins {
 
 archivesBaseName = "${rootProject.name}"
 
-ext.replace_version(version)
+def file_version = version;
 
 version = "1.19.x-${version}-Fabric"
 
@@ -32,7 +32,12 @@ dependencies {
 }
 
 processResources {
-	//from project(":Core").sourceSets.main.resources
+	inputs.property "version", file_version
+	inputs.property "JCPluginVersion", rootProject.JCPluginVersion
+
+	filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+		expand "version": file_version, "JCPluginVersion": project.JCPluginVersion
+	}
 }
 
 tasks.withType(JavaCompile) {

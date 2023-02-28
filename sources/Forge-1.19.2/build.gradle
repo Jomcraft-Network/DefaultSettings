@@ -17,7 +17,7 @@ apply plugin: 'net.minecraftforge.gradle'
 
 archivesBaseName = "${rootProject.name}"
 
-ext.replace_version(version)
+def file_version = version;
 
 version = "1.19.2-${version}-Forge"
 
@@ -69,26 +69,13 @@ dependencies {
     //implementation project(":Core")
 }
 
-//processResources {
- //   inputs.property "version", "1.0.0"
+processResources {
+    inputs.property "version", file_version
 
- //   filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
-  //      expand "version": "1.0.0"
-  //  }
-//}
-
-/*processResources {
-    duplicatesStrategy = 'include'
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-        //expand 'version': "1.0.0"
+    filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+        expand "version": file_version
     }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'META-INF/mods.toml'
-    }
-}*/
+}
 
 tasks.withType(JavaCompile) {
     //source(project(":Core").sourceSets.main.allSource)

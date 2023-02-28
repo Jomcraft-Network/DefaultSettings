@@ -19,8 +19,6 @@ archivesBaseName = "${rootProject.name}"
 
 def file_version = version;
 
-ext.replace_version(version)
-
 version = "1.7.10+1.12.2-${version}-Forge"
 
 minecraft {

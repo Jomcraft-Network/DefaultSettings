@@ -37,6 +37,6 @@
     "fabric": "*",
     "minecraft": ">=1.16 <=1.18.2",
     "java": ">=8",
-    "jcplugin": "4.0.0"
+    "jcplugin": "${JCPluginVersion}"
   }
 }

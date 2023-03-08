@@ -88,7 +88,7 @@ public class CommandDefaultSettings {
 						boolean updateExisting = argument != null && argument.equals("forceOverride");
 						FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
 						FileUtilNoMC.copyAndHashPrivate(false, true);
-						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : " (single entry)")), true);
+						source.sendSuccess(new TextComponent(ChatFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)")), true);
 						boolean noFiles = FileUtilNoMC.checkForConfigFiles();
 						if (noFiles)
 							source.sendSuccess(new TextComponent(ChatFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"), true);

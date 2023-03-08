@@ -28,7 +28,7 @@ public class CommandDefaultSettings_17 extends CommandBase {
     }
 
     public String getUsage(ICommandSender sender) {
-        return "/defaultsettings [aaaaaaaaaaaaaaaaaaaaaa]";
+        return "/defaultsettings [arguments]";
     }
 
     public List<String> getAliases() {
@@ -118,7 +118,7 @@ public class CommandDefaultSettings_17 extends CommandBase {
 
                         FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
                         FileUtilNoMC.copyAndHashPrivate(false, true);
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : " (single entry)")));
+                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)")));
                         boolean noFiles = FileUtilNoMC.checkForConfigFiles();
                         if (noFiles)
                             sender.func_145747_a(new ChatComponentText(EnumChatFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"));

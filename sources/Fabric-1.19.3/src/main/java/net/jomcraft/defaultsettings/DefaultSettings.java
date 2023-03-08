@@ -57,7 +57,7 @@ public class DefaultSettings implements ModInitializer {
             }
 
             try {
-                FileUtil.restoreKeys(true, FileUtilNoMC.firstBootUp);
+                FileUtil.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {
                 DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
             } catch (NullPointerException e) {

@@ -148,7 +148,7 @@ public class DefaultSettings_17 {
     public static void keysEvent(FMLLoadCompleteEvent event) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             try {
-                if (!shutDown) FileUtil_17.restoreKeys(true, FileUtilNoMC.firstBootUp);
+                if (!shutDown) FileUtil_17.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {
                 DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
             } catch (NullPointerException e) {

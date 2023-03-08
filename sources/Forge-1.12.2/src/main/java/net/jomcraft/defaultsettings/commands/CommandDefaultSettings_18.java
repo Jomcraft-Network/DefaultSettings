@@ -38,7 +38,7 @@ public class CommandDefaultSettings_18 extends CommandBase {
     }
 
     public String getUsage(ICommandSender sender) {
-        return "/defaultsettings [aaaaaaaaaaaaaaaaaaaaaa]";
+        return "/defaultsettings [arguments]";
     }
 
     public int getRequiredPermissionLevel() {
@@ -179,7 +179,7 @@ public class CommandDefaultSettings_18 extends CommandBase {
 
                         FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
                         FileUtilNoMC.copyAndHashPrivate(false, true);
-                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : " (single entry)")));
+                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)")));
                         boolean noFiles = FileUtilNoMC.checkForConfigFiles();
                         if (noFiles)
                             sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"));

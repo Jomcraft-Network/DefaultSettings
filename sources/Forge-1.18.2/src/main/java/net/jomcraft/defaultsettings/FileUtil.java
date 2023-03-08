@@ -24,29 +24,7 @@ import net.minecraftforge.client.settings.KeyModifier;
 
 public class FileUtil {
 
-	public static FileUtilNoMC.IgnoreJSON getSharedIgnore(File location) {
-
-		if (ignoreJson != null)
-			return ignoreJson;
-
-		if (location.exists()) {
-			try (Reader reader = new FileReader(location)) {
-				ignoreJson = gson.fromJson(reader, FileUtilNoMC.IgnoreJSON.class);
-				ignoreJson.location = location;
-
-			} catch (Exception e) {
-				DefaultSettings.log.log(Level.ERROR, "Exception at processing startup: ", e);
-			}
-
-		} else {
-
-			ignoreJson = new FileUtilNoMC.IgnoreJSON(location);
-			ignoreJson.save();
-		}
-		return ignoreJson;
-	}
-
-	public static void restoreContents() throws NullPointerException, IOException, NoSuchAlgorithmException {
+	public static void restoreContents() throws NullPointerException, IOException {
 		
 		final String version = getMainJSON().getVersion();
 
@@ -58,11 +36,7 @@ public class FileUtil {
 
 		activeProfile = privateJson.currentProfile;
 
-		final File options = new File(mcDataDir, "options.txt");
-		firstBootUp = !options.exists();
-		if (firstBootUp) {
-			restoreOptions();
-		} else {
+		if (!privateJson.firstBootUp){
 			copyAndHashPrivate(true, true);
 		}
 
@@ -85,9 +59,6 @@ public class FileUtil {
 		final File serversFile = new File(mcDataDir, "servers.dat");
 		if (!serversFile.exists())
 			restoreServers();
-
-		if (!options.exists())
-			options.createNewFile();
 
 		mainJson.save();
 	}

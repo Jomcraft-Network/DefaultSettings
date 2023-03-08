@@ -24,8 +24,16 @@ public class ConfigArguments implements ArgumentType<String> {
     }
 
     @Override
-    public String parse(final StringReader reader) throws CommandSyntaxException {
-        return reader.readUnquotedString();
+    public String parse(final StringReader reader) {
+        return readUnquotedString(reader);
+    }
+
+    public String readUnquotedString(StringReader reader) {
+        final int start = reader.getCursor();
+        while (reader.canRead()) {
+            reader.skip();
+        }
+        return reader.getString().substring(start, reader.getCursor());
     }
 
     public static String getString(final CommandContext<?> context, final String name) {

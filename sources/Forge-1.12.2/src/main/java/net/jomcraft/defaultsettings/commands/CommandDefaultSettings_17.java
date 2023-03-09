@@ -78,6 +78,8 @@ public class CommandDefaultSettings_17 extends CommandBase {
 
     private static void saveProcessConfigs(ICommandSender sender, String argument, String argument2) {
 
+        //TODO: FIX TEXT COLOR LINES!
+
         if (tpe.getQueue().size() > 0) {
             sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has finished"));
             return;

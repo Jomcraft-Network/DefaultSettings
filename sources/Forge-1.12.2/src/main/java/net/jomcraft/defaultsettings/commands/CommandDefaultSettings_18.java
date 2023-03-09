@@ -5,6 +5,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -63,8 +64,15 @@ public class CommandDefaultSettings_18 extends CommandBase {
                 return getListOfStringsMatchingLastWord(args, new String[]{"keybinds", "options", "servers"});
             } else if (args[0].toLowerCase().equals("saveconfigs")){
                 try {
-                    ArrayList<String> files = FileUtilNoMC.listConfigFiles();
-                    return getListOfStringsMatchingLastWord(args, files.toArray(new String[0]));
+                    ArrayList<String> filtered = new ArrayList<String>();
+                    ArrayList<String> prevList = FileUtilNoMC.listConfigFiles();
+                    for(int i = 0; i < prevList.size(); i++){
+                        String name = prevList.get(i);
+                        if(name.contains(" "))
+                            name = "\"" + name + "\"";
+                        filtered.add(name);
+                    }
+                    return getListOfStringsMatchingLastWord(args, filtered.toArray(new String[0]));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -123,13 +131,18 @@ public class CommandDefaultSettings_18 extends CommandBase {
                 saveProcessConfigs(sender, null, null);
                 // /ds saveconfigs
             } else if(args[1].toLowerCase().equals("forceoverride")){
-                System.out.println("FIRST");
                 if(args.length == 2){
-                    System.out.println("SECOND");
                     saveProcessConfigs(sender, "forceOverride", null);
                     // /ds saveconfigs forceOverride
-                } else if(args.length == 3){
-                    saveProcessConfigs(sender, "forceOverride", args[2]);
+                } else if(args.length >= 3){
+                    StringJoiner fileJoiner = new StringJoiner(" ");
+
+                    for(int i = 2; i < args.length; i++){
+                        fileJoiner.add(args[i]);
+                    }
+
+                    String joined = fileJoiner.toString().replaceAll("\"", "");
+                    saveProcessConfigs(sender, "forceOverride", joined);
                     // /ds saveconfigs forceOverride [type]
                 }
 
@@ -140,12 +153,16 @@ public class CommandDefaultSettings_18 extends CommandBase {
     private static void saveProcessConfigs(ICommandSender sender, String argument, String argument2) {
 
         if (tpe.getQueue().size() > 0) {
-            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has finished"));
+            final TextComponentString message = new TextComponentString("Please wait until the last request has finished");
+            message.getStyle().setColor(TextFormatting.RED);
+            sender.sendMessage(message);
             return;
         }
 
         if (DefaultSettings_18.shutDown) {
-            sender.sendMessage(new TextComponentString(TextFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."));
+            final TextComponentString message = new TextComponentString("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            message.getStyle().setColor(TextFormatting.RED);
+            sender.sendMessage(message);
             return;
         }
 
@@ -159,35 +176,60 @@ public class CommandDefaultSettings_18 extends CommandBase {
                     boolean somethingChanged = FileUtilNoMC.checkChangedConfig();
 
                     if (somethingChanged && (argument == null || !argument.equals("forceOverride"))) {
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "\n\n"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "You seem to have updated certain config files!"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "If you want to ship the new configs to those players too,"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "append the 'forceOverride' argument"));
+                        sender.sendMessage(new TextComponentString(""));
+                        sender.sendMessage(new TextComponentString(""));
+                        TextComponentString message = new TextComponentString("You seem to have updated certain config files!");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
+                        message = new TextComponentString("Users who already play your pack won't (!) receive those changes.");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
+                        sender.sendMessage(new TextComponentString(""));
+                        message = new TextComponentString("If you want to ship the new configs to those players too,");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
+                        message = new TextComponentString("append the 'forceOverride' argument");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
                     }
                 } catch (Exception e) {
                     DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the config files!"));
+                    final TextComponentString message = new TextComponentString("Couldn't save the config files!");
+                    message.getStyle().setColor(TextFormatting.RED);
+                    sender.sendMessage(message);
                     issue.setBoolean(true);
                 }
 
-                if (issue.getBoolean())
-                    sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"));
-                else
+                if (issue.getBoolean()){
+                    final TextComponentString message = new TextComponentString("Please inspect the log files for further information!");
+                    message.getStyle().setColor(TextFormatting.YELLOW);
+                    sender.sendMessage(message);
+                } else
                     try {
                         boolean updateExisting = argument != null && argument.equals("forceOverride");
 
                         FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
                         FileUtilNoMC.copyAndHashPrivate(false, true);
-                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)")));
+                        final TextComponentString message = new TextComponentString("Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)"));
+                        message.getStyle().setColor(TextFormatting.GREEN);
+                        sender.sendMessage(message);
                         boolean noFiles = FileUtilNoMC.checkForConfigFiles();
-                        if (noFiles)
-                            sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"));
+                        if (noFiles){
+                            final TextComponentString message2 = new TextComponentString("Warning: No config files will be shipped as the folder is still empty!");
+                            message2.getStyle().setColor(TextFormatting.YELLOW);
+                            sender.sendMessage(message2);
+                        }
 
                     } catch (UncheckedIOException | NullPointerException | IOException e) {
-                        sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the config files!"));
-                        if (e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException)
-                            sender.sendMessage(new TextComponentString(TextFormatting.RED + "It seems, no file or folder by that name exists"));
+                        final TextComponentString message = new TextComponentString("Couldn't save the config files!");
+                        message.getStyle().setColor(TextFormatting.RED);
+                        sender.sendMessage(message);
+                        if (e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException){
+                            final TextComponentString message2 = new TextComponentString("It seems, no file or folder by that name exists");
+                            message2.getStyle().setColor(TextFormatting.RED);
+                            sender.sendMessage(message2);
+                        }
+
                         DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
                     }
             }
@@ -196,18 +238,26 @@ public class CommandDefaultSettings_18 extends CommandBase {
 
     private static void saveProcess(ICommandSender sender, String argument, String argument2) {
         if (tpe.getQueue().size() > 0) {
-            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please wait until the last request has finished"));
+            final TextComponentString message = new TextComponentString("Please wait until the last request has finished");
+            message.getStyle().setColor(TextFormatting.RED);
+            sender.sendMessage(message);
             return;
         }
 
         if (DefaultSettings_18.shutDown) {
-            sender.sendMessage(new TextComponentString(TextFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."));
+            final TextComponentString message = new TextComponentString("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            message.getStyle().setColor(TextFormatting.RED);
+            sender.sendMessage(message);
             return;
         }
 
         if ((FileUtilNoMC.keysFileExist() || FileUtilNoMC.optionsFilesExist() || FileUtilNoMC.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
-            sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "These files already exist! If you want to overwrite"));
-            sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "them, add the 'override' argument"));
+            TextComponentString message = new TextComponentString("These files already exist! If you want to overwrite");
+            message.getStyle().setColor(TextFormatting.GOLD);
+            sender.sendMessage(message);
+            message = new TextComponentString("them, add the 'override' argument");
+            message.getStyle().setColor(TextFormatting.GOLD);
+            sender.sendMessage(message);
             return;
         }
 
@@ -221,11 +271,21 @@ public class CommandDefaultSettings_18 extends CommandBase {
                     boolean somethingChanged = FileUtil_18.checkChanged();
 
                     if (somethingChanged && !argument.equals("forceOverride")) {
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "\n\n"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "You seem to have updated certain config files!"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "If you want to ship the new configs to those players too,"));
-                        sender.sendMessage(new TextComponentString(TextFormatting.GOLD + "append the 'forceOverride' argument instead of 'override'"));
+                        sender.sendMessage(new TextComponentString(""));
+                        sender.sendMessage(new TextComponentString(""));
+                        TextComponentString message = new TextComponentString("You seem to have updated certain config files!");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
+                        message = new TextComponentString("Users who already play your pack won't (!) receive those changes.");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
+                        sender.sendMessage(new TextComponentString(""));
+                        message = new TextComponentString("If you want to ship the new configs to those players too,");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
+                        message = new TextComponentString("append the 'forceOverride' argument instead of 'override'");
+                        message.getStyle().setColor(TextFormatting.GOLD);
+                        sender.sendMessage(message);
                     }
                 } catch (Exception e) {
                     DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
@@ -240,12 +300,16 @@ public class CommandDefaultSettings_18 extends CommandBase {
                 try {
                     if (argument2 == null || argument2.equals("keybinds")) {
                         FileUtil_18.saveKeys();
-                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the key configuration"));
+                        final TextComponentString message = new TextComponentString("Successfully saved the key configuration");
+                        message.getStyle().setColor(TextFormatting.GREEN);
+                        sender.sendMessage(message);
                         FileUtil_18.restoreKeys(true, false);
                     }
                 } catch (Exception e) {
                     DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the key configuration!"));
+                    final TextComponentString message = new TextComponentString("Couldn't save the key configuration!");
+                    message.getStyle().setColor(TextFormatting.RED);
+                    sender.sendMessage(message);
                     issue.setBoolean(true);
                 }
             }
@@ -258,11 +322,15 @@ public class CommandDefaultSettings_18 extends CommandBase {
                 try {
                     if (argument2 == null || argument2.equals("options")) {
                         boolean optifine = FileUtil_18.saveOptions();
-                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the default game options" + (optifine ? " (+ Optifine)" : "")));
+                        final TextComponentString message = new TextComponentString("Successfully saved the default game options" + (optifine ? " (+ Optifine)" : ""));
+                        message.getStyle().setColor(TextFormatting.GREEN);
+                        sender.sendMessage(message);
                     }
                 } catch (Exception e) {
                     DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the default game options!"));
+                    final TextComponentString message = new TextComponentString("Couldn't save the default game options!");
+                    message.getStyle().setColor(TextFormatting.RED);
+                    sender.sendMessage(message);
                     issue.setBoolean(true);
                 }
             }
@@ -275,17 +343,23 @@ public class CommandDefaultSettings_18 extends CommandBase {
                 try {
                     if (argument2 == null || argument2.equals("servers")) {
                         FileUtilNoMC.saveServers();
-                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully saved the server list"));
+                        final TextComponentString message = new TextComponentString("Successfully saved the server list");
+                        message.getStyle().setColor(TextFormatting.GREEN);
+                        sender.sendMessage(message);
                     }
                 } catch (Exception e) {
                     DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Couldn't save the server list!"));
+                    final TextComponentString message = new TextComponentString("Couldn't save the server list!");
+                    message.getStyle().setColor(TextFormatting.RED);
+                    sender.sendMessage(message);
                     issue.setBoolean(true);
                 }
 
-                if (issue.getBoolean())
-                    sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Please inspect the log files for further information!"));
-                else
+                if (issue.getBoolean()){
+                    final TextComponentString message = new TextComponentString("Please inspect the log files for further information!");
+                    message.getStyle().setColor(TextFormatting.YELLOW);
+                    sender.sendMessage(message);
+                } else
                     try {
                         boolean updateExisting = argument != null && argument.equals("forceOverride");
                         FileUtilNoMC.checkMD5(updateExisting, false, null);

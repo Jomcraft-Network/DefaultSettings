@@ -1,6 +1,7 @@
 package net.jomcraft.defaultsettings.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -24,16 +25,25 @@ public class ConfigArguments implements ArgumentType<String> {
     }
 
     @Override
-    public String parse(final StringReader reader) {
-        return readUnquotedString(reader);
+    public String parse(final StringReader reader) throws CommandSyntaxException {
+        return readQuotedString(reader);
     }
 
-    public String readUnquotedString(final StringReader reader) {
-        final int start = reader.getCursor();
-        while (reader.canRead()) {
-            reader.skip();
+    public String readQuotedString(final StringReader reader) throws CommandSyntaxException {
+        if (!reader.canRead()) {
+            return "";
         }
-        return reader.getString().substring(start, reader.getCursor());
+        final char next = reader.getString().charAt(reader.getCursor());
+        if (!reader.isQuotedStringStart(next)) {
+
+            final int start = reader.getCursor();
+            while (reader.canRead()) {
+                reader.skip();
+            }
+            return reader.getString().substring(start, reader.getCursor());
+        }
+        reader.skip();
+        return reader.readStringUntil(next);
     }
 
     public static String getString(final CommandContext<?> context, final String name) {
@@ -43,7 +53,15 @@ public class ConfigArguments implements ArgumentType<String> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         try {
-            ARGUMENTS = FileUtilNoMC.listConfigFiles();
+            ArrayList<String> filtered = new ArrayList<String>();
+            ArrayList<String> prevList = FileUtilNoMC.listConfigFiles();
+            for(int i = 0; i < prevList.size(); i++){
+                String name = prevList.get(i);
+                if(name.contains(" "))
+                    name = "\"" + name + "\"";
+                filtered.add(name);
+            }
+            ARGUMENTS = filtered;
         } catch (IOException e) {
             DefaultSettings.log.error(e);
         }

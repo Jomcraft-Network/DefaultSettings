@@ -18,7 +18,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.logging.log4j.Level;
 
@@ -38,6 +37,10 @@ public class CommandDefaultSettings_17 extends CommandBase {
         };
     }
 
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+
+    }
+
     public String getUsage(ICommandSender sender) {
         return "/defaultsettings [arguments]";
     }
@@ -46,7 +49,7 @@ public class CommandDefaultSettings_17 extends CommandBase {
         return 0;
     }
 
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List func_71516_a(ICommandSender p_71516_1_, String[] args) {
         if(args.length == 1) {
             return getListOfStringsMatchingLastWord(args, new String[]{"save", "saveconfigs"});
         }
@@ -82,10 +85,9 @@ public class CommandDefaultSettings_17 extends CommandBase {
         return new ArrayList<String>();
     }
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void func_71515_b(ICommandSender sender, String[] args) {
         if(args.length == 0) {
-            sender.func_145747_a(new ChatComponentText("\u00a7cLol!"));
+            sender.func_145747_a(new ChatComponentText("\u00a7c/defaultsettings [arguments]"));
             return;
         }
         if (args[0].toLowerCase().equals("save")) {

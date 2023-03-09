@@ -85,7 +85,7 @@ public class CommandDefaultSettings_18 extends CommandBase {
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length == 0) {
-            sender.sendMessage(new TextComponentString("\u00a7cLol!"));
+            sender.sendMessage(new TextComponentString("\u00a7c/defaultsettings [arguments]"));
             return;
         }
         if (args[0].toLowerCase().equals("save")) {

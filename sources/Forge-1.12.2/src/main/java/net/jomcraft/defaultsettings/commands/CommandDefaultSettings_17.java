@@ -5,9 +5,11 @@ import java.io.UncheckedIOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import net.jomcraft.defaultsettings.DefaultSettings_17;
 import net.jomcraft.defaultsettings.FileUtil_17;
 import net.jomcraft.jcplugin.FileUtilNoMC;
@@ -16,6 +18,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import org.apache.logging.log4j.Level;
 
@@ -27,10 +30,6 @@ public class CommandDefaultSettings_17 extends CommandBase {
         return "defaultsettings";
     }
 
-    public String getUsage(ICommandSender sender) {
-        return "/defaultsettings [arguments]";
-    }
-
     public List<String> getAliases() {
         return new ArrayList<String>() {
             {
@@ -39,15 +38,15 @@ public class CommandDefaultSettings_17 extends CommandBase {
         };
     }
 
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
+    public String getUsage(ICommandSender sender) {
+        return "/defaultsettings [arguments]";
     }
 
     public int getRequiredPermissionLevel() {
         return 0;
     }
 
-    public List func_71516_a(ICommandSender p_71516_1_, String[] args) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if(args.length == 1) {
             return getListOfStringsMatchingLastWord(args, new String[]{"save", "saveconfigs"});
         }
@@ -65,8 +64,15 @@ public class CommandDefaultSettings_17 extends CommandBase {
                 return getListOfStringsMatchingLastWord(args, new String[]{"keybinds", "options", "servers"});
             } else if (args[0].toLowerCase().equals("saveconfigs")){
                 try {
-                    ArrayList<String> files = FileUtilNoMC.listConfigFiles();
-                    return getListOfStringsMatchingLastWord(args, files.toArray(new String[0]));
+                    ArrayList<String> filtered = new ArrayList<String>();
+                    ArrayList<String> prevList = FileUtilNoMC.listConfigFiles();
+                    for(int i = 0; i < prevList.size(); i++){
+                        String name = prevList.get(i);
+                        if(name.contains(" "))
+                            name = "\"" + name + "\"";
+                        filtered.add(name);
+                    }
+                    return getListOfStringsMatchingLastWord(args, filtered.toArray(new String[0]));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -76,171 +82,10 @@ public class CommandDefaultSettings_17 extends CommandBase {
         return new ArrayList<String>();
     }
 
-    private static void saveProcessConfigs(ICommandSender sender, String argument, String argument2) {
-
-        //TODO: FIX TEXT COLOR LINES!
-
-        if (tpe.getQueue().size() > 0) {
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has finished"));
-            return;
-        }
-
-        if (DefaultSettings_17.shutDown) {
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."));
-            return;
-        }
-
-        MutableBoolean_17 issue = new MutableBoolean_17(false);
-
-        tpe.execute(new ThreadRunnable_17(sender, issue) {
-
-            @Override
-            public void run() {
-                try {
-                    boolean somethingChanged = FileUtilNoMC.checkChangedConfig();
-
-                    if (somethingChanged && (argument == null || !argument.equals("forceOverride"))) {
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "\n\n"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "You seem to have updated certain config files!"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "If you want to ship the new configs to those players too,"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "append the 'forceOverride' argument"));
-                    }
-                } catch (Exception e) {
-                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-                    sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the config files!"));
-                    issue.setBoolean(true);
-                }
-
-                if (issue.getBoolean())
-                    sender.func_145747_a(new ChatComponentText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
-                else
-                    try {
-                        boolean updateExisting = argument != null && argument.equals("forceOverride");
-
-                        FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
-                        FileUtilNoMC.copyAndHashPrivate(false, true);
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)")));
-                        boolean noFiles = FileUtilNoMC.checkForConfigFiles();
-                        if (noFiles)
-                            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.YELLOW + "Warning: No config files will be shipped as the folder is still empty!"));
-
-                    } catch (UncheckedIOException | NullPointerException | IOException e) {
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the config files!"));
-                        if (e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException)
-                            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "It seems, no file or folder by that name exists"));
-                        DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
-                    }
-            }
-        });
-    }
-
-    private static void saveProcess(ICommandSender sender, String argument, String argument2) {
-        if (tpe.getQueue().size() > 0) {
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Please wait until the last request has finished"));
-            return;
-        }
-
-        if (DefaultSettings_17.shutDown) {
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."));
-            return;
-        }
-
-        if ((FileUtilNoMC.keysFileExist() || FileUtilNoMC.optionsFilesExist() || FileUtilNoMC.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "These files already exist! If you want to overwrite"));
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "them, add the 'override' argument"));
-            return;
-        }
-
-        MutableBoolean_17 issue = new MutableBoolean_17(false);
-
-        tpe.execute(new ThreadRunnable_17(sender, issue) {
-
-            @Override
-            public void run() {
-                try {
-                    boolean somethingChanged = FileUtil_17.checkChanged();
-
-                    if (somethingChanged && !argument.equals("forceOverride")) {
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "\n\n"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "You seem to have updated certain config files!"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "Users who already play your pack won't (!) receive those changes.\n"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "If you want to ship the new configs to those players too,"));
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GOLD + "append the 'forceOverride' argument instead of 'override'"));
-                    }
-                } catch (Exception e) {
-                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-                }
-            }
-        });
-
-        tpe.execute(new ThreadRunnable_17(sender, issue) {
-
-            @Override
-            public void run() {
-                try {
-                    if (argument2 == null || argument2.equals("keybinds")) {
-                        FileUtil_17.saveKeys();
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the key configuration"));
-                        FileUtil_17.restoreKeys(true, false);
-                    }
-                } catch (Exception e) {
-                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
-                    sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the key configuration!"));
-                    issue.setBoolean(true);
-                }
-            }
-        });
-
-        tpe.execute(new ThreadRunnable_17(sender, issue) {
-
-            @Override
-            public void run() {
-                try {
-                    if (argument2 == null || argument2.equals("options")) {
-                        boolean optifine = FileUtil_17.saveOptions();
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the default game options" + (optifine ? " (+ Optifine)" : "")));
-                    }
-                } catch (Exception e) {
-                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
-                    sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the default game options!"));
-                    issue.setBoolean(true);
-                }
-            }
-        });
-
-        tpe.execute(new ThreadRunnable_17(sender, issue) {
-
-            @Override
-            public void run() {
-                try {
-                    if (argument2 == null || argument2.equals("servers")) {
-                        FileUtilNoMC.saveServers();
-                        sender.func_145747_a(new ChatComponentText(EnumChatFormatting.GREEN + "Successfully saved the server list"));
-                    }
-                } catch (Exception e) {
-                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
-                    sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Couldn't save the server list!"));
-                    issue.setBoolean(true);
-                }
-
-                if (issue.getBoolean())
-                    sender.func_145747_a(new ChatComponentText(EnumChatFormatting.YELLOW + "Please inspect the log files for further information!"));
-                else
-                    try {
-                        boolean updateExisting = argument != null && argument.equals("forceOverride");
-                        FileUtilNoMC.checkMD5(updateExisting, false, null);
-                        FileUtilNoMC.copyAndHashPrivate(true, false);
-                    } catch (IOException e) {
-                        DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
-                    }
-            }
-        });
-    }
-
-    public void func_71515_b(ICommandSender sender, String[] args) {
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if(args.length == 0) {
-            sender.func_145747_a(new ChatComponentText(EnumChatFormatting.RED + "Lol!"));
+            sender.func_145747_a(new ChatComponentText("\u00a7cLol!"));
             return;
         }
         if (args[0].toLowerCase().equals("save")) {
@@ -286,18 +131,250 @@ public class CommandDefaultSettings_17 extends CommandBase {
                 saveProcessConfigs(sender, null, null);
                 // /ds saveconfigs
             } else if(args[1].toLowerCase().equals("forceoverride")){
-                System.out.println("FIRST");
                 if(args.length == 2){
-                    System.out.println("SECOND");
                     saveProcessConfigs(sender, "forceOverride", null);
                     // /ds saveconfigs forceOverride
-                } else if(args.length == 3){
-                    saveProcessConfigs(sender, "forceOverride", args[2]);
+                } else if(args.length >= 3){
+                    StringJoiner fileJoiner = new StringJoiner(" ");
+
+                    for(int i = 2; i < args.length; i++){
+                        fileJoiner.add(args[i]);
+                    }
+
+                    String joined = fileJoiner.toString().replaceAll("\"", "");
+                    saveProcessConfigs(sender, "forceOverride", joined);
                     // /ds saveconfigs forceOverride [type]
                 }
 
             }
         }
+    }
+
+    private static void saveProcessConfigs(ICommandSender sender, String argument, String argument2) {
+
+        if (tpe.getQueue().size() > 0) {
+            final ChatComponentText message = new ChatComponentText("Please wait until the last request has finished");
+            message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            sender.func_145747_a(message);
+            return;
+        }
+
+        if (DefaultSettings_17.shutDown) {
+            ChatComponentText message = new ChatComponentText("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            sender.func_145747_a(message);
+            message = new ChatComponentText("Reason: " + DefaultSettings_17.shutdownReason);
+            message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            sender.func_145747_a(message);
+            return;
+        }
+
+        MutableBoolean issue = new MutableBoolean(false);
+
+        tpe.execute(new ThreadRunnable(sender, issue) {
+
+            @Override
+            public void run() {
+                try {
+                    boolean somethingChanged = FileUtilNoMC.checkChangedConfig();
+
+                    if (somethingChanged && (argument == null || !argument.equals("forceOverride"))) {
+                        sender.func_145747_a(new ChatComponentText(""));
+                        sender.func_145747_a(new ChatComponentText(""));
+                        ChatComponentText message = new ChatComponentText("You seem to have updated certain config files!");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                        message = new ChatComponentText("Users who already play your pack won't (!) receive those changes.");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                        sender.func_145747_a(new ChatComponentText(""));
+                        message = new ChatComponentText("If you want to ship the new configs to those players too,");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                        message = new ChatComponentText("append the 'forceOverride' argument");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                    }
+                } catch (Exception e) {
+                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
+                    final ChatComponentText message = new ChatComponentText("Couldn't save the config files!");
+                    message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                    sender.func_145747_a(message);
+                    issue.setBoolean(true);
+                }
+
+                if (issue.getBoolean()){
+                    final ChatComponentText message = new ChatComponentText("Please inspect the log files for further information!");
+                    message.func_150256_b().func_150238_a(EnumChatFormatting.YELLOW);
+                    sender.func_145747_a(message);
+                } else
+                    try {
+                        boolean updateExisting = argument != null && argument.equals("forceOverride");
+
+                        FileUtilNoMC.checkMD5(updateExisting, true, argument2 == null ? null : argument2);
+                        FileUtilNoMC.copyAndHashPrivate(false, true);
+                        final ChatComponentText message = new ChatComponentText("Successfully saved your mod configuration files" + (argument2 == null ? "" : argument2.contains("*") ? " (wildcard)" : " (single entry)"));
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
+                        sender.func_145747_a(message);
+                        boolean noFiles = FileUtilNoMC.checkForConfigFiles();
+                        if (noFiles){
+                            final ChatComponentText message2 = new ChatComponentText("Warning: No config files will be shipped as the folder is still empty!");
+                            message2.func_150256_b().func_150238_a(EnumChatFormatting.YELLOW);
+                            sender.func_145747_a(message2);
+                        }
+
+                    } catch (UncheckedIOException | NullPointerException | IOException e) {
+                        final ChatComponentText message = new ChatComponentText("Couldn't save the config files!");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                        sender.func_145747_a(message);
+                        if (e instanceof UncheckedIOException && e.getCause() instanceof NoSuchFileException){
+                            final ChatComponentText message2 = new ChatComponentText("It seems, no file or folder by that name exists");
+                            message2.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                            sender.func_145747_a(message2);
+                        }
+
+                        DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
+                    }
+            }
+        });
+    }
+
+    private static void saveProcess(ICommandSender sender, String argument, String argument2) {
+        if (tpe.getQueue().size() > 0) {
+            final ChatComponentText message = new ChatComponentText("Please wait until the last request has finished");
+            message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            sender.func_145747_a(message);
+            return;
+        }
+
+        if (DefaultSettings_17.shutDown) {
+            ChatComponentText message = new ChatComponentText("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            sender.func_145747_a(message);
+            message = new ChatComponentText("Reason: " + DefaultSettings_17.shutdownReason);
+            message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            sender.func_145747_a(message);
+            return;
+        }
+
+        if ((FileUtilNoMC.keysFileExist() || FileUtilNoMC.optionsFilesExist() || FileUtilNoMC.serversFileExists()) && (argument == null || (!argument.equals("override") && !argument.equals("forceOverride")))) {
+            ChatComponentText message = new ChatComponentText("These files already exist! If you want to overwrite");
+            message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+            sender.func_145747_a(message);
+            message = new ChatComponentText("them, add the 'override' argument");
+            message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+            sender.func_145747_a(message);
+            return;
+        }
+
+        MutableBoolean issue = new MutableBoolean(false);
+
+        tpe.execute(new ThreadRunnable(sender, issue) {
+
+            @Override
+            public void run() {
+                try {
+                    boolean somethingChanged = FileUtil_17.checkChanged();
+
+                    if (somethingChanged && !argument.equals("forceOverride")) {
+                        sender.func_145747_a(new ChatComponentText(""));
+                        sender.func_145747_a(new ChatComponentText(""));
+                        ChatComponentText message = new ChatComponentText("You seem to have updated certain config files!");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                        message = new ChatComponentText("Users who already play your pack won't (!) receive those changes.");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                        sender.func_145747_a(new ChatComponentText(""));
+                        message = new ChatComponentText("If you want to ship the new configs to those players too,");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                        message = new ChatComponentText("append the 'forceOverride' argument instead of 'override'");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GOLD);
+                        sender.func_145747_a(message);
+                    }
+                } catch (Exception e) {
+                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+                }
+            }
+        });
+
+        tpe.execute(new ThreadRunnable(sender, issue) {
+
+            @Override
+            public void run() {
+                try {
+                    if (argument2 == null || argument2.equals("keybinds")) {
+                        FileUtil_17.saveKeys();
+                        final ChatComponentText message = new ChatComponentText("Successfully saved the key configuration");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
+                        sender.func_145747_a(message);
+                        FileUtil_17.restoreKeys(true, false);
+                    }
+                } catch (Exception e) {
+                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the key configuration:", e);
+                    final ChatComponentText message = new ChatComponentText("Couldn't save the key configuration!");
+                    message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                    sender.func_145747_a(message);
+                    issue.setBoolean(true);
+                }
+            }
+        });
+
+        tpe.execute(new ThreadRunnable(sender, issue) {
+
+            @Override
+            public void run() {
+                try {
+                    if (argument2 == null || argument2.equals("options")) {
+                        boolean optifine = FileUtil_17.saveOptions();
+                        final ChatComponentText message = new ChatComponentText("Successfully saved the default game options" + (optifine ? " (+ Optifine)" : ""));
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
+                        sender.func_145747_a(message);
+                    }
+                } catch (Exception e) {
+                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the default game options:", e);
+                    final ChatComponentText message = new ChatComponentText("Couldn't save the default game options!");
+                    message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                    sender.func_145747_a(message);
+                    issue.setBoolean(true);
+                }
+            }
+        });
+
+        tpe.execute(new ThreadRunnable(sender, issue) {
+
+            @Override
+            public void run() {
+                try {
+                    if (argument2 == null || argument2.equals("servers")) {
+                        FileUtilNoMC.saveServers();
+                        final ChatComponentText message = new ChatComponentText("Successfully saved the server list");
+                        message.func_150256_b().func_150238_a(EnumChatFormatting.GREEN);
+                        sender.func_145747_a(message);
+                    }
+                } catch (Exception e) {
+                    DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving the server list:", e);
+                    final ChatComponentText message = new ChatComponentText("Couldn't save the server list!");
+                    message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                    sender.func_145747_a(message);
+                    issue.setBoolean(true);
+                }
+
+                if (issue.getBoolean()){
+                    final ChatComponentText message = new ChatComponentText("Please inspect the log files for further information!");
+                    message.func_150256_b().func_150238_a(EnumChatFormatting.YELLOW);
+                    sender.func_145747_a(message);
+                } else
+                    try {
+                        boolean updateExisting = argument != null && argument.equals("forceOverride");
+                        FileUtilNoMC.checkMD5(updateExisting, false, null);
+                        FileUtilNoMC.copyAndHashPrivate(true, false);
+                    } catch (IOException e) {
+                        DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while saving your configuration:", e);
+                    }
+            }
+        });
     }
 }
 

@@ -54,6 +54,7 @@ public class CommandDefaultSettings {
 
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(Component.literal(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "Reason: " + DefaultSettings.shutdownReason), true);
 			return 0;
 		}
 
@@ -109,6 +110,7 @@ public class CommandDefaultSettings {
 		
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(Component.literal(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			source.sendSuccess(Component.literal(ChatFormatting.RED + "Reason: " + DefaultSettings.shutdownReason), true);
 			return 0;
 		}
 

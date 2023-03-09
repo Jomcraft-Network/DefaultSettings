@@ -37,6 +37,7 @@ public class DefaultSettings_18 {
     public static RegistryEvent_18 newEvent;
     public static boolean init = false;
     public static boolean shutDown = false;
+    public static String shutdownReason = null;
 
     @Mod.Instance
     public static DefaultSettings_18 instance;
@@ -51,6 +52,7 @@ public class DefaultSettings_18 {
 
                 if (!pluginClass.getBoolean(null)) {
                     shutDown = true;
+                    shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                     DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
                 } else {
 
@@ -94,6 +96,7 @@ public class DefaultSettings_18 {
                                     break;
                                 } else {
                                     shutDown = true;
+                                    shutdownReason = "The correct JCPlugin mod version couldn't be found! Please install version " + wantedVersion;
                                     DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings can't start up! JCPlugin version must be " + wantedVersion + "!");
                                 }
 
@@ -103,12 +106,14 @@ public class DefaultSettings_18 {
 
                     if (!foundDefaultSettings || wantedVersion == null) {
                         shutDown = true;
+                        shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
                     }
                 }
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
                      IllegalAccessException | IOException e) {
                 shutDown = true;
+                shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                 DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
             }
 

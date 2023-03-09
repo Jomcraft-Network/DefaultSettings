@@ -46,6 +46,7 @@ public class DefaultSettings {
     public static RegistryEvent newEvent;
     public static boolean init = false;
     public static boolean shutDown = false;
+    public static String shutdownReason = null;
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, DefaultSettings.MODID);
 
     @SuppressWarnings({"deprecation"})
@@ -60,6 +61,7 @@ public class DefaultSettings {
 
                 if (!pluginClass.getBoolean(null)) {
                     shutDown = true;
+                    shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                     DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
                 } else {
 
@@ -102,6 +104,7 @@ public class DefaultSettings {
                                     break;
                                 } else {
                                     shutDown = true;
+                                    shutdownReason = "The correct JCPlugin mod version couldn't be found! Please install version " + wantedVersion;
                                     DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! JCPlugin version must be " + wantedVersion + "!");
                                 }
 
@@ -111,12 +114,14 @@ public class DefaultSettings {
 
                     if (!foundDefaultSettings || wantedVersion == null) {
                         shutDown = true;
+                        shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
                     }
                 }
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
                      IllegalAccessException | IOException e) {
                 shutDown = true;
+                shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                 DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
             }
 

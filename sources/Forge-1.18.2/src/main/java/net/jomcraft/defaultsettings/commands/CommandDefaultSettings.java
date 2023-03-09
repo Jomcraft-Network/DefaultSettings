@@ -11,6 +11,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import org.apache.logging.log4j.Level;
@@ -54,6 +55,7 @@ public class CommandDefaultSettings {
 
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(new TextComponent(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.RED + "Reason: " + DefaultSettings.shutdownReason), true);
 			return 0;
 		}
 
@@ -109,6 +111,7 @@ public class CommandDefaultSettings {
 		
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(new TextComponent(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			source.sendSuccess(new TextComponent(ChatFormatting.RED + "Reason: " + DefaultSettings.shutdownReason), true);
 			return 0;
 		}
 

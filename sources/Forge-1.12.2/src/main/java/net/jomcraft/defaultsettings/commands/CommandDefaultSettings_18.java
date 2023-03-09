@@ -160,7 +160,10 @@ public class CommandDefaultSettings_18 extends CommandBase {
         }
 
         if (DefaultSettings_18.shutDown) {
-            final TextComponentString message = new TextComponentString("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            TextComponentString message = new TextComponentString("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            message.getStyle().setColor(TextFormatting.RED);
+            sender.sendMessage(message);
+            message = new TextComponentString("Reason: " + DefaultSettings_18.shutdownReason);
             message.getStyle().setColor(TextFormatting.RED);
             sender.sendMessage(message);
             return;
@@ -245,7 +248,10 @@ public class CommandDefaultSettings_18 extends CommandBase {
         }
 
         if (DefaultSettings_18.shutDown) {
-            final TextComponentString message = new TextComponentString("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            TextComponentString message = new TextComponentString("DefaultSettings is missing the JCPlugin mod! Shutting down...");
+            message.getStyle().setColor(TextFormatting.RED);
+            sender.sendMessage(message);
+            message = new TextComponentString("Reason: " + DefaultSettings_18.shutdownReason);
             message.getStyle().setColor(TextFormatting.RED);
             sender.sendMessage(message);
             return;

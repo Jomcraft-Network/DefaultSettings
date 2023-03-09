@@ -11,7 +11,6 @@ public class PreLaunch implements PreLaunchEntrypoint {
 
     @Override
     public void onPreLaunch() {
-
         try {
 
             File location = FabricLoader.getInstance().getGameDir().toFile();

@@ -103,7 +103,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         apiToken = System.getenv("CURSE_API")
 
         def mainFile = upload(318012, jar)
-        mainFile.releaseType = 'alpha'
+        mainFile.releaseType = 'beta'
         mainFile.displayName = "$archivesBaseName-$version"
         mainFile.changelogType = 'html'
         mainFile.changelog = file('../../changelog.html')

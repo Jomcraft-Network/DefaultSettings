@@ -1,12 +1,12 @@
 apply plugin: "idea"
 
-def jcpluginVersion = "4.0.2"
+def jcpluginVersion = "4.0.3"
 
 subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "4.0.2"
+    project.version = "4.0.3"
     rootProject.ext.setProperty("JCPluginVersion", jcpluginVersion);
 
     if (!project.hasProperty('javaVersion') || project.property('javaVersion') == "8") {

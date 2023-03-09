@@ -107,12 +107,14 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         mainFile.displayName = "$archivesBaseName-$version"
         mainFile.changelogType = 'html'
         mainFile.changelog = file('../../changelog.html')
+        mainFile.addRequirement('jcplugin')
         mainFile.addModLoader('Forge')
         mainFile.addJavaVersion('Java 17')
         mainFile.addGameVersion('1.19.3')
 
         def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
         sourcesFile.changelog = file('../../changelog.html')
+        sourcesFile.addRequirement('jcplugin')
         sourcesFile.displayName = "$archivesBaseName-$version-sources"
     }
 }

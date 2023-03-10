@@ -58,6 +58,10 @@ public class CommandDefaultSettings {
 			return 0;
 		}
 
+		if(!shouldExecute(source)){
+			return 0;
+		}
+
 		MutableBoolean issue = new MutableBoolean(false);
 
 		tpe.execute(new ThreadRunnable(source, issue) {
@@ -104,6 +108,20 @@ public class CommandDefaultSettings {
 		return 0;
 	}
 
+	public static boolean shouldExecute(CommandSource source){
+		if(FileUtilNoMC.otherCreator){
+			if(!FileUtilNoMC.privateJson.disableCreatorCheck){
+				source.sendSuccess(new StringTextComponent(TextFormatting.RED + "You're not the creator of this modpack! Using these creator-only commands might come with unforeseen problems."), true);
+				source.sendSuccess(new StringTextComponent(TextFormatting.RED + "If you're fine with those risks, you may change `\"disableCreatorCheck\": \"false\"` in the `ds_private_storage.json` file to `true`"), true);
+				return false;
+			} else {
+				source.sendSuccess(new StringTextComponent(TextFormatting.RED + "Caution! You disabled the creator checker! This might break things!"), true);
+				return true;
+			}
+		}
+		return true;
+	}
+
 	private static int saveProcess(CommandSource source, String argument, String argument2) throws CommandSyntaxException {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
@@ -111,6 +129,10 @@ public class CommandDefaultSettings {
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(new StringTextComponent(TextFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
 			source.sendSuccess(new StringTextComponent(TextFormatting.RED + "Reason: " + DefaultSettings.shutdownReason), true);
+			return 0;
+		}
+
+		if(!shouldExecute(source)){
 			return 0;
 		}
 

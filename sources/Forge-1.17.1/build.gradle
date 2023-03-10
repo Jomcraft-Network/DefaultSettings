@@ -65,7 +65,7 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
-	implementation fg.deobf("curse.maven:jcp-659192:4416093")
+    implementation fg.deobf("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[0]}")
     //implementation project(":Core")
 }
 
@@ -103,7 +103,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         apiToken = System.getenv("CURSE_API")
 
         def mainFile = upload(318012, jar)
-        mainFile.releaseType = 'beta'
+        mainFile.releaseType = project.ext.relType
         mainFile.displayName = "$archivesBaseName-$version"
         mainFile.changelogType = 'html'
         mainFile.changelog = file('../../changelog.html')

@@ -17,6 +17,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -169,6 +171,10 @@ public class CommandDefaultSettings_18 extends CommandBase {
             return;
         }
 
+        if(!shouldExecute(sender)){
+            return;
+        }
+
         MutableBoolean issue = new MutableBoolean(false);
 
         tpe.execute(new ThreadRunnable(sender, issue) {
@@ -239,6 +245,26 @@ public class CommandDefaultSettings_18 extends CommandBase {
         });
     }
 
+    public static boolean shouldExecute(ICommandSender sender){
+        if(FileUtilNoMC.otherCreator){
+            if(!FileUtilNoMC.privateJson.disableCreatorCheck){
+                TextComponentString message = new TextComponentString("You're not the creator of this modpack! Using these creator-only commands might come with unforeseen problems.");
+                message.getStyle().setColor(TextFormatting.RED);
+                sender.sendMessage(message);
+                message = new TextComponentString("If you're fine with those risks, you may change `\"disableCreatorCheck\": \"false\"` in the `ds_private_storage.json` file to `true`");
+                message.getStyle().setColor(TextFormatting.RED);
+                sender.sendMessage(message);
+                return false;
+            } else {
+                final TextComponentString message = new TextComponentString("Caution! You disabled the creator checker! This might break things!");
+                message.getStyle().setColor(TextFormatting.RED);
+                sender.sendMessage(message);
+                return true;
+            }
+        }
+        return true;
+    }
+
     private static void saveProcess(ICommandSender sender, String argument, String argument2) {
         if (tpe.getQueue().size() > 0) {
             final TextComponentString message = new TextComponentString("Please wait until the last request has finished");
@@ -254,6 +280,10 @@ public class CommandDefaultSettings_18 extends CommandBase {
             message = new TextComponentString("Reason: " + DefaultSettings_18.shutdownReason);
             message.getStyle().setColor(TextFormatting.RED);
             sender.sendMessage(message);
+            return;
+        }
+
+        if(!shouldExecute(sender)){
             return;
         }
 

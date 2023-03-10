@@ -12,6 +12,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.Level;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -54,6 +55,10 @@ public class CommandDefaultSettings {
 
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(new TextComponent(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			return 0;
+		}
+
+		if(!shouldExecute(source)){
 			return 0;
 		}
 
@@ -103,12 +108,30 @@ public class CommandDefaultSettings {
 		return 0;
 	}
 
+	public static boolean shouldExecute(CommandSourceStack source){
+		if(FileUtilNoMC.otherCreator){
+			if(!FileUtilNoMC.privateJson.disableCreatorCheck){
+				source.sendSuccess(new TextComponent(ChatFormatting.RED + "You're not the creator of this modpack! Using these creator-only commands might come with unforeseen problems."), true);
+				source.sendSuccess(new TextComponent(ChatFormatting.RED + "If you're fine with those risks, you may change `\"disableCreatorCheck\": \"false\"` in the `ds_private_storage.json` file to `true`"), true);
+				return false;
+			} else {
+				source.sendSuccess(new TextComponent(ChatFormatting.RED + "Caution! You disabled the creator checker! This might break things!"), true);
+				return true;
+			}
+		}
+		return true;
+	}
+
 	private static int saveProcess(CommandSourceStack source, String argument, String argument2) throws CommandSyntaxException {
 		if (tpe.getQueue().size() > 0)
 			throw FAILED_EXCEPTION.create();
 		
 		if (DefaultSettings.shutDown) {
 			source.sendSuccess(new TextComponent(ChatFormatting.RED + "DefaultSettings is missing the JCPlugin mod! Shutting down..."), true);
+			return 0;
+		}
+
+		if(!shouldExecute(source)){
 			return 0;
 		}
 

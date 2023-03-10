@@ -26,7 +26,7 @@ dependencies {
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3"
 
-	modImplementation "curse.maven:jcp-659192:4416087"
+	modImplementation "curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[3]}"
 	//implementation project(":Core")
 }
 
@@ -88,7 +88,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 		apiToken = System.getenv("CURSE_API")
 
 		def mainFile = upload(451860, remapJar.archiveFile)
-		mainFile.releaseType = 'beta'
+		mainFile.releaseType = project.ext.relType
 		mainFile.displayName = "$archivesBaseName-$version"
 		mainFile.changelogType = 'html'
 		mainFile.changelog = file('../../changelog.html')

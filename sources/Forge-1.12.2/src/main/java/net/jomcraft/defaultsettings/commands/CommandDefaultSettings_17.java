@@ -171,6 +171,10 @@ public class CommandDefaultSettings_17 extends CommandBase {
             return;
         }
 
+        if(!shouldExecute(sender)){
+            return;
+        }
+
         MutableBoolean issue = new MutableBoolean(false);
 
         tpe.execute(new ThreadRunnable(sender, issue) {
@@ -241,6 +245,26 @@ public class CommandDefaultSettings_17 extends CommandBase {
         });
     }
 
+    public static boolean shouldExecute(ICommandSender sender){
+        if(FileUtilNoMC.otherCreator){
+            if(!FileUtilNoMC.privateJson.disableCreatorCheck){
+                ChatComponentText message = new ChatComponentText("You're not the creator of this modpack! Using these creator-only commands might come with unforeseen problems.");
+                message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                sender.func_145747_a(message);
+                message = new ChatComponentText("If you're fine with those risks, you may change `\"disableCreatorCheck\": \"false\"` in the `ds_private_storage.json` file to `true`");
+                message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                sender.func_145747_a(message);
+                return false;
+            } else {
+                final ChatComponentText message = new ChatComponentText("Caution! You disabled the creator checker! This might break things!");
+                message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+                sender.func_145747_a(message);
+                return true;
+            }
+        }
+        return true;
+    }
+
     private static void saveProcess(ICommandSender sender, String argument, String argument2) {
         if (tpe.getQueue().size() > 0) {
             final ChatComponentText message = new ChatComponentText("Please wait until the last request has finished");
@@ -256,6 +280,10 @@ public class CommandDefaultSettings_17 extends CommandBase {
             message = new ChatComponentText("Reason: " + DefaultSettings_17.shutdownReason);
             message.func_150256_b().func_150238_a(EnumChatFormatting.RED);
             sender.func_145747_a(message);
+            return;
+        }
+
+        if(!shouldExecute(sender)){
             return;
         }
 

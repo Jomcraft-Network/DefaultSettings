@@ -1,12 +1,18 @@
 apply plugin: "idea"
 
-def jcpluginVersion = "4.0.3"
+def jcpluginVersion = "4.0.4"
 
 subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "4.0.3"
+    project.version = "4.0.4"
+    project.ext.relType = "release"
+
+    //Descending version order, Forge first; Fabric last
+    project.ext.jcplugin_versions = ["4430994", "4430992", "4430990", "4430988"] as String[]
+    project.ext.jcplugin_id = "659192"
+
     rootProject.ext.setProperty("JCPluginVersion", jcpluginVersion);
 
     if (!project.hasProperty('javaVersion') || project.property('javaVersion') == "8") {

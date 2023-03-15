@@ -34,8 +34,6 @@ public class DefaultSettings_18 {
     public static final String VERSION = DefaultSettings_18.class.getPackage().getImplementationVersion();
     public static Map<String, KeyContainer_18> keyRebinds = new HashMap<String, KeyContainer_18>();
     public static boolean setUp = false;
-    public static RegistryEvent_18 newEvent;
-    public static boolean init = false;
     public static boolean shutDown = false;
     public static String shutdownReason = null;
 

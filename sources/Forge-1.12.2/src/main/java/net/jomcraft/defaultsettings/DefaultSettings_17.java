@@ -34,7 +34,6 @@ public class DefaultSettings_17 {
     public static final String VERSION = DefaultSettings_17.class.getPackage().getImplementationVersion();
     public static Map<String, Integer> keyRebinds = new HashMap<String, Integer>();
     public static boolean setUp = false;
-    public static boolean init = false;
     public static boolean shutDown = false;
     public static String shutdownReason = null;
 

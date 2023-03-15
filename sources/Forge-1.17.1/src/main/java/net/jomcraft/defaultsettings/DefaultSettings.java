@@ -36,8 +36,6 @@ public class DefaultSettings {
     public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
     public static boolean setUp = false;
     public static DefaultSettings instance;
-    public static RegistryEvent newEvent;
-    public static boolean init = false;
     public static boolean shutDown = false;
     public static String shutdownReason = null;
 
@@ -118,9 +116,6 @@ public class DefaultSettings {
             }
 
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
-
-            newEvent = new RegistryEvent();
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(newEvent::regInitNew);
 
             ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
 

@@ -1,8 +1,6 @@
 package net.jomcraft.defaultsettings;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +8,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.jomcraft.defaultsettings.commands.CommandDefaultSettings;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,11 +17,9 @@ public class DefaultSettings implements ModInitializer {
 
     public static final String MODID = "defaultsettings";
     public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
-    public static final String VERSION = DefaultSettings.class.getPackage().getImplementationVersion();
+    public static String VERSION = "none";
     public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
-    public static boolean setUp = false;
     public static DefaultSettings instance;
-    public static boolean init = false;
     public static boolean shutDown = false;
 
     @Override

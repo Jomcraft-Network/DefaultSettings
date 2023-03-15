@@ -43,8 +43,6 @@ public class DefaultSettings {
     public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
     public static boolean setUp = false;
     public static DefaultSettings instance;
-    public static RegistryEvent newEvent;
-    public static boolean init = false;
     public static boolean shutDown = false;
     public static String shutdownReason = null;
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, DefaultSettings.MODID);
@@ -132,9 +130,6 @@ public class DefaultSettings {
             COMMAND_ARGUMENT_TYPES.register("ds_type", () -> ArgumentTypeInfos.registerByClass(TypeArguments.class, new TypeArguments.Info()));
 
             COMMAND_ARGUMENT_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-
-            newEvent = new RegistryEvent();
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(newEvent::regInitNew);
 
             ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
 

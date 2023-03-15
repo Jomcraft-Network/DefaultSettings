@@ -394,12 +394,17 @@ public class FileUtil_17 {
 				ret = true;
 			}
 
-			options.close();
-			File fileO = new File(getMainFolder(), activeProfile + "/options.txt_temp");
-			Files.delete(fileO.toPath());
-			keys.close();
-			File fileK = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
-			Files.delete(fileK.toPath());
+			if (options != null) {
+				options.close();
+				File fileO = new File(getMainFolder(), activeProfile + "/options.txt_temp");
+				Files.delete(fileO.toPath());
+			}
+
+			if (keys != null) {
+				keys.close();
+				File fileK = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
+				Files.delete(fileK.toPath());
+			}
 
 		} catch (Exception e) {
 			DefaultSettings_17.log.log(Level.ERROR, "Error while saving configs: ", e);

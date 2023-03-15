@@ -19,7 +19,7 @@ archivesBaseName = "${rootProject.name}"
 
 def file_version = version;
 
-version = "1.19.3-${version}-Forge"
+version = "1.19.x-${version}-Forge"
 
 minecraft {
     mappings channel: 'official', version: '1.19.3'

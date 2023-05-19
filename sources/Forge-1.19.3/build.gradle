@@ -19,7 +19,7 @@ archivesBaseName = "${rootProject.name}"
 
 def file_version = version;
 
-version = "1.19.x-${version}-Forge"
+version = "1.19.4-1.20.x-${version}-Forge"
 
 minecraft {
     mappings channel: 'official', version: '1.19.3'
@@ -112,6 +112,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         mainFile.addJavaVersion('Java 17')
         mainFile.addGameVersion('1.19.3')
         mainFile.addGameVersion('1.19.4')
+        mainFile.addGameVersion('1.20')
 
         def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
         sourcesFile.changelog = file('../../changelog.html')

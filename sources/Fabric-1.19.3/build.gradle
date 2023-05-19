@@ -7,7 +7,7 @@ archivesBaseName = "${rootProject.name}"
 
 def file_version = version;
 
-version = "1.19.x-${version}-Fabric"
+version = "1.19.4-1.20.x-${version}-Fabric"
 
 repositories {
     maven {
@@ -95,6 +95,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 		mainFile.addRequirement('jcplugin')
 		mainFile.addModLoader('Fabric')
 		mainFile.addJavaVersion('Java 17')
+		mainFile.addGameVersion('1.20')
 		mainFile.addGameVersion('1.19.4')
 		mainFile.addGameVersion('1.19.3')
 		mainFile.addGameVersion('1.19.2')

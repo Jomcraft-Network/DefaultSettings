@@ -34,5 +34,11 @@ project(":Fabric-1.19.3").projectDir = file("./sources/Fabric-1.19.3")
 include("Forge-1.19.3")
 project(":Forge-1.19.3").projectDir = file("./sources/Forge-1.19.3")
 
+include("Fabric-1.20")
+project(":Fabric-1.20").projectDir = file("./sources/Fabric-1.20")
+
+include("Forge-1.20")
+project(":Forge-1.20").projectDir = file("./sources/Forge-1.20")
+
 include("Forge-1.12.2")
 project(":Forge-1.12.2").projectDir = file("./sources/Forge-1.12.2")

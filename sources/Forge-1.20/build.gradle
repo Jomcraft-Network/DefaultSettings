@@ -19,16 +19,16 @@ archivesBaseName = "${rootProject.name}"
 
 def file_version = version;
 
-version = "1.19.x-${version}-Forge"
+version = "1.20.x-${version}-Forge"
 
 minecraft {
-    mappings channel: 'official', version: '1.19.3'
+    mappings channel: 'official', version: '1.20'
 
     runs {
         client {
             workingDirectory file('./run')
             property 'forge.logging.markers', 'REGISTRIES'
-            ideaModule "DefaultSettings.Forge-1.19.3.main"
+            ideaModule "DefaultSettings.Forge-1.20.main"
             property 'forge.logging.console.level', 'debug'
             mods {
                 "${rootProject.name}" {
@@ -41,7 +41,7 @@ minecraft {
         server {
             workingDirectory file('./run')
             property 'forge.logging.markers', 'REGISTRIES'
-            ideaModule "DefaultSettings.Forge-1.19.3.main"
+            ideaModule "DefaultSettings.Forge-1.20.main"
             property 'forge.logging.console.level', 'debug'
             mods {
                 "${rootProject.name}" {
@@ -64,7 +64,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.3-44.1.17'
+    minecraft 'net.minecraftforge:forge:1.20-46.0.1'
 	implementation fg.deobf("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[0]}")
     //implementation project(":Core")
 }
@@ -110,8 +110,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         mainFile.addRequirement('jcplugin')
         mainFile.addModLoader('Forge')
         mainFile.addJavaVersion('Java 17')
-        mainFile.addGameVersion('1.19.3')
-        mainFile.addGameVersion('1.19.4')
+        mainFile.addGameVersion('1.20')
 
         def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
         sourcesFile.changelog = file('../../changelog.html')

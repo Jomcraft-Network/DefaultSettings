@@ -7,7 +7,7 @@ archivesBaseName = "${rootProject.name}"
 
 def file_version = version;
 
-version = "1.19.x-${version}-Fabric"
+version = "1.20.x-${version}-Fabric"
 
 repositories {
     maven {
@@ -19,12 +19,12 @@ repositories {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.19.3"
+	minecraft "com.mojang:minecraft:1.20"
 	mappings loom.officialMojangMappings()
 
-	modImplementation "net.fabricmc:fabric-loader:0.14.11"
+	modImplementation "net.fabricmc:fabric-loader:0.14.21"
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.83.0+1.20"
 
 	modImplementation "curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[3]}"
 	//implementation project(":Core")
@@ -50,13 +50,13 @@ loom {
 	runs {
 		client {
 			client()
-			setConfigName("Fabric 1.19.3 Client")
+			setConfigName("Fabric 1.20 Client")
 			ideConfigGenerated(true)
 			runDir("./run")
 		}
 		server {
 			server()
-			setConfigName("Fabric 1.19.3 Server")
+			setConfigName("Fabric 1.20 Server")
 			ideConfigGenerated(true)
 			runDir("./run")
 		}
@@ -95,8 +95,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 		mainFile.addRequirement('jcplugin')
 		mainFile.addModLoader('Fabric')
 		mainFile.addJavaVersion('Java 17')
-		mainFile.addGameVersion('1.19.4')
-		mainFile.addGameVersion('1.19.3')
+		mainFile.addGameVersion('1.20')
 
 		def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
 		sourcesFile.changelog = file('../../changelog.html')

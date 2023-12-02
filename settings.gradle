@@ -1,6 +1,7 @@
 pluginManagement {
 	repositories {
 		gradlePluginPortal()
+		maven { url = 'https://maven.neoforged.net/releases' }
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
@@ -13,32 +14,11 @@ pluginManagement {
 
 rootProject.name = name
 
-include("Fabric-1.16.5")
-project(":Fabric-1.16.5").projectDir = file("./sources/Fabric-1.16.5")
-
-include("Forge-1.16.5")
-project(":Forge-1.16.5").projectDir = file("./sources/Forge-1.16.5")
-
-include("Forge-1.17.1")
-project(":Forge-1.17.1").projectDir = file("./sources/Forge-1.17.1")
-
-include("Forge-1.18.2")
-project(":Forge-1.18.2").projectDir = file("./sources/Forge-1.18.2")
-
-include("Forge-1.19.2")
-project(":Forge-1.19.2").projectDir = file("./sources/Forge-1.19.2")
-
-include("Fabric-1.19.3")
-project(":Fabric-1.19.3").projectDir = file("./sources/Fabric-1.19.3")
-
-include("Forge-1.19.3")
-project(":Forge-1.19.3").projectDir = file("./sources/Forge-1.19.3")
-
 include("Fabric-1.20")
 project(":Fabric-1.20").projectDir = file("./sources/Fabric-1.20")
 
 include("Forge-1.20")
 project(":Forge-1.20").projectDir = file("./sources/Forge-1.20")
 
-include("Forge-1.12.2")
-project(":Forge-1.12.2").projectDir = file("./sources/Forge-1.12.2")
+include("NeoForge-1.20.2")
+project(":NeoForge-1.20.2").projectDir = file("./sources/NeoForge-1.20.2")

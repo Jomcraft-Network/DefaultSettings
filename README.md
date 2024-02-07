@@ -1,4 +1,4 @@
-### DefaultSettings Core Branch
+### DefaultSettings Cerium Edition Core Branch
 
 ---
 

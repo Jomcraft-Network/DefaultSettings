@@ -1,10 +1,11 @@
 ### DefaultSettings Core Branch
 
-###WIP!
-
 ---
 
-This branch is intended to be used by other branches as an dependency. It does not do anything by itself.
+> [!CAUTION]
+> Heavily WIP, things will be broken!
+
+This branch is intended to be used by other branches as an dependency. **It does not do anything by itself**.
 
 ##### License
 

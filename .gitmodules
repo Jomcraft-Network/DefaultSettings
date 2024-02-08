@@ -1,0 +1,4 @@
+[submodule "Core"]
+	path = sources/Core
+	url = https://github.com/PT400C/DefaultSettings.git
+	branch = cerium-core

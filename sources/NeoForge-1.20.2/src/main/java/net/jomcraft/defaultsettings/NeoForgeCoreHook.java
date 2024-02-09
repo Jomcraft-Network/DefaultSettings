@@ -4,12 +4,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.jomcraft.jcplugin.FileUtilNoMC;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import java.io.File;
 
-public class CustomMCInstancer implements MCInstancer {
+public class NeoForgeCoreHook implements ICoreHook {
 
     @Override
     public File getMCDataDir() {

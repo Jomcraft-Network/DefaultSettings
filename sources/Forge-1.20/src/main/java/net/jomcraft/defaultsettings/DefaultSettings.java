@@ -19,9 +19,7 @@ import net.jomcraft.defaultsettings.commands.TypeArguments;
 import net.jomcraft.jcplugin.JCLogger;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
@@ -52,9 +50,8 @@ public class DefaultSettings {
     @SuppressWarnings({"deprecation"})
     public DefaultSettings() {
         instance = this;
-
-        CustomMCInstancer nw = new CustomMCInstancer();
-        Core.instance = nw;
+        ForgeCoreHook core = new ForgeCoreHook();
+        Core.setInstance(core);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             if (setUp) return;

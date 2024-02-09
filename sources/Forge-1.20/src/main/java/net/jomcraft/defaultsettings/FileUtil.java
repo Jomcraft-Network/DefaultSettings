@@ -1,23 +1,14 @@
 package net.jomcraft.defaultsettings;
 
 import static net.jomcraft.jcplugin.FileUtilNoMC.*;
-import java.io.BufferedReader;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.util.ArrayList;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.settings.KeyModifier;
 
 public class FileUtil {
 
@@ -62,267 +53,25 @@ public class FileUtil {
 
 	@SuppressWarnings("resource")
 	public static void restoreKeys(boolean update, boolean initial) throws NullPointerException, IOException, NumberFormatException {
-		TestR.restoreKeysAA(update, initial);
-		/*DefaultSettings.keyRebinds.clear();
-		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
-		if (keysFile.exists()) {
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new FileReader(keysFile));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					if (line.isEmpty())
-						continue;
-
-					DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputConstants.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
-				}
-			} catch (IOException e) {
-				throw e;
-
-			} catch (NullPointerException e) {
-				throw e;
-			} finally {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					throw e;
-				} catch (NullPointerException e) {
-					throw e;
-				}
-			}
-
-			if (update) {
-				ArrayList<String> presentKeys = new ArrayList<String>();
-
-				final File localKeysFile = new File(mcDataDir, "options.txt");
-				if (localKeysFile.exists()) {
-					BufferedReader localReader = null;
-					try {
-						localReader = new BufferedReader(new FileReader(localKeysFile));
-						String line;
-						while ((line = localReader.readLine()) != null) {
-							if (line.isEmpty())
-								continue;
-
-							if (line.startsWith("key_key.")) {
-								final String key = line.split("key_")[1].split(":")[0];
-								presentKeys.add(key);
-							}
-						}
-					} catch (IOException e) {
-						throw e;
-
-					} catch (NullPointerException e) {
-						throw e;
-					} finally {
-						try {
-							localReader.close();
-						} catch (IOException e) {
-							throw e;
-						} catch (NullPointerException e) {
-							throw e;
-						}
-					}
-				}
-
-				for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings) {
-					if (DefaultSettings.keyRebinds.containsKey(keyBinding.getName())) {
-						KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.getName());
-
-						if (initial || !presentKeys.contains(keyBinding.getName()))
-							keyBinding.setKey(container.input);
-
-						keyBinding.defaultKey = container.input;
-						ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, keyBinding, container.modifier, "keyModifierDefault");
-						keyBinding.setKeyModifierAndCode(keyBinding.getDefaultKeyModifier(), container.input);
-
-					}
-				}
-				KeyMapping.resetMapping();
-			}
-		}*/
+		CoreUtil.restoreKeys(update, initial);
 	}
 
 	@SuppressWarnings("resource")
 	public static void saveKeys() throws IOException, NullPointerException {
-		TestR.saveKeysAA();
-		/*PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
-			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
-				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
-
-		} catch (IOException e) {
-			throw e;
-		} catch (NullPointerException e) {
-			throw e;
-		} finally {
-			writer.close();
-		}
-
-		BufferedReader reader = null;
-		if (new File(mcDataDir, "options.justenoughkeys.txt").exists()) {
-
-			try {
-				writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/options.justenoughkeys.txt")));
-				reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.justenoughkeys.txt")));
-				String line;
-				while ((line = reader.readLine()) != null)
-					writer.print(line + "\n");
-
-			} catch (IOException e) {
-				throw e;
-			} catch (NullPointerException e) {
-				throw e;
-			} finally {
-				try {
-					reader.close();
-					writer.close();
-				} catch (IOException e) {
-					throw e;
-				} catch (NullPointerException e) {
-					throw e;
-				}
-			}
-		}
-
-		if (new File(mcDataDir, "options.amecsapi.txt").exists()) {
-
-			try {
-				writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/options.amecsapi.txt")));
-				reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.amecsapi.txt")));
-				String line;
-				while ((line = reader.readLine()) != null)
-					writer.print(line + "\n");
-
-			} catch (IOException e) {
-				throw e;
-			} catch (NullPointerException e) {
-				throw e;
-			} finally {
-				try {
-					reader.close();
-					writer.close();
-				} catch (IOException e) {
-					throw e;
-				} catch (NullPointerException e) {
-					throw e;
-				}
-			}
-		}*/
+		CoreUtil.saveKeys();
 	}
 
 	@SuppressWarnings("resource")
 	public static boolean saveOptions() throws NullPointerException, IOException {
 		Minecraft.getInstance().options.save();
-		/*Minecraft.getInstance().options.save();
-		PrintWriter writer = null;
-		BufferedReader reader = null;
-		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/options.txt")));
-			reader = new BufferedReader(new FileReader(new File(mcDataDir, "options.txt")));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (line.startsWith("key_"))
-					continue;
-
-				writer.print(line + "\n");
-			}
-		} catch (IOException e) {
-			throw e;
-		} catch (NullPointerException e) {
-			throw e;
-		} finally {
-			try {
-				reader.close();
-				writer.close();
-			} catch (IOException e) {
-				throw e;
-			} catch (NullPointerException e) {
-				throw e;
-			}
-		}
-
-		if (!new File(mcDataDir, "optionsof.txt").exists())
-			return false;
-
-		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/optionsof.txt")));
-			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsof.txt")));
-			String line;
-			while ((line = reader.readLine()) != null)
-				writer.print(line + "\n");
-
-		} catch (IOException e) {
-			throw e;
-		} catch (NullPointerException e) {
-			throw e;
-		} finally {
-			try {
-				reader.close();
-				writer.close();
-			} catch (IOException e) {
-				throw e;
-			} catch (NullPointerException e) {
-				throw e;
-			}
-		}
-
-		if (!new File(mcDataDir, "optionsshaders.txt").exists())
-			return false;
-
-		try {
-			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/optionsshaders.txt")));
-			reader = new BufferedReader(new FileReader(new File(mcDataDir, "optionsshaders.txt")));
-			String line;
-			while ((line = reader.readLine()) != null)
-				writer.print(line + "\n");
-
-		} catch (IOException e) {
-			throw e;
-		} catch (NullPointerException e) {
-			throw e;
-		} finally {
-			try {
-				reader.close();
-				writer.close();
-			} catch (IOException e) {
-				throw e;
-			} catch (NullPointerException e) {
-				throw e;
-			}
-		}
-
-		return true;*/
-		return TestR.saveOptionsAA();
+		return CoreUtil.saveOptions();
 	}
-
-	@SuppressWarnings("resource")
-	/*public static InputStream getKeysStream() throws IOException, NullPointerException {
-		FileInputStream stream = null;
-		PrintWriter writer = null;
-		File file = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
-		try {
-			writer = new PrintWriter(new FileWriter(file));
-			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
-				writer.print(keyBinding.getName() + ":" + keyBinding.getKey().toString() + ":" + keyBinding.getKeyModifier().name() + "\n");
-			stream = new FileInputStream(file);
-		} catch (IOException e) {
-			throw e;
-		} catch (NullPointerException e) {
-			throw e;
-		} finally {
-			writer.close();
-		}
-
-		return stream;
-	}*/
 
 	public static boolean checkChanged() {
 		boolean ret = false;
 		try {
 
-			InputStream keys = TestR.getKeysStreamAA();
+			InputStream keys = CoreUtil.getKeysStream();
 			InputStream options = getOptionsStream();
 			InputStream optionsOF = getOptionsOFStream();
 			InputStream optionsShaders = getOptionsShadersStream();

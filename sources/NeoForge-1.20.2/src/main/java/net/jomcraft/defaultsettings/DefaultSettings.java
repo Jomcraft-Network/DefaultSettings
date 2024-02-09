@@ -50,6 +50,8 @@ public class DefaultSettings {
     @SuppressWarnings({"deprecation"})
     public DefaultSettings(IEventBus modEventBus) {
         instance = this;
+        NeoForgeCoreHook core = new NeoForgeCoreHook();
+        Core.setInstance(core);
 
         if (FMLLoader.getDist().isClient()) {
             if (setUp) return;
@@ -110,9 +112,11 @@ public class DefaultSettings {
                         }
                     }
 
-                    if (!foundDefaultSettings || wantedVersion == null) {
+                    String launchTarget = Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.LAUNCHTARGET.get()).get();
+
+                    if (!launchTarget.contains("dev") && (!foundDefaultSettings || wantedVersion == null)) {
                         shutDown = true;
-                        shutdownReason = foundDefaultSettings + "   " + wantedVersion + "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
+                        shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
                     }
                 }

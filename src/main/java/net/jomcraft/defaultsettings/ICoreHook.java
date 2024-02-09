@@ -2,7 +2,7 @@ package net.jomcraft.defaultsettings;
 
 import java.io.File;
 
-public interface MCInstancer {
+public interface ICoreHook {
 
     File getMCDataDir();
     File getMainFolder();

@@ -3,10 +3,9 @@ package net.jomcraft.defaultsettings;
 import java.io.*;
 import java.util.ArrayList;
 
-public class TestR {
+public class CoreUtil {
 
-    public static void restoreKeysAA(boolean update, boolean initial) throws IOException, NullPointerException {
-        //DefaultSettings.keyRebinds.clear();
+    public static void restoreKeys(boolean update, boolean initial) throws IOException, NullPointerException {
         Core.getInstance().clearKeyBinds();
         final File keysFile = new File(Core.getInstance().getMainFolder(), Core.getInstance().getActiveProfile() + "/keys.txt");
         if (keysFile.exists()) {
@@ -19,8 +18,6 @@ public class TestR {
                         continue;
 
                     Core.getInstance().putKeybind(line.split(":")[0], line.split(":")[1], line.split(":").length > 2 ? line.split(":")[2] : null);
-
-                    //DefaultSettings.keyRebinds.put(line.split(":")[0], new KeyContainer(InputConstants.getKey(line.split(":")[1]), line.split(":").length > 2 ? KeyModifier.valueFromString(line.split(":")[2]) : KeyModifier.NONE));
                 }
             } catch (IOException e) {
                 throw e;
@@ -72,29 +69,20 @@ public class TestR {
                 }
 
                 for (KeyPlaceholder keyBinding : Core.getInstance().getKeyMappings()) {
-                    if (Core.getInstance().keybindExists(keyBinding.name)/*DefaultSettings.keyRebinds.containsKey(keyBinding.name)*/) {
-                        //KeyContainer container = DefaultSettings.keyRebinds.get(keyBinding.name);
+                    if (Core.getInstance().keybindExists(keyBinding.name)) {
                         boolean init = false;
                         if (initial || !presentKeys.contains(keyBinding.name))
                             init = true;
-                            //keyBinding.setKey(container.input);
 
                         Core.getInstance().setKeybind(keyBinding, init);
-
-                        /*keyBinding.defaultKey = container.input;
-
-                        ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, keyBinding, container.modifier, "keyModifierDefault");
-                        keyBinding.setKeyModifierAndCode(keyBinding.getDefaultKeyModifier(), container.input);*/
-
                     }
                 }
-                //KeyMapping.resetMapping();
                 Core.getInstance().resetMappings();
             }
         }
     }
 
-    public static InputStream getKeysStreamAA() throws IOException, NullPointerException {
+    public static InputStream getKeysStream() throws IOException, NullPointerException {
         FileInputStream stream;
         PrintWriter writer = null;
         File file = new File(Core.getInstance().getMainFolder(), Core.getInstance().getActiveProfile() + "/keys.txt_temp");
@@ -114,11 +102,11 @@ public class TestR {
         return stream;
     }
 
-    public static void saveKeysAA() throws IOException, NullPointerException {
+    public static void saveKeys() throws IOException, NullPointerException {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new FileWriter(new File(Core.getInstance().getMainFolder(), Core.getInstance().getActiveProfile() + "/keys.txt")));
-            for (KeyPlaceholder keyBinding : Core.getInstance().getKeyMappings()/*Minecraft.getInstance().options.keyMappings*/){
+            for (KeyPlaceholder keyBinding : Core.getInstance().getKeyMappings()){
                 writer.print(keyBinding.name + ":" + keyBinding.key + ":" + keyBinding.modifier + "\n");
             }
 
@@ -182,7 +170,7 @@ public class TestR {
         }
     }
 
-    public static boolean saveOptionsAA() throws NullPointerException, IOException {
+    public static boolean saveOptions() throws NullPointerException, IOException {
         PrintWriter writer = null;
         BufferedReader reader = null;
         try {
@@ -262,5 +250,4 @@ public class TestR {
 
         return true;
     }
-
 }

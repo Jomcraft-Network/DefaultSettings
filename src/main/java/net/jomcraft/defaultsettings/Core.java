@@ -5,9 +5,13 @@ import javax.annotation.Nullable;
 public class Core {
 
     @Nullable
-    public static MCInstancer instance = null;
+    public static ICoreHook instance = null;
 
-    public static MCInstancer getInstance() {
+    public static void setInstance(ICoreHook coreHook){
+        instance = coreHook;
+    }
+
+    public static ICoreHook getInstance() {
         return instance;
     }
 

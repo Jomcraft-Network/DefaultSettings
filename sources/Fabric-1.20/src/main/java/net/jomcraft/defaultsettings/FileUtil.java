@@ -60,7 +60,6 @@ public class FileUtil {
 
 	@SuppressWarnings("resource")
 	public static void restoreKeys(boolean update, boolean initial) throws NullPointerException, IOException, NumberFormatException {
-
 		DefaultSettings.keyRebinds.clear();
 		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		if (keysFile.exists()) {
@@ -303,11 +302,15 @@ public class FileUtil {
 			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
 				writer.print(keyBinding.getName() + ":" + keyBinding.key.toString() + "\n");
 			stream = new FileInputStream(file);
+			DefaultSettings.log.error("AS2");
 		} catch (IOException e) {
+			DefaultSettings.log.error("ERROR HER! ", e);
 			throw e;
 		} catch (NullPointerException e) {
+			DefaultSettings.log.error("ERRORadsads HER!");
 			throw e;
 		} finally {
+			DefaultSettings.log.error("FFFFFF");
 			writer.close();
 		}
 

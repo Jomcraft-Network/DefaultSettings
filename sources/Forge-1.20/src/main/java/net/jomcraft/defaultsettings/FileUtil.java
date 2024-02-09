@@ -62,8 +62,8 @@ public class FileUtil {
 
 	@SuppressWarnings("resource")
 	public static void restoreKeys(boolean update, boolean initial) throws NullPointerException, IOException, NumberFormatException {
-
-		DefaultSettings.keyRebinds.clear();
+		TestR.restoreKeysAA(update, initial);
+		/*DefaultSettings.keyRebinds.clear();
 		final File keysFile = new File(getMainFolder(), activeProfile + "/keys.txt");
 		if (keysFile.exists()) {
 			BufferedReader reader = null;
@@ -92,7 +92,6 @@ public class FileUtil {
 			}
 
 			if (update) {
-
 				ArrayList<String> presentKeys = new ArrayList<String>();
 
 				final File localKeysFile = new File(mcDataDir, "options.txt");
@@ -141,13 +140,13 @@ public class FileUtil {
 				}
 				KeyMapping.resetMapping();
 			}
-
-		}
+		}*/
 	}
 
 	@SuppressWarnings("resource")
 	public static void saveKeys() throws IOException, NullPointerException {
-		PrintWriter writer = null;
+		TestR.saveKeysAA();
+		/*PrintWriter writer = null;
 		try {
 			writer = new PrintWriter(new FileWriter(new File(getMainFolder(), activeProfile + "/keys.txt")));
 			for (KeyMapping keyBinding : Minecraft.getInstance().options.keyMappings)
@@ -210,12 +209,13 @@ public class FileUtil {
 					throw e;
 				}
 			}
-		}
+		}*/
 	}
 
 	@SuppressWarnings("resource")
 	public static boolean saveOptions() throws NullPointerException, IOException {
 		Minecraft.getInstance().options.save();
+		/*Minecraft.getInstance().options.save();
 		PrintWriter writer = null;
 		BufferedReader reader = null;
 		try {
@@ -293,11 +293,12 @@ public class FileUtil {
 			}
 		}
 
-		return true;
+		return true;*/
+		return TestR.saveOptionsAA();
 	}
 
 	@SuppressWarnings("resource")
-	public static InputStream getKeysStream() throws IOException, NullPointerException {
+	/*public static InputStream getKeysStream() throws IOException, NullPointerException {
 		FileInputStream stream = null;
 		PrintWriter writer = null;
 		File file = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
@@ -315,13 +316,13 @@ public class FileUtil {
 		}
 
 		return stream;
-	}
+	}*/
 
 	public static boolean checkChanged() {
 		boolean ret = false;
 		try {
 
-			InputStream keys = getKeysStream();
+			InputStream keys = TestR.getKeysStreamAA();
 			InputStream options = getOptionsStream();
 			InputStream optionsOF = getOptionsOFStream();
 			InputStream optionsShaders = getOptionsShadersStream();

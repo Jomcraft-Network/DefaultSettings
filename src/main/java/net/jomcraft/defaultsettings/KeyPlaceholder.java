@@ -11,5 +11,4 @@ public class KeyPlaceholder {
         this.key = key;
         this.modifier = modifier;
     }
-
 }

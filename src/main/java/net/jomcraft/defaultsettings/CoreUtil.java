@@ -1,6 +1,7 @@
 package net.jomcraft.defaultsettings;
 
 import org.apache.logging.log4j.Level;
+
 import java.io.*;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
@@ -20,11 +21,31 @@ public class CoreUtil {
             try {
                 reader = new BufferedReader(new FileReader(keysFile));
                 String line;
+
                 while ((line = reader.readLine()) != null) {
                     if (line.isEmpty())
                         continue;
 
-                    Core.getInstance().putKeybind(line.split(":")[0], line.split(":")[1], line.split(":").length > 2 ? line.split(":")[2] : null);
+                    String[] parts = line.split(":");
+                    if (parts[parts.length - 1].contains("key.")) {
+                        String keyName = "";
+                        for (int i = 0; i < parts.length - 1; i++) {
+                            keyName += (keyName.isEmpty() ? "" : ":") + parts[i];
+                        }
+
+                        String bind = parts[parts.length - 1];
+                        Core.getInstance().putKeybind(keyName, bind, null);
+
+                    } else {
+                        String modifier = parts[parts.length - 1];
+                        String keyName = "";
+                        for (int i = 0; i < parts.length - 2; i++) {
+                            keyName += (keyName.isEmpty() ? "" : ":") + parts[i];
+                        }
+
+                        String bind = parts[parts.length - 2];
+                        Core.getInstance().putKeybind(keyName, bind, modifier);
+                    }
                 }
             } catch (IOException e) {
                 throw e;
@@ -55,8 +76,24 @@ public class CoreUtil {
                                 continue;
 
                             if (line.startsWith("key_key.")) {
-                                final String key = line.split("key_")[1].split(":")[0];
-                                presentKeys.add(key);
+
+                                String[] parts = line.split(":");
+                                if (parts[parts.length - 1].contains("key.")) {
+                                    String keyName = "";
+                                    for (int i = 0; i < parts.length - 1; i++) {
+                                        keyName += (keyName.isEmpty() ? "" : ":") + parts[i];
+                                    }
+
+                                    presentKeys.add(keyName.substring(4));
+
+                                } else {
+                                    String keyName = "";
+                                    for (int i = 0; i < parts.length - 2; i++) {
+                                        keyName += (keyName.isEmpty() ? "" : ":") + parts[i];
+                                    }
+
+                                    presentKeys.add(keyName.substring(4));
+                                }
                             }
                         }
                     } catch (IOException e) {
@@ -114,7 +151,7 @@ public class CoreUtil {
         try {
             writer = new PrintWriter(new FileWriter(new File(Core.getInstance().getMainFolder(), Core.getInstance().getActiveProfile() + "/keys.txt")));
             for (KeyPlaceholder keyBinding : Core.getInstance().getKeyMappings()) {
-                writer.print(keyBinding.name + ":" + keyBinding.key + ":" + keyBinding.modifier + "\n");
+                writer.print(keyBinding.name + ":" + keyBinding.key + (keyBinding.modifier == null ? "" : (":" + keyBinding.modifier)) + "\n");
             }
 
         } catch (IOException e) {
@@ -264,7 +301,7 @@ public class CoreUtil {
 
         if (Core.getInstance().hasDSShutDown()) {
             Core.getInstance().sendSuccess(source, "DefaultSettings is missing the JCPlugin mod! Shutting down...", ChatColors.RED.ordinal());
-            if(Core.getInstance().shutdownReason() != null && !Core.getInstance().shutdownReason().isEmpty())
+            if (Core.getInstance().shutdownReason() != null && !Core.getInstance().shutdownReason().isEmpty())
                 Core.getInstance().sendSuccess(source, "Reason: " + Core.getInstance().shutdownReason(), ChatColors.RED.ordinal());
             return 0;
         }
@@ -388,7 +425,7 @@ public class CoreUtil {
 
         if (Core.getInstance().hasDSShutDown()) {
             Core.getInstance().sendSuccess(source, "DefaultSettings is missing the JCPlugin mod! Shutting down...", ChatColors.RED.ordinal());
-            if(Core.getInstance().shutdownReason() != null && !Core.getInstance().shutdownReason().isEmpty())
+            if (Core.getInstance().shutdownReason() != null && !Core.getInstance().shutdownReason().isEmpty())
                 Core.getInstance().sendSuccess(source, "Reason: " + Core.getInstance().shutdownReason(), ChatColors.RED.ordinal());
             return 0;
         }

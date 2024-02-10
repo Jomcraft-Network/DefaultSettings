@@ -1,14 +1,23 @@
 package net.jomcraft.defaultsettings;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.jomcraft.jcplugin.FileUtilNoMC;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.client.settings.KeyModifier;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
+import java.io.IOException;
 
 public class NeoForgeCoreHook implements ICoreHook {
+
+    private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(Component.literal(ChatFormatting.RED + "Please wait until the last request has finished"));
 
     @Override
     public File getMCDataDir() {
@@ -76,5 +85,102 @@ public class NeoForgeCoreHook implements ICoreHook {
                 break;
             }
         }
+    }
+
+    @Override
+    public void sendSuccess(Object source, String text, int color) {
+        if (source instanceof CommandSourceStack) {
+            ((CommandSourceStack) source).sendSuccess(() -> Component.literal(text).withStyle(ChatFormatting.getById(color)), true);
+        }
+    }
+
+    @Override
+    public Exception throwFailedException() {
+        return FAILED_EXCEPTION.create();
+    }
+
+    @Override
+    public boolean hasDSShutDown() {
+        return DefaultSettings.shutDown;
+    }
+
+    @Override
+    public Logger getDSLog() {
+        return DefaultSettings.log;
+    }
+
+    @Override
+    public String shutdownReason() {
+        return DefaultSettings.shutdownReason;
+    }
+
+    @Override
+    public boolean isOtherCreator() {
+        return FileUtilNoMC.otherCreator;
+    }
+
+    @Override
+    public boolean disableCreatorCheck() {
+        return FileUtilNoMC.privateJson.disableCreatorCheck;
+    }
+
+    @Override
+    public boolean checkChangedConfig() {
+        return FileUtilNoMC.checkChangedConfig();
+    }
+
+    @Override
+    public boolean checkForConfigFiles() {
+        return FileUtilNoMC.checkForConfigFiles();
+    }
+
+    @Override
+    public void checkMD5(boolean updateExisting, boolean configs, String file) throws IOException {
+        FileUtilNoMC.checkMD5(updateExisting, configs, file);
+    }
+
+    @Override
+    public void copyAndHashPrivate(boolean options, boolean configs) throws NullPointerException, IOException {
+        FileUtilNoMC.copyAndHashPrivate(options, configs);
+    }
+
+    @Override
+    public boolean keysFileExist() {
+        return FileUtilNoMC.keysFileExist();
+    }
+
+    @Override
+    public boolean optionsFilesExist() {
+        return FileUtilNoMC.optionsFilesExist();
+    }
+
+    @Override
+    public boolean serversFileExists() {
+        return FileUtilNoMC.serversFileExists();
+    }
+
+    @Override
+    public boolean checkChanged() {
+        return FileUtil.checkChanged();
+    }
+
+    @Override
+    public void saveKeys() throws IOException {
+        FileUtil.saveKeys();
+    }
+
+    @Override
+    public boolean saveOptions() throws IOException {
+        return FileUtil.saveOptions();
+    }
+
+    @Override
+    public void saveServers() throws IOException {
+        FileUtilNoMC.saveServers();
+    }
+
+    @Override
+    public void restoreKeys(boolean update, boolean initial) throws IOException {
+        FileUtil.restoreKeys(update, initial);
     }
 }

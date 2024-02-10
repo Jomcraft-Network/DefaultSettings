@@ -89,14 +89,14 @@ public class CoreUtil {
         }
     }
 
-    public static InputStream getKeysStream() throws IOException, NullPointerException {
+    public static InputStream getKeysStream(boolean noModifier) throws IOException, NullPointerException {
         FileInputStream stream;
         PrintWriter writer = null;
         File file = new File(Core.getInstance().getMainFolder(), Core.getInstance().getActiveProfile() + "/keys.txt_temp");
         try {
             writer = new PrintWriter(new FileWriter(file));
             for (KeyPlaceholder keyBinding : Core.getInstance().getKeyMappings())
-                writer.print(keyBinding.name + ":" + keyBinding.key + ":" + keyBinding.modifier + "\n");
+                writer.print(keyBinding.name + ":" + keyBinding.key + (noModifier ? "" : (":" + keyBinding.modifier)) + "\n");
             stream = new FileInputStream(file);
         } catch (IOException e) {
             throw e;
@@ -264,7 +264,8 @@ public class CoreUtil {
 
         if (Core.getInstance().hasDSShutDown()) {
             Core.getInstance().sendSuccess(source, "DefaultSettings is missing the JCPlugin mod! Shutting down...", ChatColors.RED.ordinal());
-            Core.getInstance().sendSuccess(source, "Reason: " + Core.getInstance().shutdownReason(), ChatColors.RED.ordinal());
+            if(Core.getInstance().shutdownReason() != null && !Core.getInstance().shutdownReason().isEmpty())
+                Core.getInstance().sendSuccess(source, "Reason: " + Core.getInstance().shutdownReason(), ChatColors.RED.ordinal());
             return 0;
         }
 
@@ -387,7 +388,8 @@ public class CoreUtil {
 
         if (Core.getInstance().hasDSShutDown()) {
             Core.getInstance().sendSuccess(source, "DefaultSettings is missing the JCPlugin mod! Shutting down...", ChatColors.RED.ordinal());
-            Core.getInstance().sendSuccess(source, "Reason: " + Core.getInstance().shutdownReason(), ChatColors.RED.ordinal());
+            if(Core.getInstance().shutdownReason() != null && !Core.getInstance().shutdownReason().isEmpty())
+                Core.getInstance().sendSuccess(source, "Reason: " + Core.getInstance().shutdownReason(), ChatColors.RED.ordinal());
             return 0;
         }
 

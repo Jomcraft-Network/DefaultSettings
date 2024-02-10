@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'net.darkhax.curseforgegradle' version '1.1.17'
+    id 'net.darkhax.curseforgegradle' version '1.1.18'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
@@ -126,6 +126,8 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         mainFile.addModLoader('Forge')
         mainFile.addJavaVersion('Java 17')
         mainFile.addGameVersion('Client')
+        mainFile.addGameVersion('1.20.4')
+        mainFile.addGameVersion('1.20.3')
         mainFile.addGameVersion('1.20.2')
         mainFile.addGameVersion('1.20.1')
         mainFile.addGameVersion('1.20')

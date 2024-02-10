@@ -1,6 +1,6 @@
 plugins {
 	id "fabric-loom" version "1.0-SNAPSHOT"
-	id 'net.darkhax.curseforgegradle' version '1.1.17'
+	id 'net.darkhax.curseforgegradle' version '1.1.18'
 }
 
 archivesBaseName = "${rootProject.name}"
@@ -97,6 +97,8 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
 		mainFile.addModLoader('Fabric')
 		mainFile.addJavaVersion('Java 17')
 		mainFile.addGameVersion('Client')
+		mainFile.addGameVersion('1.20.4')
+		mainFile.addGameVersion('1.20.3')
 		mainFile.addGameVersion('1.20.2')
 		mainFile.addGameVersion('1.20.1')
 		mainFile.addGameVersion('1.20')

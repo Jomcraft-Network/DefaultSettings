@@ -27,7 +27,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:0.83.0+1.20"
 
 	modImplementation "curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[3]}"
-	//implementation project(":Core")
+	implementation project(":Core")
 }
 
 processResources {
@@ -39,8 +39,8 @@ processResources {
 	}
 }
 
-tasks.withType(JavaCompile) {
-	//source(project(":Core").sourceSets.main.allSource)
+tasks.withType(JavaCompile).configureEach {
+	source(project(":Core").sourceSets.main.allSource)
 }
 
 loom {
@@ -73,6 +73,7 @@ loom {
 
 task sourcesJar(type: Jar) {
 	from sourceSets.main.allSource
+	from(project(":Core").sourceSets.main.allSource)
 	archiveClassifier = 'sources'
 }
 

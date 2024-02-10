@@ -81,7 +81,7 @@ public class FileUtil {
         boolean ret = false;
         try {
 
-            InputStream keys = CoreUtil.getKeysStream();
+            InputStream keys = CoreUtil.getKeysStream(false);
             InputStream options = getOptionsStream();
             InputStream optionsOF = getOptionsOFStream();
             InputStream optionsShaders = getOptionsShadersStream();

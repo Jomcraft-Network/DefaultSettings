@@ -27,7 +27,7 @@ public class CoreUtil {
                         continue;
 
                     String[] parts = line.split(":");
-                    if (parts[parts.length - 1].contains("key.")) {
+                    if (parts[parts.length - 1].contains("key.") || numberParsable(parts[parts.length - 1])) {
                         String keyName = "";
                         for (int i = 0; i < parts.length - 1; i++) {
                             keyName += (keyName.isEmpty() ? "" : ":") + parts[i];
@@ -78,7 +78,7 @@ public class CoreUtil {
                             if (line.startsWith("key_key.")) {
 
                                 String[] parts = line.split(":");
-                                if (parts[parts.length - 1].contains("key.")) {
+                                if (parts[parts.length - 1].contains("key.") || numberParsable(parts[parts.length - 1])) {
                                     String keyName = "";
                                     for (int i = 0; i < parts.length - 1; i++) {
                                         keyName += (keyName.isEmpty() ? "" : ":") + parts[i];
@@ -123,6 +123,15 @@ public class CoreUtil {
                 }
                 Core.getInstance().resetMappings();
             }
+        }
+    }
+
+    public static boolean numberParsable(String text) {
+        try {
+            Integer.parseInt(text);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 
@@ -296,8 +305,15 @@ public class CoreUtil {
     }
 
     public static int saveProcess(Object source, String argument, String argument2) throws Exception {
-        if (tpe.getQueue().size() > 0)
-            throw Core.getInstance().throwFailedException();
+        if (tpe.getQueue().size() > 0) {
+            Exception e = Core.getInstance().throwFailedException();
+            if (e != null) {
+                throw e;
+            } else {
+                Core.getInstance().sendSuccess(source, "Please wait until the last request has finished", ChatColors.RED.ordinal());
+                return 0;
+            }
+        }
 
         if (Core.getInstance().hasDSShutDown()) {
             Core.getInstance().sendSuccess(source, "DefaultSettings is missing the JCPlugin mod! Shutting down...", ChatColors.RED.ordinal());
@@ -420,8 +436,15 @@ public class CoreUtil {
 
     public static int saveProcessConfigs(Object source, String argument, String argument2) throws Exception {
 
-        if (tpe.getQueue().size() > 0)
-            throw Core.getInstance().throwFailedException();
+        if (tpe.getQueue().size() > 0) {
+            Exception e = Core.getInstance().throwFailedException();
+            if (e != null) {
+                throw e;
+            } else {
+                Core.getInstance().sendSuccess(source, "Please wait until the last request has finished", ChatColors.RED.ordinal());
+                return 0;
+            }
+        }
 
         if (Core.getInstance().hasDSShutDown()) {
             Core.getInstance().sendSuccess(source, "DefaultSettings is missing the JCPlugin mod! Shutting down...", ChatColors.RED.ordinal());

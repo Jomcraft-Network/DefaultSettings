@@ -1,10 +1,11 @@
-[![Version](https://badgen.net/https/apiv3.jomcraft.net/product/defaultsettings%3Fendpoint%3Dforge?cache=3600)](https://github.com/Jomcraft-Network/DefaultSettings) [![Java CI](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml/badge.svg?branch=main-dev)](https://github.com/Jomcraft-Network/DefaultSettings/actions/workflows/build.yml)
-
-### DefaultSettings
+### DefaultSettings Cerium Edition Core Branch
 
 ---
 
-DefaultSettings is a Minecraft Forge mod created by the Jomcraft Network development team. Official downloads and further information may be found on our [curseforge page](https://www.curseforge.com/minecraft/mc-mods/defaultsettings). If a guide on how to use the mod is required, you may also visit our [Wiki](https://github.com/Jomcraft-Network/DefaultSettings/wiki).
+> [!CAUTION]
+> Heavily WIP, things will be broken!
+
+This branch is intended to be used by other branches as a dependency. **It does not do anything by itself**.
 
 ##### License
 

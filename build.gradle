@@ -1,115 +1,17 @@
-apply plugin: "idea"
-
-def jcpluginVersion = "4.0.4"
-
-subprojects {
-    apply plugin: "java"
-    apply plugin: "idea"
-
-    project.version = "4.0.5"
-    project.ext.relType = "release"
-
-    //Descending version order, Forge first; Fabric last
-    project.ext.jcplugin_versions = ["4430994", "4430992", "4430990", "4430988"] as String[]
-    project.ext.jcplugin_id = "659192"
-
-    rootProject.ext.setProperty("JCPluginVersion", jcpluginVersion);
-
-    if (!project.hasProperty('javaVersion') || project.property('javaVersion') == "8") {
-
-        java.toolchain {
-            project.logger.lifecycle("{}: configuring Java 8 toolchain", project.displayName)
-            languageVersion = JavaLanguageVersion.of(8)
-        }
-
-        it.sourceCompatibility = 1.8
-        it.targetCompatibility = 1.8
-        tasks.withType(JavaCompile).configureEach {
-            project.logger.lifecycle("{}: setting source/target compatibility to Java 8 on task {}", project.displayName, it.name)
-            sourceCompatibility = 1.8
-            targetCompatibility = 1.8
-        }
-    } else if (project.hasProperty('javaVersion')) {
-
-        int ver = project.property('javaVersion') as int
-
-        it.sourceCompatibility = 1.8
-        it.targetCompatibility = 1.8
-
-        java.toolchain {
-            project.logger.lifecycle("{}: configuring Java {} toolchain", project.displayName, ver)
-            languageVersion = JavaLanguageVersion.of(ver)
-        }
-
-        tasks.withType(JavaCompile).configureEach {
-            sourceCompatibility = 1.8
-            targetCompatibility = 1.8
-            project.logger.lifecycle("{}: setting release to {} on task {}", project.displayName, ver, it.name)
-            options.release = ver
-        }
-    }
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.encoding = "UTF-8"
-    }
-
-    //tasks.withType(GenerateModuleMetadata) {
-    //	enabled = false //probably broken
-    //}
-
-    jar {
-        manifest {
-            attributes([
-                    "Specification-Title"     : "DefaultSettings",
-                    "Specification-Vendor"    : "Jomcraft Network",
-                    "Specification-Version"   : project.version,
-                    "Implementation-Title"    : "DefaultSettings",
-                    "Implementation-Version"  : project.version,
-                    "Implementation-Vendor"   : "Jomcraft Network",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ"),
-                    "JCPluginVersion"         : jcpluginVersion
-            ])
-        }
-    }
-
-    repositories {
-        maven {
-            url = "https://repo.spongepowered.org/repository/maven-public/"
-            content {
-                includeGroup "org.spongepowered"
-            }
-        }
-
-        mavenCentral({
-            content {
-                includeGroup("org.jetbrains")
-            }
-        })
-    }
-
-    dependencies {
-        implementation "org.jetbrains:annotations:16.0.2"
-    }
+plugins {
+    id "java"
 }
 
-/*task("copyRelease") {
-    subprojects {
-        dependsOn project.name + ":build"
-    }
-    doFirst {
-        println "Gathering builds"
-        copy {
-            subprojects {
-                if (project.name != "Core") {
-                    def libDir = project.projectDir.toPath().resolve("build/libs")
-                    from(libDir) {
-                        include "*.jar"
-                        exclude "*-dev.jar", "*-sources.jar"
-                    }
-                    into "build/libs/"
-                    duplicatesStrategy DuplicatesStrategy.INCLUDE
-                }
-            }
-        }
-    }
-}*/
+archivesBaseName = "${rootProject.name}-core"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.15.0'
+    implementation 'com.google.guava:guava:31.1-jre'
+}

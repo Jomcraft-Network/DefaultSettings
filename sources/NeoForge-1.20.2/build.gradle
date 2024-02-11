@@ -1,5 +1,5 @@
 plugins {
-    id 'net.darkhax.curseforgegradle' version '1.1.17'
+    id 'net.darkhax.curseforgegradle' version '1.1.18'
 	id 'net.neoforged.gradle.userdev' version '7.0.55'
 	id 'idea'
     id 'java-library'
@@ -54,7 +54,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     implementation "net.neoforged:neoforge:20.2.59-beta"
 	implementation("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[0]}")
-    //implementation project(":Core")
+    implementation project(":Core")
 }
 
 processResources {
@@ -65,12 +65,15 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile) {
-    //source(project(":Core").sourceSets.main.allSource)
+Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
+
+tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
+    source(project(":Core").sourceSets.main.allSource)
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
+    from(project(":Core").sourceSets.main.allSource)
     archiveClassifier = 'sources'
 }
 
@@ -98,6 +101,8 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         mainFile.addRequirement('jcplugin')
         mainFile.addModLoader('NeoForge')
         mainFile.addJavaVersion('Java 17')
+        mainFile.addGameVersion('1.20.4')
+        mainFile.addGameVersion('1.20.3')
         mainFile.addGameVersion('1.20.2')
         mainFile.addGameVersion('Client')
 

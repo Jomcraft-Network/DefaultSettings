@@ -1,19 +1,12 @@
 package net.jomcraft.defaultsettings;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-
 import com.mojang.brigadier.arguments.ArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.loader.impl.util.ManifestUtil;
 import net.jomcraft.defaultsettings.commands.CommandDefaultSettings;
 import net.jomcraft.defaultsettings.commands.ConfigArguments;
 import net.jomcraft.defaultsettings.commands.OperationArguments;
@@ -42,6 +35,8 @@ public class DefaultSettings implements ModInitializer {
     @Override
     public void onInitialize() {
         instance = this;
+        FabricCoreHook core = new FabricCoreHook();
+        Core.setInstance(core);
 
         registerByClass(ConfigArguments.class, new ConfigArguments.Info());
         registerByClass(OperationArguments.class, new OperationArguments.Info());

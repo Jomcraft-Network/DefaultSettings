@@ -6,7 +6,7 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "4.0.5"
+    project.version = "4.0.6"
     project.ext.relType = "release"
 
     //Descending version order, Forge first; Fabric last

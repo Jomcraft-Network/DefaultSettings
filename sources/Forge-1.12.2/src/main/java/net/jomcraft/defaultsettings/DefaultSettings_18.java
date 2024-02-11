@@ -32,7 +32,7 @@ public class DefaultSettings_18 {
     public static final String NAME = "DefaultSettings";
     public static final Logger log = LogManager.getLogger(DefaultSettings_18.MODID);
     public static final String VERSION = DefaultSettings_18.class.getPackage().getImplementationVersion();
-    public static Map<String, KeyContainer_18> keyRebinds = new HashMap<String, KeyContainer_18>();
+    public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
     public static boolean setUp = false;
     public static boolean shutDown = false;
     public static String shutdownReason = null;
@@ -42,6 +42,9 @@ public class DefaultSettings_18 {
 
     @Mod.EventHandler
     public static void construction(FMLConstructionEvent event) {
+        ForgeCoreHook_18 core = new ForgeCoreHook_18();
+        Core.setInstance(core);
+
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             if (setUp) return;
 
@@ -49,8 +52,8 @@ public class DefaultSettings_18 {
                 Field pluginClass = Class.forName("net.jomcraft.jcplugin.JCPlugin").getDeclaredField("checksSuccessful");
 
                 if (!pluginClass.getBoolean(null)) {
-                    shutDown = true;
-                    shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
+                    DefaultSettings_18.shutDown = true;
+                    DefaultSettings_18.shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                     DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
                 } else {
 
@@ -93,8 +96,8 @@ public class DefaultSettings_18 {
                                     DefaultSettings_18.log.log(Level.INFO, "DefaultSettings found correct version of JCPlugin, starting up...");
                                     break;
                                 } else {
-                                    shutDown = true;
-                                    shutdownReason = "The correct JCPlugin mod version couldn't be found! Please install version " + wantedVersion;
+                                    DefaultSettings_18.shutDown = true;
+                                    DefaultSettings_18.shutdownReason = "The correct JCPlugin mod version couldn't be found! Please install version " + wantedVersion;
                                     DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings can't start up! JCPlugin version must be " + wantedVersion + "!");
                                 }
 
@@ -103,19 +106,19 @@ public class DefaultSettings_18 {
                     }
 
                     if (!foundDefaultSettings || wantedVersion == null) {
-                        shutDown = true;
-                        shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
+                        DefaultSettings_18.shutDown = true;
+                        DefaultSettings_18.shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
                     }
                 }
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
                      IllegalAccessException | IOException e) {
-                shutDown = true;
-                shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
+                DefaultSettings_18.shutDown = true;
+                DefaultSettings_18.shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                 DefaultSettings_18.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
             }
 
-            if (shutDown) return;
+            if (DefaultSettings_18.shutDown) return;
 
             try {
                 FileUtil_18.restoreContents();
@@ -135,7 +138,6 @@ public class DefaultSettings_18 {
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         ClientCommandHandler.instance.registerCommand(new CommandDefaultSettings_18());
-
         MinecraftForge.EVENT_BUS.register(DefaultSettings_18.class);
     }
 
@@ -143,7 +145,7 @@ public class DefaultSettings_18 {
     public static void keysEvent(FMLLoadCompleteEvent event) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             try {
-                if (!shutDown) FileUtil_18.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
+                if (!DefaultSettings_18.shutDown) FileUtil_18.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {
                 DefaultSettings_18.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
             } catch (NullPointerException e) {

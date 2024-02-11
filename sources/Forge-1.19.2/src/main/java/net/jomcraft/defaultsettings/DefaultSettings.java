@@ -50,6 +50,8 @@ public class DefaultSettings {
     @SuppressWarnings({"deprecation"})
     public DefaultSettings() {
         instance = this;
+        ForgeCoreHook core = new ForgeCoreHook();
+        Core.setInstance(core);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             if (setUp) return;
@@ -110,7 +112,9 @@ public class DefaultSettings {
                         }
                     }
 
-                    if (!foundDefaultSettings || wantedVersion == null) {
+                    String launchTarget = Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.LAUNCHTARGET.get()).get();
+
+                    if (!launchTarget.contains("dev") && (!foundDefaultSettings || wantedVersion == null)) {
                         shutDown = true;
                         shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");

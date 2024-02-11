@@ -42,6 +42,8 @@ public class DefaultSettings implements ModInitializer {
     @Override
     public void onInitialize() {
         instance = this;
+        FabricCoreHook core = new FabricCoreHook();
+        Core.setInstance(core);
 
         registerByClass(ConfigArguments.class, new ConfigArguments.Info());
         registerByClass(OperationArguments.class, new OperationArguments.Info());

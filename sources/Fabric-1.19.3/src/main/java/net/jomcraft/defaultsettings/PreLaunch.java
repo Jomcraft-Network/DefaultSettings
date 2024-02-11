@@ -22,7 +22,6 @@ public class PreLaunch implements PreLaunchEntrypoint {
     @Override
     public void onPreLaunch() {
         try {
-
             DefaultSettings.VERSION = getVersion();
 
             File location = FabricLoader.getInstance().getGameDir().toFile();

@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'net.darkhax.curseforgegradle' version '1.0.11'
+    id 'net.darkhax.curseforgegradle' version '1.1.18'
 }
 
 apply plugin: 'java'
@@ -33,7 +33,7 @@ minecraft {
             mods {
                 "${rootProject.name}" {
                     source sourceSets.main
-                    //source project(":Core").sourceSets.main
+                    source project(":Core").sourceSets.main
                 }
             }
         }
@@ -46,7 +46,7 @@ minecraft {
             mods {
                 "${rootProject.name}" {
                     source sourceSets.main
-                    //source project(":Core").sourceSets.main
+                    source project(":Core").sourceSets.main
                 }
             }
         }
@@ -66,7 +66,7 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
     implementation fg.deobf("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[2]}")
-    //implementation project(":Core")
+    implementation project(":Core")
 }
 
 processResources {
@@ -84,8 +84,8 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile) {
-    //source(project(":Core").sourceSets.main.allSource)
+tasks.withType(JavaCompile).configureEach {
+    source(project(":Core").sourceSets.main.allSource)
 }
 
 task sourcesJar(type: Jar) {
@@ -93,6 +93,7 @@ task sourcesJar(type: Jar) {
     exclude('net/minecraft/**')
     exclude('net/minecraftforge/**')
     from sourceSets.main.allSource
+    from(project(":Core").sourceSets.main.allSource)
     classifier = 'sources'
 }
 

@@ -1,0 +1,4 @@
+[submodule "Core"]
+	path = sources/Core
+	url = https://github.com/Jomcraft-Network/DefaultSettings.git
+	branch = cerium-core

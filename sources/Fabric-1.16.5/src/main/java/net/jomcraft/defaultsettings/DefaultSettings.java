@@ -25,6 +25,9 @@ public class DefaultSettings implements ModInitializer {
     @Override
     public void onInitialize() {
         instance = this;
+        FabricCoreHook core = new FabricCoreHook();
+        Core.setInstance(core);
+
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             if (!dedicated) {
                 CommandDefaultSettings.register(dispatcher);

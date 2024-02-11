@@ -42,6 +42,9 @@ public class DefaultSettings_17 {
 
     @Mod.EventHandler
     public static void construction(FMLConstructionEvent event) {
+        ForgeCoreHook_17 core = new ForgeCoreHook_17();
+        Core.setInstance(core);
+
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             if (setUp) return;
 
@@ -49,8 +52,8 @@ public class DefaultSettings_17 {
                 Field pluginClass = Class.forName("net.jomcraft.jcplugin.JCPlugin").getDeclaredField("checksSuccessful");
 
                 if (!pluginClass.getBoolean(null)) {
-                    shutDown = true;
-                    shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
+                    DefaultSettings_17.shutDown = true;
+                    DefaultSettings_17.shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                     DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
                 } else {
 
@@ -93,8 +96,8 @@ public class DefaultSettings_17 {
                                     DefaultSettings_17.log.log(Level.INFO, "DefaultSettings found correct version of JCPlugin, starting up...");
                                     break;
                                 } else {
-                                    shutDown = true;
-                                    shutdownReason = "The correct JCPlugin mod version couldn't be found! Please install version " + wantedVersion;
+                                    DefaultSettings_17.shutDown = true;
+                                    DefaultSettings_17.shutdownReason = "The correct JCPlugin mod version couldn't be found! Please install version " + wantedVersion;
                                     DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings can't start up! JCPlugin version must be " + wantedVersion + "!");
                                 }
 
@@ -103,20 +106,20 @@ public class DefaultSettings_17 {
                     }
 
                     if (!foundDefaultSettings || wantedVersion == null) {
-                        shutDown = true;
-                        shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
+                        DefaultSettings_17.shutDown = true;
+                        DefaultSettings_17.shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
                     }
 
                 }
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException |
                      IllegalAccessException | IOException e) {
-                shutDown = true;
-                shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
+                DefaultSettings_17.shutDown = true;
+                DefaultSettings_17.shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
                 DefaultSettings_17.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
             }
 
-            if (shutDown) return;
+            if (DefaultSettings_17.shutDown) return;
 
             try {
                 FileUtil_17.restoreContents();
@@ -152,7 +155,7 @@ public class DefaultSettings_17 {
     public static void keysEvent(FMLLoadCompleteEvent event) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
             try {
-                if (!shutDown) FileUtil_17.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
+                if (!DefaultSettings_17.shutDown) FileUtil_17.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {
                 DefaultSettings_17.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
             } catch (NullPointerException e) {

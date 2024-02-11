@@ -13,6 +13,9 @@ pluginManagement {
 
 rootProject.name = name
 
+include("Core")
+project(":Core").projectDir = file("./sources/Core")
+
 include("Fabric-1.16.5")
 project(":Fabric-1.16.5").projectDir = file("./sources/Fabric-1.16.5")
 

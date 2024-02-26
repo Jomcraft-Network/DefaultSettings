@@ -128,7 +128,9 @@ public class CoreUtil {
 
     public static boolean numberParsable(String text) {
         try {
-            Integer.parseInt(text);
+            if (!text.startsWith("scancode.")) {
+                Integer.parseInt(text);
+            }
             return true;
         } catch (NumberFormatException e) {
             return false;

@@ -78,7 +78,17 @@ task sourcesJar(type: Jar) {
 
 jar {
     manifest {
-        attributes 'FMLAT': 'accesstransformer.cfg'
+        attributes([
+                "FMLAT"                   : "accesstransformer.cfg",
+                "Specification-Title"     : "DefaultSettings",
+                "Specification-Vendor"    : "Jomcraft Network",
+                "Specification-Version"   : file_version,
+                "Implementation-Title"    : "DefaultSettings",
+                "Implementation-Version"  : file_version,
+                "Implementation-Vendor"   : "Jomcraft Network",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ"),
+                "JCPluginVersion"         : "4.0.4"
+        ])
     }
 }
 

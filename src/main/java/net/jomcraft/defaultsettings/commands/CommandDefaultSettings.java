@@ -1,16 +1,16 @@
 package net.jomcraft.defaultsettings.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.jomcraft.defaultsettings.CoreUtil;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandDefaultSettings {
 
-	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+	public static void register(ServerStartingEvent event) {
 		LiteralArgumentBuilder<CommandSourceStack> literalargumentbuilder = Commands.literal("defaultsettings");
 
 		literalargumentbuilder.then(Commands.literal("save").executes((command) -> {
@@ -27,8 +27,8 @@ public class CommandDefaultSettings {
 			return saveProcessConfigs(command.getSource(), OperationArguments.getString(command, "operation"), ConfigArguments.getString(command, "config"));
 		}))));
 
-		LiteralCommandNode<CommandSourceStack> node = dispatcher.register(literalargumentbuilder);
-		dispatcher.register(Commands.literal("ds").redirect(node));
+		LiteralCommandNode<CommandSourceStack> node = event.getServer().getCommands().getDispatcher().register(literalargumentbuilder);
+		event.getServer().getCommands().getDispatcher().register(Commands.literal("ds").redirect(node));
 	}
 
 	private static int saveProcessConfigs(CommandSourceStack source, String argument, String argument2) throws CommandSyntaxException {

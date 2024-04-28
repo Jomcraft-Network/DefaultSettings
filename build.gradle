@@ -1,13 +1,17 @@
 plugins {
-	id "fabric-loom" version "1.6-SNAPSHOT"
-	id 'net.darkhax.curseforgegradle' version '1.1.18'
+    id 'net.darkhax.curseforgegradle' version '1.1.18'
+	id 'net.neoforged.gradle.userdev' version '7.0.109'
+	id 'idea'
+    id 'java-library'
 }
 
 archivesBaseName = "DefaultSettings"
-
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 def file_version = "4.0.7";
 
-version = "1.20.5-${file_version}-Fabric"
+version = "1.20.5-${file_version}-NeoForge"
+
+minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 
 repositories {
     maven {
@@ -18,118 +22,109 @@ repositories {
     }
 }
 
-dependencies {
-	minecraft "com.mojang:minecraft:1.20.5"
-	mappings loom.officialMojangMappings()
+runs {
+    configureEach {
 
-	modImplementation "net.fabricmc:fabric-loader:0.15.10"
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource project.sourceSets.main
+    }
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.97.5+1.20.5"
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', "defaultsettings"
+    }
 
-	modImplementation "curse.maven:jcp-659192:4430988"
-	//implementation project(":Core")
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', "defaultsettings"
+        programArgument '--nogui'
+    }
+
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', "defaultsettings"
+    }
+
+    data {
+        programArguments.addAll '--mod', "defaultsettings", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
 }
 
-java {
-	//withSourcesJar()
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+dependencies {
+    implementation "net.neoforged:neoforge:20.5.17-beta"
+	implementation("curse.maven:jcp-659192:4430994")
+    //implementation project(":Core")
 }
 
 processResources {
-	inputs.property "version", file_version
-	inputs.property "JCPluginVersion", "4.0.4"
+    inputs.property "version", file_version
 
-	filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
-		expand "version": file_version, "JCPluginVersion": "4.0.4"
-	}
+    filesMatching(["**/fabric.mod.json", "**/neoforge.mods.toml"]) {
+        expand "version": file_version
+    }
 }
 
-tasks.withType(JavaCompile).configureEach {
-	//source(project(":Core").sourceSets.main.allSource)
+Spec<Task> notNeoTask = { Task it -> !it.name.startsWith("neo") } as Spec<Task>
+
+tasks.withType(JavaCompile).matching(notNeoTask).configureEach {
+    //source(project(":Core").sourceSets.main.allSource)
 }
-
-loom {
-
-	accessWidenerPath = file("src/main/resources/defaultsettings.accesswidener")
-
-	runs {
-		client {
-			client()
-			setConfigName("Fabric 1.20 Client")
-			ideConfigGenerated(true)
-			runDir("./run")
-		}
-		server {
-			server()
-			setConfigName("Fabric 1.20 Server")
-			ideConfigGenerated(true)
-			runDir("./run")
-		}
-	}
-
-	//mixin {
-	//	defaultRefmapName = "${project.rootProject.name}.refmap.json"
-	//}
-}
-
-//java {
-//	withSourcesJar()
-//}
 
 task sourcesJar(type: Jar) {
-	from sourceSets.main.allSource
-	//from(project(":Core").sourceSets.main.allSource)
-	archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+    //from(project(":Core").sourceSets.main.allSource)
+    archiveClassifier = 'sources'
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'accesstransformer.cfg'
+    }
 }
 
 artifacts {
-	archives jar
-	archives sourcesJar
+    archives jar
+    archives sourcesJar
 }
 
 /*task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-	dependsOn "build"
-	if (System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
-		disableVersionDetection()
-		apiToken = System.getenv("CURSE_API")
+    if (System.getenv("CURSE_API") != null && !System.getenv("CURSE_API").equals("")) {
+        disableVersionDetection()
+        apiToken = System.getenv("CURSE_API")
 
-		def mainFile = upload(451860, remapJar.archiveFile)
-		mainFile.releaseType = project.ext.relType
-		mainFile.displayName = "$archivesBaseName-$version"
-		mainFile.changelogType = 'html'
-		mainFile.changelog = file('../../changelog.html')
-		mainFile.addRequirement('jcplugin')
-		mainFile.addModLoader('Fabric')
-		mainFile.addJavaVersion('Java 17')
-		mainFile.addGameVersion('Client')
-		mainFile.addGameVersion('1.20.4')
-		mainFile.addGameVersion('1.20.3')
-		mainFile.addGameVersion('1.20.2')
-		mainFile.addGameVersion('1.20.1')
-		mainFile.addGameVersion('1.20')
+        def mainFile = upload(318012, jar)
+        mainFile.releaseType = project.ext.relType
+        mainFile.displayName = "$archivesBaseName-$version"
+        mainFile.changelogType = 'html'
+        mainFile.changelog = file('../../changelog.html')
+        mainFile.addRequirement('jcplugin')
+        mainFile.addModLoader('NeoForge')
+        mainFile.addJavaVersion('Java 17')
+        mainFile.addGameVersion('1.20.4')
+        mainFile.addGameVersion('1.20.3')
+        mainFile.addGameVersion('1.20.2')
+        mainFile.addGameVersion('Client')
 
-		def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
-		sourcesFile.changelog = file('../../changelog.html')
-		sourcesFile.addRequirement('jcplugin')
-		sourcesFile.displayName = "$archivesBaseName-$version-sources"
-	}
+        def sourcesFile = mainFile.withAdditionalFile(sourcesJar)
+        sourcesFile.changelog = file('../../changelog.html')
+        sourcesFile.addRequirement('jcplugin')
+        sourcesFile.displayName = "$archivesBaseName-$version-sources"
+    }
 }*/
 
 task("copyRelease") {
-	dependsOn "build"
+    dependsOn "build"
 
-	doFirst {
-		println "Gathering builds"
-		copy {
-			def libDir = project.projectDir.toPath().resolve("build/libs")
-			from(libDir) {
-				include "*.jar"
-				exclude "*-dev.jar", "*-sources.jar"
-			}
-			into "../../build/libs/"
-			duplicatesStrategy DuplicatesStrategy.INCLUDE
-		}
-	}
+    doFirst {
+        println "Gathering builds"
+        copy {
+            def libDir = project.projectDir.toPath().resolve("build/libs")
+            from(libDir) {
+                include "*.jar"
+                exclude "*-dev.jar", "*-sources.jar"
+            }
+            into "../../build/libs/"
+            duplicatesStrategy DuplicatesStrategy.INCLUDE
+        }
+    }
 }

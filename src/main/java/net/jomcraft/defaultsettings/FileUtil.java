@@ -1,170 +1,182 @@
 package net.jomcraft.defaultsettings;
 
 import static net.jomcraft.jcplugin.FileUtilNoMC.*;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.ArrayList;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.apache.logging.log4j.Level;
 import net.minecraft.client.Minecraft;
 
 public class FileUtil {
 
-	public static void restoreContents() throws NullPointerException, IOException {
-		
-		final String version = getMainJSON().getVersion();
+    public static void restoreContents() throws NullPointerException, IOException {
 
-		if (!DefaultSettings.VERSION.equals(version))
-			mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
+        final String version = getMainJSON().getVersion();
 
-		if (mainJson.generatedBy.equals("<default>"))
-			mainJson.generatedBy = privateJson.privateIdentifier;
+        if (!DefaultSettings.VERSION.equals(version))
+            mainJson.setVersion(DefaultSettings.VERSION).setPrevVersion(version);
 
-		activeProfile = privateJson.currentProfile;
+        if (mainJson.generatedBy.equals("<default>"))
+            mainJson.generatedBy = privateJson.privateIdentifier;
 
-		if (!privateJson.firstBootUp){
-			copyAndHashPrivate(true, true);
-		}
+        activeProfile = privateJson.currentProfile;
 
-		final File optionsOF = new File(mcDataDir, "optionsof.txt");
-		if (!optionsOF.exists())
-			restoreOptionsOF();
+        if (!privateJson.firstBootUp) {
+            copyAndHashPrivate(true, true);
+        }
 
-		final File optionsShaders = new File(mcDataDir, "optionsshaders.txt");
-		if (!optionsShaders.exists())
-			restoreOptionsShaders();
+        final File optionsOF = new File(mcDataDir, "optionsof.txt");
+        if (!optionsOF.exists())
+            restoreOptionsOF();
 
-		final File optionsJEK = new File(mcDataDir, "options.justenoughkeys.txt");
-		if (!optionsJEK.exists())
-			restoreOptionsJEK();
+        final File optionsShaders = new File(mcDataDir, "optionsshaders.txt");
+        if (!optionsShaders.exists())
+            restoreOptionsShaders();
 
-		final File optionsAmecs = new File(mcDataDir, "options.amecsapi.txt");
-		if (!optionsAmecs.exists())
-			restoreOptionsAmecs();
+        final File optionsJEK = new File(mcDataDir, "options.justenoughkeys.txt");
+        if (!optionsJEK.exists())
+            restoreOptionsJEK();
 
-		final File serversFile = new File(mcDataDir, "servers.dat");
-		if (!serversFile.exists())
-			restoreServers();
+        final File optionsAmecs = new File(mcDataDir, "options.amecsapi.txt");
+        if (!optionsAmecs.exists())
+            restoreOptionsAmecs();
 
-		mainJson.save();
-	}
+        final File serversFile = new File(mcDataDir, "servers.dat");
+        if (!serversFile.exists())
+            restoreServers();
 
-	@SuppressWarnings("resource")
-	public static void restoreKeys(boolean update, boolean initial) throws NullPointerException, IOException, NumberFormatException {
-		CoreUtil.restoreKeys(update, initial);
-	}
+        mainJson.save();
+    }
 
-	@SuppressWarnings("resource")
-	public static void saveKeys() throws IOException, NullPointerException {
-		CoreUtil.saveKeys();
-	}
+    @SuppressWarnings("resource")
+    public static void restoreKeys(boolean update, boolean initial) throws NullPointerException, IOException, NumberFormatException {
+        CoreUtil.restoreKeys(update, initial);
+    }
 
-	@SuppressWarnings("resource")
-	public static boolean saveOptions() throws NullPointerException, IOException {
-		Minecraft.getInstance().options.save();
-		return CoreUtil.saveOptions();
-	}
+    @SuppressWarnings("resource")
+    public static void saveKeys() throws IOException, NullPointerException {
+        CoreUtil.saveKeys();
+    }
 
-	public static boolean checkChanged() {
-		boolean ret = false;
-		try {
+    @SuppressWarnings("resource")
+    public static boolean saveOptions() throws NullPointerException, IOException {
+        Minecraft.getInstance().options.save();
+        return CoreUtil.saveOptions();
+    }
 
-			InputStream keys = CoreUtil.getKeysStream(true);
-			InputStream options = getOptionsStream();
-			InputStream optionsOF = getOptionsOFStream();
-			InputStream optionsShaders = getOptionsShadersStream();
-			InputStream optionsJEK = getOptionsJEKStream();
-			InputStream optionsAmecs = getOptionsAmecsStream();
-			InputStream servers = getServersStream();
+    public static boolean checkChanged() {
+        boolean ret = false;
+        try {
 
-			String hashO = "";
-			String writtenHashO = "";
+            InputStream keys = CoreUtil.getKeysStream(false);
+            InputStream options = getOptionsStream();
+            InputStream optionsOF = getOptionsOFStream();
+            InputStream optionsShaders = getOptionsShadersStream();
+            InputStream optionsJEK = getOptionsJEKStream();
+            InputStream optionsAmecs = getOptionsAmecsStream();
+            InputStream servers = getServersStream();
 
-			if (options != null) {
-				hashO = fileToHash(options);
-				writtenHashO = mainJson.hashes.get(activeProfile + "/options.txt");
-			}
+            String hashO = "";
+            String writtenHashO = "";
 
-			String hashK = "";
-			String writtenHashK = "";
+            if (options != null) {
+                hashO = fileToHash(options);
+                writtenHashO = mainJson.hashes.get(activeProfile + "/options.txt");
+            }
 
-			if (keys != null) {
-				hashK = fileToHash(keys);
-				writtenHashK = mainJson.hashes.get(activeProfile + "/keys.txt");
-			}
+            String hashK = "";
+            String writtenHashK = "";
 
-			String hashOF = "";
-			String writtenHashOF = "";
+            if (keys != null) {
+                hashK = fileToHash(keys);
+                writtenHashK = mainJson.hashes.get(activeProfile + "/keys.txt");
+            }
 
-			if (optionsOF != null) {
-				hashOF = fileToHash(optionsOF);
-				writtenHashOF = mainJson.hashes.get(activeProfile + "/optionsof.txt");
-			}
+            String hashOF = "";
+            String writtenHashOF = "";
 
-			String hashShaders = "";
-			String writtenHashShaders = "";
+            if (optionsOF != null) {
+                hashOF = fileToHash(optionsOF);
+                writtenHashOF = mainJson.hashes.get(activeProfile + "/optionsof.txt");
+            }
 
-			if (optionsShaders != null) {
-				hashShaders = fileToHash(optionsShaders);
-				writtenHashShaders = mainJson.hashes.get(activeProfile + "/optionsshaders.txt");
-			}
+            String hashShaders = "";
+            String writtenHashShaders = "";
 
-			String hashJEK = "";
-			String writtenHashJEK = "";
+            if (optionsShaders != null) {
+                hashShaders = fileToHash(optionsShaders);
+                writtenHashShaders = mainJson.hashes.get(activeProfile + "/optionsshaders.txt");
+            }
 
-			if (optionsJEK != null) {
-				hashJEK = fileToHash(optionsJEK);
-				writtenHashJEK = mainJson.hashes.get(activeProfile + "/options.justenoughkeys.txt");
-			}
+            String hashJEK = "";
+            String writtenHashJEK = "";
 
-			String hashAmecs = "";
-			String writtenHashAmecs = "";
+            if (optionsJEK != null) {
+                hashJEK = fileToHash(optionsJEK);
+                writtenHashJEK = mainJson.hashes.get(activeProfile + "/options.justenoughkeys.txt");
+            }
 
-			if (optionsAmecs != null) {
-				hashAmecs = fileToHash(optionsAmecs);
-				writtenHashAmecs = mainJson.hashes.get(activeProfile + "/options.amecsapi.txt");
-			}
+            String hashAmecs = "";
+            String writtenHashAmecs = "";
 
-			String hashS = "";
-			String writtenHashS = "";
+            if (optionsAmecs != null) {
+                hashAmecs = fileToHash(optionsAmecs);
+                writtenHashAmecs = mainJson.hashes.get(activeProfile + "/options.amecsapi.txt");
+            }
 
-			if (servers != null) {
-				hashS = fileToHash(servers);
-				writtenHashS = mainJson.hashes.get(activeProfile + "/servers.dat");
-			}
+            String hashS = "";
+            String writtenHashS = "";
 
-			if (mainJson.hashes.containsKey(activeProfile + "/options.txt") && !hashO.equals(writtenHashO)) {
-				ret = true;
-			} else if (mainJson.hashes.containsKey(activeProfile + "/keys.txt") && !hashK.equals(writtenHashK)) {
-				ret = true;
-			} else if (mainJson.hashes.containsKey(activeProfile + "/optionsof.txt") && !hashOF.equals(writtenHashOF)) {
-				ret = true;
-			} else if (mainJson.hashes.containsKey(activeProfile + "/optionsshaders.txt") && !hashShaders.equals(writtenHashShaders)) {
-				ret = true;
-			} else if (mainJson.hashes.containsKey(activeProfile + "/options.justenoughkeys.txt") && !hashJEK.equals(writtenHashJEK)) {
-				ret = true;
-			} else if (mainJson.hashes.containsKey(activeProfile + "/options.amecsapi.txt") && !hashAmecs.equals(writtenHashAmecs)) {
-				ret = true;
-			} else if (mainJson.hashes.containsKey(activeProfile + "/servers.dat") && !hashS.equals(writtenHashS)) {
-				ret = true;
-			}
+            if (servers != null) {
+                hashS = fileToHash(servers);
+                writtenHashS = mainJson.hashes.get(activeProfile + "/servers.dat");
+            }
 
-			if (options != null) {
-				options.close();
-				File fileO = new File(getMainFolder(), activeProfile + "/options.txt_temp");
-				Files.delete(fileO.toPath());
-			}
+            if (mainJson.hashes.containsKey(activeProfile + "/options.txt") && !hashO.equals(writtenHashO)) {
+                ret = true;
+            } else if (mainJson.hashes.containsKey(activeProfile + "/keys.txt") && !hashK.equals(writtenHashK)) {
+                ret = true;
+            } else if (mainJson.hashes.containsKey(activeProfile + "/optionsof.txt") && !hashOF.equals(writtenHashOF)) {
+                ret = true;
+            } else if (mainJson.hashes.containsKey(activeProfile + "/optionsshaders.txt") && !hashShaders.equals(writtenHashShaders)) {
+                ret = true;
+            } else if (mainJson.hashes.containsKey(activeProfile + "/options.justenoughkeys.txt") && !hashJEK.equals(writtenHashJEK)) {
+                ret = true;
+            } else if (mainJson.hashes.containsKey(activeProfile + "/options.amecsapi.txt") && !hashAmecs.equals(writtenHashAmecs)) {
+                ret = true;
+            } else if (mainJson.hashes.containsKey(activeProfile + "/servers.dat") && !hashS.equals(writtenHashS)) {
+                ret = true;
+            }
 
-			if (keys != null) {
-				keys.close();
-				File fileK = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
-				Files.delete(fileK.toPath());
-			}
+            if (options != null) {
+                options.close();
+                File fileO = new File(getMainFolder(), activeProfile + "/options.txt_temp");
+                Files.delete(fileO.toPath());
+            }
 
-		} catch (Exception e) {
-			DefaultSettings.log.log(Level.ERROR, "Error while saving configs: ", e);
-		}
+            if (keys != null) {
+                keys.close();
+                File fileK = new File(getMainFolder(), activeProfile + "/keys.txt_temp");
+                Files.delete(fileK.toPath());
+            }
 
-		return ret;
-	}
+        } catch (Exception e) {
+            DefaultSettings.log.log(Level.ERROR, "Error while saving configs: ", e);
+        }
+
+        return ret;
+    }
 }

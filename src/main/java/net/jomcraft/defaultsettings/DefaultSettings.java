@@ -3,16 +3,17 @@ package net.jomcraft.defaultsettings;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.mojang.brigadier.arguments.ArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.jomcraft.defaultsettings.commands.CommandDefaultSettings;
-import net.jomcraft.defaultsettings.commands.ConfigArguments;
-import net.jomcraft.defaultsettings.commands.OperationArguments;
-import net.jomcraft.defaultsettings.commands.TypeArguments;
+import net.jomcraft.defaultsettings.commands.*;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,10 +38,15 @@ public class DefaultSettings implements ModInitializer {
         instance = this;
         FabricCoreHook core = new FabricCoreHook();
         Core.setInstance(core);
-
-        registerByClass(ConfigArguments.class, new ConfigArguments.Info());
-        registerByClass(OperationArguments.class, new OperationArguments.Info());
-        registerByClass(TypeArguments.class, new TypeArguments.Info());
+        ConfigArguments.Info config = new ConfigArguments.Info();
+        OperationArguments.Info operation = new OperationArguments.Info();
+        TypeArguments.Info type = new TypeArguments.Info();
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "config"), config);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "operation"), operation);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "type"), type);
+        registerByClass(ConfigArguments.class, config);
+        registerByClass(OperationArguments.class, operation);
+        registerByClass(TypeArguments.class, type);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             if (!environment.includeDedicated) {

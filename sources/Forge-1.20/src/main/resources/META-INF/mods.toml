@@ -12,6 +12,7 @@ license="Apache License 2.0"
 	authors="PT400C - Jomcraft Network"
 	credits="Developed by Jomcraft Network"
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/defaultsettings"
+    displayTest="IGNORE_ALL_VERSION"
 
 [[dependencies.defaultsettings]]
     modId="forge"

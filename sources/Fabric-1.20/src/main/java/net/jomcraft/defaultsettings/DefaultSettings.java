@@ -13,6 +13,9 @@ import net.jomcraft.defaultsettings.commands.OperationArguments;
 import net.jomcraft.defaultsettings.commands.TypeArguments;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,9 +41,15 @@ public class DefaultSettings implements ModInitializer {
         FabricCoreHook core = new FabricCoreHook();
         Core.setInstance(core);
 
-        registerByClass(ConfigArguments.class, new ConfigArguments.Info());
-        registerByClass(OperationArguments.class, new OperationArguments.Info());
-        registerByClass(TypeArguments.class, new TypeArguments.Info());
+        ConfigArguments.Info config = new ConfigArguments.Info();
+        OperationArguments.Info operation = new OperationArguments.Info();
+        TypeArguments.Info type = new TypeArguments.Info();
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "config"), config);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "operation"), operation);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "type"), type);
+        registerByClass(ConfigArguments.class, config);
+        registerByClass(OperationArguments.class, operation);
+        registerByClass(TypeArguments.class, type);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             if (!environment.includeDedicated) {

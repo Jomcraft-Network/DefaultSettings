@@ -60,7 +60,7 @@ dependencies {
 processResources {
     inputs.property "version", file_version
 
-    filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+    filesMatching(["**/fabric.mod.json", "**/mods.toml", "**/neoforge.mods.toml"]) {
         expand "version": file_version
     }
 }

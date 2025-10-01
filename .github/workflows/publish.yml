@@ -42,7 +42,7 @@ jobs:
         run: ./gradlew :${{ github.event.inputs.publish-edition }}:build :${{ github.event.inputs.publish-edition }}:publishCurseForge :${{ github.event.inputs.publish-edition }}:copyRelease
         env:
           CURSE_API: ${{ secrets.CURSE_API }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: 'Prebuilt Artifacts'
           path: build/libs

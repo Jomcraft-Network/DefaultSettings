@@ -1,7 +1,6 @@
 package net.jomcraft.defaultsettings;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.screens.controls.ControlsScreen;
 
 public class KeyContainer {
 

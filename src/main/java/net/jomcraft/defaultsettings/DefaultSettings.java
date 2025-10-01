@@ -41,9 +41,9 @@ public class DefaultSettings implements ModInitializer {
         ConfigArguments.Info config = new ConfigArguments.Info();
         OperationArguments.Info operation = new OperationArguments.Info();
         TypeArguments.Info type = new TypeArguments.Info();
-        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "config"), config);
-        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "operation"), operation);
-        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, new ResourceLocation(MODID, "type"), type);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "config"), config);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "operation"), operation);
+        Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, "type"), type);
         registerByClass(ConfigArguments.class, config);
         registerByClass(OperationArguments.class, operation);
         registerByClass(TypeArguments.class, type);

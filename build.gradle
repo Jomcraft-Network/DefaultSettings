@@ -122,13 +122,14 @@ tasks.named('processResources', ProcessResources) {
     }
 }
 
-/*tasks.named("sourcesJar", Jar) {
-
-}*/
-
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     archiveClassifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
 }
 
 tasks.named('jar', Jar) {

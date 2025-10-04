@@ -1,0 +1,152 @@
+buildscript {
+    repositories {
+        maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7-SNAPSHOT"
+    }
+}
+
+plugins {
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0.36,6.2)'
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+def file_version = "4.0.8";
+
+version = "1.21.5-4.0.8-Forge"
+group = "net.jomcraft"
+def jcpluginVersion = "4.0.4"
+
+base {
+    archivesName = "DefaultSettings"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+minecraft {
+    mappings channel: 'official', version: '1.20.5'
+
+    reobf = false
+    copyIdeResources = true
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', "defaultsettings"
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            properties 'mixin.env.remapRefMap': 'true'
+            arg "-mixin.config="+"defaultsettings.mixin.json"
+        }
+
+        server {
+            property 'forge.enabledGameTestNamespaces', "defaultsettings"
+            args '--nogui'
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            arg "-mixin.config="+"defaultsettings.mixin.json"
+        }
+
+        gameTestServer {
+            property 'forge.enabledGameTestNamespaces', "defaultsettings"
+        }
+
+        data {
+            workingDirectory project.file('run-data')
+            properties 'mixin.env.remapRefMap': 'true'
+            property 'mixin.env.refMapRemappingFile', "${project.projectDir}/build/createSrgToMcp/output.srg"
+            args '--mod', "defaultsettings", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name = 'Forge'
+        url = 'https://maven.minecraftforge.net'
+    }
+    maven {
+        name = 'Minecraft libraries'
+        url = 'https://libraries.minecraft.net'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = 'https://repo.spongepowered.org/repository/maven-public'
+            }
+        }
+        filter {
+            includeGroupAndSubgroups('org.spongepowered')
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "defaultsettings.refmap.json"
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:1.21.5-55.1.0"
+    implementation fg.deobf("curse.maven:jcp-659192:4573148")
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+tasks.named('processResources', ProcessResources) {
+    var replaceProperties = [
+            mod_version: file_version,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.named('jar', Jar) {
+    manifest {
+        attributes 'FMLAT': 'defaultsettings_at.cfg'
+        attributes([
+            'Specification-Title'     : "DefaultSettings",
+            'Specification-Vendor'    : "JomcraftNetwork",
+            'Specification-Version'   : file_version,
+            'Implementation-Title'    : "DefaultSettings",
+            'Implementation-Version'  : file_version,
+            'Implementation-Vendor'   : "JomcraftNetwork",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd HH:mm:ssZ"),
+            "JCPluginVersion"         : jcpluginVersion,
+            "MixinConfigs" : "defaultsettings.mixin.json"
+        ])
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+idea.module { downloadJavadoc = downloadSources = true }
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}

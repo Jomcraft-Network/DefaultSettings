@@ -18,6 +18,8 @@ import net.jomcraft.defaultsettings.commands.TypeArguments;
 import net.jomcraft.jcplugin.JCLogger;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -122,17 +124,15 @@ public class DefaultSettings {
                 DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...", e);
             }
 
-            context.getModEventBus().addListener(this::postInit);
+            FMLLoadCompleteEvent.getBus(context.getModBusGroup()).addListener(this::postInit);
 
             COMMAND_ARGUMENT_TYPES.register("ds_config", () -> ArgumentTypeInfos.registerByClass(ConfigArguments.class, new ConfigArguments.Info()));
             COMMAND_ARGUMENT_TYPES.register("ds_operation", () -> ArgumentTypeInfos.registerByClass(OperationArguments.class, new OperationArguments.Info()));
             COMMAND_ARGUMENT_TYPES.register("ds_type", () -> ArgumentTypeInfos.registerByClass(TypeArguments.class, new TypeArguments.Info()));
 
-            COMMAND_ARGUMENT_TYPES.register(context.getModEventBus());
+            COMMAND_ARGUMENT_TYPES.register(context.getModBusGroup());
 
-            MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
-
-            MinecraftForge.EVENT_BUS.register(new EventHandlers());
+            ServerStartingEvent.BUS.addListener(EventHandlers::serverStarting);
 
             if (shutDown) return;
 
@@ -151,10 +151,8 @@ public class DefaultSettings {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void postInit(FMLLoadCompleteEvent event) {
         if (FMLEnvironment.dist.isClient()) {
-
             try {
                 if (!shutDown) FileUtil.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {

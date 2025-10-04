@@ -10,14 +10,14 @@ buildscript {
 
 plugins {
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0.36,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
 }
 
 apply plugin: 'org.spongepowered.mixin'
 
 def file_version = "4.0.8";
 
-version = "1.21.5-4.0.8-Forge"
+version = "1.21.6-4.0.8-Forge"
 group = "net.jomcraft"
 def jcpluginVersion = "4.0.4"
 
@@ -29,7 +29,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.20.5'
+    mappings channel: 'official', version: '1.21.6'
 
     reobf = false
     copyIdeResources = true
@@ -105,7 +105,7 @@ mixin {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.21.5-55.1.0"
+    minecraft "net.minecraftforge:forge:1.21.6-56.0.9"
     implementation fg.deobf("curse.maven:jcp-659192:4573148")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
@@ -120,6 +120,15 @@ tasks.named('processResources', ProcessResources) {
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
+}
+
+/*tasks.named("sourcesJar", Jar) {
+
+}*/
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    archiveClassifier = 'sources'
 }
 
 tasks.named('jar', Jar) {

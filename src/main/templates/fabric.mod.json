@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "name": "${mod_name}",
+  "version": "${mod_version}",
+  "description": "Keep your game's local settings in case of an update to your modpack",
+  "environment": "client",
+  "authors": [
+    "PT400C - Jomcraft Network"
+  ],
+  "contributors": [
+    "Compaszer - Jomcraft Network"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/defaultsettings",
+    "sources": "https://github.com/Jomcraft-Network/DefaultSettings",
+    "issues": "https://github.com/Jomcraft-Network/DefaultSettings/issues"
+  },
+
+  "license": "Apache License 2.0",
+  "icon": "assets/defaultsettings/defaultsettings.png",
+  "entrypoints": {
+    "main": [
+      "net.jomcraft.defaultsettings.loaders.FabricEntrypoint"
+    ],
+    "preLaunch": [
+      "net.jomcraft.defaultsettings.FabricPreLaunch"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.6",
+    "fabric": "*",
+    "minecraft": ">=${game_version}",
+    "java": ">=17",
+    "jcplugin": "${JCPluginVersion}"
+  }
+}

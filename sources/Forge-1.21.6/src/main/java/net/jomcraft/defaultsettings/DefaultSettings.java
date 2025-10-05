@@ -29,8 +29,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.jomcraft.jcplugin.FileUtilNoMC;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -54,7 +52,6 @@ public class DefaultSettings {
         return attr.getValue("Implementation-Version");
     }
 
-    @SuppressWarnings({"deprecation"})
     public DefaultSettings(FMLJavaModLoadingContext context) {
         instance = this;
         ForgeCoreHook core = new ForgeCoreHook();
@@ -62,10 +59,8 @@ public class DefaultSettings {
 
         try {
             VERSION = getVersion();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | URISyntaxException e) {
+            DefaultSettings.log.log(Level.ERROR, "DefaultSettings couldn't determine the mod's current version!");
         }
 
         if (FMLEnvironment.dist.isClient()) {

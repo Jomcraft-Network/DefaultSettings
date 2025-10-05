@@ -53,7 +53,6 @@ public class DefaultSettings {
 
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, DefaultSettings.MODID);
 
-    @SuppressWarnings({"deprecation"})
     public DefaultSettings(IEventBus modEventBus) {
         instance = this;
         NeoForgeCoreHook core = new NeoForgeCoreHook();
@@ -61,10 +60,8 @@ public class DefaultSettings {
 
         try {
             VERSION = getVersion();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | URISyntaxException e) {
+            DefaultSettings.log.log(Level.ERROR, "DefaultSettings couldn't determine the mod's current version!");
         }
 
         if (FMLLoader.getDist().isClient()) {

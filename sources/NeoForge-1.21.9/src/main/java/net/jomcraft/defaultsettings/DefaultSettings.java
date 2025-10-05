@@ -4,16 +4,12 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.net.*;
 import java.nio.file.*;
-import java.security.CodeSource;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipError;
-
 import net.jomcraft.defaultsettings.commands.ConfigArguments;
 import net.jomcraft.defaultsettings.commands.OperationArguments;
 import net.jomcraft.defaultsettings.commands.TypeArguments;
@@ -52,7 +48,6 @@ public class DefaultSettings {
 
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, DefaultSettings.MODID);
 
-    @SuppressWarnings({"deprecation"})
     public DefaultSettings(IEventBus modEventBus) {
         instance = this;
         NeoForgeCoreHook core = new NeoForgeCoreHook();
@@ -60,10 +55,8 @@ public class DefaultSettings {
 
         try {
             VERSION = getVersion();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | URISyntaxException e) {
+            DefaultSettings.log.log(Level.ERROR, "DefaultSettings couldn't determine the mod's current version!");
         }
 
         if (FMLLoader.getCurrent().getDist().isClient()) {

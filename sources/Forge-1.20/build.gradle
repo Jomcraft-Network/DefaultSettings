@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     //dependencies {
-   //     classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+   //     classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
     //}
 }
 
@@ -148,7 +148,7 @@ task("copyRelease") {
             def libDir = project.projectDir.toPath().resolve("build/libs")
             from(libDir) {
                 include "*.jar"
-                exclude "*-dev.jar", "*-sources.jar"
+                exclude "*-dev.jar"
             }
             into "../../build/libs/"
             duplicatesStrategy DuplicatesStrategy.INCLUDE

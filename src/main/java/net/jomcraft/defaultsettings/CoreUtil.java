@@ -123,6 +123,7 @@ public class CoreUtil {
                 }
                 Core.getInstance().resetMappings();
             }
+            Core.getInstance().saveOptionsFile();
         }
     }
 

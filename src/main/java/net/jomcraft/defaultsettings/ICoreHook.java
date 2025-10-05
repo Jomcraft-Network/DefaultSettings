@@ -34,4 +34,5 @@ public interface ICoreHook {
     boolean saveOptions() throws IOException;
     void saveServers() throws IOException;
     void restoreKeys(boolean update, boolean initial) throws IOException;
+    void saveOptionsFile();
 }

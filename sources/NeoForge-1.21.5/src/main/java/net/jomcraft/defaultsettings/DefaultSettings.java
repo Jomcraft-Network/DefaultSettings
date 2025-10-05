@@ -1,19 +1,20 @@
 package net.jomcraft.defaultsettings;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.*;
-import java.nio.file.*;
-import java.security.CodeSource;
-import java.util.Collections;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipError;
-
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
 import net.jomcraft.defaultsettings.commands.ConfigArguments;
 import net.jomcraft.defaultsettings.commands.OperationArguments;
 import net.jomcraft.defaultsettings.commands.TypeArguments;
@@ -37,7 +38,7 @@ public class DefaultSettings {
 
     public static final String MODID = "defaultsettings";
     public static final Logger log = LogManager.getLogger(DefaultSettings.MODID);
-    public static String VERSION = "none";
+    public static final String VERSION = DefaultSettings.class.getPackage().getImplementationVersion();
     public static Map<String, KeyContainer> keyRebinds = new HashMap<String, KeyContainer>();
     public static boolean setUp = false;
     public static DefaultSettings instance;
@@ -58,15 +59,7 @@ public class DefaultSettings {
         NeoForgeCoreHook core = new NeoForgeCoreHook();
         Core.setInstance(core);
 
-        try {
-            VERSION = getVersion();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (FMLLoader.getCurrent().getDist().isClient()) {
+        if (FMLLoader.getDist().isClient()) {
             if (setUp) return;
 
             try {
@@ -78,7 +71,7 @@ public class DefaultSettings {
                     DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Something is hella broken! Shutting down...");
                 } else {
 
-                    final Path location = FMLLoader.getCurrent().getGameDir();
+                    final Path location = Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.GAMEDIR.get()).get();
 
                     File mods = new File(location.toFile(), "mods");
 
@@ -125,7 +118,9 @@ public class DefaultSettings {
                         }
                     }
 
-                    if (FMLLoader.getCurrent().isProduction() && (!foundDefaultSettings || wantedVersion == null)) {
+                    String launchTarget = Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.LAUNCHTARGET.get()).get();
+
+                    if (!launchTarget.contains("dev") && (!foundDefaultSettings || wantedVersion == null)) {
                         shutDown = true;
                         shutdownReason = "Strange! We can't find the DefaultSettings mod, eventhough you're currently using it!";
                         DefaultSettings.log.log(Level.ERROR, "DefaultSettings can't start up! Couldn't get requested version of JCPlugin!");
@@ -162,14 +157,14 @@ public class DefaultSettings {
 
         }
 
-        if (FMLLoader.getCurrent().getDist().isDedicatedServer()) {
+        if (FMLLoader.getDist().isDedicatedServer()) {
             DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
         }
     }
 
     @SuppressWarnings("deprecation")
     public void postInit(FMLLoadCompleteEvent event) {
-        if (FMLLoader.getCurrent().getDist().isClient()) {
+        if (FMLLoader.getDist().isClient()) {
             try {
                 if (!shutDown) FileUtil.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {
@@ -179,7 +174,7 @@ public class DefaultSettings {
             }
         }
 
-        if (FMLLoader.getCurrent().getDist().isDedicatedServer()) {
+        if (FMLLoader.getDist().isDedicatedServer()) {
             DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
         }
     }
@@ -187,5 +182,4 @@ public class DefaultSettings {
     public static DefaultSettings getInstance() {
         return instance;
     }
-
 }

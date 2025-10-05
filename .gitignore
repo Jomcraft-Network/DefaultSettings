@@ -1,44 +1,48 @@
-/*
-/*/
-!/sources/Core/src/
-!/sources/Core/.gitignore
-!/sources/Core/build.gradle
-!/sources/Core/gradle.properties
-!/sources/Core/LICENSE
-!/sources/Core/README.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/main/**/runs/
+!**/src/test/**/runs/
+sources/**/runs/
 
-!/sources/Fabric-1.20/src/
-!/sources/Fabric-1.20/build.gradle
-!/sources/Fabric-1.20/gradle.properties
+### Minecraft ###
+run
 
-!/sources/Forge-1.20/src/
-!/sources/Forge-1.20/build.gradle
-!/sources/Forge-1.20/gradle.properties
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
-!/sources/Forge-1.20.6/src/
-!/sources/Forge-1.20.6/build.gradle
-!/sources/Forge-1.20.6/gradle.properties
+### Kotlin ###
+.kotlin
 
-!/sources/NeoForge-1.20.2/src/
-!/sources/NeoForge-1.20.2/build.gradle
-!/sources/NeoForge-1.20.2/gradle.properties
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
-!/sources/NeoForge-1.21.5/src/
-!/sources/NeoForge-1.21.5/build.gradle
-!/sources/NeoForge-1.21.5/gradle.properties
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-!/sources/NeoForge-1.21.9/src/
-!/sources/NeoForge-1.21.9/build.gradle
-!/sources/NeoForge-1.21.9/gradle.properties
-!/gradlew.bat
-!/gradlew
-!/build.gradle
-!/.gitignore
-!/.gitmodules
-!/changelog.html
-!/gradle/
-!/README.md
-!/LICENSE
-!/.github/
-!/settings.gradle
-!/gradle.properties
+### VS Code ###
+.vscode/
+
+### Mac OS ###
+.DS_Store

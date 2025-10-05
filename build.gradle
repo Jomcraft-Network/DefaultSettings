@@ -6,11 +6,11 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "4.0.8"
+    project.version = "4.0.9"
     project.ext.relType = "release"
 
-    //Descending version order, Forge first; Fabric last
-    project.ext.jcplugin_versions = ["4430994", "4430992", "4430990", "4430988"] as String[]
+    //Descending version order, Forge first; Fabric second-last and NeoForge last
+    project.ext.jcplugin_versions = ["4573148", "4431129", "4431127", "4573146", "7068700"] as String[]
     project.ext.jcplugin_id = "659192"
 
     rootProject.ext.setProperty("JCPluginVersion", jcpluginVersion);

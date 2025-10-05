@@ -183,4 +183,9 @@ public class NeoForgeCoreHook implements ICoreHook {
     public void restoreKeys(boolean update, boolean initial) throws IOException {
         FileUtil.restoreKeys(update, initial);
     }
+
+    @Override
+    public void saveOptionsFile() {
+        Minecraft.getInstance().options.save();
+    }
 }

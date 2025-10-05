@@ -8,13 +8,13 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
-public class ForgeCoreHook implements ICoreHook {
+public class NeoForgeCoreHook implements ICoreHook {
 
     private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(Component.literal(ChatFormatting.RED + "Please wait until the last request has finished"));
 
@@ -36,12 +36,12 @@ public class ForgeCoreHook implements ICoreHook {
     @Override
     public KeyPlaceholder[] getKeyMappings() {
         KeyMapping[] mappings = Minecraft.getInstance().options.keyMappings;
-        if (mappings == null || mappings.length == 0)
+        if(mappings == null || mappings.length == 0)
             return new KeyPlaceholder[0];
 
         KeyPlaceholder[] keys = new KeyPlaceholder[mappings.length];
 
-        for (int i = 0; i < mappings.length; i++) {
+        for(int i = 0; i < mappings.length; i++) {
             keys[i] = new KeyPlaceholder(mappings[i].getName(), mappings[i].getKey().toString(), mappings[i].getKeyModifier().name());
         }
         return keys;
@@ -70,11 +70,11 @@ public class ForgeCoreHook implements ICoreHook {
     @Override
     public void setKeybind(KeyPlaceholder key, boolean init) {
         KeyMapping[] mappings = Minecraft.getInstance().options.keyMappings;
-        for (int i = 0; i < mappings.length; i++) {
-            if (mappings[i].getName().equals(key.name)) {
+        for(int i = 0; i < mappings.length; i++){
+            if(mappings[i].getName().equals(key.name)){
                 KeyContainer container = DefaultSettings.keyRebinds.get(key.name);
 
-                if (init)
+                if(init)
                     mappings[i].setKey(container.input);
 
                 mappings[i].defaultKey = container.input;

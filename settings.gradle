@@ -28,3 +28,9 @@ project(":Forge-1.20.6").projectDir = file("./sources/Forge-1.20.6")
 
 include("NeoForge-1.20.2")
 project(":NeoForge-1.20.2").projectDir = file("./sources/NeoForge-1.20.2")
+
+include("NeoForge-1.21.5")
+project(":NeoForge-1.21.5").projectDir = file("./sources/NeoForge-1.21.5")
+
+include("NeoForge-1.21.9")
+project(":NeoForge-1.21.9").projectDir = file("./sources/NeoForge-1.21.9")

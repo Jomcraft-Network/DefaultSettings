@@ -1,3 +1,7 @@
+plugins {
+    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+}
+
 apply plugin: "idea"
 
 def jcpluginVersion = "4.0.4"

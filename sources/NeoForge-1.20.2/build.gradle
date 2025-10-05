@@ -125,7 +125,7 @@ task("copyRelease") {
             def libDir = project.projectDir.toPath().resolve("build/libs")
             from(libDir) {
                 include "*.jar"
-                exclude "*-dev.jar", "*-sources.jar"
+                exclude "*-dev.jar"
             }
             into "../../build/libs/"
             duplicatesStrategy DuplicatesStrategy.INCLUDE

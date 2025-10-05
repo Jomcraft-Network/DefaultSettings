@@ -21,19 +21,20 @@ import net.jomcraft.defaultsettings.commands.TypeArguments;
 import net.jomcraft.jcplugin.JCLogger;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.core.registries.Registries;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.jomcraft.jcplugin.FileUtilNoMC;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(DefaultSettings.MODID)
+@Mod(value = DefaultSettings.MODID)
 public class DefaultSettings {
 
     public static final String MODID = "defaultsettings";
@@ -44,6 +45,7 @@ public class DefaultSettings {
     public static DefaultSettings instance;
     public static boolean shutDown = false;
     public static String shutdownReason = null;
+    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, DefaultSettings.MODID);
 
     public String getVersion() throws IOException, URISyntaxException {
         Manifest manifest = ManifestUtility.readManifest(this.getClass());
@@ -51,12 +53,10 @@ public class DefaultSettings {
         return attr.getValue("Implementation-Version");
     }
 
-    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, DefaultSettings.MODID);
-
     @SuppressWarnings({"deprecation"})
-    public DefaultSettings(IEventBus modEventBus) {
+    public DefaultSettings(FMLJavaModLoadingContext context) {
         instance = this;
-        NeoForgeCoreHook core = new NeoForgeCoreHook();
+        ForgeCoreHook core = new ForgeCoreHook();
         Core.setInstance(core);
 
         try {
@@ -67,7 +67,7 @@ public class DefaultSettings {
             throw new RuntimeException(e);
         }
 
-        if (FMLLoader.getDist().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             if (setUp) return;
 
             try {
@@ -138,20 +138,22 @@ public class DefaultSettings {
                      IllegalAccessException | IOException e) {
                 shutDown = true;
                 shutdownReason = "The JCPlugin mod couldn't be found! Please make sure that the correct version (probably " + VERSION + ") is installed!";
-                DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...");
+                DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...", e);
             }
 
-            modEventBus.addListener(this::postInit);
+            context.getModEventBus().addListener(this::postInit);
 
             COMMAND_ARGUMENT_TYPES.register("ds_config", () -> ArgumentTypeInfos.registerByClass(ConfigArguments.class, new ConfigArguments.Info()));
             COMMAND_ARGUMENT_TYPES.register("ds_operation", () -> ArgumentTypeInfos.registerByClass(OperationArguments.class, new OperationArguments.Info()));
             COMMAND_ARGUMENT_TYPES.register("ds_type", () -> ArgumentTypeInfos.registerByClass(TypeArguments.class, new TypeArguments.Info()));
 
-            COMMAND_ARGUMENT_TYPES.register(modEventBus);
+            COMMAND_ARGUMENT_TYPES.register(context.getModEventBus());
 
             //ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
 
-            NeoForge.EVENT_BUS.register(new EventHandlers());
+            MinecraftForge.EVENT_BUS.register(DefaultSettings.class);
+
+            MinecraftForge.EVENT_BUS.register(new EventHandlers());
 
             if (shutDown) return;
 
@@ -165,14 +167,15 @@ public class DefaultSettings {
 
         }
 
-        if (FMLLoader.getDist().isDedicatedServer()) {
+        if (FMLEnvironment.dist.isDedicatedServer()) {
             DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
         }
     }
 
     @SuppressWarnings("deprecation")
     public void postInit(FMLLoadCompleteEvent event) {
-        if (FMLLoader.getDist().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
+
             try {
                 if (!shutDown) FileUtil.restoreKeys(true, FileUtilNoMC.privateJson.firstBootUp);
             } catch (IOException e) {
@@ -180,11 +183,13 @@ public class DefaultSettings {
             } catch (NullPointerException e) {
                 DefaultSettings.log.log(Level.ERROR, "An exception occurred while starting up the game (Post):", e);
             }
+
         }
 
-        if (FMLLoader.getDist().isDedicatedServer()) {
+        if (FMLEnvironment.dist.isDedicatedServer()) {
             DefaultSettings.log.log(Level.WARN, "DefaultSettings is a client-side mod only! It won't do anything on servers!");
         }
+
     }
 
     public static DefaultSettings getInstance() {

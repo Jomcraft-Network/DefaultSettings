@@ -20,11 +20,20 @@ project(":Core").projectDir = file("./sources/Core")
 include("Fabric-1.20")
 project(":Fabric-1.20").projectDir = file("./sources/Fabric-1.20")
 
+include("Fabric-1.21.5")
+project(":Fabric-1.21.5").projectDir = file("./sources/Fabric-1.21.5")
+
 include("Forge-1.20")
 project(":Forge-1.20").projectDir = file("./sources/Forge-1.20")
 
 include("Forge-1.20.6")
 project(":Forge-1.20.6").projectDir = file("./sources/Forge-1.20.6")
+
+include("Forge-1.21.5")
+project(":Forge-1.21.5").projectDir = file("./sources/Forge-1.21.5")
+
+include("Forge-1.21.6")
+project(":Forge-1.21.6").projectDir = file("./sources/Forge-1.21.6")
 
 include("NeoForge-1.20.2")
 project(":NeoForge-1.20.2").projectDir = file("./sources/NeoForge-1.20.2")

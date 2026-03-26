@@ -29,6 +29,7 @@ jobs:
             8
             16
             21
+            25
           distribution: 'adopt'
           cache: gradle
       - name: Grant execute permission for gradlew

@@ -1,5 +1,6 @@
 plugins {
-    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply false
+    id 'net.fabricmc.fabric-loom-remap' version '1.15-SNAPSHOT' apply false
 }
 
 apply plugin: "idea"
@@ -10,7 +11,7 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
 
-    project.version = "4.0.9"
+    project.version = "4.0.10"
     project.ext.relType = "release"
 
     //Descending version order, Forge first; Fabric second-last and NeoForge last
@@ -26,8 +27,8 @@ subprojects {
             languageVersion = JavaLanguageVersion.of(8)
         }
 
-        it.sourceCompatibility = 1.8
-        it.targetCompatibility = 1.8
+        //it.sourceCompatibility = 1.8
+        //it.targetCompatibility = 1.8
         tasks.withType(JavaCompile).configureEach {
             project.logger.lifecycle("{}: setting source/target compatibility to Java 8 on task {}", project.displayName, it.name)
             sourceCompatibility = 1.8
@@ -37,8 +38,8 @@ subprojects {
 
         int ver = project.property('javaVersion') as int
 
-        it.sourceCompatibility = 1.8
-        it.targetCompatibility = 1.8
+       //it.sourceCompatibility = 1.8
+        //it.targetCompatibility = 1.8
 
         java.toolchain {
             project.logger.lifecycle("{}: configuring Java {} toolchain", project.displayName, ver)
@@ -46,8 +47,8 @@ subprojects {
         }
 
         tasks.withType(JavaCompile).configureEach {
-            sourceCompatibility = 1.8
-            targetCompatibility = 1.8
+            //sourceCompatibility = 1.8
+            //targetCompatibility = 1.8
             project.logger.lifecycle("{}: setting release to {} on task {}", project.displayName, ver, it.name)
             options.release = ver
         }

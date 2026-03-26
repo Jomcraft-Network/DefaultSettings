@@ -1,13 +1,19 @@
 plugins {
-	id "fabric-loom" version "1.11-SNAPSHOT"
+	id "net.fabricmc.fabric-loom-remap" version "1.15-SNAPSHOT"
 	id 'net.darkhax.curseforgegradle' version '1.1.18'
 }
 
-archivesBaseName = "${rootProject.name}"
+base {
+    archivesName = "${rootProject.name}"
+}
 
 def file_version = version;
 
 version = "1.20.x-${version}-Fabric"
+
+test {
+    failOnNoDiscoveredTests = false
+}
 
 repositories {
     maven {

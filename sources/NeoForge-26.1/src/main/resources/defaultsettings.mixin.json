@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.jomcraft.defaultsettings.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "refmap": "defaultsettings.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

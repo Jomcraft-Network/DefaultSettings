@@ -1,4 +1,4 @@
-buildscript {
+/*buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
@@ -6,56 +6,61 @@ buildscript {
     //dependencies {
    //     classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
     //}
-}
+}*/
 
 plugins {
     id 'net.darkhax.curseforgegradle' version '1.1.18'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[7.0.3,8)'
 }
 
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle'
 
-archivesBaseName = "${rootProject.name}"
+base {
+    archivesName = "${rootProject.name}"
+}
 
 def file_version = version;
 
 version = "1.20.x-${version}-Forge"
 
+test {
+    failOnNoDiscoveredTests = false
+}
+
 minecraft {
     mappings channel: 'official', version: '1.20'
 
     runs {
-        client {
-            workingDirectory file('./run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            ideaModule "DefaultSettings.Forge-1.20.main"
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                "${rootProject.name}" {
-                    source sourceSets.main
-                    source project(":Core").sourceSets.main
-                }
-            }
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+
+            systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+            systemProperty 'forge.enabledGameTestNamespaces', 'defaultsettings'
         }
 
-        server {
-            workingDirectory file('./run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            ideaModule "DefaultSettings.Forge-1.20.main"
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                "${rootProject.name}" {
-                    source sourceSets.main
-                    source project(":Core").sourceSets.main
-                }
-            }
+        register('client')
+
+        register('server') {
+            args '--nogui'
+        }
+
+        register('gameTestServer')
+
+        register('data') {
+            workingDir = layout.projectDirectory.dir('run-data')
+
+            args '--mod', 'defaultsettings', '--all', '--output', layout.projectDirectory.dir('src/generated/resources'), '--existing', layout.projectDirectory.dir('src/main/resources')
         }
     }
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformers = files('src/main/resources/META-INF/accesstransformer.cfg')
 }
 
 repositories {
+    minecraft.mavenizer(it) // In Kotlin, it = this
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
     maven {
         url "https://cursemaven.com"
         content {
@@ -65,8 +70,9 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20-46.0.1'
-	implementation fg.deobf("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[0]}")
+    //minecraft 'net.minecraftforge:forge:1.20-46.0.1'
+    implementation minecraft.dependency('net.minecraftforge:forge:1.20-46.0.14')
+	implementation "curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[0]}"
     implementation project(":Core")
 
     //compileOnly fg.deobf("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[0]}")

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.jomcraft.defaultsettings.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+  ],
+  "client": [
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

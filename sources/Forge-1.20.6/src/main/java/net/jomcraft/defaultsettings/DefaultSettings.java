@@ -46,7 +46,7 @@ public class DefaultSettings {
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.Keys.COMMAND_ARGUMENT_TYPES, DefaultSettings.MODID);
 
     @SuppressWarnings({"deprecation"})
-    public DefaultSettings() {
+    public DefaultSettings(FMLJavaModLoadingContext context) {
         instance = this;
         ForgeCoreHook core = new ForgeCoreHook();
         Core.setInstance(core);
@@ -125,13 +125,13 @@ public class DefaultSettings {
                 DefaultSettings.log.log(Level.ERROR, "DefaultSettings is missing the JCPlugin mod! Shutting down...", e);
             }
 
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
+            context.getModEventBus().addListener(this::postInit);
 
             COMMAND_ARGUMENT_TYPES.register("ds_config", () -> ArgumentTypeInfos.registerByClass(ConfigArguments.class, new ConfigArguments.Info()));
             COMMAND_ARGUMENT_TYPES.register("ds_operation", () -> ArgumentTypeInfos.registerByClass(OperationArguments.class, new OperationArguments.Info()));
             COMMAND_ARGUMENT_TYPES.register("ds_type", () -> ArgumentTypeInfos.registerByClass(TypeArguments.class, new TypeArguments.Info()));
 
-            COMMAND_ARGUMENT_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+            COMMAND_ARGUMENT_TYPES.register(context.getModEventBus());
 
             //ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
 

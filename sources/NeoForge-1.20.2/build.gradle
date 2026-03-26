@@ -1,15 +1,22 @@
 plugins {
     id 'net.darkhax.curseforgegradle' version '1.1.18'
-	id 'net.neoforged.gradle.userdev' version '7.0.192'
+	id 'net.neoforged.gradle.userdev' version '7.1.21'
 	id 'idea'
     id 'java-library'
 }
 
-archivesBaseName = "${rootProject.name}"
+base {
+    archivesName = "${rootProject.name}"
+}
+
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 def file_version = version;
 
 version = "1.20.x-${version}-NeoForge"
+
+test {
+    failOnNoDiscoveredTests = false
+}
 
 minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg')
 

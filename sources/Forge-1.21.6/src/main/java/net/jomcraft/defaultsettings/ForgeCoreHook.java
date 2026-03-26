@@ -84,7 +84,7 @@ public class ForgeCoreHook implements ICoreHook {
                 mappings[i].defaultKey = container.input;
 
                 ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, mappings[i], container.modifier, "keyModifierDefault");
-                mappings[i].setKeyModifierAndCode(mappings[i].getDefaultKeyModifier(), container.input);
+                //mappings[i].setKeyModifierAndCode(mappings[i].getDefaultKeyModifier(), container.input);
                 break;
             }
         }

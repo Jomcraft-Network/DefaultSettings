@@ -38,16 +38,10 @@ runs {
 
     client {
         systemProperty 'neoforge.enabledGameTestNamespaces', "defaultsettings"
-        programArgument "-mixin.config="+"defaultsettings.mixin.json"
-        systemProperty 'mixin.env.disableRefMap', 'true'
     }
 
     server {
         systemProperty 'neoforge.enabledGameTestNamespaces', "defaultsettings"
-        systemProperty 'mixin.env.disableRefMap', 'true'
-
-        programArgument "-mixin.config="+"defaultsettings.mixin.json"
-
         programArgument '--nogui'
     }
 
@@ -67,7 +61,7 @@ configurations {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:21.9.14-beta"
+    implementation "net.neoforged:neoforge:21.9.16-beta"
 	implementation("curse.maven:jcp-${project.ext.jcplugin_id}:${project.ext.jcplugin_versions[4]}")
     implementation project(":Core")
 }
@@ -95,8 +89,7 @@ task sourcesJar(type: Jar) {
 jar {
     manifest {
         attributes([
-                'FMLAT': 'accesstransformer.cfg',
-                "MixinConfigs" : "defaultsettings.mixin.json"
+                'FMLAT': 'accesstransformer.cfg'
         ])
     }
 }
@@ -131,6 +124,13 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
         sourcesFile.changelog = file('../../changelog.html')
         sourcesFile.addRequirement('jcplugin')
         sourcesFile.displayName = "$archivesBaseName-$version-sources"
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }
 

@@ -1,5 +1,6 @@
 package net.jomcraft.defaultsettings.mixin;
 
+import net.jomcraft.defaultsettings.DefaultSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import org.spongepowered.asm.mixin.Mixin;

@@ -74,13 +74,12 @@ public class NeoForgeCoreHook implements ICoreHook {
             if(mappings[i].getName().equals(key.name)){
                 KeyContainer container = DefaultSettings.keyRebinds.get(key.name);
 
-                if(init)
-                    mappings[i].setKey(container.input);
-
                 mappings[i].defaultKey = container.input;
-
                 ObfuscationReflectionHelper.setPrivateValue(KeyMapping.class, mappings[i], container.modifier, "keyModifierDefault");
-                //mappings[i].setKeyModifierAndCode(mappings[i].getDefaultKeyModifier(), container.input);
+
+                if(init)
+                    mappings[i].setKeyModifierAndCode(mappings[i].getDefaultKeyModifier(), container.input);
+
                 break;
             }
         }
